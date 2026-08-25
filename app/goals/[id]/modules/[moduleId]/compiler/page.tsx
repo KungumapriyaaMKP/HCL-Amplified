@@ -1,0 +1,22 @@
+import { redirect } from "next/navigation";
+import { requireUser } from "@/lib/auth";
+import { getModuleDetail } from "@/lib/moduleDetail";
+import { Nav } from "@/components/layout/Nav";
+import { CompilerWorkspace } from "@/components/goals/CompilerWorkspace";
+
+export default async function CompilerPage({ params }: { params: Promise<{ id: string; moduleId: string }> }) {
+  const { moduleId } = await params;
+  const user = await requireUser();
+  const detail = await getModuleDetail(user.id, moduleId);
+  if (!detail || !detail.module.isProgramming || !detail.module.programmingLanguage) redirect(`/goals/${(await params).id}`);
+
+  return (
+    <div>
+      <Nav />
+      <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+        <h1 className="mb-6 text-xl font-semibold">Practice compiler</h1>
+        <CompilerWorkspace moduleId={moduleId} skillName={detail.skill.name} language={detail.module.programmingLanguage} />
+      </main>
+    </div>
+  );
+}
