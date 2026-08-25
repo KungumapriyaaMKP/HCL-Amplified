@@ -22,6 +22,7 @@ export type RankingContext = {
   difficultyBias: number; // -1 (prefer easier) .. 1 (prefer harder), 0 = neutral
   practiceBias?: number; // 0 (neutral, default) .. 1 (strongly prefer hands-on project/assessment resources over long-form courses) - set for the "Interview Crash Course" track pace
   goalText?: string; // the learner's own free-text goal - drives the keyword side of hybrid retrieval below
+  modalityPreference?: Record<string, number>; // learner's preferenceScores from profiles (EMA over course/project/assessment/article outcomes)
 };
 
 const DIFFICULTY_INDEX: Record<CandidateResource["difficulty"], number> = {
@@ -108,6 +109,14 @@ function interestOverlap(resource: CandidateResource, interestSkillIds: string[]
   return Math.min(1, overlap / Math.max(1, interestSkillIds.length));
 }
 
+/** How well a resource's format (course/project/assessment/article) matches
+ * this learner's modality preference, tracked via EMA in
+ * `updatePreferenceScore` (lib/adapt.ts) from how they've actually engaged
+ * with each format before. Neutral (0.5) until enough signal exists. */
+function preferenceFit(resource: CandidateResource, modalityPreference?: Record<string, number>): number {
+  return modalityPreference?.[resource.type] ?? 0.5;
+}
+
 /** practiceBias value used whenever a goal's track pace is "crash-course" -
  * shared by path generation and the adaptation engine so remediation/
  * acceleration re-ranks stay consistent with how the path was first built. */
@@ -131,6 +140,7 @@ export type ScoredResource = CandidateResource & {
     difficultyFit: number;
     interestOverlap: number;
     ratingNorm: number;
+    preferenceFit: number;
     practiceFit: number;
     keywordOverlap: number;
   };
@@ -139,10 +149,12 @@ export type ScoredResource = CandidateResource & {
 /**
  * Hybrid content-based recommendation with weighted ranking: blends
  * embedding cosine similarity (semantic - skill-tag vectors) with plain
- * keyword overlap against the learner's own goal text, prerequisite
- * readiness, difficulty fit, interest overlap and rating into a single
- * score. This is what actually orders resources within a path module, and
- * what the adaptation engine re-runs after feedback changes `difficultyBias`.
+ * keyword overlap against the learner's own goal text (the keyword side of
+ * hybrid retrieval), prerequisite readiness, difficulty fit, interest
+ * overlap, rating, and modality preference (course/project/assessment/
+ * article, tracked via EMA) into a single score. This is what actually
+ * orders resources within a path module, and what the adaptation engine
+ * re-runs after feedback changes `difficultyBias` or modality preferences.
  */
 export function rankResources(candidates: CandidateResource[], ctx: RankingContext): ScoredResource[] {
   const targetVector = skillVector({
@@ -151,12 +163,13 @@ export function rankResources(candidates: CandidateResource[], ctx: RankingConte
   });
 
   const weights = {
-    cosineSim: 0.35,
+    cosineSim: 0.3,
     prereqReadiness: 0.15,
     difficultyFit: 0.15,
     interestOverlap: 0.1,
-    rating: 0.15,
+    rating: 0.1,
     keyword: 0.1,
+    preferenceFit: 0.1,
   };
 
   const scored = candidates.map((resource) => {
@@ -166,6 +179,7 @@ export function rankResources(candidates: CandidateResource[], ctx: RankingConte
     const diffFit = difficultyFit(resource, ctx.targetSkillId, ctx.masteryBySkill, ctx.difficultyBias);
     const interest = interestOverlap(resource, ctx.interestSkillIds);
     const ratingNorm = resource.rating / 5;
+    const prefFit = preferenceFit(resource, ctx.modalityPreference);
     const practice = practiceFit(resource);
     const keyword = keywordOverlap(resource, ctx.goalText);
 
@@ -176,6 +190,7 @@ export function rankResources(candidates: CandidateResource[], ctx: RankingConte
       weights.interestOverlap * interest +
       weights.rating * ratingNorm +
       weights.keyword * keyword +
+      weights.preferenceFit * prefFit +
       (ctx.practiceBias ?? 0) * practice;
 
     return {
@@ -187,6 +202,7 @@ export function rankResources(candidates: CandidateResource[], ctx: RankingConte
         difficultyFit: diffFit,
         interestOverlap: interest,
         ratingNorm,
+        preferenceFit: prefFit,
         practiceFit: practice,
         keywordOverlap: keyword,
       },

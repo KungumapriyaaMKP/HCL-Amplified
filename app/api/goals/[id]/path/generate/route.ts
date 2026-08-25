@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { requireUser } from "@/lib/auth";
 import { withErrorHandling, jsonError } from "@/lib/apiHelpers";
 import { db } from "@/lib/db";
-import { goals, learningPaths, pathModules, adaptationLog } from "@/db/schema";
+import { goals, learningPaths, pathModules, adaptationLog, profiles } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
 import { computeGap, resolveGoalSkills } from "@/lib/skillGraph";
 import { getMasteryMap } from "@/lib/adapt";
@@ -23,8 +23,9 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
     const [goal] = await db.select().from(goals).where(and(eq(goals.id, id), eq(goals.userId, user.id)));
     if (!goal) return jsonError("Not found", 404);
 
-    const subFocus = (goal.subFocus ?? {}) as { tags?: string[] };
-    const goalSkillIds = resolveGoalSkills(goal.domain, goal.goalText, subFocus.tags ?? []);
+    const subFocus = (goal.subFocus ?? {}) as { tags?: string[]; mappedSkillIds?: string[] };
+    const mappedIds = (subFocus.mappedSkillIds ?? []).filter((sId) => SKILLS_BY_ID.has(sId));
+    const goalSkillIds = mappedIds.length > 0 ? mappedIds : resolveGoalSkills(goal.domain, goal.goalText, subFocus.tags ?? []);
 
     const mastery = await getMasteryMap(user.id);
     const gapSkills = computeGap(goalSkillIds, mastery);
@@ -43,6 +44,8 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
     );
 
     const pool = await getCandidatePool();
+    const [profile] = await db.select().from(profiles).where(eq(profiles.userId, user.id));
+    const modalityPreference = (profile?.preferenceScores ?? {}) as Record<string, number>;
     const difficultyBias = (goal.preferences as { difficultyBias?: number } | null)?.difficultyBias ?? 0;
     // Interview Crash Course: bias resource selection toward hands-on
     // projects/assessments over long-form courses - see practiceFit() in
@@ -76,6 +79,7 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
         difficultyBias,
         practiceBias,
         goalText: goal.goalText,
+        modalityPreference,
       };
       let best = bestResourceForSkill(pool, rankCtx);
       if (!best) continue;

@@ -1,4 +1,6 @@
 import type { ChatMessage } from "@/lib/llm";
+import { leafSkillsForDomain } from "@/lib/skillGraph";
+import { SKILLS_BY_ID } from "@/data/skills";
 
 const QUESTION_SHAPE = `Each question object must look like:
 {"id": "q1", "skillId": "<one of the given skill ids>", "question": "<text>", "options": ["<a>", "<b>", "<c>", "<d>"], "correctIndex": <0-3>, "explanation": "<why the correct answer is correct, 1-2 sentences>"}`;
@@ -8,9 +10,21 @@ export function goalIntakeMessages(
   goalText: string,
   trackPace: string,
   history: ChatMessage[],
+  domainId?: string,
 ): ChatMessage[] {
+  const targetDomain = domainId || domain;
+  const leafIds = leafSkillsForDomain(targetDomain);
+  const candidateSkills = leafIds
+    .map((id) => SKILLS_BY_ID.get(id))
+    .filter((s): s is NonNullable<typeof s> => !!s)
+    .map((s) => `- ${s.id}: ${s.name} - ${s.description}`)
+    .join("\n");
+
   const system = `You are a warm, focused AI learning advisor helping a learner scope a brand-new learning goal.
 Domain: "${domain}". Learner's initial goal statement: "${goalText}". Chosen pace: "${trackPace}".
+
+Candidate target skills in this domain:
+${candidateSkills || "(No leaf skills defined for this domain)"}
 
 Have a short natural conversation (aim for 2-4 learner replies total) to learn:
 (a) their specific sub-focus or specialization within this domain (e.g. within "AI & Machine Learning" that could be "computer vision" or "LLM applications"),
@@ -24,7 +38,8 @@ After EVERY learner message, respond with ONLY a JSON object of this exact shape
  "done": <true once you have (a)(b)(c) well enough to build a path, otherwise false>,
  "subFocus": ["<short tag>", ...],
  "motivation": "<string, or null if not yet known>",
- "timeframeWeeks": <integer, or null if not yet known>}
+ "timeframeWeeks": <integer, or null if not yet known>,
+ "mappedSkillIds": ["<skill id from candidate list above>", ...]}
 
 Never ask more than one question per turn. Once "done" is true, "reply" should be a brief warm confirmation, not another question.`;
 
@@ -75,6 +90,7 @@ export function moduleRationaleMessages(opts: {
     interestOverlap: number;
     ratingNorm: number;
     keywordOverlap: number;
+    preferenceFit: number;
   };
 }): ChatMessage[] {
   const crashCourse = opts.trackPace === "crash-course";
@@ -92,9 +108,10 @@ Real numbers behind this pick (0-100 scale):
 - Keyword match to the learner's own goal wording: ${Math.round(s.keywordOverlap * 100)}%
 - Difficulty fit for where they are right now: ${Math.round(s.difficultyFit * 100)}%
 - Resource rating: ${Math.round(s.ratingNorm * 100)}%
+- Modality preference fit (course/project/assessment/article, learned from how they've engaged before): ${Math.round(s.preferenceFit * 100)}%
 ${crashCourse ? "The learner picked the Interview Crash Course pace - they have an upcoming interview and chose hands-on practice over long-form courses wherever possible. Frame the rationale around interview relevance and getting practice reps in fast." : ""}
 
-Write a 2-3 sentence rationale, second person ("you"), weaving in the specific numbers that matter most for this pick rather than reasoning abstractly. Respond with ONLY plain text, no JSON, no markdown.`;
+Base your explanation ONLY on these specific scores - do not invent reasons not reflected in these numbers. Write a 2-3 sentence rationale, second person ("you"), weaving in whichever numbers matter most for this pick rather than reasoning abstractly. Respond with ONLY plain text, no JSON, no markdown.`;
 
   return [{ role: "system", content: system }];
 }

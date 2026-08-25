@@ -14,6 +14,7 @@ type IntakeResult = {
   subFocus: string[];
   motivation: string | null;
   timeframeWeeks: number | null;
+  mappedSkillIds?: string[];
 };
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -60,7 +61,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
     const domainName = DOMAINS.find((d) => d.id === goal.domain)?.name ?? goal.domain;
     const result = await chatJson<IntakeResult>(
-      goalIntakeMessages(domainName, goal.goalText, goal.trackPace, history),
+      goalIntakeMessages(domainName, goal.goalText, goal.trackPace, history, goal.domain),
       { temperature: 0.6 },
     );
 
@@ -70,7 +71,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       await db
         .update(goals)
         .set({
-          subFocus: { tags: result.subFocus ?? [], motivation: result.motivation, timeframeWeeks: result.timeframeWeeks },
+          subFocus: {
+            tags: result.subFocus ?? [],
+            motivation: result.motivation,
+            timeframeWeeks: result.timeframeWeeks,
+            mappedSkillIds: result.mappedSkillIds ?? [],
+          },
           status: "beginner_check",
         })
         .where(eq(goals.id, id));

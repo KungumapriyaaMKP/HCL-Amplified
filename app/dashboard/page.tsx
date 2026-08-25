@@ -24,7 +24,7 @@ export default async function DashboardPage() {
           <LinkButton href="/goals/new">+ New goal</LinkButton>
         </div>
 
-        <ReminderBanner goals={data.goals} streak={data.gamification.streak} />
+        <ReminderBanner goals={data.goals} streak={data.gamification.streak} disengagement={data.disengagement} />
 
         <div className="mb-6">
           <GamificationHeader gamification={data.gamification} />

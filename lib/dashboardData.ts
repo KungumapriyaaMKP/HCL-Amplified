@@ -14,6 +14,7 @@ import {
 } from "@/db/schema";
 import { eq, desc, asc } from "drizzle-orm";
 import { getTotalXp, levelForXp, levelTitle } from "@/lib/gamification";
+import { checkDisengagement } from "@/lib/adapt";
 
 export async function getDashboardData(userId: string) {
   const [profile] = await db.select().from(profiles).where(eq(profiles.userId, userId));
@@ -22,6 +23,7 @@ export async function getDashboardData(userId: string) {
   const level = levelForXp(xp);
 
   const [streak] = await db.select().from(streaks).where(eq(streaks.userId, userId));
+  const disengagement = await checkDisengagement(userId);
 
   const earnedBadges = await db
     .select({ id: badges.id, name: badges.name, icon: badges.icon, description: badges.description, earnedAt: userBadges.earnedAt })
@@ -76,6 +78,7 @@ export async function getDashboardData(userId: string) {
 
   return {
     profile,
+    disengagement,
     gamification: {
       xp,
       level: level.level,
