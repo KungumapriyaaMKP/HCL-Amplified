@@ -20,6 +20,7 @@ import {
 export const profiles = pgTable("profiles", {
   userId: uuid("user_id").primaryKey(),
   displayName: text("display_name").notNull(),
+  preferenceScores: jsonb("preference_scores").notNull().default({}),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
 
@@ -196,6 +197,17 @@ export const progressEvents = pgTable("progress_events", {
     .references(() => pathModules.id, { onDelete: "cascade" }),
   type: text("type").notNull(), // 'started'|'completed'|'feedback'
   payload: jsonb("payload").notNull().default({}),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const learningEvents = pgTable("learning_events", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: uuid("user_id").notNull(),
+  moduleId: uuid("module_id").references(() => pathModules.id, { onDelete: "cascade" }),
+  eventType: text("event_type").notNull(), // 'open'|'complete'|'abandon'|'quiz_submit'
+  modality: text("modality"), // 'course'|'project'|'assessment'|'article' (matches resources.type)
+  timeSpentSeconds: integer("time_spent_seconds"),
+  estimatedSeconds: integer("estimated_seconds"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
 

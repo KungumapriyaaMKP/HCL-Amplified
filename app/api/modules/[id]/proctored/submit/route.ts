@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/auth";
 import { withErrorHandling, jsonError } from "@/lib/apiHelpers";
 import { db } from "@/lib/db";
-import { proctoredAttempts, pathModules } from "@/db/schema";
+import { proctoredAttempts, pathModules, learningEvents } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
 import { getModuleForUser } from "@/lib/moduleAccess";
-import { onProctoredResult } from "@/lib/adapt";
+import { onProctoredResult, updatePreferenceScore } from "@/lib/adapt";
 import { awardXp, awardBadgeIfNew, touchStreak, XP } from "@/lib/gamification";
 import { chatComplete } from "@/lib/llm";
 import { proctoredReportMessages } from "@/lib/prompts";
@@ -66,6 +66,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       .update(proctoredAttempts)
       .set({ answers, score, submittedAt: new Date(), flags: flags ?? [], webcamPresenceRatio, reportText })
       .where(eq(proctoredAttempts.id, attemptId));
+
+    await db.insert(learningEvents).values({
+      userId: user.id,
+      moduleId: id,
+      eventType: score >= 50 ? "complete" : "quiz_submit",
+      modality: "assessment",
+    });
+    await updatePreferenceScore(user.id, "assessment", score / 100);
 
     await onProctoredResult({ userId: user.id, moduleId: id, score });
 

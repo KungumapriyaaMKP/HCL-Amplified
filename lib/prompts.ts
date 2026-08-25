@@ -1,4 +1,6 @@
 import type { ChatMessage } from "@/lib/llm";
+import { leafSkillsForDomain } from "@/lib/skillGraph";
+import { SKILLS_BY_ID } from "@/data/skills";
 
 const QUESTION_SHAPE = `Each question object must look like:
 {"id": "q1", "skillId": "<one of the given skill ids>", "question": "<text>", "options": ["<a>", "<b>", "<c>", "<d>"], "correctIndex": <0-3>, "explanation": "<why the correct answer is correct, 1-2 sentences>"}`;
@@ -8,9 +10,21 @@ export function goalIntakeMessages(
   goalText: string,
   trackPace: string,
   history: ChatMessage[],
+  domainId?: string,
 ): ChatMessage[] {
+  const targetDomain = domainId || domain;
+  const leafIds = leafSkillsForDomain(targetDomain);
+  const candidateSkills = leafIds
+    .map((id) => SKILLS_BY_ID.get(id))
+    .filter((s): s is NonNullable<typeof s> => !!s)
+    .map((s) => `- ${s.id}: ${s.name} - ${s.description}`)
+    .join("\n");
+
   const system = `You are a warm, focused AI learning advisor helping a learner scope a brand-new learning goal.
 Domain: "${domain}". Learner's initial goal statement: "${goalText}". Chosen pace: "${trackPace}".
+
+Candidate target skills in this domain:
+${candidateSkills || "(No leaf skills defined for this domain)"}
 
 Have a short natural conversation (aim for 2-4 learner replies total) to learn:
 (a) their specific sub-focus or specialization within this domain (e.g. within "AI & Machine Learning" that could be "computer vision" or "LLM applications"),
@@ -24,7 +38,8 @@ After EVERY learner message, respond with ONLY a JSON object of this exact shape
  "done": <true once you have (a)(b)(c) well enough to build a path, otherwise false>,
  "subFocus": ["<short tag>", ...],
  "motivation": "<string, or null if not yet known>",
- "timeframeWeeks": <integer, or null if not yet known>}
+ "timeframeWeeks": <integer, or null if not yet known>,
+ "mappedSkillIds": ["<skill id from candidate list above>", ...]}
 
 Never ask more than one question per turn. Once "done" is true, "reply" should be a brief warm confirmation, not another question.`;
 
@@ -67,14 +82,37 @@ export function moduleRationaleMessages(opts: {
   isFirstModule: boolean;
   priorSkillNames: string[];
   trackPace?: string;
+  scoreBreakdown: {
+    cosineSim: number;
+    prereqReadiness: number;
+    difficultyFit: number;
+    interestOverlap: number;
+    ratingNorm: number;
+    preferenceFit?: number;
+  };
 }): ChatMessage[] {
   const crashCourse = opts.trackPace === "crash-course";
-  const system = `You write short, specific explanations for why a learning-path recommendation engine picked a resource. Be concrete about the reasoning (skill-gap, prerequisites, ranking), never generic filler like "this will help you learn."
+  const scores = opts.scoreBreakdown;
+  const prefLine =
+    scores.preferenceFit !== undefined
+      ? `\n- Modality preference fit: ${(scores.preferenceFit * 100).toFixed(0)}%`
+      : "";
+
+  const system = `You write short, specific explanations for why a learning-path recommendation engine picked a resource.
 
 Goal: "${opts.goalText}" (domain: ${opts.domain}).
 This module teaches: "${opts.skillName}", via the ${opts.resourceType} "${opts.resourceTitle}".
 ${opts.isFirstModule ? "This is the very first module in the path." : `It comes after the learner has covered: ${opts.priorSkillNames.join(", ")}.`}
 ${crashCourse ? "The learner picked the Interview Crash Course pace - they have an upcoming interview and chose hands-on practice over long-form courses wherever possible. Frame the rationale around interview relevance and getting practice reps in fast." : ""}
+
+Algorithm score breakdown for this recommendation:
+- Goal/content cosine similarity: ${(scores.cosineSim * 100).toFixed(0)}%
+- Prerequisite readiness: ${(scores.prereqReadiness * 100).toFixed(0)}%
+- Difficulty fit: ${(scores.difficultyFit * 100).toFixed(0)}%
+- Interest overlap: ${(scores.interestOverlap * 100).toFixed(0)}%
+- Resource quality rating: ${(scores.ratingNorm * 100).toFixed(0)}%${prefLine}
+
+Base your explanation ONLY on these specific scores. Do not invent reasons not reflected in these numbers. Reference at least one concrete score in plain language (e.g. a high prereqReadiness means their foundations are solid for this, or a strong difficulty fit matches their current level).
 
 Write a 2-3 sentence rationale, second person ("you"), explaining why this specific skill and resource were chosen now, referencing the prerequisite chain or the goal directly. Respond with ONLY plain text, no JSON, no markdown.`;
 

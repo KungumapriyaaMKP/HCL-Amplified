@@ -42,6 +42,18 @@ export function ModuleWorkspace(props: Props) {
     }
   }
 
+  async function trackEvent(body: { eventType: string; modality?: string; timeSpentSeconds?: number }) {
+    try {
+      await fetch(`/api/modules/${props.moduleId}/track-event`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+    } catch {
+      // Non-blocking tracking
+    }
+  }
+
   return (
     <div className="space-y-6">
       <Card className="p-5">
@@ -60,6 +72,7 @@ export function ModuleWorkspace(props: Props) {
             <Button
               size="sm"
               onClick={() => {
+                trackEvent({ eventType: "open", modality: props.resourceType });
                 if (!resourceMarked) postProgress({ type: "started" });
               }}
             >
@@ -73,6 +86,7 @@ export function ModuleWorkspace(props: Props) {
               disabled={busy}
               onClick={async () => {
                 await postProgress({ type: "resource_done" });
+                await trackEvent({ eventType: "complete", modality: props.resourceType });
                 setResourceMarked(true);
               }}
             >

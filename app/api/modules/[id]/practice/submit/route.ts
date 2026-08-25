@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/auth";
 import { withErrorHandling, jsonError } from "@/lib/apiHelpers";
 import { db } from "@/lib/db";
-import { practiceAttempts, skillMastery } from "@/db/schema";
+import { practiceAttempts, skillMastery, learningEvents } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
 import { getModuleForUser } from "@/lib/moduleAccess";
-import { upsertMastery } from "@/lib/adapt";
+import { upsertMastery, updatePreferenceScore } from "@/lib/adapt";
 import { awardXp, awardBadgeIfNew, touchStreak, XP } from "@/lib/gamification";
 
 type StoredQuestion = { id: string; correctIndex: number; explanation: string };
@@ -32,6 +32,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const score = Math.round((correctCount / questions.length) * 100);
 
     await db.update(practiceAttempts).set({ answers, score }).where(eq(practiceAttempts.id, attemptId));
+
+    await db.insert(learningEvents).values({
+      userId: user.id,
+      moduleId: id,
+      eventType: "quiz_submit",
+      modality: "assessment",
+    });
+    await updatePreferenceScore(user.id, "assessment", score / 100);
 
     const [existingMastery] = await db
       .select()

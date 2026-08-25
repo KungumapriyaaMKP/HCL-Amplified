@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { goals, learningPaths, pathModules, skillMastery, adaptationLog } from "@/db/schema";
+import { goals, learningPaths, pathModules, skillMastery, adaptationLog, profiles, streaks } from "@/db/schema";
 import { and, eq, gt, asc } from "drizzle-orm";
 import { rankResources, CRASH_COURSE_PRACTICE_BIAS } from "@/lib/recommend";
 import { getCandidatePool } from "@/lib/catalog";
@@ -22,6 +22,54 @@ export async function upsertMastery(userId: string, skillId: string, score: numb
 
 async function logAdaptation(userId: string, goalId: string, trigger: string, action: string, reason: string) {
   await db.insert(adaptationLog).values({ userId, goalId, trigger, action, reason });
+}
+
+/**
+ * Updates learner's modality preference score via exponential moving average (EMA):
+ * newScore = 0.3 * outcomeSignal + 0.7 * (currentScore ?? 0.5)
+ * where outcomeSignal = 1.0 (on-time completion), 0.4 (abandonment), score/100 (quiz_submit).
+ */
+export async function updatePreferenceScore(userId: string, modality: string, outcomeSignal: number) {
+  const [profile] = await db.select().from(profiles).where(eq(profiles.userId, userId));
+  const currentScores = (profile?.preferenceScores ?? {}) as Record<string, number>;
+  const current = currentScores[modality] ?? 0.5;
+  const newScore = 0.3 * outcomeSignal + 0.7 * current;
+  const updatedScores = {
+    ...currentScores,
+    [modality]: Number(newScore.toFixed(4)),
+  };
+  await db
+    .update(profiles)
+    .set({ preferenceScores: updatedScores })
+    .where(eq(profiles.userId, userId));
+  return updatedScores;
+}
+
+/**
+ * Checks if a user has been inactive for more than 5 days.
+ */
+export async function checkDisengagement(userId: string): Promise<{ atRisk: boolean; daysSinceActive: number }> {
+  const [streak] = await db.select().from(streaks).where(eq(streaks.userId, userId));
+  let lastDate: Date | null = null;
+  if (streak?.lastActiveDate) {
+    lastDate = new Date(streak.lastActiveDate);
+  } else {
+    const [profile] = await db.select().from(profiles).where(eq(profiles.userId, userId));
+    if (profile?.createdAt) {
+      lastDate = new Date(profile.createdAt);
+    }
+  }
+
+  if (!lastDate) {
+    return { atRisk: false, daysSinceActive: 0 };
+  }
+
+  const today = new Date();
+  const ms = today.setHours(0, 0, 0, 0) - lastDate.setHours(0, 0, 0, 0);
+  const daysSinceActive = Math.max(0, Math.round(ms / 86_400_000));
+  const atRisk = daysSinceActive > 5;
+
+  return { atRisk, daysSinceActive };
 }
 
 /** Marks a module completed and unlocks the next one in sequence. */
@@ -63,9 +111,11 @@ export async function onProctoredResult(opts: {
     const skill = SKILLS_BY_ID.get(mod.skillId);
     const pool = await getCandidatePool();
     const mastery = await getMasteryMap(opts.userId);
+    const [profile] = await db.select().from(profiles).where(eq(profiles.userId, opts.userId));
+    const modalityPreference = (profile?.preferenceScores ?? {}) as Record<string, number>;
     const easier = rankResources(
       pool.filter((r) => (r.skillWeights[mod.skillId] ?? 0) > 0 && r.difficulty !== "advanced"),
-      { targetSkillId: mod.skillId, masteryBySkill: mastery, interestSkillIds: [], difficultyBias: -1, practiceBias },
+      { targetSkillId: mod.skillId, masteryBySkill: mastery, interestSkillIds: [], difficultyBias: -1, practiceBias, modalityPreference },
     )[0];
 
     if (easier) {
@@ -157,12 +207,14 @@ export async function onDifficultyFeedback(opts: {
   const pool = await getCandidatePool();
   const mastery = await getMasteryMap(opts.userId);
   const practiceBias = goal.trackPace === "crash-course" ? CRASH_COURSE_PRACTICE_BIAS : 0;
+  const [profile] = await db.select().from(profiles).where(eq(profiles.userId, opts.userId));
+  const modalityPreference = (profile?.preferenceScores ?? {}) as Record<string, number>;
   let swapped = 0;
 
   for (const mod of upcoming) {
     const best = rankResources(
       pool.filter((r) => (r.skillWeights[mod.skillId] ?? 0) > 0),
-      { targetSkillId: mod.skillId, masteryBySkill: mastery, interestSkillIds: [], difficultyBias: newBias, practiceBias },
+      { targetSkillId: mod.skillId, masteryBySkill: mastery, interestSkillIds: [], difficultyBias: newBias, practiceBias, modalityPreference },
     )[0];
     if (best && best.id !== mod.resourceId) {
       await db.update(pathModules).set({ resourceId: best.id }).where(eq(pathModules.id, mod.id));

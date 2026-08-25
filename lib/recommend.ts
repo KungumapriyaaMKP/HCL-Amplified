@@ -20,6 +20,7 @@ export type RankingContext = {
   interestSkillIds: string[]; // skills implied by the learner's stated interests/sub-focus
   difficultyBias: number; // -1 (prefer easier) .. 1 (prefer harder), 0 = neutral
   practiceBias?: number; // 0 (neutral, default) .. 1 (strongly prefer hands-on project/assessment resources over long-form courses) - set for the "Interview Crash Course" track pace
+  modalityPreference?: Record<string, number>; // learner's preferenceScores from profiles
 };
 
 const DIFFICULTY_INDEX: Record<CandidateResource["difficulty"], number> = {
@@ -75,6 +76,10 @@ function interestOverlap(resource: CandidateResource, interestSkillIds: string[]
   return Math.min(1, overlap / Math.max(1, interestSkillIds.length));
 }
 
+function preferenceFit(resource: CandidateResource, modalityPreference?: Record<string, number>): number {
+  return modalityPreference?.[resource.type] ?? 0.5;
+}
+
 /** practiceBias value used whenever a goal's track pace is "crash-course" -
  * shared by path generation and the adaptation engine so remediation/
  * acceleration re-ranks stay consistent with how the path was first built. */
@@ -98,6 +103,7 @@ export type ScoredResource = CandidateResource & {
     difficultyFit: number;
     interestOverlap: number;
     ratingNorm: number;
+    preferenceFit: number;
     practiceFit: number;
   };
 };
@@ -105,9 +111,9 @@ export type ScoredResource = CandidateResource & {
 /**
  * Content-based recommendation with weighted ranking: blends embedding
  * cosine similarity with prerequisite readiness, difficulty fit, interest
- * overlap and rating into a single score. This is what actually orders
- * resources within a path module, and what the adaptation engine re-runs
- * after feedback changes `difficultyBias`.
+ * overlap, rating and modality preference into a single score. This is what
+ * actually orders resources within a path module, and what the adaptation engine
+ * re-runs after feedback changes `difficultyBias` or modality preferences.
  */
 export function rankResources(candidates: CandidateResource[], ctx: RankingContext): ScoredResource[] {
   const targetVector = skillVector({
@@ -115,7 +121,14 @@ export function rankResources(candidates: CandidateResource[], ctx: RankingConte
     ...Object.fromEntries(ctx.interestSkillIds.map((id) => [id, 0.3])),
   });
 
-  const weights = { cosineSim: 0.4, prereqReadiness: 0.15, difficultyFit: 0.15, interestOverlap: 0.15, rating: 0.15 };
+  const weights = {
+    cosineSim: 0.35,
+    prereqReadiness: 0.15,
+    difficultyFit: 0.15,
+    interestOverlap: 0.15,
+    rating: 0.10,
+    preferenceFit: 0.10,
+  };
 
   const scored = candidates.map((resource) => {
     const resourceVector = skillVector(resource.skillWeights);
@@ -124,6 +137,7 @@ export function rankResources(candidates: CandidateResource[], ctx: RankingConte
     const diffFit = difficultyFit(resource, ctx.targetSkillId, ctx.masteryBySkill, ctx.difficultyBias);
     const interest = interestOverlap(resource, ctx.interestSkillIds);
     const ratingNorm = resource.rating / 5;
+    const prefFit = preferenceFit(resource, ctx.modalityPreference);
     const practice = practiceFit(resource);
 
     const score =
@@ -132,6 +146,7 @@ export function rankResources(candidates: CandidateResource[], ctx: RankingConte
       weights.difficultyFit * diffFit +
       weights.interestOverlap * interest +
       weights.rating * ratingNorm +
+      weights.preferenceFit * prefFit +
       (ctx.practiceBias ?? 0) * practice;
 
     return {
@@ -143,6 +158,7 @@ export function rankResources(candidates: CandidateResource[], ctx: RankingConte
         difficultyFit: diffFit,
         interestOverlap: interest,
         ratingNorm,
+        preferenceFit: prefFit,
         practiceFit: practice,
       },
     };

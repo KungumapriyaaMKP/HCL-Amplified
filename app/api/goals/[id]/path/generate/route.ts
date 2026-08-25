@@ -2,12 +2,12 @@ import { NextResponse } from "next/server";
 import { requireUser } from "@/lib/auth";
 import { withErrorHandling, jsonError } from "@/lib/apiHelpers";
 import { db } from "@/lib/db";
-import { goals, learningPaths, pathModules } from "@/db/schema";
+import { goals, learningPaths, pathModules, profiles } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
 import { computeGap, resolveGoalSkills } from "@/lib/skillGraph";
 import { getMasteryMap } from "@/lib/adapt";
 import { getCandidatePool } from "@/lib/catalog";
-import { bestResourceForSkill, CRASH_COURSE_PRACTICE_BIAS } from "@/lib/recommend";
+import { bestResourceForSkill, CRASH_COURSE_PRACTICE_BIAS, type ScoredResource } from "@/lib/recommend";
 import { isProgrammingSkill, languageForSkill } from "@/data/programmingSkills";
 import { SKILLS_BY_ID } from "@/data/skills";
 import { DOMAINS } from "@/data/domains";
@@ -23,8 +23,9 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
     const [goal] = await db.select().from(goals).where(and(eq(goals.id, id), eq(goals.userId, user.id)));
     if (!goal) return jsonError("Not found", 404);
 
-    const subFocus = (goal.subFocus ?? {}) as { tags?: string[] };
-    const goalSkillIds = resolveGoalSkills(goal.domain, goal.goalText, subFocus.tags ?? []);
+    const subFocus = (goal.subFocus ?? {}) as { tags?: string[]; mappedSkillIds?: string[] };
+    const mappedIds = (subFocus.mappedSkillIds ?? []).filter((sId) => SKILLS_BY_ID.has(sId));
+    const goalSkillIds = mappedIds.length > 0 ? mappedIds : resolveGoalSkills(goal.domain, goal.goalText, subFocus.tags ?? []);
 
     const mastery = await getMasteryMap(user.id);
     const gapSkills = computeGap(goalSkillIds, mastery);
@@ -43,6 +44,8 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
     );
 
     const pool = await getCandidatePool();
+    const [profile] = await db.select().from(profiles).where(eq(profiles.userId, user.id));
+    const modalityPreference = (profile?.preferenceScores ?? {}) as Record<string, number>;
     const difficultyBias = (goal.preferences as { difficultyBias?: number } | null)?.difficultyBias ?? 0;
     // Interview Crash Course: bias resource selection toward hands-on
     // projects/assessments over long-form courses - see practiceFit() in
@@ -54,7 +57,14 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
 
     const domainName = DOMAINS.find((d) => d.id === goal.domain)?.name ?? goal.domain;
     const priorNames: string[] = [];
-    const createdModules: { order: number; skillId: string; skillName: string; resourceTitle: string; resourceType: string }[] = [];
+    const createdModules: {
+      order: number;
+      skillId: string;
+      skillName: string;
+      resourceTitle: string;
+      resourceType: string;
+      scoreBreakdown: ScoredResource["scoreBreakdown"];
+    }[] = [];
 
     for (let i = 0; i < gapSkills.length; i++) {
       const skillId = gapSkills[i];
@@ -67,6 +77,7 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
         interestSkillIds: goalSkillIds,
         difficultyBias,
         practiceBias,
+        modalityPreference,
       });
       if (!best) continue;
 
@@ -83,7 +94,14 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
         programmingLanguage: languageForSkill(skillId),
       });
 
-      createdModules.push({ order: i, skillId, skillName: skill.name, resourceTitle: best.title, resourceType: best.type });
+      createdModules.push({
+        order: i,
+        skillId,
+        skillName: skill.name,
+        resourceTitle: best.title,
+        resourceType: best.type,
+        scoreBreakdown: best.scoreBreakdown,
+      });
       priorNames.push(skill.name);
     }
 
@@ -102,6 +120,7 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
             isFirstModule: idx === 0,
             priorSkillNames: createdModules.slice(0, idx).map((p) => p.skillName),
             trackPace: goal.trackPace,
+            scoreBreakdown: m.scoreBreakdown,
           }),
           { temperature: 0.6, maxTokens: 250 },
         ).catch(() => `Covers "${m.skillName}", a required step toward your goal.`),
