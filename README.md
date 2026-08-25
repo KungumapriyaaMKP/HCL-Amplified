@@ -25,20 +25,25 @@ quizzes and proctored tests.
 
 ## Where the AI/ML actually lives
 
-- **Claude (via OpenRouter)** — `lib/llm.ts` + `lib/prompts.ts`: natural
-  language understanding (goal intake), question generation (diagnostic /
-  practice / proctored), explanation generation (module rationale, proctored
-  reports), and the assistant chat.
-- **Recommendation engine** — `lib/embeddings.ts` + `lib/recommend.ts`: every
-  resource and every learner goal/interest is a dense vector over the
-  skill-id dimension space; resources are ranked by a weighted blend of
-  cosine similarity, prerequisite readiness, difficulty fit, interest
-  overlap, and rating.
-- **Learning intelligence** — `lib/skillGraph.ts` + `lib/adapt.ts`: a real
-  prerequisite DAG (`data/skills.ts`) drives skill-gap analysis (topological
-  sort via Kahn's algorithm) and rule-based dynamic adaptation (remediation on
-  a low proctored score, re-ranking on "too easy/too hard" feedback,
-  prerequisite reinforcement on a strong score).
+- **Claude (via OpenRouter)** — `lib/llm.ts` + `lib/prompts.ts`:
+  - **Conversational Goal Intake & Semantic Mapping**: Guides the learner to scope their goals and matches goals directly to domain leaf target skills (`mappedSkillIds`).
+  - **Grounded Recommendation Explanations**: Generates module rationales strictly constrained to algorithmic numeric score breakdowns (cosine similarity %, prerequisite readiness %, difficulty fit %, quality rating %, modality preference fit %).
+  - **Question Generation**: Dynamic MCQs across diagnostic, practice, and proctored assessment modes.
+  - **Proctored Reports & Assistant Chat**: Analyzes assessment performance and answers path-related questions.
+- **6-Factor Recommendation Engine** — `lib/embeddings.ts` + `lib/recommend.ts`:
+  - Every resource and goal/interest vector lives in a dense dimension space over skill IDs.
+  - Ranks resources with a weighted blend:
+    - Cosine Similarity (`0.35`)
+    - Prerequisite Readiness (`0.15`)
+    - Difficulty Fit (`0.15`)
+    - Interest Overlap (`0.15`)
+    - Resource Quality Rating (`0.10`)
+    - Modality Preference Fit (`0.10`)
+- **Adaptive Intelligence & Behavioral Modeling** — `lib/skillGraph.ts` + `lib/adapt.ts`:
+  - Prerequisite DAG (`data/skills.ts`) powers Kahn's algorithm topological sorting for skill-gap roadmaps.
+  - **Behavioral Event Log & EMA Preference**: Tracks `learning_events` (open, complete, abandon, quiz_submit) and updates modality preferences via Exponential Moving Average (EMA).
+  - **Disengagement Monitoring**: Analyzes inactivity gaps and proactively surfaces motivational re-entry banners when learner gap exceeds $>5$ days.
+  - **Dynamic Path Adaptation**: Remediation module insertion on low proctored scores, difficulty re-ranking on learner feedback, and prerequisite mastery reinforcement on high scores.
 
 ## Setup
 
