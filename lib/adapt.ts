@@ -1,7 +1,7 @@
 import { db } from "@/lib/db";
 import { goals, learningPaths, pathModules, skillMastery, adaptationLog } from "@/db/schema";
 import { and, eq, gt, asc } from "drizzle-orm";
-import { rankResources } from "@/lib/recommend";
+import { rankResources, CRASH_COURSE_PRACTICE_BIAS } from "@/lib/recommend";
 import { getCandidatePool } from "@/lib/catalog";
 import { SKILLS_BY_ID } from "@/data/skills";
 
@@ -53,6 +53,8 @@ export async function onProctoredResult(opts: {
   if (!mod) return;
   const [path] = await db.select().from(learningPaths).where(eq(learningPaths.id, mod.pathId));
   if (!path) return;
+  const [goal] = await db.select().from(goals).where(eq(goals.id, path.goalId));
+  const practiceBias = goal?.trackPace === "crash-course" ? CRASH_COURSE_PRACTICE_BIAS : 0;
 
   await upsertMastery(opts.userId, mod.skillId, opts.score, "proctored");
   await db.update(pathModules).set({ status: "completed" }).where(eq(pathModules.id, mod.id));
@@ -63,7 +65,7 @@ export async function onProctoredResult(opts: {
     const mastery = await getMasteryMap(opts.userId);
     const easier = rankResources(
       pool.filter((r) => (r.skillWeights[mod.skillId] ?? 0) > 0 && r.difficulty !== "advanced"),
-      { targetSkillId: mod.skillId, masteryBySkill: mastery, interestSkillIds: [], difficultyBias: -1 },
+      { targetSkillId: mod.skillId, masteryBySkill: mastery, interestSkillIds: [], difficultyBias: -1, practiceBias },
     )[0];
 
     if (easier) {
@@ -154,12 +156,13 @@ export async function onDifficultyFeedback(opts: {
 
   const pool = await getCandidatePool();
   const mastery = await getMasteryMap(opts.userId);
+  const practiceBias = goal.trackPace === "crash-course" ? CRASH_COURSE_PRACTICE_BIAS : 0;
   let swapped = 0;
 
   for (const mod of upcoming) {
     const best = rankResources(
       pool.filter((r) => (r.skillWeights[mod.skillId] ?? 0) > 0),
-      { targetSkillId: mod.skillId, masteryBySkill: mastery, interestSkillIds: [], difficultyBias: newBias },
+      { targetSkillId: mod.skillId, masteryBySkill: mastery, interestSkillIds: [], difficultyBias: newBias, practiceBias },
     )[0];
     if (best && best.id !== mod.resourceId) {
       await db.update(pathModules).set({ resourceId: best.id }).where(eq(pathModules.id, mod.id));

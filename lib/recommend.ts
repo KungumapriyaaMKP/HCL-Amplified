@@ -19,6 +19,7 @@ export type RankingContext = {
   masteryBySkill: Map<string, number>;
   interestSkillIds: string[]; // skills implied by the learner's stated interests/sub-focus
   difficultyBias: number; // -1 (prefer easier) .. 1 (prefer harder), 0 = neutral
+  practiceBias?: number; // 0 (neutral, default) .. 1 (strongly prefer hands-on project/assessment resources over long-form courses) - set for the "Interview Crash Course" track pace
 };
 
 const DIFFICULTY_INDEX: Record<CandidateResource["difficulty"], number> = {
@@ -74,9 +75,31 @@ function interestOverlap(resource: CandidateResource, interestSkillIds: string[]
   return Math.min(1, overlap / Math.max(1, interestSkillIds.length));
 }
 
+/** practiceBias value used whenever a goal's track pace is "crash-course" -
+ * shared by path generation and the adaptation engine so remediation/
+ * acceleration re-ranks stay consistent with how the path was first built. */
+export const CRASH_COURSE_PRACTICE_BIAS = 0.45;
+
+/** How hands-on/practice-oriented a resource is: 1 for a project or
+ * assessment, 0.5 for an article, 0 for a full course. Only pulled into the
+ * final score when `practiceBias` is non-zero (crash-course pace) - at
+ * practiceBias 0 this dimension has no effect on the default ranking. */
+function practiceFit(resource: CandidateResource): number {
+  if (resource.type === "project" || resource.type === "assessment") return 1;
+  if (resource.type === "article") return 0.5;
+  return 0; // "course"
+}
+
 export type ScoredResource = CandidateResource & {
   score: number;
-  scoreBreakdown: { cosineSim: number; prereqReadiness: number; difficultyFit: number; interestOverlap: number; ratingNorm: number };
+  scoreBreakdown: {
+    cosineSim: number;
+    prereqReadiness: number;
+    difficultyFit: number;
+    interestOverlap: number;
+    ratingNorm: number;
+    practiceFit: number;
+  };
 };
 
 /**
@@ -101,18 +124,27 @@ export function rankResources(candidates: CandidateResource[], ctx: RankingConte
     const diffFit = difficultyFit(resource, ctx.targetSkillId, ctx.masteryBySkill, ctx.difficultyBias);
     const interest = interestOverlap(resource, ctx.interestSkillIds);
     const ratingNorm = resource.rating / 5;
+    const practice = practiceFit(resource);
 
     const score =
       weights.cosineSim * cosineSim +
       weights.prereqReadiness * prereq +
       weights.difficultyFit * diffFit +
       weights.interestOverlap * interest +
-      weights.rating * ratingNorm;
+      weights.rating * ratingNorm +
+      (ctx.practiceBias ?? 0) * practice;
 
     return {
       ...resource,
       score,
-      scoreBreakdown: { cosineSim, prereqReadiness: prereq, difficultyFit: diffFit, interestOverlap: interest, ratingNorm },
+      scoreBreakdown: {
+        cosineSim,
+        prereqReadiness: prereq,
+        difficultyFit: diffFit,
+        interestOverlap: interest,
+        ratingNorm,
+        practiceFit: practice,
+      },
     };
   });
 

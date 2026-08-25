@@ -66,12 +66,15 @@ export function moduleRationaleMessages(opts: {
   domain: string;
   isFirstModule: boolean;
   priorSkillNames: string[];
+  trackPace?: string;
 }): ChatMessage[] {
+  const crashCourse = opts.trackPace === "crash-course";
   const system = `You write short, specific explanations for why a learning-path recommendation engine picked a resource. Be concrete about the reasoning (skill-gap, prerequisites, ranking), never generic filler like "this will help you learn."
 
 Goal: "${opts.goalText}" (domain: ${opts.domain}).
 This module teaches: "${opts.skillName}", via the ${opts.resourceType} "${opts.resourceTitle}".
 ${opts.isFirstModule ? "This is the very first module in the path." : `It comes after the learner has covered: ${opts.priorSkillNames.join(", ")}.`}
+${crashCourse ? "The learner picked the Interview Crash Course pace - they have an upcoming interview and chose hands-on practice over long-form courses wherever possible. Frame the rationale around interview relevance and getting practice reps in fast." : ""}
 
 Write a 2-3 sentence rationale, second person ("you"), explaining why this specific skill and resource were chosen now, referencing the prerequisite chain or the goal directly. Respond with ONLY plain text, no JSON, no markdown.`;
 

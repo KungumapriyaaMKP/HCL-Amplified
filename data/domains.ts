@@ -13,6 +13,12 @@ export const TRACK_PACES = [
   { id: "fast", name: "Fast Track", hoursPerWeek: 12, description: "Move quickly, dense modules" },
   { id: "balanced", name: "Balanced", hoursPerWeek: 6, description: "Steady, sustainable pace" },
   { id: "relaxed", name: "Relaxed", hoursPerWeek: 3, description: "Low pressure, longer runway" },
+  {
+    id: "crash-course",
+    name: "Interview Crash Course",
+    hoursPerWeek: 20,
+    description: "Compressed, practice-heavy prep for an upcoming interview",
+  },
 ] as const;
 
 export type TrackPaceId = (typeof TRACK_PACES)[number]["id"];

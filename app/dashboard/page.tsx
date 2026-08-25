@@ -5,6 +5,7 @@ import { GamificationHeader } from "@/components/dashboard/GamificationHeader";
 import { GoalCard } from "@/components/dashboard/GoalCard";
 import { MasteryChart } from "@/components/dashboard/MasteryChart";
 import { AdaptationFeed } from "@/components/dashboard/AdaptationFeed";
+import { ReminderBanner } from "@/components/dashboard/ReminderBanner";
 import { LinkButton } from "@/components/ui/Button";
 
 export default async function DashboardPage() {
@@ -22,6 +23,8 @@ export default async function DashboardPage() {
           </div>
           <LinkButton href="/goals/new">+ New goal</LinkButton>
         </div>
+
+        <ReminderBanner goals={data.goals} streak={data.gamification.streak} />
 
         <div className="mb-6">
           <GamificationHeader gamification={data.gamification} />

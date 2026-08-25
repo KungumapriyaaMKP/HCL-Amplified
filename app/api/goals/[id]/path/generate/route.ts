@@ -7,7 +7,7 @@ import { and, eq } from "drizzle-orm";
 import { computeGap, resolveGoalSkills } from "@/lib/skillGraph";
 import { getMasteryMap } from "@/lib/adapt";
 import { getCandidatePool } from "@/lib/catalog";
-import { bestResourceForSkill } from "@/lib/recommend";
+import { bestResourceForSkill, CRASH_COURSE_PRACTICE_BIAS } from "@/lib/recommend";
 import { isProgrammingSkill, languageForSkill } from "@/data/programmingSkills";
 import { SKILLS_BY_ID } from "@/data/skills";
 import { DOMAINS } from "@/data/domains";
@@ -44,6 +44,10 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
 
     const pool = await getCandidatePool();
     const difficultyBias = (goal.preferences as { difficultyBias?: number } | null)?.difficultyBias ?? 0;
+    // Interview Crash Course: bias resource selection toward hands-on
+    // projects/assessments over long-form courses - see practiceFit() in
+    // lib/recommend.ts. Every other pace leaves this at 0 (no behavior change).
+    const practiceBias = goal.trackPace === "crash-course" ? CRASH_COURSE_PRACTICE_BIAS : 0;
     const goalSkillSet = new Set(goalSkillIds);
 
     const [path] = await db.insert(learningPaths).values({ goalId: id, status: "active" }).returning();
@@ -62,6 +66,7 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
         masteryBySkill: mastery,
         interestSkillIds: goalSkillIds,
         difficultyBias,
+        practiceBias,
       });
       if (!best) continue;
 
@@ -96,6 +101,7 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
             domain: domainName,
             isFirstModule: idx === 0,
             priorSkillNames: createdModules.slice(0, idx).map((p) => p.skillName),
+            trackPace: goal.trackPace,
           }),
           { temperature: 0.6, maxTokens: 250 },
         ).catch(() => `Covers "${m.skillName}", a required step toward your goal.`),
