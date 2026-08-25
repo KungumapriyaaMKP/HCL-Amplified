@@ -67,16 +67,34 @@ export function moduleRationaleMessages(opts: {
   isFirstModule: boolean;
   priorSkillNames: string[];
   trackPace?: string;
+  currentMastery: number;
+  scoreBreakdown: {
+    cosineSim: number;
+    prereqReadiness: number;
+    difficultyFit: number;
+    interestOverlap: number;
+    ratingNorm: number;
+    keywordOverlap: number;
+  };
 }): ChatMessage[] {
   const crashCourse = opts.trackPace === "crash-course";
-  const system = `You write short, specific explanations for why a learning-path recommendation engine picked a resource. Be concrete about the reasoning (skill-gap, prerequisites, ranking), never generic filler like "this will help you learn."
+  const s = opts.scoreBreakdown;
+  const system = `You write short, specific explanations for why a learning-path recommendation engine picked a resource. This is a score-grounded explainer: the numbers below are the engine's REAL output for this pick, not something to invent. Reference the actual numbers/facts that best support the choice - you don't need to cite every one, pick whichever are most telling - and never write generic filler like "this will help you learn."
 
 Goal: "${opts.goalText}" (domain: ${opts.domain}).
 This module teaches: "${opts.skillName}", via the ${opts.resourceType} "${opts.resourceTitle}".
 ${opts.isFirstModule ? "This is the very first module in the path." : `It comes after the learner has covered: ${opts.priorSkillNames.join(", ")}.`}
+
+Real numbers behind this pick (0-100 scale):
+- Current mastery in "${opts.skillName}": ${opts.currentMastery}% (the skill-gap this module closes)
+- Prerequisite readiness: ${Math.round(s.prereqReadiness * 100)}% (how ready the learner is, based on prerequisite mastery)
+- Skill-tag match (embedding cosine similarity): ${Math.round(s.cosineSim * 100)}%
+- Keyword match to the learner's own goal wording: ${Math.round(s.keywordOverlap * 100)}%
+- Difficulty fit for where they are right now: ${Math.round(s.difficultyFit * 100)}%
+- Resource rating: ${Math.round(s.ratingNorm * 100)}%
 ${crashCourse ? "The learner picked the Interview Crash Course pace - they have an upcoming interview and chose hands-on practice over long-form courses wherever possible. Frame the rationale around interview relevance and getting practice reps in fast." : ""}
 
-Write a 2-3 sentence rationale, second person ("you"), explaining why this specific skill and resource were chosen now, referencing the prerequisite chain or the goal directly. Respond with ONLY plain text, no JSON, no markdown.`;
+Write a 2-3 sentence rationale, second person ("you"), weaving in the specific numbers that matter most for this pick rather than reasoning abstractly. Respond with ONLY plain text, no JSON, no markdown.`;
 
   return [{ role: "system", content: system }];
 }

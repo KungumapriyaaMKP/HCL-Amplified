@@ -4,6 +4,7 @@ import { SKILLS_BY_ID } from "@/data/skills";
 export type CandidateResource = {
   id: string;
   title: string;
+  description: string;
   type: string;
   provider: string;
   source: string;
@@ -20,6 +21,7 @@ export type RankingContext = {
   interestSkillIds: string[]; // skills implied by the learner's stated interests/sub-focus
   difficultyBias: number; // -1 (prefer easier) .. 1 (prefer harder), 0 = neutral
   practiceBias?: number; // 0 (neutral, default) .. 1 (strongly prefer hands-on project/assessment resources over long-form courses) - set for the "Interview Crash Course" track pace
+  goalText?: string; // the learner's own free-text goal - drives the keyword side of hybrid retrieval below
 };
 
 const DIFFICULTY_INDEX: Record<CandidateResource["difficulty"], number> = {
@@ -68,6 +70,37 @@ function difficultyFit(
   return 1 - distance;
 }
 
+const STOPWORDS = new Set([
+  "want", "goal", "learn", "learning", "become", "with", "that", "this", "into", "about", "from", "have", "will",
+  "just", "really", "like", "know", "some", "more", "very", "good", "role", "using",
+]);
+
+function keywords(text: string): Set<string> {
+  return new Set(
+    text
+      .toLowerCase()
+      .split(/\W+/)
+      .filter((w) => w.length > 3 && !STOPWORDS.has(w)),
+  );
+}
+
+/** Hybrid retrieval's keyword side: plain term overlap between the
+ * learner's own goal text and a resource's title/description, independent
+ * of the skill-tag/embedding match above. A resource can rank well on
+ * cosineSim (right skill) but this catches the case where its specific
+ * framing (e.g. "for interviews", "from scratch", a named tool) matches
+ * what the learner actually asked for. Neutral (0.5) when no goal text is
+ * available so it never penalizes callers that don't pass one. */
+function keywordOverlap(resource: CandidateResource, goalText?: string): number {
+  if (!goalText) return 0.5;
+  const goalWords = keywords(goalText);
+  if (goalWords.size === 0) return 0.5;
+  const resourceWords = keywords(`${resource.title} ${resource.description}`);
+  let hits = 0;
+  for (const w of resourceWords) if (goalWords.has(w)) hits++;
+  return Math.min(1, hits / 3);
+}
+
 function interestOverlap(resource: CandidateResource, interestSkillIds: string[]): number {
   if (interestSkillIds.length === 0) return 0.5; // neutral when we don't know interests yet
   const resourceSkills = Object.keys(resource.skillWeights);
@@ -99,15 +132,17 @@ export type ScoredResource = CandidateResource & {
     interestOverlap: number;
     ratingNorm: number;
     practiceFit: number;
+    keywordOverlap: number;
   };
 };
 
 /**
- * Content-based recommendation with weighted ranking: blends embedding
- * cosine similarity with prerequisite readiness, difficulty fit, interest
- * overlap and rating into a single score. This is what actually orders
- * resources within a path module, and what the adaptation engine re-runs
- * after feedback changes `difficultyBias`.
+ * Hybrid content-based recommendation with weighted ranking: blends
+ * embedding cosine similarity (semantic - skill-tag vectors) with plain
+ * keyword overlap against the learner's own goal text, prerequisite
+ * readiness, difficulty fit, interest overlap and rating into a single
+ * score. This is what actually orders resources within a path module, and
+ * what the adaptation engine re-runs after feedback changes `difficultyBias`.
  */
 export function rankResources(candidates: CandidateResource[], ctx: RankingContext): ScoredResource[] {
   const targetVector = skillVector({
@@ -115,7 +150,14 @@ export function rankResources(candidates: CandidateResource[], ctx: RankingConte
     ...Object.fromEntries(ctx.interestSkillIds.map((id) => [id, 0.3])),
   });
 
-  const weights = { cosineSim: 0.4, prereqReadiness: 0.15, difficultyFit: 0.15, interestOverlap: 0.15, rating: 0.15 };
+  const weights = {
+    cosineSim: 0.35,
+    prereqReadiness: 0.15,
+    difficultyFit: 0.15,
+    interestOverlap: 0.1,
+    rating: 0.15,
+    keyword: 0.1,
+  };
 
   const scored = candidates.map((resource) => {
     const resourceVector = skillVector(resource.skillWeights);
@@ -125,6 +167,7 @@ export function rankResources(candidates: CandidateResource[], ctx: RankingConte
     const interest = interestOverlap(resource, ctx.interestSkillIds);
     const ratingNorm = resource.rating / 5;
     const practice = practiceFit(resource);
+    const keyword = keywordOverlap(resource, ctx.goalText);
 
     const score =
       weights.cosineSim * cosineSim +
@@ -132,6 +175,7 @@ export function rankResources(candidates: CandidateResource[], ctx: RankingConte
       weights.difficultyFit * diffFit +
       weights.interestOverlap * interest +
       weights.rating * ratingNorm +
+      weights.keyword * keyword +
       (ctx.practiceBias ?? 0) * practice;
 
     return {
@@ -144,6 +188,7 @@ export function rankResources(candidates: CandidateResource[], ctx: RankingConte
         interestOverlap: interest,
         ratingNorm,
         practiceFit: practice,
+        keywordOverlap: keyword,
       },
     };
   });

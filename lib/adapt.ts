@@ -4,6 +4,8 @@ import { and, eq, gt, asc } from "drizzle-orm";
 import { rankResources, CRASH_COURSE_PRACTICE_BIAS } from "@/lib/recommend";
 import { getCandidatePool } from "@/lib/catalog";
 import { SKILLS_BY_ID } from "@/data/skills";
+import { relatedSkills } from "@/lib/skillGraph";
+import { isProgrammingSkill, languageForSkill } from "@/data/programmingSkills";
 
 export async function getMasteryMap(userId: string): Promise<Map<string, number>> {
   const rows = await db.select().from(skillMastery).where(eq(skillMastery.userId, userId));
@@ -63,18 +65,61 @@ export async function onProctoredResult(opts: {
     const skill = SKILLS_BY_ID.get(mod.skillId);
     const pool = await getCandidatePool();
     const mastery = await getMasteryMap(opts.userId);
-    const easier = rankResources(
-      pool.filter((r) => (r.skillWeights[mod.skillId] ?? 0) > 0 && r.difficulty !== "advanced"),
-      { targetSkillId: mod.skillId, masteryBySkill: mastery, interestSkillIds: [], difficultyBias: -1, practiceBias },
-    )[0];
+    const rankBase = { masteryBySkill: mastery, interestSkillIds: [], difficultyBias: -1, practiceBias, goalText: goal?.goalText };
 
-    if (easier) {
+    // Stuck-detector: has this exact skill already had a remediation module
+    // inserted before? If so, another easier resource for the *same* skill
+    // is very unlikely to be a different pick - that's the prerequisite
+    // graph dead-ending. Skip straight to the similarity-graph reroute.
+    const priorRemediation = await db
+      .select()
+      .from(pathModules)
+      .where(
+        and(
+          eq(pathModules.pathId, mod.pathId),
+          eq(pathModules.skillId, mod.skillId),
+          eq(pathModules.milestoneType, "remediation"),
+        ),
+      );
+    const stuck = priorRemediation.length > 0;
+
+    let insertSkillId = mod.skillId;
+    let insertResource = stuck
+      ? null
+      : rankResources(
+          pool.filter((r) => (r.skillWeights[mod.skillId] ?? 0) > 0 && r.difficulty !== "advanced"),
+          { ...rankBase, targetSkillId: mod.skillId },
+        )[0] ?? null;
+
+    // Dual-graph reroute: the prerequisite graph alone dead-ended (no easier
+    // resource for this skill, or the learner is stuck on it) - cross over
+    // to the similarity graph (lib/skillGraph.ts: relatedSkills) and route
+    // through the closest topically-related skill that has a beginner-
+    // friendly resource, instead of leaving the path stuck.
+    let viaRelatedSkill: string | null = null;
+    if (!insertResource) {
+      for (const relId of relatedSkills(mod.skillId, new Set([mod.skillId]))) {
+        const rel = rankResources(
+          pool.filter((r) => (r.skillWeights[relId] ?? 0) > 0 && r.difficulty !== "advanced"),
+          { ...rankBase, targetSkillId: relId },
+        )[0];
+        if (rel) {
+          insertResource = rel;
+          insertSkillId = relId;
+          viaRelatedSkill = relId;
+          break;
+        }
+      }
+    }
+
+    if (insertResource) {
       // Shift every later module up by one slot and insert the remedial one
       // right after the failed module, before the path continues. This is
       // several dependent writes (N order shifts + 1 insert) - wrapped in a
       // transaction so a dropped connection partway through can't leave two
       // modules sharing an order value instead of either fully applying or
       // fully rolling back.
+      const relatedSkillName = viaRelatedSkill ? SKILLS_BY_ID.get(viaRelatedSkill)?.name : null;
       await db.transaction(async (tx) => {
         const later = await tx
           .select()
@@ -87,11 +132,15 @@ export async function onProctoredResult(opts: {
         await tx.insert(pathModules).values({
           pathId: mod.pathId,
           order: mod.order + 1,
-          skillId: mod.skillId,
-          resourceId: easier.id,
+          skillId: insertSkillId,
+          resourceId: insertResource.id,
           status: "available",
           milestoneType: "remediation",
-          rationale: `Inserted after a low proctored score (${opts.score}/100) on ${skill?.name ?? mod.skillId} to reinforce this skill before continuing.`,
+          isProgramming: isProgrammingSkill(insertSkillId),
+          programmingLanguage: languageForSkill(insertSkillId),
+          rationale: viaRelatedSkill
+            ? `You've struggled with ${skill?.name ?? mod.skillId} more than once, so rather than repeat it directly, this reroutes through the related concept "${relatedSkillName}" - a different angle on the same underlying gap.`
+            : `Inserted after a low proctored score (${opts.score}/100) on ${skill?.name ?? mod.skillId} to reinforce this skill before continuing.`,
         });
       });
     }
@@ -100,8 +149,10 @@ export async function onProctoredResult(opts: {
       opts.userId,
       path.goalId,
       "low_proctored_score",
-      "insert_remedial_module",
-      `Scored ${opts.score}/100 on ${skill?.name ?? mod.skillId}; inserted a remedial module before continuing.`,
+      viaRelatedSkill ? "reroute_related_skill" : "insert_remedial_module",
+      viaRelatedSkill
+        ? `Scored ${opts.score}/100 on ${skill?.name ?? mod.skillId} again after remediation; rerouted through the related skill "${SKILLS_BY_ID.get(viaRelatedSkill)?.name}" via the similarity graph instead of repeating a dead end.`
+        : `Scored ${opts.score}/100 on ${skill?.name ?? mod.skillId}; inserted a remedial module before continuing.`,
     );
   } else {
     await unlockNextModule(mod.pathId, mod.order);
@@ -162,10 +213,20 @@ export async function onDifficultyFeedback(opts: {
   for (const mod of upcoming) {
     const best = rankResources(
       pool.filter((r) => (r.skillWeights[mod.skillId] ?? 0) > 0),
-      { targetSkillId: mod.skillId, masteryBySkill: mastery, interestSkillIds: [], difficultyBias: newBias, practiceBias },
+      { targetSkillId: mod.skillId, masteryBySkill: mastery, interestSkillIds: [], difficultyBias: newBias, practiceBias, goalText: goal.goalText },
     )[0];
     if (best && best.id !== mod.resourceId) {
-      await db.update(pathModules).set({ resourceId: best.id }).where(eq(pathModules.id, mod.id));
+      // Swapping the resource without touching the rationale would leave
+      // stale text describing the old pick - replace it with a short,
+      // score-grounded note (no extra LLM call needed; the numbers are
+      // already on hand from this exact re-rank).
+      await db
+        .update(pathModules)
+        .set({
+          resourceId: best.id,
+          rationale: `Re-ranked after you said a module felt "${opts.feedback}": swapped in "${best.title}" (difficulty fit ${Math.round(best.scoreBreakdown.difficultyFit * 100)}%, up from the previous pick) to better match your preference.`,
+        })
+        .where(eq(pathModules.id, mod.id));
       swapped++;
     }
   }

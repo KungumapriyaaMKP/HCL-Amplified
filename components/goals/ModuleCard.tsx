@@ -35,7 +35,12 @@ export function ModuleCard({ item, goalId }: { item: GoalDetail["modules"][numbe
         </div>
         <Badge tone={status.tone}>{status.label}</Badge>
       </div>
-      {item.module.rationale && <p className="mt-3 text-sm text-foreground/85">{item.module.rationale}</p>}
+      {item.module.rationale && (
+        <p className="mt-3 line-clamp-1 text-sm text-muted">
+          {item.module.rationale}
+          {clickable && <span className="ml-1 text-accent">View details →</span>}
+        </p>
+      )}
     </Card>
   );
 

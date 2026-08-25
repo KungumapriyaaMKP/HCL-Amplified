@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { requireUser } from "@/lib/auth";
 import { getGoalDetail } from "@/lib/goalData";
 import { db } from "@/lib/db";
@@ -33,7 +34,12 @@ export default async function GoalPage({ params }: { params: Promise<{ id: strin
     <div>
       <Nav displayName={profile?.displayName} />
       <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
-        <p className="text-xs text-muted">{domain?.icon} {domain?.name}</p>
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-xs text-muted">{domain?.icon} {domain?.name}</p>
+          <Link href={`/goals/${id}/graph`} className="text-xs font-medium text-accent hover:underline">
+            View skill graph →
+          </Link>
+        </div>
         <h1 className="mb-4 text-2xl font-semibold">{detail.goal.goalText}</h1>
         <Card className="mb-8 p-4">
           <div className="mb-1 flex justify-between text-xs text-muted">

@@ -14,7 +14,8 @@ config({ path: ".env.local" });
 import postgres from "postgres";
 import { patchDnsLookupFor } from "@/lib/dnsPatch";
 
-patchDnsLookupFor(new URL(process.env.DATABASE_URL!).hostname);
+const DDL_URL = process.env.DIRECT_DATABASE_URL || process.env.DATABASE_URL!;
+patchDnsLookupFor(new URL(DDL_URL).hostname);
 
 const TABLES = [
   "profiles",
@@ -39,7 +40,7 @@ const TABLES = [
 ];
 
 async function main() {
-  const sql = postgres(process.env.DATABASE_URL!, { prepare: false });
+  const sql = postgres(DDL_URL, { prepare: false });
   for (const table of TABLES) {
     await sql.unsafe(`ALTER TABLE "${table}" ENABLE ROW LEVEL SECURITY;`);
     console.log(`RLS enabled on ${table}`);

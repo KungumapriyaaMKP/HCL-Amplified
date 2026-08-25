@@ -11,6 +11,7 @@ export async function getCandidatePool(): Promise<CandidateResource[]> {
     .select({
       id: resources.id,
       title: resources.title,
+      description: resources.description,
       type: resources.type,
       provider: resources.provider,
       source: resources.source,
@@ -30,6 +31,7 @@ export async function getCandidatePool(): Promise<CandidateResource[]> {
       byId.set(r.id, {
         id: r.id,
         title: r.title,
+        description: r.description,
         type: r.type,
         provider: r.provider,
         source: r.source,

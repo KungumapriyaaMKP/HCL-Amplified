@@ -2,12 +2,12 @@ import { NextResponse } from "next/server";
 import { requireUser } from "@/lib/auth";
 import { withErrorHandling, jsonError } from "@/lib/apiHelpers";
 import { db } from "@/lib/db";
-import { goals, learningPaths, pathModules } from "@/db/schema";
+import { goals, learningPaths, pathModules, adaptationLog } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
 import { computeGap, resolveGoalSkills } from "@/lib/skillGraph";
 import { getMasteryMap } from "@/lib/adapt";
 import { getCandidatePool } from "@/lib/catalog";
-import { bestResourceForSkill, CRASH_COURSE_PRACTICE_BIAS } from "@/lib/recommend";
+import { bestResourceForSkill, CRASH_COURSE_PRACTICE_BIAS, type ScoredResource } from "@/lib/recommend";
 import { isProgrammingSkill, languageForSkill } from "@/data/programmingSkills";
 import { SKILLS_BY_ID } from "@/data/skills";
 import { DOMAINS } from "@/data/domains";
@@ -53,22 +53,45 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
     const [path] = await db.insert(learningPaths).values({ goalId: id, status: "active" }).returning();
 
     const domainName = DOMAINS.find((d) => d.id === goal.domain)?.name ?? goal.domain;
-    const priorNames: string[] = [];
-    const createdModules: { order: number; skillId: string; skillName: string; resourceTitle: string; resourceType: string }[] = [];
+    const createdModules: {
+      order: number;
+      skillId: string;
+      skillName: string;
+      resourceTitle: string;
+      resourceType: string;
+      mastery: number;
+      scoreBreakdown: ScoredResource["scoreBreakdown"];
+    }[] = [];
+    let validatorNote: string | null = null;
 
     for (let i = 0; i < gapSkills.length; i++) {
       const skillId = gapSkills[i];
       const skill = SKILLS_BY_ID.get(skillId);
       if (!skill) continue;
 
-      const best = bestResourceForSkill(pool, {
+      const rankCtx = {
         targetSkillId: skillId,
         masteryBySkill: mastery,
         interestSkillIds: goalSkillIds,
         difficultyBias,
         practiceBias,
-      });
+        goalText: goal.goalText,
+      };
+      let best = bestResourceForSkill(pool, rankCtx);
       if (!best) continue;
+
+      // Validator pass (pacing/difficulty check, run before the path is ever
+      // shown): opening the whole path on an advanced resource for a skill
+      // the learner has zero mastery in is a pacing mistake even if it's
+      // technically the top-ranked match - soften it by re-ranking with a
+      // forced preference for easier material.
+      if (i < 2 && best.difficulty === "advanced" && (mastery.get(skillId) ?? 0) === 0) {
+        const gentler = bestResourceForSkill(pool, { ...rankCtx, difficultyBias: -1 });
+        if (gentler && gentler.id !== best.id) {
+          validatorNote = `Softened the opening difficulty curve: swapped an advanced resource for "${skill.name}" (module ${i + 1}) for an easier one so the path doesn't start too steep.`;
+          best = gentler;
+        }
+      }
 
       const milestoneType = skill.prerequisites.length === 0 ? "foundation" : goalSkillSet.has(skillId) ? "capstone" : "core";
 
@@ -83,13 +106,32 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
         programmingLanguage: languageForSkill(skillId),
       });
 
-      createdModules.push({ order: i, skillId, skillName: skill.name, resourceTitle: best.title, resourceType: best.type });
-      priorNames.push(skill.name);
+      createdModules.push({
+        order: i,
+        skillId,
+        skillName: skill.name,
+        resourceTitle: best.title,
+        resourceType: best.type,
+        mastery: mastery.get(skillId) ?? 0,
+        scoreBreakdown: best.scoreBreakdown,
+      });
+    }
+
+    if (validatorNote) {
+      await db.insert(adaptationLog).values({
+        userId: user.id,
+        goalId: id,
+        trigger: "path_validator",
+        action: "softened_opening_difficulty",
+        reason: validatorNote,
+      });
     }
 
     // Rationale generation is independent per module (each only needs the
     // list of skill names that come before it, not their own generated
-    // text), so run every call concurrently instead of chaining them.
+    // text), so run every call concurrently instead of chaining them. Each
+    // one is grounded in the real ranking numbers (score-grounded explainer)
+    // rather than left for Claude to freely invent a justification.
     const rationales = await Promise.all(
       createdModules.map((m, idx) =>
         chatComplete(
@@ -102,6 +144,8 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
             isFirstModule: idx === 0,
             priorSkillNames: createdModules.slice(0, idx).map((p) => p.skillName),
             trackPace: goal.trackPace,
+            currentMastery: m.mastery,
+            scoreBreakdown: m.scoreBreakdown,
           }),
           { temperature: 0.6, maxTokens: 250 },
         ).catch(() => `Covers "${m.skillName}", a required step toward your goal.`),

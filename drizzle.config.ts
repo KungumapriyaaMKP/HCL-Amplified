@@ -8,6 +8,8 @@ export default defineConfig({
   out: "./drizzle",
   dialect: "postgresql",
   dbCredentials: {
-    url: process.env.DATABASE_URL!,
+    // Migrations need the direct (session-mode) connection, not the
+    // transaction-mode pooler DATABASE_URL the app uses at runtime.
+    url: process.env.DIRECT_DATABASE_URL || process.env.DATABASE_URL!,
   },
 });
