@@ -1,0 +1,34 @@
+# deps
+node_modules/
+.venv/
+venv/
+
+# builds
+.next/
+out/
+dist/
+build/
+
+# secrets -- never commit
+.env
+.env.local
+backend/.env
+
+# python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# large generated catalog data (regenerate via backend/scripts/)
+backend/data/catalog_coursera.jsonl
+
+# os
+.DS_Store
+Thumbs.db
+*.log
+
+# secrets provided out-of-band -- never commit
+API-key.txt
+*key*.txt
+.claude/

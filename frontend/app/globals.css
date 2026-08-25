@@ -1,0 +1,90 @@
+@import "tailwindcss";
+
+/*
+  Pathfinder design tokens.
+  Source of truth: ui_designs/ui_preview.html :root block.
+  Direction: Squarespace luxury minimalism / Swiss precision.
+
+  RULE: no raw hex in components. The accents are SEMANTIC --
+  emerald = mastered, blue = active, amber = at-risk, rose = gap/decayed.
+  Hardcoding a colour breaks the language that makes the DAG readable.
+*/
+@theme {
+  /* ── Surfaces ─────────────────────────────────────────────────────────── */
+  --color-canvas: #ffffff;
+  --color-surface: #f9f9fb;
+  --color-card: #ffffff;
+
+  /* Elevation is a 1px border, never a shadow. */
+  --color-border: #eaeaea;
+  --color-border-hover: #d1d5db;
+
+  /* ── Type ─────────────────────────────────────────────────────────────── */
+  --color-ink: #0b0b0c;
+  --color-ink-muted: #6b7280;
+  --color-ink-subtle: #9ca3af;
+
+  /* ── The one signature action ─────────────────────────────────────────── */
+  --color-pill: #000000;
+  --color-pill-ink: #ffffff;
+
+  /* ── Semantic status + tint pairs ─────────────────────────────────────── */
+  --color-mastered: #10b981;
+  --color-mastered-bg: #ecfdf5;
+  --color-active: #2563eb;
+  --color-active-bg: #eff6ff;
+  --color-at-risk: #f59e0b;
+  --color-at-risk-bg: #fffbeb;
+  --color-gap: #ef4444;
+  --color-gap-bg: #fef2f2;
+
+  /* ── The single inversion: the Poincare panel (plan 4.5) ──────────────── */
+  --color-obsidian: #0b0b0c;
+  --color-obsidian-ink: #f4f4f5;
+  --color-geodesic: #38bdf8;
+
+  /* ── Type scale ───────────────────────────────────────────────────────── */
+  --font-display: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-jb), ui-monospace, monospace;
+
+  --radius-pill: 9999px;
+  --radius-card: 12px;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+::selection {
+  background: var(--color-pill);
+  color: var(--color-pill-ink);
+}
+
+/* Visible focus is not optional -- keyboard users need it, and hairline
+   borders on white give almost no default affordance. */
+:focus-visible {
+  outline: 2px solid var(--color-active);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

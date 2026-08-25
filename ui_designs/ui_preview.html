@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pathfinder — AI Personalized Learning Path Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --canvas: #FFFFFF;
+      --surface: #F9F9FB;
+      --card-bg: #FFFFFF;
+      --border: #EAEAEA;
+      --border-hover: #D1D5DB;
+      --text-main: #0B0B0C;
+      --text-muted: #6B7280;
+      --text-subtle: #9CA3AF;
+      --black-pill: #000000;
+      --emerald: #10B981;
+      --emerald-bg: #ECFDF5;
+      --blue: #2563EB;
+      --blue-bg: #EFF6FF;
+      --amber: #F59E0B;
+      --amber-bg: #FFFBEB;
+      --rose: #EF4444;
+      --rose-bg: #FEF2F2;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--surface);
+      color: var(--text-main);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Navigation Bar */
+    header.top-nav {
+      background: var(--canvas);
+      border-bottom: 1px solid var(--border);
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand-logo {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      letter-spacing: -0.5px;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+    }
+
+    .nav-tab {
+      background: transparent;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 9999px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .nav-tab:hover {
+      color: var(--text-main);
+      background: var(--surface);
+    }
+
+    .nav-tab.active {
+      background: var(--black-pill);
+      color: #FFFFFF;
+    }
+
+    .user-profile-chip {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-black-pill {
+      background: var(--black-pill);
+      color: #FFFFFF;
+      border: none;
+      padding: 9px 20px;
+      border-radius: 9999px;
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.1s ease, opacity 0.2s ease;
+    }
+
+    .btn-black-pill:hover { opacity: 0.9; }
+    .btn-black-pill:active { transform: scale(0.98); }
+
+    .btn-secondary-pill {
+      background: var(--canvas);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      padding: 8px 18px;
+      border-radius: 9999px;
+      font-size: 13.5px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary-pill:hover {
+      border-color: var(--text-main);
+    }
+
+    /* Container Layout */
+    .app-container {
+      max-width: 1280px;
+      margin: 32px auto;
+      padding: 0 32px;
+    }
+
+    .view-panel { display: none; }
+    .view-panel.active-view { display: block; animation: fadeIn 0.3s ease; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Cards & Grids */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      border-color: var(--border-hover);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+    /* Typography Utilities */
+    h1.display-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.8px;
+      margin-bottom: 8px;
+    }
+
+    h2.section-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+      margin-bottom: 16px;
+    }
+
+    .text-muted { color: var(--text-muted); }
+    .text-sm { font-size: 13.5px; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* Badges & Chips */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-emerald { background: var(--emerald-bg); color: var(--emerald); }
+    .badge-blue { background: var(--blue-bg); color: var(--blue); }
+    .badge-amber { background: var(--amber-bg); color: var(--amber); }
+    .badge-rose { background: var(--rose-bg); color: var(--rose); }
+
+    /* DAG Phase Matrix */
+    .phase-column {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .phase-header {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .dag-node-card {
+      background: var(--canvas);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .dag-node-card:hover {
+      border-color: var(--text-main);
+      transform: translateY(-2px);
+    }
+
+    .dag-node-card.active-node {
+      border: 2px solid var(--black-pill);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <header class="top-nav">
+    <div class="brand-logo">
+      <span>PATHFINDER</span>
+    </div>
+
+    <nav class="nav-tabs">
+      <button class="nav-tab" onclick="switchView('view-intake')">1. Intake & CAT</button>
+      <button class="nav-tab active" onclick="switchView('view-hub')">2. Executive Hub</button>
+      <button class="nav-tab" onclick="switchView('view-dag')">3. Prerequisite DAG</button>
+      <button class="nav-tab" onclick="switchView('view-catalog')">4. Multi-Platform Catalog</button>
+      <button class="nav-tab" onclick="switchView('view-sandbox')">5. Socratic Sandbox</button>
+      <button class="nav-tab" onclick="switchView('view-analytics')">6. Poincaré & Retention</button>
+      <button class="nav-tab" onclick="switchView('view-whatif')">7. What-If Branching</button>
+    </nav>
+
+    <div class="user-profile-chip">
+      <span class="badge badge-emerald">● 2PL-IRT Calibrated (96%)</span>
+      <button class="btn-black-pill">Alex Rivera ▾</button>
+    </div>
+  </header>
+
+  <main class="app-container">
+
+    <!-- VIEW 2: Executive Hub (Master Anchor) -->
+    <section id="view-hub" class="view-panel active-view">
+      <div style="margin-bottom: 24px;">
+        <span class="text-sm text-muted">TARGET CAREER PATH</span>
+        <h1 class="display-title">Machine Learning Engineer</h1>
+      </div>
+
+      <div class="card" style="margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 24px;">
+          <div style="width: 80px; height: 80px; border-radius: 50%; border: 6px solid var(--emerald); display: flex; align-items: center; justify-content: center;">
+            <span style="font-size: 20px; font-weight: 800;">84%</span>
+          </div>
+          <div>
+            <span class="text-sm text-muted">NEXT ACTIVE MILESTONE</span>
+            <h2 style="font-size: 18px; margin: 4px 0;">Coursera: DeepLearning.AI Specialization</h2>
+            <span class="text-sm text-muted">⏱ 32 Hours remaining • Phase 2 Core ML</span>
+          </div>
+        </div>
+        <button class="btn-black-pill" onclick="switchView('view-catalog')">Continue Module →</button>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h2 class="section-title">Poincaré Hyperbolic Geodesic</h2>
+          <p class="text-sm text-muted" style="margin-bottom: 16px;">Curved geodesic distance in hyperbolic disk between current skills centroid and ML Engineer pin.</p>
+          <div style="height: 180px; background: var(--surface); border-radius: 12px; border: 1px dashed var(--border); display: flex; align-items: center; justify-content: center;">
+            <span class="font-mono text-sm">Hyperbolic Distance: d_H = 1.42 • 7 Gaps Remaining</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="section-title">Kahn DAG Milestone Progression</h2>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div style="display: flex; justify-content: space-between; padding: 10px; background: var(--surface); border-radius: 8px;">
+              <span class="text-sm font-medium">Phase 1: Foundations (Math & Python)</span>
+              <span class="badge badge-emerald">✓ Completed</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 10px; background: var(--surface); border-radius: 8px;">
+              <span class="text-sm font-medium">Phase 2: Core Deep Learning & PyTorch</span>
+              <span class="badge badge-blue">⦿ In-Progress</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 10px; background: var(--surface); border-radius: 8px;">
+              <span class="text-sm font-medium">Phase 3: Transformer Attention & LLMs</span>
+              <span class="badge badge-amber">Planned</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 3: Redesigned Prerequisite DAG Matrix -->
+    <section id="view-dag" class="view-panel">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px;">
+        <div>
+          <span class="text-sm text-muted">TOPOLOGICAL ROADMAP SEQUENCER</span>
+          <h1 class="display-title">Prerequisite Knowledge DAG Matrix</h1>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn-secondary-pill">Filter: All Modules</button>
+          <button class="btn-black-pill">Optimize: Fastest Time</button>
+        </div>
+      </div>
+
+      <div class="grid-4" style="margin-bottom: 24px;">
+        <!-- Phase 1 -->
+        <div class="phase-column">
+          <div class="phase-header">Phase 1: Foundations (28h)</div>
+          <div class="dag-node-card">
+            <span class="badge badge-emerald" style="margin-bottom: 6px;">✓ Mastered • 100 XP</span>
+            <div style="font-weight: 600; font-size: 14px;">Linear Algebra</div>
+            <div class="text-sm text-muted">Coursera Stanford</div>
+          </div>
+          <div class="dag-node-card">
+            <span class="badge badge-emerald" style="margin-bottom: 6px;">✓ Mastered • 80 XP</span>
+            <div style="font-weight: 600; font-size: 14px;">Multivariable Calc</div>
+            <div class="text-sm text-muted">3Blue1Brown Lab</div>
+          </div>
+        </div>
+
+        <!-- Phase 2 -->
+        <div class="phase-column">
+          <div class="phase-header">Phase 2: Core ML (42h)</div>
+          <div class="dag-node-card active-node">
+            <span class="badge badge-blue" style="margin-bottom: 6px;">⦿ In-Progress • 150 XP</span>
+            <div style="font-weight: 600; font-size: 14px;">Neural Networks</div>
+            <div class="text-sm text-muted">DeepLearning.AI</div>
+          </div>
+          <div class="dag-node-card">
+            <span class="badge badge-blue" style="margin-bottom: 6px;">⦿ Active • 120 XP</span>
+            <div style="font-weight: 600; font-size: 14px;">PyTorch Tensors</div>
+            <div class="text-sm text-muted">Official PyTorch Docs</div>
+          </div>
+        </div>
+
+        <!-- Phase 3 -->
+        <div class="phase-column">
+          <div class="phase-header">Phase 3: Transformers (48h)</div>
+          <div class="dag-node-card">
+            <span class="badge badge-amber" style="margin-bottom: 6px;">Planned • 200 XP</span>
+            <div style="font-weight: 600; font-size: 14px;">Self-Attention</div>
+            <div class="text-sm text-muted">⏱ 18h • Advanced</div>
+          </div>
+          <div class="dag-node-card">
+            <span class="badge badge-amber" style="margin-bottom: 6px;">Planned • 180 XP</span>
+            <div style="font-weight: 600; font-size: 14px;">Multi-Head Attention</div>
+            <div class="text-sm text-muted">⏱ 14h • Advanced</div>
+          </div>
+        </div>
+
+        <!-- Phase 4 -->
+        <div class="phase-column">
+          <div class="phase-header">Phase 4: MLOps (24h)</div>
+          <div class="dag-node-card">
+            <span class="badge" style="background:#E5E7EB; color:#4B5563; margin-bottom: 6px;">🔒 Locked • 220 XP</span>
+            <div style="font-weight: 600; font-size: 14px;">Model Serving</div>
+            <div class="text-sm text-muted">FastAPI & Docker</div>
+          </div>
+          <div class="dag-node-card">
+            <span class="badge" style="background:#E5E7EB; color:#4B5563; margin-bottom: 6px;">🔒 Locked • 200 XP</span>
+            <div style="font-weight: 600; font-size: 14px;">CI/CD & Cloud</div>
+            <div class="text-sm text-muted">GitHub Actions & AWS</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 4: Redesigned Multi-Platform Catalog -->
+    <section id="view-catalog" class="view-panel">
+      <div style="margin-bottom: 24px;">
+        <span class="text-sm text-muted">ACTIVE MILESTONE DEEP-DIVE</span>
+        <h1 class="display-title">Transformer Self-Attention & LLM Foundations</h1>
+      </div>
+
+      <div class="card" style="margin-bottom: 24px;">
+        <h2 class="section-title">Verified Multi-Platform Educational Catalog</h2>
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          
+          <div style="padding: 16px; border: 1px solid var(--border); border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <span class="badge badge-blue" style="margin-bottom: 4px;">🎓 Coursera Specialization</span>
+              <div style="font-weight: 600; font-size: 16px;">Natural Language Processing with Attention Models</div>
+              <div class="text-sm text-muted">DeepLearning.AI • 4.9 ★ (12,400 reviews) • 18 Hours • Graded Labs</div>
+            </div>
+            <button class="btn-black-pill">Primary Resource ⦿</button>
+          </div>
+
+          <div style="padding: 16px; border: 1px solid var(--border); border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <span class="badge badge-rose" style="margin-bottom: 4px;">📺 YouTube Video Tutorial</span>
+              <div style="font-weight: 600; font-size: 16px;">Visual Breakdown of Attention & Transformers</div>
+              <div class="text-sm text-muted">3Blue1Brown • Free • 45 Mins • High-Clarity Visual Intuition</div>
+            </div>
+            <button class="btn-secondary-pill">Watch Video ↗</button>
+          </div>
+
+          <div style="padding: 16px; border: 1px solid var(--border); border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <span class="badge badge-emerald" style="margin-bottom: 4px;">💻 Official Interactive Docs</span>
+              <div style="font-weight: 600; font-size: 16px;">PyTorch Official MultiheadAttention Tutorial</div>
+              <div class="text-sm text-muted">pytorch.org • Free • 2.5 Hours • Hands-on Coding Sandbox</div>
+            </div>
+            <button class="btn-secondary-pill" onclick="switchView('view-sandbox')">Open Sandbox ↗</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    function switchView(viewId) {
+      document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active-view'));
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      const activePanel = document.getElementById(viewId);
+      if (activePanel) activePanel.classList.add('active-view');
+      const activeTab = Array.from(document.querySelectorAll('.nav-tab')).find(t => t.getAttribute('onclick').includes(viewId));
+      if (activeTab) activeTab.classList.add('active');
+    }
+  </script>
+</body>
+</html>
