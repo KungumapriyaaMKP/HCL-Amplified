@@ -9,7 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Governing documents (source of truth for scope):
 
 - `PROJECT_SPECIFICATION.md` — the 6 graded deliverables and the judging rubric
-- `SYSTEM_DESIGN_BLUEPRINT.md` — subsystem detail. **Note:** its §4.3/§5.1/§5.2 still describe a dark "obsidian glass" theme and a macOS dock. Both were superseded by the Swiss-white mockups in `ui_designs/`; those sections need rewriting before submission.
+- `SYSTEM_DESIGN_BLUEPRINT.md` — subsystem architecture, algorithms, design system. Rewritten to match the implemented plan; §8 is the Swiss-white design direction and §7 the data-provenance rules.
 - `ui_designs/` — 7 page mockups plus `DESIGN_SYSTEM.md` and `ui_preview.html`. **The `:root` block in `ui_preview.html` is the real token source**, not the abbreviated list in `DESIGN_SYSTEM.md`, which omits the `-bg` tint variants.
 - Full build plan, feature tiers and week-by-week schedule: `~/.claude/plans/hi-delightful-dragonfly.md`
 

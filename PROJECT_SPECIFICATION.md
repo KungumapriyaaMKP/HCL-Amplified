@@ -1,175 +1,184 @@
-# Project Instructions & Master Specification
+# Project Specification — Pathfinder
 
-> **Challenge**: HCLTech AMPlified — The AI Challenge (Season 1)  
-> **Phase**: Round 2 (Pathfinder Prototype Phase)  
-> **Track**: AI-Powered Personalized Learning Path Recommender  
-> **Target Alignment**: Next-Generation Adaptive Upskilling & Talent Transformation (e.g., HCLTech Career Shaper™)  
-> **Document Purpose**: Comprehensive Problem Description, Project Goals, Architecture Deliverables, Judging Criteria, Quality Expectations, and Execution Guidelines.
+> **Challenge**: HCLTech AMPlified — The AI Challenge (Season 1)
+> **Track**: AI-Powered Personalized Learning Path Recommender
+> **Target Alignment**: Next-Generation Adaptive Upskilling & Talent Transformation (HCLTech Career Shaper™)
+> **Purpose**: Problem description, the six graded deliverables, the official judging rubric, and how Pathfinder satisfies each.
 
----
-
-## 1. Executive Summary & Problem Description
-
-### 1.1 The Challenge Context
-Modern digital enterprise and educational platforms host tens of thousands of courses, video lectures, coding labs, and assessments across diverse technical and professional domains. While standard catalog search engines can surface individual courses matching broad keywords, learners face severe cognitive overload when attempting to chart an efficient, prerequisite-aware journey toward a target career goal (e.g., *Machine Learning Engineer*, *Cloud Solutions Architect*, or *Full-Stack Developer*).
-
-### 1.2 The Core Problem
-Different learners come with disparate skill baselines, prior learning histories, time commitments, and learning preferences:
-1. **The "Curse of Choice" & Unstructured Catalog Sprawl**: Learners are confronted with flat lists of hundreds of unsequenced resources without clear entry points or progression logic.
-2. **Prerequisite Violations**: Standard recommendation engines lack structural prerequisite understanding, often recommending advanced topics (e.g., Deep Learning) to learners who have not mastered foundational prerequisites (e.g., Linear Algebra, Python data structures).
-3. **Static & Fragile Paths**: Traditional static curricula cannot adapt when a learner struggles with a topic or fails an assessment, resulting in frustration and course abandonment.
-4. **Black-Box & Hallucinated Justifications**: Generative AI chatbots often invent fictitious course titles or provide generic, ungrounded justifications ("This course is great for you!") rather than transparent, metric-grounded explanations.
+> **Companion documents**
+> `SYSTEM_DESIGN_BLUEPRINT.md` — subsystem architecture, algorithms, design system
+> `CLAUDE.md` — engineering conventions and decisions for contributors
+> `ui_designs/` — 7 page mockups and the token source of truth
 
 ---
 
-## 2. Project Goal & Core Mission
+## 1. Problem
 
-> **Mission Statement**: Design, build, and evaluate an intelligent, end-to-end learning assistant that transforms raw learner goals into personalized, structured, prerequisite-aware, explainable, and dynamically adaptive learning roadmaps.
+### 1.1 Context
 
-### Key Functional Objectives
-- **Natural Language Intake**: Allow learners to express career ambitions, time constraints, and preferences in open-ended natural dialogue.
-- **Granular Skill Gap Analysis**: Deconstruct high-level goals into multi-tiered competency requirements and compute precise mathematical skill gaps against the learner's existing mastery.
-- **Hybrid Multi-Factor Recommendation**: Retrieve and rank real educational catalog assets using dense semantic vector search blended with sparse lexical keyword matching (BM25) and multi-factor re-ranking.
-- **Deterministic Graph Sequencing**: Generate optimal, topologically ordered learning paths using deterministic $A^*$ graph search over an authoritative prerequisite Directed Acyclic Graph (DAG).
-- **Score-Grounded Explainability**: Generate clear, hallucination-free natural language explanations grounded directly in mathematical similarity scores, gap reduction deltas, and prerequisite necessity.
-- **Adaptive Rerouting & Progress Tracking**: Dynamically detect learning bottlenecks (stuck states from assessment failures) and insert remedial detour paths via dual-graph similarity search.
+Enterprise and educational platforms host tens of thousands of courses, lectures, labs and assessments. Catalog search surfaces individual courses matching keywords, but learners face severe cognitive overload when trying to chart an efficient, prerequisite-aware journey toward a career goal such as *Machine Learning Engineer*, *Cloud Solutions Architect* or *Full-Stack Developer*.
+
+### 1.2 The core problem
+
+Learners arrive with disparate baselines, histories, time commitments, budgets and preferences. Four failures follow:
+
+1. **The curse of choice** — flat lists of hundreds of unsequenced resources, with no entry point and no progression logic.
+2. **Prerequisite violations** — recommenders lack structural understanding and suggest Deep Learning to someone who has not mastered Linear Algebra or Python data structures.
+3. **Static, fragile paths** — fixed curricula cannot adapt when a learner struggles or fails an assessment, producing frustration and abandonment.
+4. **Black-box and hallucinated justifications** — generative chatbots invent fictitious course titles or offer ungrounded praise ("this course is great for you!") instead of transparent, metric-grounded reasoning.
+
+> Failure 4 sets a hard constraint on this build: **every course link must resolve, and every number displayed must be computed by the engine.** A dead link or a decorative figure reproduces precisely the failure the project claims to solve.
 
 ---
 
-## 3. System Architecture & The 6 Core Deliverables
+## 2. Mission
 
-The system is organized into six interconnected, modular deliverables:
+> Build an end-to-end learning assistant that transforms a stated career goal into a personalized, prerequisite-aware, explainable and dynamically adaptive learning roadmap.
+
+**Functional objectives**
+
+- **Natural-language intake** — express ambitions, constraints and preferences in open dialogue
+- **Granular gap analysis** — decompose goals into competencies and compute precise mathematical gaps against verified mastery
+- **Hybrid multi-factor recommendation** — dense semantic retrieval blended with BM25, then deterministic multi-factor re-ranking over a **real** catalog
+- **Deterministic graph sequencing** — A\* over an authoritative prerequisite DAG, with zero prerequisite violations
+- **Score-grounded explainability** — hallucination-free rationales built from real similarity scores, gap deltas and prerequisite satisfaction
+- **Adaptive rerouting** — detect blockage and splice remediation detours without breaking downstream dependencies
+
+---
+
+## 3. The Six Core Deliverables
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────────┐
 │                           6 CORE DELIVERABLES ARCHITECTURE                                  │
 ├─────────────────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                             │
-│  [Deliverable 1: Conversational Interface]                                                  │
-│          │ (Natural Language Goal Intake & Clarification)                                   │
+│  [D1: Conversational Interface]                                                             │
+│          │ (Natural language goal intake & clarification)                                   │
 │          ▼                                                                                  │
-│  [Deliverable 2: Learner Profiling & Skill Gap Engine]                                      │
-│          │ (Chain-of-Thought Goal Decomposition & Deterministic Gap Math)                   │
+│  [D2: Learner Profiling & Skill Gap Engine]                                                 │
+│          │ (CoT decomposition · deterministic gap math · per-skill mastery)                 │
 │          ▼                                                                                  │
-│  [Deliverable 3: Hybrid Recommendation Engine] ──► [Deliverable 4: Path Generator]          │
-│    (BM25 + Dense Embeddings + 7-Factor Rerank)       (A* Search over Prerequisite DAG)      │
-│          │                                                        │                         │
-│          ▼                                                        ▼                         │
-│  [Deliverable 5: Grounded Explainability]            [Deliverable 6: Progress Dashboard]    │
-│    (Score-Grounded Rationale Generation)               (Visual DAG & Dual-Graph Rerouting)  │
-│                                                                                             │
+│  [D3: Hybrid Recommendation Engine] ─────────► [D4: Path Generator]                         │
+│    (BM25 + Dense Embeddings + 7-Factor Rerank)   (A* over the prerequisite DAG)             │
+│          │                                              │                                   │
+│          ▼                                              ▼                                   │
+│  [D5: Grounded Explainability]                 [D6: Progress Dashboard]                     │
+│    (Score-grounded rationale)                    (Visual DAG · dual-graph rerouting)        │
 └─────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+### Deliverable 1 — Conversational Interface
+
+**Purpose**: a natural-language interface for expressing aspirations, background and study constraints.
+
+- Intent extraction with **active clarifying dialogue** when input is underspecified
+- Quick-action chips for goal refinement (target role, timeframe, weekly hours)
+- Conversational state management with responsive streaming
+
+> **Implementation note**: the clarifying dialogue has a concrete job — it captures **weekly hours, deadline and course budget**, which feed the feasibility check (D4) and budget-aware binding. This is what makes D1 a genuine conversation rather than a form with a chat skin.
+
+### Deliverable 2 — Learner Profiling & Skill Gap Engine
+
+**Purpose**: maintain a structured 4D learner profile (goals, proficiencies, history, constraints) and compute accurate gaps.
+
+- **Chain-of-thought goal decomposition** (*GenMentor* pattern):
+  $$\text{Objective} \rightarrow \text{Job Duties} \rightarrow \text{Competencies} \rightarrow \text{Granular Skills} \rightarrow \text{Target Mastery}$$
+- **Deterministic gap formulation**:
+  $$\text{SkillGap}(s) = \max(0,\ \text{Required}(s) - \text{Current}(s))$$
+  $$\text{Priority}(s) = \text{Importance}(s) \times \text{SkillGap}(s)$$
+- **EduCOR ontology**: $\text{Skill} \rightarrow \text{Knowledge Topic} \rightarrow \text{Educational Resource}$
+
+> **Implementation note**: mastery is stored **per skill with a confidence level**, not as one global number. Quiz-probed skills carry high confidence, resume-evidenced skills medium, unevidenced skills low with a wide band. An unverified claim is probed or conservatively discounted, never silently trusted — this is what makes the zero-assumption property real. Diagnostic items are selected by `uncertainty × downstream_fan_out`, so the questions asked are the ones whose answers matter most to the rest of the graph.
+
+### Deliverable 3 — Hybrid Recommendation & Retrieval Engine
+
+**Purpose**: retrieve and rank real courses, projects and assessments from the catalog.
+
+- **Hybrid search**:
+  $$\text{Score}_{\text{hybrid}} = \alpha \cdot \text{CosineSim}(v_{\text{goal}}, v_{\text{res}}) + (1 - \alpha) \cdot \text{BM25}(q, d)$$
+- **7-factor deterministic re-ranker** — weights sum to exactly 1.0:
+
+| # | Factor | Weight |
+|---|---|---|
+| 1 | Skill coverage & gap reduction | 0.30 |
+| 2 | Semantic relevance | 0.25 |
+| 3 | Prerequisite readiness | 0.15 |
+| 4 | Difficulty & baseline fit | 0.10 |
+| 5 | Modality preference | 0.08 |
+| 6 | Content quality & rating | 0.07 |
+| 7 | Catalog freshness | 0.05 |
+
+> **Implementation note**: the catalog is genuinely real — **23,614 Coursera courses** ingested from their public keyless API, plus live Microsoft Learn and YouTube enrichment, plus dataset-sourced Udemy entries carrying real list prices. Every link resolves. Because live-fetched resources arrive without skill tags or difficulty labels, two supervised classifiers supply them (see §6.2); every component score is retained so D5 can quote real numbers.
+
+### Deliverable 4 — Personalized Learning Path Generator
+
+**Purpose**: turn disjoint recommendations into an optimal, topologically ordered, milestone-grouped curriculum.
+
+- **Deterministic A\* planning**: $f(n) = g(n) + h(n)$, where $g$ accumulates time, cost, difficulty-jump penalties and prior-experience credit, and $h$ is an admissible heuristic over remaining gaps
+- **Topological consistency** via Kahn's algorithm — zero prerequisite violations, asserted in tests and surfaced in the UI
+- **Milestone partitioning**: Foundations → Core Concepts → Advanced Applications → Capstone
+
+> **Implementation note**: A\* sequences **skill nodes, not course nodes** — courses have messy inter-dependencies while canonical skills have clean ones — and each sequenced skill then binds its best available resource. Learner budget is a **hard ceiling enforced at bind time** rather than inside the search, since constrained shortest path with a budget dimension is NP-hard and would explode the frontier.
+
+### Deliverable 5 — Score-Grounded Explainability
+
+**Purpose**: eliminate black-box recommendations and hallucinated rationales.
+
+- **Metric-grounded explanations** (*KnowPath* pattern), incorporating the exact target skills addressed, the computed gap-reduction delta, the prerequisites satisfied, and the hybrid similarity score
+- Interactive Q&A — *"why was this recommended before that?"*
+
+> **Implementation note**: numbers are computed first and passed to the LLM as facts. The model may reword an explanation; it may never introduce, alter or round a figure. Where the system is uncertain it says so — estimated durations render as `~3–8h` rather than a false point value, and low-confidence skill tags are discarded rather than shown.
+
+### Deliverable 6 — Progress Dashboard & Adaptive Rerouting
+
+**Purpose**: visualise progression and adapt the path in real time.
+
+- **Interactive DAG & milestone roadmap** — completed, active and locked nodes with progress indicators
+- **Stuck detection** — below 50% on two consecutive attempts, or explicit "too difficult"
+- **Dual-graph rerouting** (*DLELP / KnowLP* pattern) — on blockage at topic $T_A$, query the concept-similarity graph for a bridging prerequisite $T_B$ and splice a remediation detour without breaking downstream dependencies
+
+> **Implementation note**: detour insertion is guarded so a remediation never spawns its own remediation, with a cap per skill — an unguarded version of this logic produced an infinite loop in an earlier internal build.
+
 ---
 
-### Deliverable 1: Conversational Interface
-* **Purpose**: Provide an engaging, natural-language interface for learners to express aspirations, backgrounds, and study schedules.
-* **Key Capabilities**:
-  - Intent extraction and active clarifying dialog when user input is ambiguous or underspecified.
-  - Interactive quick-action chips for goal refinement (e.g., target role, timeframe, weekly hours).
-  - Clean conversational state management and responsive streaming.
-
----
-
-### Deliverable 2: Learner Profiling & Skill Gap Engine
-* **Purpose**: Capture and maintain a structured 4D learner profile (Goals, Current Proficiencies, Completed History, Learning Constraints) and compute accurate skill gaps.
-* **Key Capabilities**:
-  - **Chain-of-Thought (CoT) Goal Decomposition** (*GenMentor* pattern): Deconstructs user objectives into:
-    $$\text{User Objective} \longrightarrow \text{Job Duties} \longrightarrow \text{Required Competencies} \longrightarrow \text{Granular Skills} \longrightarrow \text{Target Mastery Levels}$$
-  - **Deterministic Skill Gap Formulation**:
-    $$\text{SkillGap}(s) = \max\left(0, \text{RequiredLevel}(s) - \text{CurrentMastery}(s)\right)$$
-    $$\text{PriorityScore}(s) = \text{ImportanceWeight}(s) \times \text{SkillGap}(s)$$
-  - Explicit multi-tiered ontology mapping based on the *EduCOR* schema:
-    $$\text{Skill} \longrightarrow \text{Knowledge Topic} \longrightarrow \text{Educational Resource}$$
-
----
-
-### Deliverable 3: Hybrid Recommendation & Retrieval Engine
-* **Purpose**: Retrieve and rank candidate learning resources, courses, hands-on projects, and assessments from the educational catalog.
-* **Key Capabilities**:
-  - **Hybrid Search**: Fuses dense vector embeddings (e.g., BAAI/bge or text-embedding models) with sparse lexical keyword matching (BM25):
-    $$\text{Score}_{\text{Hybrid}} = \alpha \cdot \text{CosineSim}(v_{\text{goal}}, v_{\text{resource}}) + (1 - \alpha) \cdot \text{Score}_{\text{BM25}}(q_{\text{keywords}}, d_{\text{resource}})$$
-  - **7-Factor Deterministic Re-Ranker**: Evaluates candidates across comprehensive dimensions:
-    1. Skill Coverage & Gap Reduction ($w_1 = 0.30$)
-    2. Semantic Relevance ($w_2 = 0.25$)
-    3. Prerequisite Readiness ($w_3 = 0.15$)
-    4. Difficulty & Baseline Fit ($w_4 = 0.10$)
-    5. Learner Format/Modality Preference ($w_5 = 0.08$)
-    6. Content Quality & Rating ($w_6 = 0.07$)
-    7. Catalog Freshness ($w_7 = 0.05$)
-
----
-
-### Deliverable 4: Personalized Learning Path Generator
-* **Purpose**: Transform disjoint recommendations into an optimal, topologically ordered, milestone-grouped curriculum.
-* **Key Capabilities**:
-  - **Deterministic $A^*$ Graph Planning**: Navigates the prerequisite DAG to construct an optimal learning path minimizing total cost:
-    $$f(n) = g(n) + h(n)$$
-    Where $g(n)$ is the accumulated learning effort/time plus penalties for steep difficulty jumps, and $h(n)$ is the admissible heuristic distance to target skill mastery.
-  - **Topological Consistency**: Enforces Kahn's algorithm or DAG cycle checks to ensure zero prerequisite violations.
-  - **Milestone Partitioning**: Groups learning modules into progressive stages (Foundations $\rightarrow$ Core Concepts $\rightarrow$ Advanced Applications $\rightarrow$ Capstone Project).
-
----
-
-### Deliverable 5: Score-Grounded Explainability Assistant
-* **Purpose**: Eliminate black-box recommendations and hallucinated rationales by providing transparent, evidence-backed justifications.
-* **Key Capabilities**:
-  - **Metric-Grounded Explanations** (*KnowPath* pattern): Every explanation directly incorporates real underlying data:
-    - Exact target skills addressed and computed gap reduction delta.
-    - Prerequisite dependencies satisfied.
-    - Hybrid similarity score and content difficulty alignment.
-  - Interactive Q&A allowing learners to query "Why was this course recommended before that one?" or "How does this project help my career goal?".
-
----
-
-### Deliverable 6: Progress Dashboard & Adaptive Rerouting Engine
-* **Purpose**: Visualize learner progression and dynamically adapt the learning path in real time based on feedback and assessment performance.
-* **Key Capabilities**:
-  - **Interactive DAG & Milestone Roadmap**: Dynamic UI displaying completed, active, and locked nodes with progress indicators.
-  - **Stuck Detection**: Identifies learning blockages (e.g., scoring $< 50\%$ on two consecutive module quizzes or explicit "Too Difficult" feedback).
-  - **Dual-Graph Rerouting** (*DLELP / KnowLP* pattern):
-    - When a blockage occurs on topic $T_A$, query the **Concept Similarity Graph** to locate an alternative conceptual bridge or prerequisite reinforcement topic $T_B$.
-    - Insert a targeted remediation detour into the path without breaking downstream dependencies.
-
----
-
-## 4. End-to-End Operational Workflow
-
-The complete execution loop for a learner proceeds as follows:
+## 4. End-to-End Workflow
 
 ```
-[1. User Input] ──► Conversational Goal & Constraint Intake
+[0. Evidence]   ──► Resume (PDF/DOCX) + GitHub profile ──► skills with provenance
+                           │                                (evidence proposes)
+                           ▼
+[1. Intake]     ──► Conversational goal + constraints (hours · deadline · budget)
                            │
                            ▼
-[2. Profiling]  ──► CoT Skill Extraction + Baseline Assessment + Gap Matrix
+[2. Profiling]  ──► CoT decomposition · targeted diagnostic · per-skill θ + confidence
+                           │                                (the quiz verifies)
+                           ▼
+[3. Retrieval]  ──► Hybrid BM25 + dense candidate generation over the real catalog
                            │
                            ▼
-[3. Retrieval]  ──► Hybrid BM25 & Dense Semantic Vector Candidate Filtering
+[4. Reranking]  ──► 7-factor deterministic scoring · component scores retained
                            │
                            ▼
-[4. Reranking]  ──► 7-Factor Deterministic Scoring & Catalog Filtering
+[5. Path Gen]   ──► A* over the prerequisite DAG · budget binding · milestones
                            │
                            ▼
-[5. Path Gen]   ──► A* Graph Traversal on Prerequisite DAG + Milestone Grouping
+[6. Explain]    ──► Rationale generated from the computed numbers
                            │
                            ▼
-[6. Explain]    ──► Score-Grounded Rationale Generation & Verification
+[7. Dashboard]  ──► Visual roadmap · Poincaré projection · assessment
                            │
                            ▼
-[7. Dashboard]  ──► Visual Roadmap Render + Quiz/Assessment Module
-                           │
-                           ▼
-[8. Adapt Loop] ──► Assessment Result / Feedback 
-                           ├── Passed (>=70%) ──► Unlock Next Milestone & Advance Mastery
-                           └── Failed / Stuck  ──► Trigger Dual-Graph Remediation Detour
+[8. Adapt]      ──► Assessment result
+                    ├── Passed (≥70%)  ──► advance mastery, unlock next milestone
+                    ├── Failed         ──► Socratic guided questioning
+                    └── Stuck (2 fails)──► dual-graph remediation detour
 ```
 
 ---
 
-## 5. Official Judging Criteria & Evaluation Rubric
+## 5. Official Judging Criteria
 
-Submissions are evaluated against six core criteria totaling 100%:
+Submissions are evaluated against six criteria totalling 100%.
 
 | Evaluation Criterion | Weight | Assessment Focus & Scoring Factors |
 | :--- | :---: | :--- |
@@ -184,12 +193,43 @@ Submissions are evaluated against six core criteria totaling 100%:
 
 ---
 
-## 6. Project-Level Expectations & Engineering Standards
+## 6. Engineering Standards
 
-To achieve a top-tier evaluation, the project must adhere to strict production-grade engineering principles:
+### 6.1 The hybrid deterministic + generative paradigm
 
-### 6.1 Architectural Principle: The Hybrid Deterministic + Generative Paradigm
-> **Core Rule**: *"Use Large Language Models (LLMs) strictly where natural language comprehension or synthesis is genuinely needed. Use deterministic algorithms for retrieval, scoring, graph traversal, prerequisite validation, path planning, and stuck detection."*
+> **Core rule**: use LLMs strictly where natural-language comprehension or synthesis is genuinely needed. Use deterministic algorithms for retrieval, scoring, graph traversal, prerequisite validation, planning and stuck detection.
 
-- **LLM Responsibility**: Conversational intake understanding, skill decomposition synthesis, and natural language formatting of grounded explanations.
-- **Deterministic Engine Responsibility**: Mathematical skill gap computation, vector similarity calculation, BM25 keyword scoring, 7-factor re-ranking, $A^*$ graph path finding, and topological sorting.
+- **LLM responsibility** — conversational intake, skill decomposition, and phrasing grounded explanations
+- **Deterministic responsibility** — gap computation, vector similarity, BM25, 7-factor re-ranking, A\* search, topological sorting, decay modelling, stuck detection
+
+The deterministic core is implemented as **pure functions with no network calls**. They test in milliseconds, remain correct when a provider rate-limits, and make the architectural claim above verifiable rather than asserted.
+
+### 6.2 Naming the AI/ML honestly
+
+Mislabeling is the easiest way to lose marks in a 20%-weighted band, so each component is named precisely:
+
+| Category | Components |
+|---|---|
+| **Trained supervised models** | Multi-label skill tagger · difficulty classifier (sklearn, reported macro-F1 / accuracy on held-out splits) |
+| **Fitted statistical models** | 2PL-IRT ability estimation · Ebbinghaus stability |
+| **Pretrained, used as-is** | MiniLM/BGE sentence embeddings |
+| **Classical algorithms** | BM25 · A\* · Kahn's sort · cosine similarity · Poincaré geodesics — *algorithms, not machine learning* |
+
+The two supervised models are load-bearing rather than decorative: live-fetched resources arrive without skill tags or difficulty labels, and 23,614 courses cannot be hand-labelled, so these models are the bridge between the live catalog and the deterministic engine.
+
+### 6.3 Modular architecture
+
+A **modular monolith** with hard boundaries: eight bounded contexts, each exposing a single `interface.py`, with dependency direction `api → modules → domain`. Six coupling rules are encoded as executable tests that fail the build on violation, naming the offending import.
+
+Contract-first: Pydantic v2 models are the single source of truth, and TypeScript types are generated from the OpenAPI schema.
+
+### 6.4 Prototype fidelity
+
+This is a **polished working prototype**, not a production system. Out of scope by decision: authentication hardening, rate limiting, input sanitisation, CI pipelines, and scale engineering.
+
+Seeded and simplified data is acceptable and expected — seeded learner history, a dated job-demand snapshot, deterministic Poincaré coordinates, pre-authored quiz items. Round 1 simplifications are stated plainly in the README as current-iteration choices.
+
+Two things are never simplified, both because §1.2 names them as the problem being solved:
+
+1. **Course titles and URLs are real** and resolve.
+2. **Displayed scores are the computed scores.**
