@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Nav } from "@/components/layout/Nav";
-import { Card } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
-import { Textarea } from "@/components/ui/Input";
+import { Nav } from "@/frontend/components/layout/Nav";
+import { Card } from "@/frontend/components/ui/Card";
+import { Button } from "@/frontend/components/ui/Button";
+import { Textarea } from "@/frontend/components/ui/Input";
 import { DOMAINS, TRACK_PACES } from "@/data/domains";
 
 export default function NewGoalPage() {

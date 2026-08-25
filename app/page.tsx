@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { LinkButton } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
+import { LinkButton } from "@/frontend/components/ui/Button";
+import { Card } from "@/frontend/components/ui/Card";
 
 export default async function Home() {
   const supabase = await createClient();

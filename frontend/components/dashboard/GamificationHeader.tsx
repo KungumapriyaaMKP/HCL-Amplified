@@ -1,4 +1,4 @@
-import { Card, Badge, ProgressBar } from "@/components/ui/Card";
+import { Card, Badge, ProgressBar } from "@/frontend/components/ui/Card";
 import type { DashboardData } from "@/lib/dashboardData";
 
 export function GamificationHeader({ gamification }: { gamification: DashboardData["gamification"] }) {

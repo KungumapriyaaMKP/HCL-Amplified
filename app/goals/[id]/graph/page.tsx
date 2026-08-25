@@ -6,9 +6,9 @@ import { domainSkillGraph, resolveGoalSkills, requiredSkillSet } from "@/lib/ski
 import { db } from "@/lib/db";
 import { profiles } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { Nav } from "@/components/layout/Nav";
-import { Card } from "@/components/ui/Card";
-import { SkillGraphView, SkillGraphLegend } from "@/components/goals/SkillGraphView";
+import { Nav } from "@/frontend/components/layout/Nav";
+import { Card } from "@/frontend/components/ui/Card";
+import { SkillGraphView, SkillGraphLegend } from "@/frontend/components/goals/SkillGraphView";
 import { DOMAINS } from "@/data/domains";
 import Link from "next/link";
 

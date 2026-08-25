@@ -1,12 +1,12 @@
 import { requireUser } from "@/lib/auth";
 import { getDashboardData } from "@/lib/dashboardData";
-import { Nav } from "@/components/layout/Nav";
-import { GamificationHeader } from "@/components/dashboard/GamificationHeader";
-import { GoalCard } from "@/components/dashboard/GoalCard";
-import { MasteryChart } from "@/components/dashboard/MasteryChart";
-import { AdaptationFeed } from "@/components/dashboard/AdaptationFeed";
-import { ReminderBanner } from "@/components/dashboard/ReminderBanner";
-import { LinkButton } from "@/components/ui/Button";
+import { Nav } from "@/frontend/components/layout/Nav";
+import { GamificationHeader } from "@/frontend/components/dashboard/GamificationHeader";
+import { GoalCard } from "@/frontend/components/dashboard/GoalCard";
+import { MasteryChart } from "@/frontend/components/dashboard/MasteryChart";
+import { AdaptationFeed } from "@/frontend/components/dashboard/AdaptationFeed";
+import { ReminderBanner } from "@/frontend/components/dashboard/ReminderBanner";
+import { LinkButton } from "@/frontend/components/ui/Button";
 
 export default async function DashboardPage() {
   const user = await requireUser();

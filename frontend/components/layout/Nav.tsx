@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LogoutButton } from "@/components/layout/LogoutButton";
+import { LogoutButton } from "@/frontend/components/layout/LogoutButton";
 
 export function Nav({ displayName }: { displayName?: string }) {
   return (

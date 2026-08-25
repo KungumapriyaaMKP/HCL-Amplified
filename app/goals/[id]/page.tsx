@@ -5,10 +5,10 @@ import { getGoalDetail } from "@/lib/goalData";
 import { db } from "@/lib/db";
 import { profiles } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { Nav } from "@/components/layout/Nav";
-import { Card, ProgressBar } from "@/components/ui/Card";
-import { ModuleCard } from "@/components/goals/ModuleCard";
-import { AssistantWidget } from "@/components/goals/AssistantWidget";
+import { Nav } from "@/frontend/components/layout/Nav";
+import { Card, ProgressBar } from "@/frontend/components/ui/Card";
+import { ModuleCard } from "@/frontend/components/goals/ModuleCard";
+import { AssistantWidget } from "@/frontend/components/goals/AssistantWidget";
 import { DOMAINS } from "@/data/domains";
 
 export default async function GoalPage({ params }: { params: Promise<{ id: string }> }) {

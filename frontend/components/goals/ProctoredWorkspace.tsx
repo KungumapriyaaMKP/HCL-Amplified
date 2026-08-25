@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Card, Badge } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
+import { Card, Badge } from "@/frontend/components/ui/Card";
+import { Button } from "@/frontend/components/ui/Button";
 
 type Question = { id: string; question: string; options: string[] };
 type Flag = { type: "tab_switch" | "blur" | "fullscreen_exit"; at: number };

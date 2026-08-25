@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { Button } from "@/components/ui/Button";
-import { Input, Label } from "@/components/ui/Input";
+import { Button } from "@/frontend/components/ui/Button";
+import { Input, Label } from "@/frontend/components/ui/Input";
 import Link from "next/link";
 
 export function AuthForm({ mode }: { mode: "login" | "signup" }) {

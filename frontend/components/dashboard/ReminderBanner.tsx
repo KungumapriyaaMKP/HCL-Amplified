@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Card } from "@/components/ui/Card";
+import { Card } from "@/frontend/components/ui/Card";
 import type { DashboardData } from "@/lib/dashboardData";
 
 function daysSince(date: string | Date | null): number | null {

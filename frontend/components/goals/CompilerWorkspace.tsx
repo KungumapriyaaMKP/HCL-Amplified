@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card, Badge } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
-import { Textarea } from "@/components/ui/Input";
+import { Card, Badge } from "@/frontend/components/ui/Card";
+import { Button } from "@/frontend/components/ui/Button";
+import { Textarea } from "@/frontend/components/ui/Input";
 
 const STARTERS: Record<string, string> = {
   python: '# Write your practice code below\nprint("Hello, world!")\n',

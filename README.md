@@ -23,6 +23,36 @@ quizzes and proctored tests.
   in-app practice compiler for programming skills — see the security note in
   that file before using this anywhere beyond a local demo
 
+## Project layout — frontend vs. backend
+
+This is a single Next.js app (App Router), so page/route files under `app/`
+have to stay there — that's a framework requirement, not a design choice.
+Everything else is organized so a frontend-focused contributor only ever
+needs to touch one folder:
+
+- **`frontend/`** — the entire UI surface. Frontend work happens here.
+  - `frontend/components/` — every React component (`ui/`, `auth/`, `chat/`,
+    `dashboard/`, `goals/`, `layout/`). Pure presentation: props in, JSX out.
+    No direct DB/Supabase/LLM calls — they call `fetch("/api/...")` like any
+    browser client would.
+  - `frontend/styles/globals.css` — Tailwind entry point + the design tokens
+    (colors, etc.) used everywhere via `@theme inline`.
+- **`app/`** — routing only. `app/**/page.tsx` files should stay thin:
+  fetch data via a `lib/` function, then render `frontend/components/*` with
+  it. `app/api/**/route.ts` is backend territory (see below).
+- **Backend territory** — `lib/` (engine + data access), `db/schema.ts`
+  (Drizzle schema), `data/` (the skill graph, catalog, badges — shared
+  read-only constants both sides use), `scripts/` (seed/migration one-offs),
+  `app/api/**` (route handlers).
+
+Import boundary in code: components import from `@/frontend/components/*` and
+`@/frontend/styles/*` for everything visual. They talk to the backend two
+ways only: `fetch("/api/...")` for data/actions, and `lib/supabase/client.ts`
+for auth (a browser-safe SDK call, not a DB query). A few components also do
+`import type {...} from "@/lib/..."` purely for shared TypeScript shapes
+(e.g. `DashboardData`) — that's erased at compile time and never touches the
+database; components never import `lib/db.ts` or any query/engine module.
+
 ## Where the AI/ML actually lives
 
 - **Claude (via OpenRouter)** — `lib/llm.ts` + `lib/prompts.ts`: natural

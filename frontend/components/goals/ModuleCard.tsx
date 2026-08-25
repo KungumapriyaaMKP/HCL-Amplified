@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Card, Badge } from "@/components/ui/Card";
+import { Card, Badge } from "@/frontend/components/ui/Card";
 import type { GoalDetail } from "@/lib/goalData";
 
 const STATUS_STYLE: Record<string, { tone: "default" | "success" | "warning" | "accent"; label: string }> = {

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Card, Badge, ProgressBar } from "@/components/ui/Card";
+import { Card, Badge, ProgressBar } from "@/frontend/components/ui/Card";
 import { DOMAINS } from "@/data/domains";
 import type { DashboardData } from "@/lib/dashboardData";
 

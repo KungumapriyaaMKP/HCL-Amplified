@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Card, Badge } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
-import { PracticeQuiz } from "@/components/goals/PracticeQuiz";
+import { Card, Badge } from "@/frontend/components/ui/Card";
+import { Button } from "@/frontend/components/ui/Button";
+import { PracticeQuiz } from "@/frontend/components/goals/PracticeQuiz";
 
 type Props = {
   goalId: string;

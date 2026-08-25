@@ -1,6 +1,6 @@
 import { Suspense } from "react";
-import { Card } from "@/components/ui/Card";
-import { AuthForm } from "@/components/auth/AuthForm";
+import { Card } from "@/frontend/components/ui/Card";
+import { AuthForm } from "@/frontend/components/auth/AuthForm";
 
 export default function LoginPage() {
   return (

@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
+import { Button } from "@/frontend/components/ui/Button";
+import { Input } from "@/frontend/components/ui/Input";
 
 export type ChatBubble = { role: "user" | "assistant"; content: string };
 

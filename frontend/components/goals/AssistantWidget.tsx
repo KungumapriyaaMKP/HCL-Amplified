@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ChatThread, type ChatBubble } from "@/components/chat/ChatThread";
+import { ChatThread, type ChatBubble } from "@/frontend/components/chat/ChatThread";
 
 export function AssistantWidget({ goalId }: { goalId: string }) {
   const [open, setOpen] = useState(false);

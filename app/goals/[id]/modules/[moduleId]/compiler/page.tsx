@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/auth";
 import { getModuleDetail } from "@/lib/moduleDetail";
-import { Nav } from "@/components/layout/Nav";
-import { CompilerWorkspace } from "@/components/goals/CompilerWorkspace";
+import { Nav } from "@/frontend/components/layout/Nav";
+import { CompilerWorkspace } from "@/frontend/components/goals/CompilerWorkspace";
 
 export default async function CompilerPage({ params }: { params: Promise<{ id: string; moduleId: string }> }) {
   const { moduleId } = await params;

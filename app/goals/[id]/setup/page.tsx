@@ -2,10 +2,10 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Nav } from "@/components/layout/Nav";
-import { Card } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
-import { ChatThread, type ChatBubble } from "@/components/chat/ChatThread";
+import { Nav } from "@/frontend/components/layout/Nav";
+import { Card } from "@/frontend/components/ui/Card";
+import { Button } from "@/frontend/components/ui/Button";
+import { ChatThread, type ChatBubble } from "@/frontend/components/chat/ChatThread";
 
 type Goal = { id: string; status: string; domain: string; goalText: string };
 type DiagQuestion = { id: string; skillId: string; question: string; options: string[] };
