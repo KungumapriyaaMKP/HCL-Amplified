@@ -74,7 +74,7 @@ Provenance travels with the value: every duration carries a `source` enum (`PARS
 └─────────────────────────────────────────────────────────────────────────────────────────────┘
 
 R1  = ships in the 2-day Round 1 build
-R1* = ships in R1 in simplified form (§9.2)
+R1* = ships in R1 in simplified form (§9.4)
 ```
 
 ### 2.1 Code architecture: modular monolith with enforced boundaries
@@ -107,6 +107,30 @@ backend/app/
 These are architectural fitness functions, not documentation. Violations fail the build with the exact offending import — verified by deliberately injecting one.
 
 The frontend mirrors this: `features/{intake,roadmap,catalog,analytics,adapt}` colocate their components and hooks, and **features never import from each other**; shared code lives in `components/ui/` or `lib/`.
+
+### 2.2 Persistence & the telemetry model
+
+**One event stream, not three feature tables.** Skill decay (§6.2), the Socratic engine (§6.7) and progress analytics (§6.10) all consume the same underlying signal — quiz attempts, reviews, completions, time spent. Modelling them separately would triplicate the write path and guarantee they drift apart.
+
+```
+LearningEvent { learner_id · type · at · skill_id · resource_id
+                score · minutes_spent · payload }
+
+type ∈ { resource_started · resource_completed · quiz_attempted
+         review_completed · feedback_given · path_generated
+         decision_detour_inserted }
+```
+
+Decay, retention, urgency, the activity grid and the gap-closure trend are all **derived on read** from this log rather than stored as state. That keeps them consistent by construction and makes the history replayable.
+
+**Persistence is mandatory, not optional.** Retention curves and trend graphs are meaningless without durable history, and **Hugging Face Spaces has an ephemeral filesystem that resets on restart**. So:
+
+| Stage | Store | Rationale |
+|---|---|---|
+| `R1` | In-memory + seeded JSON profile | Sufficient for the demo; page 6 renders from seeded history |
+| `W2` | **SQLite on a persistent volume**, or Supabase | Streaks, decay and trends must survive a restart |
+
+The `telemetry` module owns this boundary — no other module reads or writes the event store directly.
 
 ---
 
@@ -318,6 +342,17 @@ Demand figures come from a **curated snapshot, labelled with its date in the UI*
 
 **Crash-course mode** is a preset: strip electives, weight toward short high-yield resources, re-run the planner.
 
+### 6.10 Progress analytics `W2`
+
+Derived entirely from the §2.2 event log:
+
+- **52-week contribution heatmap** — per-day activity, hover revealing the topics studied that day
+- **Gap-closure trend** — the headline chart
+
+> **Plot gap closure, not hours spent.** *"You have closed 34% of your skill gap in 6 weeks"* is a meaningful statement about progress; *"you studied 40 hours"* is a vanity metric that says nothing about whether the learner is getting closer. It also puts the gap engine — a graded deliverable — directly on screen.
+
+Hours spent remains available as a secondary series, but it is not the headline.
+
 ---
 
 ## 7. Data Provenance & Fidelity
@@ -353,6 +388,24 @@ The tilde is load-bearing: a user can distinguish what the system knows from wha
 ---
 
 ## 8. Interface Design
+
+### 8.0 Page inventory
+
+Seven designed pages (`ui_designs/`). **Five ship in Round 1** — pages 1–4 cover all six graded deliverables between them, and page 6 is included as the signature visual.
+
+| # | Page | Serves | Round |
+|---|---|---|---|
+| 1 | **Intake & Diagnostic** — chat + clarifying questions, resume/GitHub drop, calibration quiz | D1, D2 | `R1` |
+| 2 | **Executive Hub** — role-readiness ring, next-action card, Poincaré thumbnail, phase list | D2, D6 | `R1` |
+| 3 | **Prerequisite DAG Matrix** — 4 phase columns, status badges, priority control | D4 | `R1` |
+| 4 | **Catalog & Milestone Inspector** — multi-provider candidates, prereq checklist, gap delta | D3, D5 | `R1` |
+| 5 | **Practice Lab & Socratic Studio** — Pyodide runner, guided questioning | Innovation | `W3` |
+| 6 | **Poincaré Radar & Retention Analytics** — geodesic disk, decay matrix, activity heatmap | Innovation | `R1` |
+| 7 | **What-If Career Branching** — 3-way comparison, overlap diagram | Innovation | `W3` |
+
+Page 4 renders as a **slide-over panel on page 3** rather than a separate route — the milestone and its justification belong in the same visual context, and the transition costs nothing in the demo narrative.
+
+> Note on the mockups: they are AI-generated and carry placeholder artefacts ("Poincarské skill geodesic", "About nit", "Untoran solution"), an inconsistent wordmark (page 6 reads "Poincaré"), and a marketing-style nav on page 2. **Treat every string as placeholder**; the product name is **Pathfinder** throughout, with the navigation defined in §8.4.
 
 ### 8.1 Design direction — Swiss precision
 
@@ -450,7 +503,18 @@ Both chosen by **live measurement, not memory**. Model IDs go stale fast: `gemin
 
 **Deterministic guardrails**: all numerical recommendations, rankings and sequences are computed before any LLM call. Low temperature, strict JSON schemas.
 
-### 9.3 Round 1 simplifications
+### 9.3 Deployment constraints
+
+Deploying (rather than shipping a zip a judge must set up) imposes four requirements that shape the code, not just the release:
+
+1. **Commit precomputed catalog vectors** as float16. Encoding at boot turns every cold start into 30s+; the query encoder alone is loaded at runtime.
+2. **Call the backend directly from the browser.** Proxying SSE through Next.js route handlers buffers the stream and breaks the conversational intake. `CORSMiddleware` allows the Vercel origin; provider keys stay server-side and never appear in `NEXT_PUBLIC_*`.
+3. **Treat the filesystem as ephemeral** (§2.2). HF Spaces resets on restart — anything that must survive belongs in SQLite on a volume or Supabase.
+4. **Wake the Space before judging.** The free tier sleeps after inactivity, and a cold first impression is expensive.
+
+**Deploy a skeleton on day one, not at the end.** CORS, the Docker build and cold-start behaviour are exactly the problems that consume hours at the worst possible moment; discovering them while the app is still trivial is far cheaper.
+
+### 9.4 Round 1 simplifications
 
 Stated as current-iteration choices in the README, not concealed:
 
@@ -459,7 +523,7 @@ Stated as current-iteration choices in the README, not concealed:
 - **Retention analytics run on seeded study history**, not live telemetry.
 - **Catalog is ~70 curated courses** in Round 1; full 23.6k index lands `W1`.
 
-### 9.4 Verification
+### 9.5 Verification
 
 - DAG acyclic; every resource's skill ids resolve to known skills
 - Gap math matches `max(0, req − current)` on hand-computed fixtures
@@ -471,7 +535,7 @@ Stated as current-iteration choices in the README, not concealed:
 - `/api/plan` returns a schema-valid path in **< 1s** warm; provider failure falls back correctly
 - All six architectural coupling rules hold
 
-### 9.5 Pre-seeded tracks
+### 9.6 Pre-seeded tracks
 
 1. **AI / Machine Learning Engineer** — Linear Algebra, PyTorch, Transformers, LLMs, MLOps *(Round 1 track)*
 2. **Full-Stack Web Developer** — TypeScript, React, Next.js, Node.js, PostgreSQL, System Design

@@ -174,6 +174,30 @@ Learners arrive with disparate baselines, histories, time commitments, budgets a
                     └── Stuck (2 fails)──► dual-graph remediation detour
 ```
 
+### 4.1 The learner's journey, screen by screen
+
+The same loop from the user's side. `R1` ships in the prototype round; `W1`–`W3` are Round 2 weeks.
+
+**Stage 0 · Evidence** `W1` — drop a resume, paste a GitHub URL. Skills are extracted **with the quote that evidences them**, and public repository signal (languages, frameworks, recency) is read as behaviour rather than self-report. Nothing is trusted yet.
+
+**Stage 1 · Intake & diagnostic** `R1` · *page 1* — state the goal in conversation. The assistant asks back for weekly hours, deadline and budget, then runs a short diagnostic. `W1` makes that diagnostic **targeted**: it probes the skills ranked highest by `uncertainty × downstream_fan_out`, roughly 10–15 questions across 4–6 skills, stopping early per skill as the estimate converges.
+
+**Stage 2 · Orientation** `R1` · *page 2* — *"Machine Learning Engineer — 34% role readiness."* A Poincaré disk showing the learner's current-skill centroid, the target-role pin, and the geodesic between them; one next-action card. The page answers exactly two questions: how far away am I, and what do I do next.
+
+**Stage 3 · The route** `R1` · *page 3* — four phase columns with prerequisite arrows, per-card difficulty, hours and status. Header carries total duration, weekly commitment and total cost. A priority control switches between Fastest, Cheapest and Most Rigorous, re-running the planner and surfacing the trade-off.
+
+**Stage 4 · Justification** `R1` · *page 4 panel* — open any milestone to see real candidates across providers, a prerequisite checklist, the computed gap delta, and a rationale assembled from the engine's own numbers.
+
+**Stage 5 · Learn & assess** `R1` — work the resource, take the module quiz. Programming skills open the practice lab `W3`. Passing advances mastery and unlocks the next node; failing triggers Socratic guided questioning `W2` rather than revealing the answer.
+
+**Stage 6 · Stuck detection & reroute** `R1` — after two failures the system locates the missing upstream concept, retrieves a short remedial resource, and splices a detour into the active phase without disturbing completed work. *"Quick 10-min foundation refresher to unlock this module."*
+
+**Stage 7 · Analytics** `R1` · *page 6* — the Poincaré disk full-size, an Ebbinghaus retention matrix with one-click micro-review, a 52-week activity heatmap, and the gap-closure trend.
+
+**Stage 8 · Alternatives** `W3` · *page 7* — compare trajectories by shared versus incremental effort: *"32h to ML Engineer, or 80h to MLOps Architect — 48 of which overlap."*
+
+> **The judged demo path**, one run of roughly three minutes: goal in chat → clarifying questions → gaps and readiness → four-phase roadmap → open a milestone and read its grounded rationale → fail a quiz → watch the detour splice itself in → analytics for the geodesic and retention heatmap. Every one of the six deliverables appears in that single pass.
+
 ---
 
 ## 5. Official Judging Criteria
