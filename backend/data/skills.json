@@ -1,0 +1,676 @@
+[
+  {
+    "id": "linear-algebra",
+    "name": "Linear Algebra",
+    "category": "Mathematics",
+    "topic": "Mathematics",
+    "description": "Vectors, matrices, dot products, eigenvalues, matrix decomposition.",
+    "prerequisites": [],
+    "is_programming": false,
+    "depth": 0,
+    "fan_out": 31
+  },
+  {
+    "id": "calculus-basics",
+    "name": "Calculus Basics",
+    "category": "Mathematics",
+    "topic": "Mathematics",
+    "description": "Derivatives, integrals, limits, the chain rule in one variable.",
+    "prerequisites": [],
+    "is_programming": false,
+    "depth": 0,
+    "fan_out": 23
+  },
+  {
+    "id": "multivariate-calculus",
+    "name": "Multivariate Calculus",
+    "category": "Mathematics",
+    "topic": "Mathematics",
+    "description": "Partial derivatives, gradients, Jacobians, the multivariate chain rule.",
+    "prerequisites": [
+      "calculus-basics"
+    ],
+    "is_programming": false,
+    "depth": 1,
+    "fan_out": 22
+  },
+  {
+    "id": "statistics-fundamentals",
+    "name": "Statistics Fundamentals",
+    "category": "Mathematics",
+    "topic": "Mathematics",
+    "description": "Descriptive statistics, distributions, hypothesis testing, confidence intervals.",
+    "prerequisites": [],
+    "is_programming": false,
+    "depth": 0,
+    "fan_out": 34
+  },
+  {
+    "id": "probability",
+    "name": "Probability",
+    "category": "Mathematics",
+    "topic": "Mathematics",
+    "description": "Random variables, expectation, conditional probability, Bayes' theorem.",
+    "prerequisites": [
+      "statistics-fundamentals"
+    ],
+    "is_programming": false,
+    "depth": 1,
+    "fan_out": 0
+  },
+  {
+    "id": "optimization-basics",
+    "name": "Optimization Basics",
+    "category": "Mathematics",
+    "topic": "Mathematics",
+    "description": "Convexity, local vs global minima, constrained optimization, Lagrange multipliers.",
+    "prerequisites": [
+      "multivariate-calculus",
+      "linear-algebra"
+    ],
+    "is_programming": false,
+    "depth": 2,
+    "fan_out": 16
+  },
+  {
+    "id": "python-fundamentals",
+    "name": "Python Fundamentals",
+    "category": "Programming",
+    "topic": "Programming",
+    "description": "Syntax, control flow, functions, modules, error handling.",
+    "prerequisites": [],
+    "is_programming": true,
+    "depth": 0,
+    "fan_out": 37
+  },
+  {
+    "id": "python-data-structures",
+    "name": "Python Data Structures",
+    "category": "Programming",
+    "topic": "Programming",
+    "description": "Lists, dicts, sets, comprehensions, iterators, generators.",
+    "prerequisites": [
+      "python-fundamentals"
+    ],
+    "is_programming": true,
+    "depth": 1,
+    "fan_out": 36
+  },
+  {
+    "id": "numpy-arrays",
+    "name": "NumPy & Array Computing",
+    "category": "Programming",
+    "topic": "Programming",
+    "description": "N-dimensional arrays, broadcasting, vectorization, axis semantics.",
+    "prerequisites": [
+      "python-data-structures",
+      "linear-algebra"
+    ],
+    "is_programming": true,
+    "depth": 2,
+    "fan_out": 28
+  },
+  {
+    "id": "git-basics",
+    "name": "Git & Version Control",
+    "category": "Engineering",
+    "topic": "Engineering",
+    "description": "Commits, branching, merging, collaborative workflows.",
+    "prerequisites": [],
+    "is_programming": true,
+    "depth": 0,
+    "fan_out": 3
+  },
+  {
+    "id": "testing-fundamentals",
+    "name": "Testing Fundamentals",
+    "category": "Engineering",
+    "topic": "Engineering",
+    "description": "Unit and integration testing, fixtures, assertions, coverage.",
+    "prerequisites": [
+      "python-data-structures"
+    ],
+    "is_programming": true,
+    "depth": 2,
+    "fan_out": 0
+  },
+  {
+    "id": "sql",
+    "name": "SQL",
+    "category": "Data",
+    "topic": "Data",
+    "description": "Relational queries, joins, aggregation, schema design.",
+    "prerequisites": [],
+    "is_programming": true,
+    "depth": 0,
+    "fan_out": 3
+  },
+  {
+    "id": "data-analysis-pandas",
+    "name": "Data Analysis with Pandas",
+    "category": "Data",
+    "topic": "Data",
+    "description": "DataFrames, indexing, groupby, joins, time series.",
+    "prerequisites": [
+      "python-data-structures",
+      "statistics-fundamentals"
+    ],
+    "is_programming": true,
+    "depth": 2,
+    "fan_out": 5
+  },
+  {
+    "id": "data-visualization",
+    "name": "Data Visualization",
+    "category": "Data",
+    "topic": "Data",
+    "description": "Matplotlib and Seaborn, chart selection, encoding data visually.",
+    "prerequisites": [
+      "data-analysis-pandas"
+    ],
+    "is_programming": true,
+    "depth": 3,
+    "fan_out": 1
+  },
+  {
+    "id": "data-wrangling",
+    "name": "Data Wrangling",
+    "category": "Data",
+    "topic": "Data",
+    "description": "Cleaning, missing values, outliers, reshaping, merging sources.",
+    "prerequisites": [
+      "data-analysis-pandas",
+      "sql"
+    ],
+    "is_programming": true,
+    "depth": 3,
+    "fan_out": 2
+  },
+  {
+    "id": "exploratory-data-analysis",
+    "name": "Exploratory Data Analysis",
+    "category": "Data",
+    "topic": "Data",
+    "description": "Distributions, correlation, leakage detection, hypothesis forming.",
+    "prerequisites": [
+      "data-visualization",
+      "data-wrangling"
+    ],
+    "is_programming": true,
+    "depth": 4,
+    "fan_out": 0
+  },
+  {
+    "id": "feature-engineering",
+    "name": "Feature Engineering",
+    "category": "Data",
+    "topic": "Data",
+    "description": "Encoding, scaling, binning, interaction terms, target leakage avoidance.",
+    "prerequisites": [
+      "data-wrangling",
+      "statistics-fundamentals"
+    ],
+    "is_programming": true,
+    "depth": 4,
+    "fan_out": 0
+  },
+  {
+    "id": "ml-fundamentals",
+    "name": "Machine Learning Fundamentals",
+    "category": "Machine Learning",
+    "topic": "Machine Learning",
+    "description": "Learning paradigms, train/test splits, bias-variance, generalization.",
+    "prerequisites": [
+      "numpy-arrays",
+      "statistics-fundamentals",
+      "linear-algebra"
+    ],
+    "is_programming": true,
+    "depth": 3,
+    "fan_out": 27
+  },
+  {
+    "id": "supervised-learning",
+    "name": "Supervised Learning",
+    "category": "Machine Learning",
+    "topic": "Machine Learning",
+    "description": "Linear and logistic regression, decision trees, k-NN, SVMs.",
+    "prerequisites": [
+      "ml-fundamentals"
+    ],
+    "is_programming": true,
+    "depth": 4,
+    "fan_out": 24
+  },
+  {
+    "id": "unsupervised-learning",
+    "name": "Unsupervised Learning",
+    "category": "Machine Learning",
+    "topic": "Machine Learning",
+    "description": "Clustering, dimensionality reduction, PCA, anomaly detection.",
+    "prerequisites": [
+      "ml-fundamentals"
+    ],
+    "is_programming": true,
+    "depth": 4,
+    "fan_out": 0
+  },
+  {
+    "id": "model-evaluation",
+    "name": "Model Evaluation",
+    "category": "Machine Learning",
+    "topic": "Machine Learning",
+    "description": "Cross-validation, precision/recall/F1, ROC-AUC, confusion matrices.",
+    "prerequisites": [
+      "supervised-learning"
+    ],
+    "is_programming": true,
+    "depth": 5,
+    "fan_out": 3
+  },
+  {
+    "id": "regularization",
+    "name": "Regularization",
+    "category": "Machine Learning",
+    "topic": "Machine Learning",
+    "description": "L1/L2 penalties, dropout, early stopping, overfitting control.",
+    "prerequisites": [
+      "supervised-learning",
+      "optimization-basics"
+    ],
+    "is_programming": true,
+    "depth": 5,
+    "fan_out": 0
+  },
+  {
+    "id": "ensemble-methods",
+    "name": "Ensemble Methods",
+    "category": "Machine Learning",
+    "topic": "Machine Learning",
+    "description": "Bagging, boosting, random forests, gradient boosting, stacking.",
+    "prerequisites": [
+      "supervised-learning",
+      "model-evaluation"
+    ],
+    "is_programming": true,
+    "depth": 6,
+    "fan_out": 0
+  },
+  {
+    "id": "hyperparameter-tuning",
+    "name": "Hyperparameter Tuning",
+    "category": "Machine Learning",
+    "topic": "Machine Learning",
+    "description": "Grid and random search, Bayesian optimization, search budgets.",
+    "prerequisites": [
+      "model-evaluation"
+    ],
+    "is_programming": true,
+    "depth": 6,
+    "fan_out": 0
+  },
+  {
+    "id": "scikit-learn",
+    "name": "scikit-learn in Practice",
+    "category": "Machine Learning",
+    "topic": "Machine Learning",
+    "description": "Estimator API, pipelines, transformers, custom components.",
+    "prerequisites": [
+      "supervised-learning",
+      "data-analysis-pandas"
+    ],
+    "is_programming": true,
+    "depth": 5,
+    "fan_out": 0
+  },
+  {
+    "id": "gradient-descent",
+    "name": "Gradient Descent & Optimizers",
+    "category": "Deep Learning",
+    "topic": "Deep Learning",
+    "description": "SGD, momentum, Adam, learning-rate schedules, convergence behaviour.",
+    "prerequisites": [
+      "optimization-basics",
+      "multivariate-calculus"
+    ],
+    "is_programming": true,
+    "depth": 3,
+    "fan_out": 14
+  },
+  {
+    "id": "deep-learning-fundamentals",
+    "name": "Deep Learning Fundamentals",
+    "category": "Deep Learning",
+    "topic": "Deep Learning",
+    "description": "Perceptrons, activation functions, layers, loss functions.",
+    "prerequisites": [
+      "supervised-learning",
+      "multivariate-calculus"
+    ],
+    "is_programming": true,
+    "depth": 5,
+    "fan_out": 18
+  },
+  {
+    "id": "backpropagation",
+    "name": "Backpropagation",
+    "category": "Deep Learning",
+    "topic": "Deep Learning",
+    "description": "Computational graphs, reverse-mode differentiation, gradient flow.",
+    "prerequisites": [
+      "deep-learning-fundamentals",
+      "multivariate-calculus"
+    ],
+    "is_programming": true,
+    "depth": 6,
+    "fan_out": 14
+  },
+  {
+    "id": "neural-networks",
+    "name": "Neural Network Architectures",
+    "category": "Deep Learning",
+    "topic": "Deep Learning",
+    "description": "Feedforward networks, depth vs width, initialization, normalization.",
+    "prerequisites": [
+      "backpropagation",
+      "gradient-descent"
+    ],
+    "is_programming": true,
+    "depth": 7,
+    "fan_out": 13
+  },
+  {
+    "id": "pytorch-basics",
+    "name": "PyTorch",
+    "category": "Deep Learning",
+    "topic": "Deep Learning",
+    "description": "Tensors, autograd, modules, training loops, GPU execution.",
+    "prerequisites": [
+      "neural-networks",
+      "numpy-arrays"
+    ],
+    "is_programming": true,
+    "depth": 8,
+    "fan_out": 4
+  },
+  {
+    "id": "cnn-architectures",
+    "name": "Convolutional Networks",
+    "category": "Deep Learning",
+    "topic": "Deep Learning",
+    "description": "Convolution, pooling, receptive fields, ResNet-style architectures.",
+    "prerequisites": [
+      "neural-networks"
+    ],
+    "is_programming": true,
+    "depth": 8,
+    "fan_out": 2
+  },
+  {
+    "id": "rnn-sequence-models",
+    "name": "Sequence Models",
+    "category": "Deep Learning",
+    "topic": "Deep Learning",
+    "description": "RNNs, LSTMs, GRUs, sequence-to-sequence, vanishing gradients.",
+    "prerequisites": [
+      "neural-networks"
+    ],
+    "is_programming": true,
+    "depth": 8,
+    "fan_out": 5
+  },
+  {
+    "id": "attention-mechanisms",
+    "name": "Attention Mechanisms",
+    "category": "Deep Learning",
+    "topic": "Deep Learning",
+    "description": "Query-key-value attention, scaled dot-product, multi-head attention.",
+    "prerequisites": [
+      "rnn-sequence-models"
+    ],
+    "is_programming": true,
+    "depth": 9,
+    "fan_out": 4
+  },
+  {
+    "id": "transformer-architecture",
+    "name": "Transformer Architecture",
+    "category": "Deep Learning",
+    "topic": "Deep Learning",
+    "description": "Encoder-decoder stacks, positional encoding, residual streams.",
+    "prerequisites": [
+      "attention-mechanisms"
+    ],
+    "is_programming": true,
+    "depth": 10,
+    "fan_out": 3
+  },
+  {
+    "id": "transfer-learning",
+    "name": "Transfer Learning & Fine-Tuning",
+    "category": "Deep Learning",
+    "topic": "Deep Learning",
+    "description": "Pretrained backbones, freezing, fine-tuning strategies, LoRA.",
+    "prerequisites": [
+      "cnn-architectures",
+      "pytorch-basics"
+    ],
+    "is_programming": true,
+    "depth": 9,
+    "fan_out": 0
+  },
+  {
+    "id": "nlp-fundamentals",
+    "name": "NLP Fundamentals",
+    "category": "Applied AI",
+    "topic": "Applied AI",
+    "description": "Text preprocessing, language modelling, classification, NER.",
+    "prerequisites": [
+      "deep-learning-fundamentals"
+    ],
+    "is_programming": true,
+    "depth": 6,
+    "fan_out": 5
+  },
+  {
+    "id": "tokenization-embeddings",
+    "name": "Tokenization & Embeddings",
+    "category": "Applied AI",
+    "topic": "Applied AI",
+    "description": "Subword tokenization, word and sentence embeddings, vector semantics.",
+    "prerequisites": [
+      "nlp-fundamentals"
+    ],
+    "is_programming": true,
+    "depth": 7,
+    "fan_out": 4
+  },
+  {
+    "id": "computer-vision-fundamentals",
+    "name": "Computer Vision",
+    "category": "Applied AI",
+    "topic": "Applied AI",
+    "description": "Image classification, detection, segmentation, augmentation.",
+    "prerequisites": [
+      "cnn-architectures"
+    ],
+    "is_programming": true,
+    "depth": 9,
+    "fan_out": 0
+  },
+  {
+    "id": "llm-fundamentals",
+    "name": "Large Language Models",
+    "category": "Applied AI",
+    "topic": "Applied AI",
+    "description": "Pretraining, instruction tuning, RLHF, decoding strategies, context windows.",
+    "prerequisites": [
+      "transformer-architecture",
+      "tokenization-embeddings"
+    ],
+    "is_programming": true,
+    "depth": 11,
+    "fan_out": 2
+  },
+  {
+    "id": "prompt-engineering",
+    "name": "Prompt Engineering",
+    "category": "Applied AI",
+    "topic": "Applied AI",
+    "description": "Few-shot prompting, chain-of-thought, structured output, evaluation.",
+    "prerequisites": [
+      "llm-fundamentals"
+    ],
+    "is_programming": true,
+    "depth": 12,
+    "fan_out": 0
+  },
+  {
+    "id": "vector-databases",
+    "name": "Vector Databases",
+    "category": "Applied AI",
+    "topic": "Applied AI",
+    "description": "ANN indexes, similarity metrics, hybrid search, index tradeoffs.",
+    "prerequisites": [
+      "tokenization-embeddings"
+    ],
+    "is_programming": true,
+    "depth": 8,
+    "fan_out": 1
+  },
+  {
+    "id": "rag-systems",
+    "name": "Retrieval-Augmented Generation",
+    "category": "Applied AI",
+    "topic": "Applied AI",
+    "description": "Chunking, retrieval, reranking, grounding, citation and evaluation.",
+    "prerequisites": [
+      "llm-fundamentals",
+      "vector-databases"
+    ],
+    "is_programming": true,
+    "depth": 12,
+    "fan_out": 0
+  },
+  {
+    "id": "linux-fundamentals",
+    "name": "Linux Fundamentals",
+    "category": "Engineering",
+    "topic": "Engineering",
+    "description": "Shell, filesystem, processes, permissions, package management.",
+    "prerequisites": [],
+    "is_programming": true,
+    "depth": 0,
+    "fan_out": 5
+  },
+  {
+    "id": "cloud-fundamentals",
+    "name": "Cloud Fundamentals",
+    "category": "Engineering",
+    "topic": "Engineering",
+    "description": "Compute, storage, networking, IAM, managed service models.",
+    "prerequisites": [],
+    "is_programming": false,
+    "depth": 0,
+    "fan_out": 3
+  },
+  {
+    "id": "containers-docker",
+    "name": "Containers with Docker",
+    "category": "Engineering",
+    "topic": "Engineering",
+    "description": "Images, layers, Dockerfiles, volumes, container networking.",
+    "prerequisites": [
+      "linux-fundamentals"
+    ],
+    "is_programming": true,
+    "depth": 1,
+    "fan_out": 4
+  },
+  {
+    "id": "rest-apis-python",
+    "name": "REST APIs in Python",
+    "category": "Engineering",
+    "topic": "Engineering",
+    "description": "HTTP semantics, FastAPI, request validation, async handlers.",
+    "prerequisites": [
+      "python-data-structures"
+    ],
+    "is_programming": true,
+    "depth": 2,
+    "fan_out": 3
+  },
+  {
+    "id": "experiment-tracking",
+    "name": "Experiment Tracking",
+    "category": "MLOps",
+    "topic": "MLOps",
+    "description": "Run metadata, metrics, artifacts, reproducibility, model registries.",
+    "prerequisites": [
+      "ml-fundamentals",
+      "git-basics"
+    ],
+    "is_programming": true,
+    "depth": 4,
+    "fan_out": 1
+  },
+  {
+    "id": "ci-cd-fundamentals",
+    "name": "CI/CD Fundamentals",
+    "category": "MLOps",
+    "topic": "MLOps",
+    "description": "Automated builds, test gates, deployment pipelines.",
+    "prerequisites": [
+      "git-basics",
+      "containers-docker"
+    ],
+    "is_programming": true,
+    "depth": 2,
+    "fan_out": 1
+  },
+  {
+    "id": "model-serving",
+    "name": "Model Serving",
+    "category": "MLOps",
+    "topic": "MLOps",
+    "description": "Inference endpoints, batching, latency budgets, quantization.",
+    "prerequisites": [
+      "rest-apis-python",
+      "containers-docker",
+      "pytorch-basics",
+      "cloud-fundamentals"
+    ],
+    "is_programming": true,
+    "depth": 9,
+    "fan_out": 2
+  },
+  {
+    "id": "model-monitoring",
+    "name": "Model Monitoring",
+    "category": "MLOps",
+    "topic": "MLOps",
+    "description": "Drift detection, data quality, performance decay, alerting.",
+    "prerequisites": [
+      "model-serving",
+      "model-evaluation"
+    ],
+    "is_programming": true,
+    "depth": 10,
+    "fan_out": 0
+  },
+  {
+    "id": "mlops-pipelines",
+    "name": "MLOps Pipelines",
+    "category": "MLOps",
+    "topic": "MLOps",
+    "description": "Orchestrated training, automated retraining, versioned deployment.",
+    "prerequisites": [
+      "ci-cd-fundamentals",
+      "model-serving",
+      "experiment-tracking"
+    ],
+    "is_programming": true,
+    "depth": 10,
+    "fan_out": 0
+  }
+]

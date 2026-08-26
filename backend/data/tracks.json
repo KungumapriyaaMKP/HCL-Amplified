@@ -1,0 +1,68 @@
+[
+  {
+    "id": "ml-engineer",
+    "name": "AI / Machine Learning Engineer",
+    "summary": "Builds, trains and ships machine learning systems to production.",
+    "demand_score": 0.92,
+    "demand_snapshot_date": "2026-08",
+    "demand_label": "Very High",
+    "skills": {
+      "python-fundamentals":        { "required": 0.90, "importance": 1.00 },
+      "python-data-structures":     { "required": 0.85, "importance": 0.95 },
+      "numpy-arrays":               { "required": 0.85, "importance": 0.95 },
+      "linear-algebra":             { "required": 0.75, "importance": 0.90 },
+      "calculus-basics":            { "required": 0.70, "importance": 0.70 },
+      "multivariate-calculus":      { "required": 0.70, "importance": 0.80 },
+      "statistics-fundamentals":    { "required": 0.80, "importance": 0.90 },
+      "probability":                { "required": 0.70, "importance": 0.75 },
+      "optimization-basics":        { "required": 0.65, "importance": 0.75 },
+
+      "sql":                        { "required": 0.65, "importance": 0.65, "elective": true },
+      "data-analysis-pandas":       { "required": 0.85, "importance": 0.90 },
+      "data-visualization":         { "required": 0.60, "importance": 0.55, "elective": true },
+      "data-wrangling":             { "required": 0.75, "importance": 0.80 },
+      "exploratory-data-analysis":  { "required": 0.70, "importance": 0.70 },
+      "feature-engineering":        { "required": 0.80, "importance": 0.85 },
+
+      "ml-fundamentals":            { "required": 0.90, "importance": 1.00 },
+      "supervised-learning":        { "required": 0.90, "importance": 1.00 },
+      "unsupervised-learning":      { "required": 0.70, "importance": 0.70 },
+      "model-evaluation":           { "required": 0.85, "importance": 0.95 },
+      "regularization":             { "required": 0.75, "importance": 0.80 },
+      "ensemble-methods":           { "required": 0.70, "importance": 0.70, "elective": true },
+      "hyperparameter-tuning":      { "required": 0.70, "importance": 0.70 },
+      "scikit-learn":               { "required": 0.80, "importance": 0.85 },
+
+      "gradient-descent":           { "required": 0.80, "importance": 0.85 },
+      "deep-learning-fundamentals": { "required": 0.85, "importance": 0.95 },
+      "backpropagation":            { "required": 0.80, "importance": 0.90 },
+      "neural-networks":            { "required": 0.85, "importance": 0.95 },
+      "pytorch-basics":             { "required": 0.85, "importance": 0.95 },
+      "cnn-architectures":          { "required": 0.65, "importance": 0.60, "elective": true },
+      "rnn-sequence-models":        { "required": 0.65, "importance": 0.65 },
+      "attention-mechanisms":       { "required": 0.80, "importance": 0.90 },
+      "transformer-architecture":   { "required": 0.80, "importance": 0.90 },
+      "transfer-learning":          { "required": 0.75, "importance": 0.80 },
+
+      "nlp-fundamentals":           { "required": 0.70, "importance": 0.75 },
+      "tokenization-embeddings":    { "required": 0.75, "importance": 0.80 },
+      "computer-vision-fundamentals": { "required": 0.50, "importance": 0.45, "elective": true },
+      "llm-fundamentals":           { "required": 0.80, "importance": 0.90 },
+      "prompt-engineering":         { "required": 0.65, "importance": 0.60, "elective": true },
+      "vector-databases":           { "required": 0.60, "importance": 0.60, "elective": true },
+      "rag-systems":                { "required": 0.65, "importance": 0.65, "elective": true },
+
+      "git-basics":                 { "required": 0.80, "importance": 0.75 },
+      "testing-fundamentals":       { "required": 0.65, "importance": 0.60 },
+      "linux-fundamentals":         { "required": 0.60, "importance": 0.55 },
+      "cloud-fundamentals":         { "required": 0.60, "importance": 0.60 },
+      "containers-docker":          { "required": 0.70, "importance": 0.75 },
+      "rest-apis-python":           { "required": 0.70, "importance": 0.75 },
+      "experiment-tracking":        { "required": 0.65, "importance": 0.70 },
+      "ci-cd-fundamentals":         { "required": 0.60, "importance": 0.60, "elective": true },
+      "model-serving":              { "required": 0.75, "importance": 0.85 },
+      "model-monitoring":           { "required": 0.65, "importance": 0.70 },
+      "mlops-pipelines":            { "required": 0.65, "importance": 0.70 }
+    }
+  }
+]
