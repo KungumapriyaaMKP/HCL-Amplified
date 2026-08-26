@@ -355,5 +355,112 @@
     "ml pipeline",
     "kubeflow",
     "ml engineering"
+  ],
+  "js-fundamentals": [
+    "javascript",
+    "js",
+    "es6",
+    "vanilla js",
+    "javascript programming"
+  ],
+  "typescript-fundamentals": [
+    "typescript",
+    "ts",
+    "typed javascript",
+    "typescript development"
+  ],
+  "react-basics": [
+    "react",
+    "react.js",
+    "reactjs",
+    "next.js",
+    "react native",
+    "frontend development"
+  ],
+  "nodejs-backend": [
+    "node.js",
+    "nodejs",
+    "express",
+    "express.js",
+    "backend development with node"
+  ],
+  "cloud-deployment": [
+    "cloud deployment",
+    "web deployment",
+    "vercel",
+    "nginx",
+    "deploying web apps"
+  ],
+  "networking-fundamentals": [
+    "networking",
+    "tcp/ip",
+    "dns",
+    "http",
+    "network protocols"
+  ],
+  "security-fundamentals": [
+    "cybersecurity",
+    "cloud security",
+    "iam",
+    "oauth",
+    "web security"
+  ],
+  "kubernetes-basics": [
+    "kubernetes",
+    "k8s",
+    "helm",
+    "container orchestration",
+    "aks",
+    "eks"
+  ],
+  "infrastructure-as-code": [
+    "terraform",
+    "iac",
+    "cloudformation",
+    "infrastructure as code",
+    "ansible"
+  ],
+  "cloud-monitoring": [
+    "observability",
+    "monitoring",
+    "prometheus",
+    "grafana",
+    "datadog",
+    "cloudwatch"
+  ],
+  "data-warehousing": [
+    "data warehouse",
+    "data warehousing",
+    "snowflake",
+    "bigquery",
+    "redshift",
+    "star schema"
+  ],
+  "distributed-computing-spark": [
+    "apache spark",
+    "pyspark",
+    "spark",
+    "distributed computing",
+    "hadoop"
+  ],
+  "kafka-streaming": [
+    "apache kafka",
+    "kafka",
+    "event streaming",
+    "real-time streaming",
+    "message broker"
+  ],
+  "airflow-orchestration": [
+    "apache airflow",
+    "airflow",
+    "data workflow",
+    "workflow orchestration",
+    "data pipeline"
+  ],
+  "dbt-transformations": [
+    "dbt",
+    "data build tool",
+    "analytics engineering",
+    "sql transformations"
   ]
 }

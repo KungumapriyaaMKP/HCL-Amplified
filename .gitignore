@@ -36,3 +36,14 @@ Thumbs.db
 API-key.txt
 *key*.txt
 .claude/
+.antigravity/
+frontend/.env*
+
+# AI prompts, assistant configs, and internal dev logs
+CLAUDE.md
+frontend/CLAUDE.md
+frontend/AGENTS.md
+CHANGES.md
+change.md
+DEBUG_LOG.md
+docs/

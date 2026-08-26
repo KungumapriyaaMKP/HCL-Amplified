@@ -48,6 +48,7 @@ class Resource(BaseModel):
     thumbnail_url: str | None = None
 
     duration_hours: float | None = None
+    duration_source: str | None = None
     difficulty: Difficulty | None = None
     modality: Modality = Modality.VIDEO
 

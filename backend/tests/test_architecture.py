@@ -63,9 +63,10 @@ def test_modules_do_not_reach_into_each_other():
                     )
 
 
-# ── Rule 3: only llm/ talks to providers ─────────────────────────────────────
+# ── Rule 3: only llm/ talks to LLM providers; only core/supa.py imports supabase ──
 
 PROVIDER_SDKS = {"groq", "google", "google.generativeai", "openai", "anthropic"}
+SUPABASE_SDKS = {"supabase", "gotrue", "postgrest", "storage3", "realtime"}
 
 
 def test_only_llm_package_calls_providers():
@@ -78,6 +79,20 @@ def test_only_llm_package_calls_providers():
                 pytest.fail(
                     f"RULE 3 violated: {py.relative_to(APP)} imports {imp!r}. "
                     "Only app/llm/ may call a provider; modules pass text."
+                )
+
+
+def test_only_core_supa_imports_supabase():
+    for py in _py_files(APP):
+        rel = py.relative_to(APP).as_posix()
+        if rel == "core/supa.py":
+            continue
+        for imp in _imports(py):
+            root = imp.split(".")[0]
+            if root in SUPABASE_SDKS:
+                pytest.fail(
+                    f"RULE 3 extended violated: {py.relative_to(APP)} imports {imp!r}. "
+                    "The supabase package must be imported ONLY inside app/core/supa.py."
                 )
 
 

@@ -1,3 +1,4 @@
+import { AlertTriangle } from "lucide-react";
 import type { PlanResponse } from "@/lib/api/pathfinder";
 
 /** Page 2/3 header: the orientation facts. Density rule: <= 5 elements. */
@@ -17,7 +18,7 @@ export function RoadmapHeader({ plan }: { plan: PlanResponse }) {
         </div>
         <div className="mt-4 flex flex-wrap gap-x-6 gap-y-1 text-sm text-ink-muted">
           <span>{plan.gap_count} skills to learn</span>
-          <span>{plan.total_hours}h total</span>
+          <span>~{plan.total_hours}h total</span>
           {plan.weeks_required && <span>~{plan.weeks_required} weeks</span>}
           <span
             className={
@@ -27,7 +28,9 @@ export function RoadmapHeader({ plan }: { plan: PlanResponse }) {
             {plan.prerequisite_violations} prerequisite violations
           </span>
           {!plan.is_feasible && (
-            <span className="text-at-risk">⚠ Tight for your timeframe</span>
+            <span className="text-at-risk inline-flex items-center gap-1">
+              <AlertTriangle className="w-3.5 h-3.5" /> Tight for your timeframe
+            </span>
           )}
         </div>
       </div>

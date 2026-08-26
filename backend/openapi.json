@@ -1,0 +1,2017 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Pathfinder API",
+    "description": "AI-powered personalised learning path recommender",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/plan": {
+      "post": {
+        "summary": "Create Plan",
+        "operationId": "create_plan_api_plan_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlanRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/plan/relax": {
+      "post": {
+        "summary": "Relax Plan",
+        "description": "Compute ranked relaxation options for an infeasible or tight plan.",
+        "operationId": "relax_plan_api_plan_relax_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlanRelaxRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanRelaxResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/roles": {
+      "get": {
+        "summary": "Get Roles",
+        "description": "Return available curated career tracks with live job-market demand scores.",
+        "operationId": "get_roles_api_roles_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RolesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/adapt/detour": {
+      "post": {
+        "summary": "Insert Plan Detour",
+        "description": "D6 money-shot: Splices a remediation node into the active learning path on blockage.",
+        "operationId": "insert_plan_detour_api_adapt_detour_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DetourRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetourResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/me": {
+      "get": {
+        "summary": "Get Me",
+        "description": "Return authenticated profile information or guest status.",
+        "operationId": "get_me_api_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserMeResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/profile": {
+      "post": {
+        "summary": "Update Profile",
+        "description": "Upsert display name in the profiles table on login/signup.",
+        "operationId": "update_profile_api_profile_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfileUpdateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/events": {
+      "post": {
+        "summary": "Record Event",
+        "description": "Ingest a telemetry event from frontend interactions (quizzes, reviews, completion).\nAccrues mastery in persistent state when applicable.",
+        "operationId": "record_event_api_events_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object",
+                  "title": "Response Record Event Api Events Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/history": {
+      "get": {
+        "summary": "Get History",
+        "description": "Return the user's saved learning plans and derived skill retention decay summary.",
+        "operationId": "get_history_api_history_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HistoryResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/profile/resume": {
+      "post": {
+        "summary": "Upload Resume",
+        "description": "Extract verified technical skills with provenance quotes from an uploaded resume (PDF/DOCX).\nAccrues evidence in learner profile.",
+        "operationId": "upload_resume_api_profile_resume_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_resume_api_profile_resume_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileIntakeResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/profile/github": {
+      "post": {
+        "summary": "Profile Github User",
+        "description": "Analyze public repositories and tech stack for a GitHub user.\nAccrues evidence in learner profile.",
+        "operationId": "profile_github_user_api_profile_github_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GitHubProfileRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileIntakeResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/diagnostic/generate": {
+      "post": {
+        "summary": "Generate Diagnostic",
+        "description": "Generate adaptive diagnostic questions targeting highest probe-priority skills\n(skills with high uncertainty and high downstream prerequisite fan-out).",
+        "operationId": "generate_diagnostic_api_diagnostic_generate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DiagnosticGenerateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiagnosticGenerateResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/diagnostic/submit": {
+      "post": {
+        "summary": "Submit Diagnostic",
+        "description": "Evaluate diagnostic responses, compute 2PL-IRT theta, and update learner state.",
+        "operationId": "submit_diagnostic_api_diagnostic_submit_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DiagnosticSubmitRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiagnosticSubmitResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/socratic": {
+      "post": {
+        "summary": "Get Socratic Guidance",
+        "description": "Generate interactive Socratic feedback guiding a learner through their misconception.",
+        "operationId": "get_socratic_guidance_api_socratic_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SocraticRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SocraticResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/chat": {
+      "post": {
+        "summary": "Chat Intake Stream",
+        "description": "Stream conversational intake SSE chunks.\nExtracts goal, hours/week, timeframe, and budget in an engaging dialogue.",
+        "operationId": "chat_intake_stream_api_chat_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/gamification": {
+      "get": {
+        "summary": "Get Gamification Stats",
+        "description": "Derive dynamic XP, level, active study streak, and unlocked badges from telemetry events.",
+        "operationId": "get_gamification_stats_api_gamification_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GamificationResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/poincare": {
+      "get": {
+        "summary": "Get Poincare Disk Layout",
+        "description": "Compute 2D Poincar\u00e9 disk embeddings for the entire skill graph ontology.",
+        "operationId": "get_poincare_disk_layout_api_poincare_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PoincareResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/health": {
+      "get": {
+        "summary": "Health",
+        "description": "Liveness plus a capability read-out, so a cold deploy is diagnosable.",
+        "operationId": "health_api_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Health Api Health Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Badge": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "icon": {
+            "type": "string",
+            "title": "Icon"
+          },
+          "unlocked": {
+            "type": "boolean",
+            "title": "Unlocked"
+          },
+          "unlocked_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unlocked At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "description",
+          "icon",
+          "unlocked"
+        ],
+        "title": "Badge"
+      },
+      "Body_upload_resume_api_profile_resume_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_upload_resume_api_profile_resume_post"
+      },
+      "ChatMessage": {
+        "properties": {
+          "role": {
+            "type": "string",
+            "pattern": "^(user|assistant|system)$",
+            "title": "Role"
+          },
+          "content": {
+            "type": "string",
+            "title": "Content"
+          }
+        },
+        "type": "object",
+        "required": [
+          "role",
+          "content"
+        ],
+        "title": "ChatMessage"
+      },
+      "ChatRequest": {
+        "properties": {
+          "messages": {
+            "items": {
+              "$ref": "#/components/schemas/ChatMessage"
+            },
+            "type": "array",
+            "title": "Messages"
+          }
+        },
+        "type": "object",
+        "required": [
+          "messages"
+        ],
+        "title": "ChatRequest"
+      },
+      "Confidence": {
+        "type": "string",
+        "enum": [
+          "high",
+          "medium",
+          "low"
+        ],
+        "title": "Confidence",
+        "description": "How much we trust a mastery estimate. Drives Stage 0 probe priority."
+      },
+      "DetourRequest": {
+        "properties": {
+          "blocked_skill_id": {
+            "type": "string",
+            "title": "Blocked Skill Id"
+          },
+          "goal": {
+            "type": "string",
+            "title": "Goal",
+            "default": "Machine Learning Engineer"
+          }
+        },
+        "type": "object",
+        "required": [
+          "blocked_skill_id"
+        ],
+        "title": "DetourRequest"
+      },
+      "DetourResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success"
+          },
+          "blocked_skill_id": {
+            "type": "string",
+            "title": "Blocked Skill Id"
+          },
+          "bridge_skill_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bridge Skill Id"
+          },
+          "bridge_skill_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bridge Skill Name"
+          },
+          "rationale": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rationale"
+          },
+          "plan": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PlanResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "blocked_skill_id"
+        ],
+        "title": "DetourResponse"
+      },
+      "DiagnosticAnswerItem": {
+        "properties": {
+          "skill_id": {
+            "type": "string",
+            "title": "Skill Id"
+          },
+          "discrimination": {
+            "type": "number",
+            "title": "Discrimination",
+            "default": 1.0
+          },
+          "difficulty": {
+            "type": "number",
+            "title": "Difficulty",
+            "default": 0.0
+          },
+          "is_correct": {
+            "type": "boolean",
+            "title": "Is Correct"
+          }
+        },
+        "type": "object",
+        "required": [
+          "skill_id",
+          "is_correct"
+        ],
+        "title": "DiagnosticAnswerItem"
+      },
+      "DiagnosticGenerateRequest": {
+        "properties": {
+          "goal": {
+            "type": "string",
+            "title": "Goal",
+            "default": "Machine Learning Engineer"
+          },
+          "num_questions": {
+            "type": "integer",
+            "maximum": 10.0,
+            "minimum": 2.0,
+            "title": "Num Questions",
+            "default": 4
+          }
+        },
+        "type": "object",
+        "title": "DiagnosticGenerateRequest"
+      },
+      "DiagnosticGenerateResponse": {
+        "properties": {
+          "questions": {
+            "items": {
+              "$ref": "#/components/schemas/DiagnosticQuestion"
+            },
+            "type": "array",
+            "title": "Questions"
+          },
+          "skills_tested": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Skills Tested"
+          }
+        },
+        "type": "object",
+        "required": [
+          "questions",
+          "skills_tested"
+        ],
+        "title": "DiagnosticGenerateResponse"
+      },
+      "DiagnosticQuestion": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "skill_id": {
+            "type": "string",
+            "title": "Skill Id"
+          },
+          "skill_name": {
+            "type": "string",
+            "title": "Skill Name"
+          },
+          "question": {
+            "type": "string",
+            "title": "Question"
+          },
+          "options": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Options"
+          },
+          "correct_index": {
+            "type": "integer",
+            "title": "Correct Index"
+          },
+          "explanation": {
+            "type": "string",
+            "title": "Explanation"
+          },
+          "discrimination": {
+            "type": "number",
+            "title": "Discrimination",
+            "default": 1.0
+          },
+          "difficulty": {
+            "type": "number",
+            "title": "Difficulty",
+            "default": 0.0
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "skill_id",
+          "skill_name",
+          "question",
+          "options",
+          "correct_index",
+          "explanation"
+        ],
+        "title": "DiagnosticQuestion"
+      },
+      "DiagnosticSubmitRequest": {
+        "properties": {
+          "responses": {
+            "items": {
+              "$ref": "#/components/schemas/DiagnosticAnswerItem"
+            },
+            "type": "array",
+            "title": "Responses"
+          },
+          "goal": {
+            "type": "string",
+            "title": "Goal",
+            "default": "Machine Learning Engineer"
+          }
+        },
+        "type": "object",
+        "required": [
+          "responses"
+        ],
+        "title": "DiagnosticSubmitRequest"
+      },
+      "DiagnosticSubmitResponse": {
+        "properties": {
+          "theta": {
+            "type": "number",
+            "title": "Theta"
+          },
+          "standard_error": {
+            "type": "number",
+            "title": "Standard Error"
+          },
+          "updated_mastery": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Updated Mastery"
+          },
+          "readiness_pct": {
+            "type": "integer",
+            "title": "Readiness Pct"
+          }
+        },
+        "type": "object",
+        "required": [
+          "theta",
+          "standard_error",
+          "updated_mastery",
+          "readiness_pct"
+        ],
+        "title": "DiagnosticSubmitResponse"
+      },
+      "EventIn": {
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/EventType"
+          },
+          "skill_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Skill Id"
+          },
+          "resource_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Resource Id"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score"
+          },
+          "minutes_spent": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Minutes Spent"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Payload"
+          },
+          "at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "title": "EventIn"
+      },
+      "EventType": {
+        "type": "string",
+        "enum": [
+          "resource_started",
+          "resource_completed",
+          "quiz_attempted",
+          "review_completed",
+          "feedback_given",
+          "path_generated",
+          "detour_inserted"
+        ],
+        "title": "EventType"
+      },
+      "GamificationResponse": {
+        "properties": {
+          "total_xp": {
+            "type": "integer",
+            "title": "Total Xp"
+          },
+          "level": {
+            "type": "integer",
+            "title": "Level"
+          },
+          "next_level_xp": {
+            "type": "integer",
+            "title": "Next Level Xp"
+          },
+          "current_level_progress_pct": {
+            "type": "integer",
+            "title": "Current Level Progress Pct"
+          },
+          "streak_days": {
+            "type": "integer",
+            "title": "Streak Days"
+          },
+          "total_events": {
+            "type": "integer",
+            "title": "Total Events"
+          },
+          "badges": {
+            "items": {
+              "$ref": "#/components/schemas/Badge"
+            },
+            "type": "array",
+            "title": "Badges"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_xp",
+          "level",
+          "next_level_xp",
+          "current_level_progress_pct",
+          "streak_days",
+          "total_events",
+          "badges"
+        ],
+        "title": "GamificationResponse"
+      },
+      "GitHubProfileRequest": {
+        "properties": {
+          "username": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Username"
+          }
+        },
+        "type": "object",
+        "required": [
+          "username"
+        ],
+        "title": "GitHubProfileRequest"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "HistoryResponse": {
+        "properties": {
+          "saved_plans": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Saved Plans"
+          },
+          "retention_summary": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Retention Summary"
+          },
+          "activity_grid": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Activity Grid"
+          }
+        },
+        "type": "object",
+        "required": [
+          "saved_plans",
+          "retention_summary",
+          "activity_grid"
+        ],
+        "title": "HistoryResponse"
+      },
+      "Mastery": {
+        "properties": {
+          "skill_id": {
+            "type": "string",
+            "title": "Skill Id"
+          },
+          "level": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Level"
+          },
+          "confidence": {
+            "$ref": "#/components/schemas/Confidence",
+            "default": "low"
+          },
+          "evidence": {
+            "items": {
+              "$ref": "#/components/schemas/MasteryEvidence"
+            },
+            "type": "array",
+            "title": "Evidence"
+          }
+        },
+        "type": "object",
+        "required": [
+          "skill_id",
+          "level"
+        ],
+        "title": "Mastery",
+        "description": "Per-skill mastery WITH confidence -- not a single global theta.\n\nThis is what makes the \"zero-assumption\" claim real: an unverified\nresume boast carries MEDIUM confidence and gets probed or discounted,\nnever silently trusted."
+      },
+      "MasteryEvidence": {
+        "properties": {
+          "source": {
+            "type": "string",
+            "title": "Source"
+          },
+          "quote": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quote"
+          },
+          "detail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "required": [
+          "source"
+        ],
+        "title": "MasteryEvidence",
+        "description": "Provenance for a mastery claim. Stage 0 requires a quote, never a guess."
+      },
+      "MilestoneOut": {
+        "properties": {
+          "phase": {
+            "$ref": "#/components/schemas/Phase"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "total_hours": {
+            "type": "number",
+            "title": "Total Hours"
+          },
+          "nodes": {
+            "items": {
+              "$ref": "#/components/schemas/NodeOut"
+            },
+            "type": "array",
+            "title": "Nodes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "phase",
+          "title",
+          "total_hours",
+          "nodes"
+        ],
+        "title": "MilestoneOut"
+      },
+      "Modality": {
+        "type": "string",
+        "enum": [
+          "video",
+          "lab",
+          "reading",
+          "project",
+          "assessment"
+        ],
+        "title": "Modality"
+      },
+      "NodeOut": {
+        "properties": {
+          "skill_id": {
+            "type": "string",
+            "title": "Skill Id"
+          },
+          "skill_name": {
+            "type": "string",
+            "title": "Skill Name"
+          },
+          "status": {
+            "$ref": "#/components/schemas/NodeStatus"
+          },
+          "phase": {
+            "$ref": "#/components/schemas/Phase"
+          },
+          "order": {
+            "type": "integer",
+            "title": "Order"
+          },
+          "estimated_hours": {
+            "type": "number",
+            "title": "Estimated Hours"
+          },
+          "duration_display": {
+            "type": "string",
+            "title": "Duration Display",
+            "default": ""
+          },
+          "xp": {
+            "type": "integer",
+            "title": "Xp"
+          },
+          "gap_delta": {
+            "type": "integer",
+            "title": "Gap Delta"
+          },
+          "resource": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ResourceOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "alternatives": {
+            "items": {
+              "$ref": "#/components/schemas/ResourceOut"
+            },
+            "type": "array",
+            "title": "Alternatives"
+          },
+          "rationale": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rationale"
+          },
+          "is_remediation": {
+            "type": "boolean",
+            "title": "Is Remediation"
+          }
+        },
+        "type": "object",
+        "required": [
+          "skill_id",
+          "skill_name",
+          "status",
+          "phase",
+          "order",
+          "estimated_hours",
+          "xp",
+          "gap_delta",
+          "resource",
+          "rationale",
+          "is_remediation"
+        ],
+        "title": "NodeOut"
+      },
+      "NodeStatus": {
+        "type": "string",
+        "enum": [
+          "mastered",
+          "active",
+          "next",
+          "locked"
+        ],
+        "title": "NodeStatus"
+      },
+      "Phase": {
+        "type": "string",
+        "enum": [
+          "foundations",
+          "core",
+          "advanced",
+          "capstone"
+        ],
+        "title": "Phase"
+      },
+      "PlanRelaxRequest": {
+        "properties": {
+          "goal": {
+            "type": "string",
+            "maxLength": 300,
+            "minLength": 2,
+            "title": "Goal"
+          },
+          "hours_per_week": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Hours Per Week",
+            "default": 10.0
+          },
+          "deadline_weeks": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deadline Weeks"
+          },
+          "budget_usd": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Budget Usd"
+          },
+          "known": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Known"
+          },
+          "priority": {
+            "type": "string",
+            "title": "Priority",
+            "default": "balanced"
+          }
+        },
+        "type": "object",
+        "required": [
+          "goal"
+        ],
+        "title": "PlanRelaxRequest"
+      },
+      "PlanRelaxResponse": {
+        "properties": {
+          "is_feasible": {
+            "type": "boolean",
+            "title": "Is Feasible"
+          },
+          "baseline_hours": {
+            "type": "number",
+            "title": "Baseline Hours"
+          },
+          "baseline_weeks": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Baseline Weeks"
+          },
+          "deadline_weeks": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deadline Weeks"
+          },
+          "hours_per_week": {
+            "type": "number",
+            "title": "Hours Per Week"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/components/schemas/RelaxationOption"
+            },
+            "type": "array",
+            "title": "Options"
+          }
+        },
+        "type": "object",
+        "required": [
+          "is_feasible",
+          "baseline_hours",
+          "baseline_weeks",
+          "deadline_weeks",
+          "hours_per_week",
+          "options"
+        ],
+        "title": "PlanRelaxResponse"
+      },
+      "PlanRequest": {
+        "properties": {
+          "goal": {
+            "type": "string",
+            "maxLength": 300,
+            "minLength": 2,
+            "title": "Goal"
+          },
+          "hours_per_week": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Hours Per Week",
+            "default": 10.0
+          },
+          "deadline_weeks": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deadline Weeks"
+          },
+          "budget_usd": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Budget Usd"
+          },
+          "preferred_modalities": {
+            "items": {
+              "$ref": "#/components/schemas/Modality"
+            },
+            "type": "array",
+            "title": "Preferred Modalities"
+          },
+          "known": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Known"
+          },
+          "priority": {
+            "type": "string",
+            "title": "Priority",
+            "default": "balanced"
+          }
+        },
+        "type": "object",
+        "required": [
+          "goal"
+        ],
+        "title": "PlanRequest"
+      },
+      "PlanResponse": {
+        "properties": {
+          "goal": {
+            "type": "string",
+            "title": "Goal"
+          },
+          "target_role": {
+            "type": "string",
+            "title": "Target Role"
+          },
+          "readiness_pct": {
+            "type": "integer",
+            "title": "Readiness Pct"
+          },
+          "total_hours": {
+            "type": "number",
+            "title": "Total Hours"
+          },
+          "total_cost_usd": {
+            "type": "number",
+            "title": "Total Cost Usd"
+          },
+          "weeks_required": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weeks Required"
+          },
+          "is_feasible": {
+            "type": "boolean",
+            "title": "Is Feasible"
+          },
+          "prerequisite_violations": {
+            "type": "integer",
+            "title": "Prerequisite Violations"
+          },
+          "milestones": {
+            "items": {
+              "$ref": "#/components/schemas/MilestoneOut"
+            },
+            "type": "array",
+            "title": "Milestones"
+          },
+          "gap_count": {
+            "type": "integer",
+            "title": "Gap Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "goal",
+          "target_role",
+          "readiness_pct",
+          "total_hours",
+          "total_cost_usd",
+          "weeks_required",
+          "is_feasible",
+          "prerequisite_violations",
+          "milestones",
+          "gap_count"
+        ],
+        "title": "PlanResponse"
+      },
+      "PoincareEdge": {
+        "properties": {
+          "source": {
+            "type": "string",
+            "title": "Source"
+          },
+          "target": {
+            "type": "string",
+            "title": "Target"
+          },
+          "hyperbolic_dist": {
+            "type": "number",
+            "title": "Hyperbolic Dist"
+          }
+        },
+        "type": "object",
+        "required": [
+          "source",
+          "target",
+          "hyperbolic_dist"
+        ],
+        "title": "PoincareEdge"
+      },
+      "PoincareNode": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "topic": {
+            "type": "string",
+            "title": "Topic"
+          },
+          "depth": {
+            "type": "integer",
+            "title": "Depth"
+          },
+          "fan_out": {
+            "type": "integer",
+            "title": "Fan Out"
+          },
+          "u": {
+            "type": "number",
+            "title": "U"
+          },
+          "v": {
+            "type": "number",
+            "title": "V"
+          },
+          "radius": {
+            "type": "number",
+            "title": "Radius"
+          },
+          "angle": {
+            "type": "number",
+            "title": "Angle"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "topic",
+          "depth",
+          "fan_out",
+          "u",
+          "v",
+          "radius",
+          "angle"
+        ],
+        "title": "PoincareNode"
+      },
+      "PoincareResponse": {
+        "properties": {
+          "nodes": {
+            "items": {
+              "$ref": "#/components/schemas/PoincareNode"
+            },
+            "type": "array",
+            "title": "Nodes"
+          },
+          "edges": {
+            "items": {
+              "$ref": "#/components/schemas/PoincareEdge"
+            },
+            "type": "array",
+            "title": "Edges"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nodes",
+          "edges"
+        ],
+        "title": "PoincareResponse"
+      },
+      "ProfileIntakeResponse": {
+        "properties": {
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/Mastery"
+            },
+            "type": "array",
+            "title": "Skills"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "skills",
+          "count"
+        ],
+        "title": "ProfileIntakeResponse"
+      },
+      "ProfileResponse": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "display_name": {
+            "type": "string",
+            "title": "Display Name"
+          },
+          "is_guest": {
+            "type": "boolean",
+            "title": "Is Guest"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "display_name",
+          "is_guest"
+        ],
+        "title": "ProfileResponse"
+      },
+      "ProfileUpdateRequest": {
+        "properties": {
+          "display_name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Display Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "display_name"
+        ],
+        "title": "ProfileUpdateRequest"
+      },
+      "RelaxationOption": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "title": "Type"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "hours_saved": {
+            "type": "number",
+            "title": "Hours Saved"
+          },
+          "new_total_hours": {
+            "type": "number",
+            "title": "New Total Hours"
+          },
+          "new_weeks_required": {
+            "type": "number",
+            "title": "New Weeks Required"
+          },
+          "is_feasible": {
+            "type": "boolean",
+            "title": "Is Feasible"
+          }
+        },
+        "type": "object",
+        "required": [
+          "type",
+          "title",
+          "description",
+          "hours_saved",
+          "new_total_hours",
+          "new_weeks_required",
+          "is_feasible"
+        ],
+        "title": "RelaxationOption"
+      },
+      "ResourceOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "provider": {
+            "type": "string",
+            "title": "Provider"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "url": {
+            "type": "string",
+            "title": "Url"
+          },
+          "duration_display": {
+            "type": "string",
+            "title": "Duration Display"
+          },
+          "difficulty": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Difficulty"
+          },
+          "price_usd": {
+            "type": "number",
+            "title": "Price Usd"
+          },
+          "price_is_estimate": {
+            "type": "boolean",
+            "title": "Price Is Estimate"
+          },
+          "cost_type": {
+            "type": "string",
+            "title": "Cost Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "provider",
+          "title",
+          "url",
+          "duration_display",
+          "difficulty",
+          "price_usd",
+          "price_is_estimate",
+          "cost_type"
+        ],
+        "title": "ResourceOut"
+      },
+      "RoleItem": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "summary": {
+            "type": "string",
+            "title": "Summary"
+          },
+          "demand_score": {
+            "type": "number",
+            "title": "Demand Score"
+          },
+          "demand_label": {
+            "type": "string",
+            "title": "Demand Label"
+          },
+          "demand_snapshot_date": {
+            "type": "string",
+            "title": "Demand Snapshot Date"
+          },
+          "skills_count": {
+            "type": "integer",
+            "title": "Skills Count"
+          },
+          "skill_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Skill Ids"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "summary",
+          "demand_score",
+          "demand_label",
+          "demand_snapshot_date",
+          "skills_count"
+        ],
+        "title": "RoleItem"
+      },
+      "RolesResponse": {
+        "properties": {
+          "roles": {
+            "items": {
+              "$ref": "#/components/schemas/RoleItem"
+            },
+            "type": "array",
+            "title": "Roles"
+          }
+        },
+        "type": "object",
+        "required": [
+          "roles"
+        ],
+        "title": "RolesResponse"
+      },
+      "SocraticRequest": {
+        "properties": {
+          "skill_id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Skill Id"
+          },
+          "skill_name": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Skill Name"
+          },
+          "chosen_answer": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Chosen Answer"
+          },
+          "question": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Question"
+          },
+          "correct_answer": {
+            "type": "string",
+            "title": "Correct Answer",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "skill_id",
+          "skill_name",
+          "chosen_answer",
+          "question"
+        ],
+        "title": "SocraticRequest"
+      },
+      "SocraticResponse": {
+        "properties": {
+          "scaffolding_questions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Scaffolding Questions"
+          },
+          "conceptual_hint": {
+            "type": "string",
+            "title": "Conceptual Hint"
+          },
+          "diagram": {
+            "type": "string",
+            "title": "Diagram"
+          }
+        },
+        "type": "object",
+        "required": [
+          "scaffolding_questions",
+          "conceptual_hint",
+          "diagram"
+        ],
+        "title": "SocraticResponse"
+      },
+      "UserMeResponse": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "display_name": {
+            "type": "string",
+            "title": "Display Name"
+          },
+          "is_guest": {
+            "type": "boolean",
+            "title": "Is Guest"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "display_name",
+          "is_guest"
+        ],
+        "title": "UserMeResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

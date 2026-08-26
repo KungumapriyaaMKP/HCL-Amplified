@@ -7,62 +7,639 @@
     "demand_snapshot_date": "2026-08",
     "demand_label": "Very High",
     "skills": {
-      "python-fundamentals":        { "required": 0.90, "importance": 1.00 },
-      "python-data-structures":     { "required": 0.85, "importance": 0.95 },
-      "numpy-arrays":               { "required": 0.85, "importance": 0.95 },
-      "linear-algebra":             { "required": 0.75, "importance": 0.90 },
-      "calculus-basics":            { "required": 0.70, "importance": 0.70 },
-      "multivariate-calculus":      { "required": 0.70, "importance": 0.80 },
-      "statistics-fundamentals":    { "required": 0.80, "importance": 0.90 },
-      "probability":                { "required": 0.70, "importance": 0.75 },
-      "optimization-basics":        { "required": 0.65, "importance": 0.75 },
-
-      "sql":                        { "required": 0.65, "importance": 0.65, "elective": true },
-      "data-analysis-pandas":       { "required": 0.85, "importance": 0.90 },
-      "data-visualization":         { "required": 0.60, "importance": 0.55, "elective": true },
-      "data-wrangling":             { "required": 0.75, "importance": 0.80 },
-      "exploratory-data-analysis":  { "required": 0.70, "importance": 0.70 },
-      "feature-engineering":        { "required": 0.80, "importance": 0.85 },
-
-      "ml-fundamentals":            { "required": 0.90, "importance": 1.00 },
-      "supervised-learning":        { "required": 0.90, "importance": 1.00 },
-      "unsupervised-learning":      { "required": 0.70, "importance": 0.70 },
-      "model-evaluation":           { "required": 0.85, "importance": 0.95 },
-      "regularization":             { "required": 0.75, "importance": 0.80 },
-      "ensemble-methods":           { "required": 0.70, "importance": 0.70, "elective": true },
-      "hyperparameter-tuning":      { "required": 0.70, "importance": 0.70 },
-      "scikit-learn":               { "required": 0.80, "importance": 0.85 },
-
-      "gradient-descent":           { "required": 0.80, "importance": 0.85 },
-      "deep-learning-fundamentals": { "required": 0.85, "importance": 0.95 },
-      "backpropagation":            { "required": 0.80, "importance": 0.90 },
-      "neural-networks":            { "required": 0.85, "importance": 0.95 },
-      "pytorch-basics":             { "required": 0.85, "importance": 0.95 },
-      "cnn-architectures":          { "required": 0.65, "importance": 0.60, "elective": true },
-      "rnn-sequence-models":        { "required": 0.65, "importance": 0.65 },
-      "attention-mechanisms":       { "required": 0.80, "importance": 0.90 },
-      "transformer-architecture":   { "required": 0.80, "importance": 0.90 },
-      "transfer-learning":          { "required": 0.75, "importance": 0.80 },
-
-      "nlp-fundamentals":           { "required": 0.70, "importance": 0.75 },
-      "tokenization-embeddings":    { "required": 0.75, "importance": 0.80 },
-      "computer-vision-fundamentals": { "required": 0.50, "importance": 0.45, "elective": true },
-      "llm-fundamentals":           { "required": 0.80, "importance": 0.90 },
-      "prompt-engineering":         { "required": 0.65, "importance": 0.60, "elective": true },
-      "vector-databases":           { "required": 0.60, "importance": 0.60, "elective": true },
-      "rag-systems":                { "required": 0.65, "importance": 0.65, "elective": true },
-
-      "git-basics":                 { "required": 0.80, "importance": 0.75 },
-      "testing-fundamentals":       { "required": 0.65, "importance": 0.60 },
-      "linux-fundamentals":         { "required": 0.60, "importance": 0.55 },
-      "cloud-fundamentals":         { "required": 0.60, "importance": 0.60 },
-      "containers-docker":          { "required": 0.70, "importance": 0.75 },
-      "rest-apis-python":           { "required": 0.70, "importance": 0.75 },
-      "experiment-tracking":        { "required": 0.65, "importance": 0.70 },
-      "ci-cd-fundamentals":         { "required": 0.60, "importance": 0.60, "elective": true },
-      "model-serving":              { "required": 0.75, "importance": 0.85 },
-      "model-monitoring":           { "required": 0.65, "importance": 0.70 },
-      "mlops-pipelines":            { "required": 0.65, "importance": 0.70 }
+      "python-fundamentals": {
+        "required": 0.9,
+        "importance": 1.0
+      },
+      "python-data-structures": {
+        "required": 0.85,
+        "importance": 0.95
+      },
+      "numpy-arrays": {
+        "required": 0.85,
+        "importance": 0.95
+      },
+      "linear-algebra": {
+        "required": 0.75,
+        "importance": 0.9
+      },
+      "calculus-basics": {
+        "required": 0.7,
+        "importance": 0.7
+      },
+      "multivariate-calculus": {
+        "required": 0.7,
+        "importance": 0.8
+      },
+      "statistics-fundamentals": {
+        "required": 0.8,
+        "importance": 0.9
+      },
+      "probability": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "optimization-basics": {
+        "required": 0.65,
+        "importance": 0.75
+      },
+      "sql": {
+        "required": 0.65,
+        "importance": 0.65,
+        "elective": true
+      },
+      "data-analysis-pandas": {
+        "required": 0.85,
+        "importance": 0.9
+      },
+      "data-visualization": {
+        "required": 0.6,
+        "importance": 0.55,
+        "elective": true
+      },
+      "data-wrangling": {
+        "required": 0.75,
+        "importance": 0.8
+      },
+      "exploratory-data-analysis": {
+        "required": 0.7,
+        "importance": 0.7
+      },
+      "feature-engineering": {
+        "required": 0.8,
+        "importance": 0.85
+      },
+      "ml-fundamentals": {
+        "required": 0.9,
+        "importance": 1.0
+      },
+      "supervised-learning": {
+        "required": 0.9,
+        "importance": 1.0
+      },
+      "unsupervised-learning": {
+        "required": 0.7,
+        "importance": 0.7
+      },
+      "model-evaluation": {
+        "required": 0.85,
+        "importance": 0.95
+      },
+      "regularization": {
+        "required": 0.75,
+        "importance": 0.8
+      },
+      "ensemble-methods": {
+        "required": 0.7,
+        "importance": 0.7,
+        "elective": true
+      },
+      "hyperparameter-tuning": {
+        "required": 0.7,
+        "importance": 0.7
+      },
+      "scikit-learn": {
+        "required": 0.8,
+        "importance": 0.85
+      },
+      "gradient-descent": {
+        "required": 0.8,
+        "importance": 0.85
+      },
+      "deep-learning-fundamentals": {
+        "required": 0.85,
+        "importance": 0.95
+      },
+      "backpropagation": {
+        "required": 0.8,
+        "importance": 0.9
+      },
+      "neural-networks": {
+        "required": 0.85,
+        "importance": 0.95
+      },
+      "pytorch-basics": {
+        "required": 0.85,
+        "importance": 0.95
+      },
+      "cnn-architectures": {
+        "required": 0.65,
+        "importance": 0.6,
+        "elective": true
+      },
+      "rnn-sequence-models": {
+        "required": 0.65,
+        "importance": 0.65
+      },
+      "attention-mechanisms": {
+        "required": 0.8,
+        "importance": 0.9
+      },
+      "transformer-architecture": {
+        "required": 0.8,
+        "importance": 0.9
+      },
+      "transfer-learning": {
+        "required": 0.75,
+        "importance": 0.8
+      },
+      "nlp-fundamentals": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "tokenization-embeddings": {
+        "required": 0.75,
+        "importance": 0.8
+      },
+      "computer-vision-fundamentals": {
+        "required": 0.5,
+        "importance": 0.45,
+        "elective": true
+      },
+      "llm-fundamentals": {
+        "required": 0.8,
+        "importance": 0.9
+      },
+      "prompt-engineering": {
+        "required": 0.65,
+        "importance": 0.6,
+        "elective": true
+      },
+      "vector-databases": {
+        "required": 0.6,
+        "importance": 0.6,
+        "elective": true
+      },
+      "rag-systems": {
+        "required": 0.65,
+        "importance": 0.65,
+        "elective": true
+      },
+      "git-basics": {
+        "required": 0.8,
+        "importance": 0.75
+      },
+      "testing-fundamentals": {
+        "required": 0.65,
+        "importance": 0.6
+      },
+      "linux-fundamentals": {
+        "required": 0.6,
+        "importance": 0.55
+      },
+      "cloud-fundamentals": {
+        "required": 0.6,
+        "importance": 0.6
+      },
+      "containers-docker": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "rest-apis-python": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "experiment-tracking": {
+        "required": 0.65,
+        "importance": 0.7
+      },
+      "ci-cd-fundamentals": {
+        "required": 0.6,
+        "importance": 0.6,
+        "elective": true
+      },
+      "model-serving": {
+        "required": 0.75,
+        "importance": 0.85
+      },
+      "model-monitoring": {
+        "required": 0.65,
+        "importance": 0.7
+      },
+      "mlops-pipelines": {
+        "required": 0.65,
+        "importance": 0.7
+      }
+    }
+  },
+  {
+    "id": "full-stack-engineer",
+    "name": "Full-Stack Web & AI Application Engineer",
+    "summary": "Builds, scales, and ships full-stack web applications integrated with modern LLMs and APIs.",
+    "demand_score": 0.95,
+    "demand_snapshot_date": "2026-08",
+    "demand_label": "Very High",
+    "skills": {
+      "optimization-basics": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "llm-fundamentals": {
+        "required": 0.75,
+        "importance": 0.8
+      },
+      "neural-networks": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "js-fundamentals": {
+        "required": 0.9,
+        "importance": 1.0
+      },
+      "backpropagation": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "python-fundamentals": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "nodejs-backend": {
+        "required": 0.85,
+        "importance": 0.95
+      },
+      "deep-learning-fundamentals": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "git-basics": {
+        "required": 0.85,
+        "importance": 0.9
+      },
+      "testing-fundamentals": {
+        "required": 0.8,
+        "importance": 0.85
+      },
+      "supervised-learning": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "typescript-fundamentals": {
+        "required": 0.85,
+        "importance": 0.95
+      },
+      "cloud-deployment": {
+        "required": 0.8,
+        "importance": 0.85
+      },
+      "linux-fundamentals": {
+        "required": 0.7,
+        "importance": 0.7
+      },
+      "calculus-basics": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "ci-cd-fundamentals": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "attention-mechanisms": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "numpy-arrays": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "rest-apis-python": {
+        "required": 0.75,
+        "importance": 0.8,
+        "elective": true
+      },
+      "statistics-fundamentals": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "sql": {
+        "required": 0.8,
+        "importance": 0.85
+      },
+      "prompt-engineering": {
+        "required": 0.7,
+        "importance": 0.7,
+        "elective": true
+      },
+      "python-data-structures": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "vector-databases": {
+        "required": 0.65,
+        "importance": 0.7,
+        "elective": true
+      },
+      "gradient-descent": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "transformer-architecture": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "tokenization-embeddings": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "multivariate-calculus": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "ml-fundamentals": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "rnn-sequence-models": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "linear-algebra": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "rag-systems": {
+        "required": 0.7,
+        "importance": 0.75,
+        "elective": true
+      },
+      "containers-docker": {
+        "required": 0.75,
+        "importance": 0.8
+      },
+      "cloud-fundamentals": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "nlp-fundamentals": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "react-basics": {
+        "required": 0.9,
+        "importance": 1.0
+      }
+    }
+  },
+  {
+    "id": "cloud-devops-engineer",
+    "name": "Cloud Infrastructure & DevOps Engineer",
+    "summary": "Automates cloud infrastructure, continuous deployment, and high-availability container clusters.",
+    "demand_score": 0.89,
+    "demand_snapshot_date": "2026-08",
+    "demand_label": "High",
+    "skills": {
+      "optimization-basics": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "cloud-monitoring": {
+        "required": 0.8,
+        "importance": 0.85
+      },
+      "model-serving": {
+        "required": 0.65,
+        "importance": 0.65,
+        "elective": true
+      },
+      "pytorch-basics": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "neural-networks": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "backpropagation": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "python-fundamentals": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "deep-learning-fundamentals": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "networking-fundamentals": {
+        "required": 0.85,
+        "importance": 0.95
+      },
+      "git-basics": {
+        "required": 0.85,
+        "importance": 0.9
+      },
+      "testing-fundamentals": {
+        "required": 0.75,
+        "importance": 0.8
+      },
+      "supervised-learning": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "model-monitoring": {
+        "required": 0.6,
+        "importance": 0.6,
+        "elective": true
+      },
+      "model-evaluation": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "linux-fundamentals": {
+        "required": 0.9,
+        "importance": 1.0
+      },
+      "calculus-basics": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "infrastructure-as-code": {
+        "required": 0.85,
+        "importance": 0.95
+      },
+      "ci-cd-fundamentals": {
+        "required": 0.85,
+        "importance": 0.9
+      },
+      "numpy-arrays": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "rest-apis-python": {
+        "required": 0.65,
+        "importance": 0.65,
+        "elective": true
+      },
+      "python-data-structures": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "gradient-descent": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "kubernetes-basics": {
+        "required": 0.85,
+        "importance": 0.95
+      },
+      "multivariate-calculus": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "ml-fundamentals": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "linear-algebra": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "security-fundamentals": {
+        "required": 0.8,
+        "importance": 0.9
+      },
+      "containers-docker": {
+        "required": 0.9,
+        "importance": 1.0
+      },
+      "cloud-fundamentals": {
+        "required": 0.9,
+        "importance": 1.0
+      },
+      "statistics-fundamentals": {
+        "required": 0.7,
+        "importance": 0.75
+      }
+    }
+  },
+  {
+    "id": "data-engineer",
+    "name": "Data Platform & Analytics Engineer",
+    "summary": "Architects high-throughput ETL/ELT pipelines, data lakes, distributed Spark clusters, and real-time streams.",
+    "demand_score": 0.92,
+    "demand_snapshot_date": "2026-08",
+    "demand_label": "Very High",
+    "skills": {
+      "airflow-orchestration": {
+        "required": 0.85,
+        "importance": 0.9
+      },
+      "distributed-computing-spark": {
+        "required": 0.9,
+        "importance": 0.95
+      },
+      "dbt-transformations": {
+        "required": 0.85,
+        "importance": 0.9
+      },
+      "data-wrangling": {
+        "required": 0.85,
+        "importance": 0.9
+      },
+      "kafka-streaming": {
+        "required": 0.8,
+        "importance": 0.85
+      },
+      "data-warehousing": {
+        "required": 0.9,
+        "importance": 0.95
+      },
+      "data-visualization": {
+        "required": 0.65,
+        "importance": 0.6,
+        "elective": true
+      },
+      "python-fundamentals": {
+        "required": 0.9,
+        "importance": 1.0
+      },
+      "deep-learning-fundamentals": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "git-basics": {
+        "required": 0.8,
+        "importance": 0.8
+      },
+      "testing-fundamentals": {
+        "required": 0.75,
+        "importance": 0.75
+      },
+      "supervised-learning": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "nlp-fundamentals": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "linux-fundamentals": {
+        "required": 0.7,
+        "importance": 0.7
+      },
+      "calculus-basics": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "ci-cd-fundamentals": {
+        "required": 0.65,
+        "importance": 0.65,
+        "elective": true
+      },
+      "data-analysis-pandas": {
+        "required": 0.85,
+        "importance": 0.9
+      },
+      "numpy-arrays": {
+        "required": 0.75,
+        "importance": 0.8
+      },
+      "rest-apis-python": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "sql": {
+        "required": 0.95,
+        "importance": 1.0
+      },
+      "python-data-structures": {
+        "required": 0.85,
+        "importance": 0.95
+      },
+      "vector-databases": {
+        "required": 0.6,
+        "importance": 0.6,
+        "elective": true
+      },
+      "tokenization-embeddings": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "multivariate-calculus": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "ml-fundamentals": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "linear-algebra": {
+        "required": 0.7,
+        "importance": 0.75
+      },
+      "containers-docker": {
+        "required": 0.75,
+        "importance": 0.75
+      },
+      "cloud-fundamentals": {
+        "required": 0.75,
+        "importance": 0.8
+      },
+      "statistics-fundamentals": {
+        "required": 0.7,
+        "importance": 0.75
+      }
     }
   }
 ]

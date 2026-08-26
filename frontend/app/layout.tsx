@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Inter, Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import "katex/dist/katex.min.css";
 import { TopNav } from "@/components/layout/TopNav";
+import { GlobalMentor } from "@/components/ui/GlobalMentor";
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
@@ -35,6 +37,7 @@ export default function RootLayout({
       >
         <TopNav />
         {children}
+        <GlobalMentor />
       </body>
     </html>
   );

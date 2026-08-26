@@ -9,6 +9,8 @@
  *   npm run gen:types
  * Never hand-edit them; the Pydantic models are the single source of truth.
  */
+import { getAuthHeaders } from "./pathfinder";
+
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 export class ApiError extends Error {
@@ -21,9 +23,10 @@ export class ApiError extends Error {
 }
 
 export async function api<T>(path: string, init?: RequestInit): Promise<T> {
+  const authHeaders = await getAuthHeaders();
   const res = await fetch(`${BASE}${path}`, {
     ...init,
-    headers: { "Content-Type": "application/json", ...init?.headers },
+    headers: { ...authHeaders, ...init?.headers },
   });
 
   if (!res.ok) {

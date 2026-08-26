@@ -26,6 +26,7 @@ def _to_resource(row: dict) -> Resource:
         description=row.get("description", ""),
         thumbnail_url=row.get("thumbnail_url"),
         duration_hours=row.get("duration_hours"),
+        duration_source=row.get("duration_source"),
         difficulty=Difficulty(row["difficulty"]) if row.get("difficulty") else None,
         modality=Modality.VIDEO,
         cost_type=CostType(row.get("cost_type", "subscription")),

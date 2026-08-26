@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import type { Node } from "@/lib/api/pathfinder";
 import { PROVIDER_LABEL } from "@/lib/api/pathfinder";
+import { FormattedContent } from "@/components/ui/FormattedContent";
 
 /**
  * Deliverable 5 on screen: the grounded rationale plus the real candidates.
@@ -43,14 +44,9 @@ export function ExplanationPanel({
       )}
 
       {node.rationale && (
-        <p
+        <FormattedContent
+          text={node.rationale}
           className="mt-5 text-sm leading-relaxed text-ink"
-          dangerouslySetInnerHTML={{
-            __html: node.rationale.replace(
-              /\*\*(.+?)\*\*/g,
-              "<strong>$1</strong>",
-            ),
-          }}
         />
       )}
 

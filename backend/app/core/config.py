@@ -35,6 +35,14 @@ class Settings(BaseSettings):
     # ── Catalog providers ────────────────────────────────────────────────────
     youtube_api_key: str = ""          # Coursera + MS Learn need no key
 
+    # ── Supabase (auth + per-user persistence) ───────────────────────────────
+    # All optional: when unset, the app runs in guest/demo fallback and never
+    # hard-fails. Data access uses the service key over PostgREST (HTTPS), which
+    # sidesteps the direct-Postgres IPv6/DNS pain an earlier build hit.
+    supabase_url: str = ""
+    supabase_service_key: str = ""
+    supabase_jwt_secret: str = ""      # legacy HS256 projects; JWKS derived from url otherwise
+
     # ── Retrieval ────────────────────────────────────────────────────────────
     embedding_model: str = "BAAI/bge-small-en-v1.5"
     hybrid_alpha: float = 0.6          # alpha*dense + (1-alpha)*bm25
@@ -58,7 +66,9 @@ class Settings(BaseSettings):
     max_detours_per_skill: int = 1     # guards the infinite-remediation bug
 
     # ── CORS ─────────────────────────────────────────────────────────────────
-    allowed_origins: str = "http://localhost:3000"
+    allowed_origins: str = (
+        "http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001,http://127.0.0.1:3001"
+    )
 
     @property
     def cors_origins(self) -> list[str]:
@@ -87,6 +97,10 @@ class Settings(BaseSettings):
     @property
     def has_youtube(self) -> bool:
         return bool(self.youtube_api_key)
+
+    @property
+    def has_supabase(self) -> bool:
+        return bool(self.supabase_url and self.supabase_service_key)
 
 
 @lru_cache
