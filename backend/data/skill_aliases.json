@@ -1,0 +1,359 @@
+{
+  "_comment": "Phrase vocabulary per canonical skill. Drives (a) high-precision weak labelling of the catalog to bootstrap the tagger's training set, and (b) BM25 query expansion. Phrases are matched on word boundaries, case-insensitive. Keep them specific: a false phrase here becomes a false training label, which becomes a false 'this course teaches X' claim.",
+  "linear-algebra": [
+    "linear algebra",
+    "matrix multiplication",
+    "eigenvalue",
+    "eigenvector",
+    "vector space",
+    "matrix decomposition"
+  ],
+  "calculus-basics": [
+    "calculus",
+    "derivative",
+    "integral",
+    "differential calculus"
+  ],
+  "multivariate-calculus": [
+    "multivariate calculus",
+    "partial derivative",
+    "gradient descent",
+    "vector calculus",
+    "jacobian",
+    "calculus for machine learning",
+    "mathematics for machine learning"
+  ],
+  "statistics-fundamentals": [
+    "statistics",
+    "statistical analysis",
+    "hypothesis testing",
+    "probability distribution",
+    "descriptive statistics"
+  ],
+  "probability": [
+    "probability theory",
+    "bayes theorem",
+    "bayesian",
+    "random variable",
+    "conditional probability"
+  ],
+  "optimization-basics": [
+    "convex optimization",
+    "mathematical optimization",
+    "lagrange multiplier",
+    "gradient-based optimization",
+    "optimization for machine learning",
+    "optimization methods"
+  ],
+  "python-fundamentals": [
+    "python programming",
+    "python for beginners",
+    "learn python",
+    "python basics",
+    "introduction to python"
+  ],
+  "python-data-structures": [
+    "python data structures",
+    "list comprehension",
+    "python dictionaries",
+    "python iterators",
+    "python programming for data science",
+    "intermediate python"
+  ],
+  "numpy-arrays": [
+    "numpy",
+    "numerical python",
+    "array computing",
+    "ndarray",
+    "scientific computing with python",
+    "numerical computing"
+  ],
+  "git-basics": [
+    "git",
+    "version control",
+    "github",
+    "git and github"
+  ],
+  "testing-fundamentals": [
+    "unit testing",
+    "software testing",
+    "pytest",
+    "test-driven development"
+  ],
+  "sql": [
+    "sql",
+    "structured query language",
+    "relational database",
+    "database queries",
+    "postgresql",
+    "mysql"
+  ],
+  "data-analysis-pandas": [
+    "pandas",
+    "data analysis with python",
+    "dataframe",
+    "python data analysis"
+  ],
+  "data-visualization": [
+    "data visualization",
+    "matplotlib",
+    "seaborn",
+    "plotly",
+    "data visualisation"
+  ],
+  "data-wrangling": [
+    "data wrangling",
+    "data cleaning",
+    "data preprocessing",
+    "data munging"
+  ],
+  "exploratory-data-analysis": [
+    "exploratory data analysis",
+    "eda"
+  ],
+  "feature-engineering": [
+    "feature engineering",
+    "feature selection",
+    "feature extraction"
+  ],
+  "ml-fundamentals": [
+    "machine learning",
+    "introduction to machine learning",
+    "machine learning fundamentals",
+    "ml basics"
+  ],
+  "supervised-learning": [
+    "supervised learning",
+    "linear regression",
+    "logistic regression",
+    "decision tree",
+    "support vector machine",
+    "classification and regression"
+  ],
+  "unsupervised-learning": [
+    "unsupervised learning",
+    "clustering",
+    "k-means",
+    "dimensionality reduction",
+    "principal component analysis"
+  ],
+  "model-evaluation": [
+    "model evaluation",
+    "cross-validation",
+    "confusion matrix",
+    "precision and recall",
+    "roc curve",
+    "f1 score"
+  ],
+  "regularization": [
+    "regularization",
+    "ridge regression",
+    "lasso regression",
+    "overfitting"
+  ],
+  "ensemble-methods": [
+    "ensemble learning",
+    "random forest",
+    "gradient boosting",
+    "xgboost",
+    "bagging and boosting",
+    "adaboost"
+  ],
+  "hyperparameter-tuning": [
+    "hyperparameter tuning",
+    "hyperparameter optimization",
+    "grid search",
+    "model tuning",
+    "improving deep neural networks",
+    "model optimization"
+  ],
+  "scikit-learn": [
+    "scikit-learn",
+    "sklearn",
+    "machine learning with scikit",
+    "machine learning in python",
+    "applied machine learning"
+  ],
+  "gradient-descent": [
+    "gradient descent",
+    "stochastic gradient descent",
+    "adam optimizer",
+    "optimization algorithms for deep learning",
+    "training neural networks",
+    "deep learning optimization"
+  ],
+  "deep-learning-fundamentals": [
+    "deep learning",
+    "introduction to deep learning",
+    "neural network basics",
+    "deep learning fundamentals"
+  ],
+  "backpropagation": [
+    "backpropagation",
+    "back propagation",
+    "computational graph",
+    "neural network training",
+    "training deep neural networks",
+    "how neural networks learn"
+  ],
+  "neural-networks": [
+    "neural network architecture",
+    "feedforward neural network",
+    "multilayer perceptron",
+    "artificial neural network",
+    "neural networks and deep learning",
+    "deep neural network",
+    "building neural networks"
+  ],
+  "pytorch-basics": [
+    "pytorch",
+    "torch tensor",
+    "deep learning with pytorch"
+  ],
+  "cnn-architectures": [
+    "convolutional neural network",
+    "convolutional network",
+    "cnn",
+    "image classification with deep learning",
+    "resnet",
+    "deep learning for computer vision",
+    "image recognition deep learning"
+  ],
+  "rnn-sequence-models": [
+    "recurrent neural network",
+    "lstm",
+    "long short-term memory",
+    "sequence model",
+    "gru"
+  ],
+  "attention-mechanisms": [
+    "attention mechanism",
+    "self-attention",
+    "multi-head attention",
+    "scaled dot-product attention"
+  ],
+  "transformer-architecture": [
+    "transformer architecture",
+    "transformer model",
+    "transformer network",
+    "encoder-decoder transformer",
+    "transformers",
+    "bert",
+    "gpt architecture",
+    "attention is all you need"
+  ],
+  "transfer-learning": [
+    "transfer learning",
+    "fine-tuning",
+    "pretrained model",
+    "fine tuning"
+  ],
+  "nlp-fundamentals": [
+    "natural language processing",
+    "nlp",
+    "text classification",
+    "named entity recognition"
+  ],
+  "tokenization-embeddings": [
+    "word embeddings",
+    "tokenization",
+    "word2vec",
+    "sentence embeddings",
+    "text embeddings"
+  ],
+  "computer-vision-fundamentals": [
+    "computer vision",
+    "image recognition",
+    "object detection",
+    "image segmentation"
+  ],
+  "llm-fundamentals": [
+    "large language model",
+    "llm",
+    "gpt",
+    "language model pretraining",
+    "generative ai"
+  ],
+  "prompt-engineering": [
+    "prompt engineering",
+    "prompt design",
+    "few-shot prompting",
+    "chain-of-thought prompting"
+  ],
+  "vector-databases": [
+    "vector database",
+    "vector search",
+    "semantic search",
+    "approximate nearest neighbor",
+    "embeddings database"
+  ],
+  "rag-systems": [
+    "retrieval-augmented generation",
+    "retrieval augmented generation",
+    "rag pipeline",
+    "rag system"
+  ],
+  "linux-fundamentals": [
+    "linux",
+    "linux command line",
+    "bash scripting",
+    "shell scripting",
+    "unix"
+  ],
+  "cloud-fundamentals": [
+    "cloud computing",
+    "aws fundamentals",
+    "azure fundamentals",
+    "google cloud platform",
+    "introduction to cloud"
+  ],
+  "containers-docker": [
+    "docker",
+    "containerization",
+    "docker container",
+    "containers"
+  ],
+  "rest-apis-python": [
+    "rest api",
+    "restful api",
+    "fastapi",
+    "flask api",
+    "api development with python"
+  ],
+  "experiment-tracking": [
+    "experiment tracking",
+    "mlflow",
+    "weights and biases",
+    "model registry"
+  ],
+  "ci-cd-fundamentals": [
+    "ci/cd",
+    "continuous integration",
+    "continuous deployment",
+    "devops pipeline"
+  ],
+  "model-serving": [
+    "model serving",
+    "model deployment",
+    "model inference",
+    "serving machine learning models",
+    "ml model deployment",
+    "deploying machine learning models",
+    "productionizing machine learning"
+  ],
+  "model-monitoring": [
+    "model monitoring",
+    "data drift",
+    "model drift",
+    "ml observability",
+    "production machine learning",
+    "ml in production"
+  ],
+  "mlops-pipelines": [
+    "mlops",
+    "machine learning operations",
+    "ml pipeline",
+    "kubeflow",
+    "ml engineering"
+  ]
+}
