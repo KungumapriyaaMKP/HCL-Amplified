@@ -18,6 +18,9 @@ export function Nav({ displayName }: { displayName?: string }) {
           <Link href="/leaderboard" className="rounded-lg px-3 py-2 text-muted hover:bg-surface-2 hover:text-foreground">
             Leaderboard
           </Link>
+          <Link href="/community" className="rounded-lg px-3 py-2 text-muted hover:bg-surface-2 hover:text-foreground">
+            Community
+          </Link>
           {displayName && (
             <span className="ml-2 hidden rounded-lg px-3 py-2 text-muted sm:inline">{displayName}</span>
           )}

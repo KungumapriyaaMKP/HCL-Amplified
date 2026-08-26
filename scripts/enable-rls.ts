@@ -37,6 +37,9 @@ const TABLES = [
   "badges",
   "user_badges",
   "streaks",
+  "community_members",
+  "community_posts",
+  "community_replies",
 ];
 
 async function main() {

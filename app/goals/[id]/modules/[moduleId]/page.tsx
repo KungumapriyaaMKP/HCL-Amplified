@@ -3,6 +3,7 @@ import { requireUser } from "@/lib/auth";
 import { getModuleDetail } from "@/lib/moduleDetail";
 import { Nav } from "@/frontend/components/layout/Nav";
 import { ModuleWorkspace } from "@/frontend/components/goals/ModuleWorkspace";
+import { AssistantWidget } from "@/frontend/components/goals/AssistantWidget";
 
 export default async function ModulePage({ params }: { params: Promise<{ id: string; moduleId: string }> }) {
   const { id, moduleId } = await params;
@@ -26,12 +27,14 @@ export default async function ModulePage({ params }: { params: Promise<{ id: str
           rationale={detail.module.rationale}
           isProgramming={detail.module.isProgramming}
           programmingLanguage={detail.module.programmingLanguage}
-          moduleStatus={detail.module.status}
+          hasResourceDone={detail.hasResourceDone}
+          hasPracticeAttempt={detail.hasPracticeAttempt}
           proctoredAlreadyTaken={!!detail.proctoredAttempt?.submittedAt}
           proctoredScore={detail.proctoredAttempt?.score ?? null}
           proctoredReport={detail.proctoredAttempt?.reportText ?? null}
         />
       </main>
+      <AssistantWidget goalId={id} moduleId={moduleId} />
     </div>
   );
 }

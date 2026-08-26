@@ -15,6 +15,10 @@ import {
 import { eq, desc, asc } from "drizzle-orm";
 import { getTotalXp, levelForXp, levelTitle } from "@/lib/gamification";
 import { checkDisengagement } from "@/lib/adapt";
+import { computeSkillDecay } from "@/lib/decay";
+import { getActivityHeatmap } from "@/lib/activityData";
+import { getCandidatePool } from "@/lib/catalog";
+import { bestResourceForSkill } from "@/lib/recommend";
 
 export async function getDashboardData(userId: string) {
   const [profile] = await db.select().from(profiles).where(eq(profiles.userId, userId));
@@ -63,11 +67,40 @@ export async function getDashboardData(userId: string) {
   );
 
   const masteryRows = await db
-    .select({ skillId: skillMastery.skillId, score: skillMastery.score, name: skills.name, category: skills.category, source: skillMastery.source })
+    .select({
+      skillId: skillMastery.skillId,
+      score: skillMastery.score,
+      name: skills.name,
+      category: skills.category,
+      source: skillMastery.source,
+      updatedAt: skillMastery.updatedAt,
+    })
     .from(skillMastery)
     .innerJoin(skills, eq(skills.id, skillMastery.skillId))
     .where(eq(skillMastery.userId, userId))
     .orderBy(desc(skillMastery.score));
+
+  const decay = computeSkillDecay(masteryRows);
+  // Only the foundational skills that are actually fading/decayed get a
+  // suggested review resource - that's the "quick review before it fades"
+  // moment, not every mastered skill on every dashboard load. Capped so a
+  // learner with a large mastery history doesn't trigger a wall of lookups.
+  const needsReview = decay.filter((d) => d.foundational && d.tier !== "fresh").slice(0, 5);
+  const reviewSuggestions: Record<string, { title: string; url: string }> = {};
+  if (needsReview.length > 0) {
+    const pool = await getCandidatePool();
+    for (const d of needsReview) {
+      const best = bestResourceForSkill(pool, {
+        targetSkillId: d.skillId,
+        masteryBySkill: new Map(),
+        interestSkillIds: [],
+        difficultyBias: -0.3,
+      });
+      if (best) reviewSuggestions[d.skillId] = { title: best.title, url: best.url };
+    }
+  }
+
+  const activity = await getActivityHeatmap(userId);
 
   const adaptations = await db
     .select()
@@ -90,6 +123,9 @@ export async function getDashboardData(userId: string) {
     },
     goals: goalSummaries,
     mastery: masteryRows,
+    decay,
+    reviewSuggestions,
+    activity,
     adaptations,
   };
 }

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { requireUser } from "@/lib/auth";
 import { withErrorHandling, jsonError } from "@/lib/apiHelpers";
 import { db } from "@/lib/db";
-import { proctoredAttempts } from "@/db/schema";
+import { proctoredAttempts, practiceAttempts } from "@/db/schema";
 import { and, eq, isNotNull } from "drizzle-orm";
 import { getModuleForUser } from "@/lib/moduleAccess";
 import { chatJson } from "@/lib/llm";
@@ -28,6 +28,15 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
     if (already) {
       return NextResponse.json({ alreadyTaken: true, score: already.score, reportText: already.reportText });
     }
+
+    // Hard gate: at least one scored practice attempt must exist for this
+    // module before a proctored attempt can even be generated.
+    const [practiced] = await db
+      .select()
+      .from(practiceAttempts)
+      .where(and(eq(practiceAttempts.moduleId, id), eq(practiceAttempts.userId, user.id), isNotNull(practiceAttempts.score)))
+      .limit(1);
+    if (!practiced) return jsonError("Complete a practice quiz attempt before starting the proctored test", 403);
 
     const domainName = DOMAINS.find((d) => d.id === row.goal.domain)?.name ?? row.goal.domain;
     const result = await chatJson<QuestionSet>(

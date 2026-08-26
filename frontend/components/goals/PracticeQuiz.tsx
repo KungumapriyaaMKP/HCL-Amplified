@@ -7,7 +7,7 @@ import { Button } from "@/frontend/components/ui/Button";
 type Question = { id: string; question: string; options: string[] };
 type Explanation = { id: string; correctIndex: number; selectedIndex: number | null; explanation: string };
 
-export function PracticeQuiz({ moduleId }: { moduleId: string }) {
+export function PracticeQuiz({ moduleId, onSubmitted }: { moduleId: string; onSubmitted?: () => void }) {
   const [questions, setQuestions] = useState<Question[] | null>(null);
   const [attemptId, setAttemptId] = useState<string | null>(null);
   const [answers, setAnswers] = useState<Record<string, number>>({});
@@ -39,6 +39,7 @@ export function PracticeQuiz({ moduleId }: { moduleId: string }) {
         body: JSON.stringify({ attemptId, answers: payload }),
       });
       setResult(await res.json());
+      onSubmitted?.();
     } finally {
       setLoading(false);
     }

@@ -11,16 +11,18 @@ const STARTERS: Record<string, string> = {
   typescript: '// Write your practice code below\nconst message: string = "Hello, world!";\nconsole.log(message);\n',
 };
 
-type Exercise = { title: string; prompt: string };
+type TestCase = { input: string; expectedOutput: string };
+type Exercise = { title: string; prompt: string; testCases: TestCase[] };
 type RunResult = { stdout: string; stderr: string; compileError?: string };
-type ExerciseState = { code: string; stdin: string; output: RunResult | null };
+type TestResult = { passed: boolean; input: string; expected: string; actual: string; error: string | null };
+type ExerciseState = { code: string; stdin: string; output: RunResult | null; results: TestResult[] | null };
 
 export function CompilerWorkspace({ moduleId, skillName, language }: { moduleId: string; skillName: string; language: string }) {
   const [exercises, setExercises] = useState<Exercise[] | null>(null);
   const [current, setCurrent] = useState(0);
-  const [done, setDone] = useState<Set<number>>(new Set());
   const [byExercise, setByExercise] = useState<Record<number, ExerciseState>>({});
   const [running, setRunning] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     fetch(`/api/modules/${moduleId}/exercises`)
@@ -30,7 +32,7 @@ export function CompilerWorkspace({ moduleId, skillName, language }: { moduleId:
   }, [moduleId]);
 
   function stateFor(index: number): ExerciseState {
-    return byExercise[index] ?? { code: STARTERS[language] ?? "", stdin: "", output: null };
+    return byExercise[index] ?? { code: STARTERS[language] ?? "", stdin: "", output: null, results: null };
   }
 
   function updateCurrent(patch: Partial<ExerciseState>) {
@@ -46,19 +48,45 @@ export function CompilerWorkspace({ moduleId, skillName, language }: { moduleId:
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ language, code, stdin }),
       });
-      updateCurrent({ output: await res.json() });
+      // Running freely (with your own stdin) doesn't grade anything - clear
+      // any stale pass/fail state so it isn't confused with a real result.
+      updateCurrent({ output: await res.json(), results: null });
     } finally {
       setRunning(false);
     }
   }
 
-  function toggleDone() {
-    setDone((prev) => {
-      const next = new Set(prev);
-      if (next.has(current)) next.delete(current);
-      else next.add(current);
-      return next;
-    });
+  // The only way an exercise counts as done: every one of its test cases
+  // actually passes when run for real. No manual override - this is the
+  // point of grading it instead of taking the learner's word for it.
+  async function submit() {
+    const ex = exercises?.[current];
+    if (!ex || ex.testCases.length === 0) return;
+    setSubmitting(true);
+    const { code } = stateFor(current);
+    try {
+      const results: TestResult[] = [];
+      for (const tc of ex.testCases) {
+        const res = await fetch("/api/compiler/run", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ language, code, stdin: tc.input }),
+        });
+        const body: RunResult = await res.json();
+        const actual = (body.stdout ?? "").trim();
+        const expected = tc.expectedOutput.trim();
+        results.push({
+          passed: !body.compileError && !body.stderr && actual === expected,
+          input: tc.input,
+          expected,
+          actual: body.compileError || body.stderr || actual,
+          error: body.compileError || body.stderr || null,
+        });
+      }
+      updateCurrent({ results, output: null });
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   if (!exercises) {
@@ -69,19 +97,24 @@ export function CompilerWorkspace({ moduleId, skillName, language }: { moduleId:
   }
 
   const ex = exercises[current];
-  const { code, stdin, output } = stateFor(current);
-  const isDone = done.has(current);
+  const { code, stdin, output, results } = stateFor(current);
+  const passedAll = results !== null && results.length > 0 && results.every((r) => r.passed);
+  const isDoneByIndex = (i: number) => {
+    const r = byExercise[i]?.results;
+    return !!r && r.length > 0 && r.every((x) => x.passed);
+  };
 
   return (
     <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
-      {/* One-at-a-time exercise list: click any to revisit and revise, done
-          ones stay checked off but stay editable. */}
+      {/* One-at-a-time exercise list: click any to revisit and revise. The
+          checkmark only appears once that exercise's tests have actually
+          passed - it's not something the learner can just toggle on. */}
       <Card className="h-fit p-3">
         <h3 className="mb-2 px-1 text-sm font-semibold">Practice exercises</h3>
         <ol className="space-y-1">
           {exercises.map((item, i) => {
             const active = i === current;
-            const complete = done.has(i);
+            const complete = isDoneByIndex(i);
             return (
               <li key={i}>
                 <button
@@ -120,7 +153,7 @@ export function CompilerWorkspace({ moduleId, skillName, language }: { moduleId:
         <Card className="p-0">
           <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
             <span className="text-xs text-muted">{language}</span>
-            {isDone && <Badge tone="success">Marked done</Badge>}
+            {passedAll && <Badge tone="success">All tests passed ✓</Badge>}
           </div>
           <Textarea
             value={code}
@@ -131,27 +164,59 @@ export function CompilerWorkspace({ moduleId, skillName, language }: { moduleId:
         </Card>
 
         <div className="flex flex-wrap items-center gap-2">
-          <Button size="sm" disabled={running} onClick={run}>
+          <Button size="sm" variant="secondary" disabled={running} onClick={run}>
             {running ? "Running..." : "Run ▶"}
           </Button>
           <Textarea
             value={stdin}
             onChange={(e) => updateCurrent({ stdin: e.target.value })}
             rows={1}
-            placeholder="stdin (optional)"
+            placeholder="stdin (optional, for free-form Run)"
             className="max-w-xs"
           />
-          <Button size="sm" variant={isDone ? "secondary" : "primary"} onClick={toggleDone}>
-            {isDone ? "Unmark done" : "Mark as done"}
+          <Button
+            size="sm"
+            disabled={submitting || ex.testCases.length === 0}
+            onClick={submit}
+            title={ex.testCases.length === 0 ? "No test cases available for this exercise" : undefined}
+          >
+            {submitting ? "Checking..." : "Submit ✓"}
           </Button>
         </div>
 
         {output && (
           <Card className="p-4 font-mono text-xs">
+            <p className="mb-2 text-[11px] font-sans text-muted">Free-run output (not graded):</p>
             {output.compileError && <pre className="whitespace-pre-wrap text-warning">{output.compileError}</pre>}
             {output.stdout && <pre className="whitespace-pre-wrap text-foreground">{output.stdout}</pre>}
             {output.stderr && <pre className="whitespace-pre-wrap text-danger">{output.stderr}</pre>}
             {!output.stdout && !output.stderr && !output.compileError && <p className="text-muted">(no output)</p>}
+          </Card>
+        )}
+
+        {results && (
+          <Card className="divide-y divide-border p-0">
+            {results.map((r, i) => (
+              <div key={i} className="p-3">
+                <div className="mb-1 flex items-center gap-2">
+                  <Badge tone={r.passed ? "success" : "danger"}>{r.passed ? "Passed" : "Failed"}</Badge>
+                  <span className="text-xs text-muted">Test case {i + 1}</span>
+                </div>
+                {!r.passed && (
+                  <div className="grid gap-1 font-mono text-xs text-muted">
+                    <p>
+                      input: <span className="text-foreground">{r.input || "(none)"}</span>
+                    </p>
+                    <p>
+                      expected: <span className="text-foreground">{r.expected}</span>
+                    </p>
+                    <p>
+                      got: <span className="text-danger">{r.actual}</span>
+                    </p>
+                  </div>
+                )}
+              </div>
+            ))}
           </Card>
         )}
 

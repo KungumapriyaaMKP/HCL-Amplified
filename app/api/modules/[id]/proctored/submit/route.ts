@@ -12,7 +12,7 @@ import { proctoredReportMessages } from "@/lib/prompts";
 
 type StoredQuestion = { id: string; correctIndex: number; explanation: string };
 type Answer = { id: string; selectedIndex: number };
-type Flag = { type: "tab_switch" | "blur" | "fullscreen_exit"; at: number };
+type Flag = { type: "tab_switch" | "blur" | "fullscreen_exit" | "identity_mismatch" | "no_face_detected"; at: number };
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   return withErrorHandling(async () => {
@@ -58,6 +58,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         correctCount,
         missedTopics,
         tabSwitchCount: flags?.filter((f) => f.type === "tab_switch").length ?? 0,
+        identityFlagCount: flags?.filter((f) => f.type === "identity_mismatch" || f.type === "no_face_detected").length ?? 0,
       }),
       { temperature: 0.5, maxTokens: 400 },
     ).catch(() => `You scored ${score}/100 on ${row.skill.name}.`);

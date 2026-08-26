@@ -35,7 +35,16 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
       const next = searchParams.get("next") || "/dashboard";
-      router.push(next);
+      if (mode === "signup") {
+        // New accounts go through face registration, then resume/background
+        // intake, before their first visit to the dashboard - see
+        // app/onboarding/face and app/onboarding/resume. Existing accounts
+        // logging in skip straight to `next`, they're not re-prompted.
+        const afterFace = `/onboarding/resume?next=${encodeURIComponent(next)}`;
+        router.push(`/onboarding/face?next=${encodeURIComponent(afterFace)}`);
+      } else {
+        router.push(next);
+      }
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");

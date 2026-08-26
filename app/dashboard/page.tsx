@@ -6,6 +6,8 @@ import { GoalCard } from "@/frontend/components/dashboard/GoalCard";
 import { MasteryChart } from "@/frontend/components/dashboard/MasteryChart";
 import { AdaptationFeed } from "@/frontend/components/dashboard/AdaptationFeed";
 import { ReminderBanner } from "@/frontend/components/dashboard/ReminderBanner";
+import { ActivityHeatmap } from "@/frontend/components/dashboard/ActivityHeatmap";
+import { SkillDecayHeatmap } from "@/frontend/components/dashboard/SkillDecayHeatmap";
 import { LinkButton } from "@/frontend/components/ui/Button";
 
 export default async function DashboardPage() {
@@ -46,8 +48,13 @@ export default async function DashboardPage() {
           )}
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="mb-6 grid gap-6 lg:grid-cols-2">
           <MasteryChart mastery={data.mastery} />
+          <SkillDecayHeatmap decay={data.decay} reviewSuggestions={data.reviewSuggestions} />
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-2">
+          <ActivityHeatmap activity={data.activity} />
           <AdaptationFeed adaptations={data.adaptations} />
         </div>
       </main>

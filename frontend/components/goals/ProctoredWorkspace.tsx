@@ -4,9 +4,12 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, Badge } from "@/frontend/components/ui/Card";
 import { Button } from "@/frontend/components/ui/Button";
+import { loadFaceModels, captureFace, faceDistance, MATCH_THRESHOLD } from "@/lib/faceMatch";
 
 type Question = { id: string; question: string; options: string[] };
-type Flag = { type: "tab_switch" | "blur" | "fullscreen_exit"; at: number };
+type Flag = { type: "tab_switch" | "blur" | "fullscreen_exit" | "identity_mismatch" | "no_face_detected"; at: number };
+
+const FACE_CHECK_INTERVAL_MS = 30_000;
 
 type Phase = "intro" | "loading" | "in_progress" | "submitting" | "done";
 
@@ -33,6 +36,8 @@ export function ProctoredWorkspace({
   const [secondsLeft, setSecondsLeft] = useState(0);
   const [flags, setFlags] = useState<Flag[]>([]);
   const [cameraActive, setCameraActive] = useState(false);
+  const [faceStatus, setFaceStatus] = useState<"checking" | "enrolled" | "verified" | "mismatch" | "no_face" | null>(null);
+  const [startError, setStartError] = useState<string | null>(null);
   const [result, setResult] = useState<{ score: number; reportText: string; xpAwarded?: number; badgesAwarded?: string[] } | null>(
     alreadyTaken ? { score: initialScore ?? 0, reportText: initialReport ?? "" } : null,
   );
@@ -40,6 +45,8 @@ export function ProctoredWorkspace({
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const faceCheckTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const referenceDescriptorRef = useRef<number[] | null>(null);
   const submittedRef = useRef(false);
 
   // The countdown timer is set up once inside begin() and its callback must
@@ -55,6 +62,62 @@ export function ProctoredWorkspace({
     if (phase !== "in_progress") return;
     setFlags((f) => [...f, { type, at: Date.now() }]);
   }
+
+  /**
+   * Captures the current webcam frame and either enrolls it (first time
+   * this learner has ever been face-checked - nothing to compare against
+   * yet, so this capture *becomes* the reference) or compares it against
+   * the stored reference descriptor. `isInitial` only changes how a
+   * mismatch gets recorded (flag() is gated on phase==="in_progress", which
+   * isn't true yet during the very first check in begin()) - the actual
+   * detection/matching logic is identical either way.
+   */
+  async function checkFace(isInitial: boolean) {
+    if (!videoRef.current) return;
+    setFaceStatus("checking");
+    try {
+      const capture = await captureFace(videoRef.current);
+      if (!capture) {
+        setFaceStatus("no_face");
+        if (!isInitial) flag("no_face_detected");
+        return;
+      }
+
+      if (!referenceDescriptorRef.current) {
+        await fetch("/api/profile/face", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ descriptor: capture.descriptor, photoDataUrl: capture.photoDataUrl }),
+        }).catch(() => {});
+        referenceDescriptorRef.current = capture.descriptor;
+        setFaceStatus("enrolled");
+        return;
+      }
+
+      const distance = faceDistance(capture.descriptor, referenceDescriptorRef.current);
+      if (distance > MATCH_THRESHOLD) {
+        setFaceStatus("mismatch");
+        if (isInitial) setFlags((f) => [...f, { type: "identity_mismatch", at: Date.now() }]);
+        else flag("identity_mismatch");
+      } else {
+        setFaceStatus("verified");
+      }
+    } catch {
+      // Model load or detection hiccup - never let this block the test.
+    }
+  }
+
+  // Spot-checks every FACE_CHECK_INTERVAL_MS while the test is actually in
+  // progress, so identity verification isn't just a one-time check at the
+  // start that could be gamed by swapping who's at the keyboard afterward.
+  useEffect(() => {
+    if (phase !== "in_progress") return;
+    faceCheckTimerRef.current = setInterval(() => checkFace(false), FACE_CHECK_INTERVAL_MS);
+    return () => {
+      if (faceCheckTimerRef.current) clearInterval(faceCheckTimerRef.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase]);
 
   useEffect(() => {
     function onVisibility() {
@@ -79,6 +142,7 @@ export function ProctoredWorkspace({
 
   function cleanup() {
     if (timerRef.current) clearInterval(timerRef.current);
+    if (faceCheckTimerRef.current) clearInterval(faceCheckTimerRef.current);
     streamRef.current?.getTracks().forEach((t) => t.stop());
     if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
   }
@@ -93,7 +157,26 @@ export function ProctoredWorkspace({
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
       streamRef.current = stream;
-      if (videoRef.current) videoRef.current.srcObject = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        // Wait for the video element to actually have a frame to give the
+        // face detector before running it - srcObject being set doesn't
+        // mean there's decoded video data yet.
+        await new Promise<void>((resolve) => {
+          const v = videoRef.current!;
+          if (v.readyState >= 2) return resolve();
+          v.onloadeddata = () => resolve();
+        });
+        fetch("/api/profile/face")
+          .then((r) => r.json())
+          .then((body) => {
+            referenceDescriptorRef.current = body.descriptor ?? null;
+          })
+          .catch(() => {})
+          .then(() => loadFaceModels())
+          .then(() => checkFace(true))
+          .catch(() => {});
+      }
       setCameraActive(true);
     } catch {
       setCameraActive(false);
@@ -101,6 +184,15 @@ export function ProctoredWorkspace({
 
     const res = await fetch(`/api/modules/${moduleId}/proctored/start`, { method: "POST" });
     const body = await res.json();
+    if (!res.ok) {
+      // Server-side gate (practice quiz not attempted yet) rejected this -
+      // the UI normally prevents reaching "Begin proctored test" at all
+      // without that, so this only fires if someone got here another way.
+      cleanup();
+      setStartError(body.error || "Couldn't start the proctored test");
+      setPhase("intro");
+      return;
+    }
     if (body.alreadyTaken) {
       cleanup();
       setResult({ score: body.score, reportText: body.reportText });
@@ -164,9 +256,13 @@ export function ProctoredWorkspace({
         <ul className="mb-6 list-inside list-disc space-y-1 text-sm text-muted">
           <li>Single attempt, timed (10 minutes)</li>
           <li>Runs in fullscreen; switching tabs or losing focus is flagged</li>
-          <li>Requests camera access for a live self-view (best-effort presence check, not identity verification)</li>
+          <li>
+            Requests camera access and checks your face against a reference photo (your first proctored test
+            registers it automatically) - a mismatch or no face detected is flagged, not blocking
+          </li>
           <li>This score sets your official mastery for this skill</li>
         </ul>
+        {startError && <p className="mb-4 text-sm text-danger">{startError}</p>}
         <Button onClick={begin}>Begin proctored test</Button>
       </Card>
     );
@@ -187,6 +283,15 @@ export function ProctoredWorkspace({
         </Badge>
         <div className="flex items-center gap-2">
           {flags.length > 0 && <Badge tone="danger">{flags.length} flag(s)</Badge>}
+          {faceStatus && (
+            <Badge tone={faceStatus === "verified" || faceStatus === "enrolled" ? "success" : faceStatus === "checking" ? "default" : "danger"}>
+              {faceStatus === "checking" && "Checking face…"}
+              {faceStatus === "enrolled" && "Face registered"}
+              {faceStatus === "verified" && "Identity verified"}
+              {faceStatus === "mismatch" && "Face mismatch"}
+              {faceStatus === "no_face" && "No face detected"}
+            </Badge>
+          )}
           <div className="h-16 w-20 overflow-hidden rounded-lg border border-border bg-surface-2">
             {cameraActive ? (
               <video ref={videoRef} autoPlay muted playsInline className="h-full w-full object-cover" />

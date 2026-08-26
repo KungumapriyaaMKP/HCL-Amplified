@@ -7,6 +7,7 @@ import { and, asc, desc, eq } from "drizzle-orm";
 import { chatComplete } from "@/lib/llm";
 import { assistantSystemMessage } from "@/lib/prompts";
 import { getMasteryMap } from "@/lib/adapt";
+import { getModuleForUser } from "@/lib/moduleAccess";
 import { DOMAINS } from "@/data/domains";
 
 export async function GET(req: NextRequest) {
@@ -28,7 +29,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   return withErrorHandling(async () => {
     const user = await requireUser();
-    const { goalId, message } = (await req.json()) as { goalId: string; message: string };
+    const { goalId, message, moduleId } = (await req.json()) as { goalId: string; message: string; moduleId?: string };
     if (!message?.trim()) return jsonError("message is required");
 
     const [goal] = await db.select().from(goals).where(and(eq(goals.id, goalId), eq(goals.userId, user.id)));
@@ -61,6 +62,19 @@ export async function POST(req: NextRequest) {
       .limit(3);
     const recentAdaptations = adaptations.map((a) => a.reason).join(" | ");
 
+    let currentModule = null;
+    if (moduleId) {
+      const modRow = await getModuleForUser(user.id, moduleId);
+      if (modRow) {
+        currentModule = {
+          skillName: modRow.skill.name,
+          resourceTitle: modRow.resource.title,
+          resourceType: modRow.resource.type,
+          rationale: modRow.module.rationale,
+        };
+      }
+    }
+
     const domainName = DOMAINS.find((d) => d.id === goal.domain)?.name ?? goal.domain;
     const system = assistantSystemMessage({
       goalText: goal.goalText,
@@ -69,6 +83,7 @@ export async function POST(req: NextRequest) {
       masterySummary,
       pathSummary,
       recentAdaptations,
+      currentModule,
     });
 
     const history = await db

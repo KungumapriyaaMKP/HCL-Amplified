@@ -21,6 +21,22 @@ export const profiles = pgTable("profiles", {
   userId: uuid("user_id").primaryKey(),
   displayName: text("display_name").notNull(),
   preferenceScores: jsonb("preference_scores").notNull().default({}),
+  // Face verification for proctored tests (lib/faceMatch.ts, run entirely
+  // client-side via @vladmandic/face-api - no server-side ML, no external
+  // vision API). faceDescriptor is the ~128-float embedding used for actual
+  // matching; faceReferencePhoto is the captured image itself, kept only so
+  // a flagged attempt can be reviewed visually. Both null until the learner
+  // registers a face (auto-enrolled on their first proctored test).
+  faceDescriptor: jsonb("face_descriptor"),
+  faceReferencePhoto: text("face_reference_photo"),
+  // Resume-derived prior knowledge (lib/resume.ts) - extracted once at
+  // onboarding, then reused as a mastery seed for every future goal rather
+  // than re-asked per goal. resumeText is the raw extracted text (kept so
+  // re-extraction doesn't need the file re-uploaded); resumeProfile is
+  // Claude's structured read of it (role, career goal, years of
+  // experience, mapped skill ids, a short summary).
+  resumeText: text("resume_text"),
+  resumeProfile: jsonb("resume_profile"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
 
@@ -269,4 +285,36 @@ export const streaks = pgTable("streaks", {
   currentStreak: integer("current_streak").notNull().default(0),
   longestStreak: integer("longest_streak").notNull().default(0),
   lastActiveDate: date("last_active_date"),
+});
+
+// ---------------------------------------------------------------------------
+// Community (per-domain discussion boards)
+// ---------------------------------------------------------------------------
+
+export const communityMembers = pgTable(
+  "community_members",
+  {
+    userId: uuid("user_id").notNull(),
+    domain: text("domain").notNull(), // matches data/domains.ts DOMAINS[].id
+    joinedAt: timestamp("joined_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.domain] })],
+);
+
+export const communityPosts = pgTable("community_posts", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  domain: text("domain").notNull(),
+  userId: uuid("user_id").notNull(),
+  content: text("content").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const communityReplies = pgTable("community_replies", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  postId: uuid("post_id")
+    .notNull()
+    .references(() => communityPosts.id, { onDelete: "cascade" }),
+  userId: uuid("user_id").notNull(),
+  content: text("content").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });

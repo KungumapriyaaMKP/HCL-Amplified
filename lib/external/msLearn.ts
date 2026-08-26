@@ -91,11 +91,13 @@ export async function syncMsLearnResourcesForSkill(
   const keywordPatterns = keywords.map(
     (k) => new RegExp(`\\b${k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i"),
   );
+  // Title only, not title+summary: a summary often lists supported/adjacent
+  // technologies in passing (e.g. an Azure App Service deployment article
+  // mentioning ".NET, Java, Node.js, PHP, and Python" as runtime options),
+  // which used to match the "python" keyword despite the module having
+  // nothing to do with learning Python. A title names the actual subject.
   const matches = catalog
-    .filter((entry) => {
-      const haystack = `${entry.title} ${entry.summary}`;
-      return keywordPatterns.some((re) => re.test(haystack));
-    })
+    .filter((entry) => keywordPatterns.some((re) => re.test(entry.title)))
     .slice(0, limit);
 
   let count = 0;

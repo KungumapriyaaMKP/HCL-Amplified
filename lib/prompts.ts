@@ -1,6 +1,6 @@
 import type { ChatMessage } from "@/lib/llm";
 import { leafSkillsForDomain } from "@/lib/skillGraph";
-import { SKILLS_BY_ID } from "@/data/skills";
+import { SKILLS, SKILLS_BY_ID } from "@/data/skills";
 
 const QUESTION_SHAPE = `Each question object must look like:
 {"id": "q1", "skillId": "<one of the given skill ids>", "question": "<text>", "options": ["<a>", "<b>", "<c>", "<d>"], "correctIndex": <0-3>, "explanation": "<why the correct answer is correct, 1-2 sentences>"}`;
@@ -11,6 +11,7 @@ export function goalIntakeMessages(
   trackPace: string,
   history: ChatMessage[],
   domainId?: string,
+  resumeContext?: { summary: string; currentRole: string | null; careerGoal: string | null } | null,
 ): ChatMessage[] {
   const targetDomain = domainId || domain;
   const leafIds = leafSkillsForDomain(targetDomain);
@@ -20,15 +21,23 @@ export function goalIntakeMessages(
     .map((s) => `- ${s.id}: ${s.name} - ${s.description}`)
     .join("\n");
 
+  const resumeBlock = resumeContext
+    ? `\nThis learner already gave us their resume at signup. What we know about their background - use it, don't re-ask for it:
+- Background summary: ${resumeContext.summary}
+${resumeContext.currentRole ? `- Current role: ${resumeContext.currentRole}` : ""}
+${resumeContext.careerGoal ? `- Stated career goal: ${resumeContext.careerGoal}` : ""}
+`
+    : "";
+
   const system = `You are a warm, focused AI learning advisor helping a learner scope a brand-new learning goal.
 Domain: "${domain}". Learner's initial goal statement: "${goalText}". Chosen pace: "${trackPace}".
-
+${resumeBlock}
 Candidate target skills in this domain:
 ${candidateSkills || "(No leaf skills defined for this domain)"}
 
 Have a short natural conversation (aim for 2-4 learner replies total) to learn:
 (a) their specific sub-focus or specialization within this domain (e.g. within "AI & Machine Learning" that could be "computer vision" or "LLM applications"),
-(b) their underlying motivation (career switch, current job need, curiosity, an upcoming project...),
+(b) their underlying motivation (career switch, current job need, curiosity, an upcoming project...) - if the resume context above already answers this, confirm it briefly instead of asking from scratch,
 (c) a rough target timeframe in weeks.
 
 Ask ONE focused question at a time. Be concise and encouraging, never robotic.
@@ -44,6 +53,43 @@ After EVERY learner message, respond with ONLY a JSON object of this exact shape
 Never ask more than one question per turn. Once "done" is true, "reply" should be a brief warm confirmation, not another question.`;
 
   return [{ role: "system", content: system }, ...history];
+}
+
+/**
+ * Extracts a structured profile from resume text (+ optionally a few
+ * directly-answered onboarding questions) once, at signup - mapping
+ * mentioned skills onto our real skill-id taxonomy so they can seed
+ * skill_mastery (source='resume') and carry forward into every future
+ * goal's skill-gap analysis, instead of every goal starting from zero.
+ */
+export function resumeExtractionMessages(opts: {
+  resumeText: string | null;
+  currentRole: string | null;
+  careerGoal: string | null;
+  yearsExperience: number | null;
+}): ChatMessage[] {
+  const skillList = SKILLS.map((s) => `- ${s.id}: ${s.name} (${s.category}) - ${s.description}`).join("\n");
+
+  const system = `You extract a structured learner profile from a resume and/or a few directly-answered questions, for an AI learning path app.
+
+${opts.resumeText ? `Resume text:\n"""${opts.resumeText}"""` : "No resume was provided."}
+${opts.currentRole ? `Directly stated current role: "${opts.currentRole}"` : ""}
+${opts.careerGoal ? `Directly stated career goal: "${opts.careerGoal}"` : ""}
+${opts.yearsExperience != null ? `Directly stated years of experience: ${opts.yearsExperience}` : ""}
+
+Our full skill taxonomy (map anything the resume/answers demonstrate onto these ids - only ids from this list are valid):
+${skillList}
+
+For each skill you're confident this person already has real experience with (based on job history, listed skills, projects - not just a passing mention), include it with a confidence level. Be conservative: only include a skill if the resume/answers genuinely support it, not every technology merely name-dropped once.
+
+Respond with ONLY:
+{"currentRole": "<string or null>",
+ "careerGoal": "<string or null>",
+ "yearsExperience": <number or null>,
+ "summary": "<1-2 sentence natural-language summary of their background, for other prompts to reference>",
+ "skillMastery": [{"skillId": "<id from the list above>", "confidence": "low"|"medium"|"high"}, ...]}`;
+
+  return [{ role: "system", content: system }];
 }
 
 export function questionGenerationMessages(opts: {
@@ -123,17 +169,27 @@ export function assistantSystemMessage(context: {
   masterySummary: string;
   pathSummary: string;
   recentAdaptations: string;
+  currentModule?: { skillName: string; resourceTitle: string; resourceType: string; rationale: string } | null;
 }): ChatMessage {
+  const currentModuleBlock = context.currentModule
+    ? `\nThe learner has this chat open WHILE actively working through a specific module right now - this is doubt-clearance in the middle of learning, not just path-level Q&A:
+- Skill: "${context.currentModule.skillName}"
+- Resource: the ${context.currentModule.resourceType} "${context.currentModule.resourceTitle}"
+- Why this module: ${context.currentModule.rationale}
+If their question is at all ambiguous, assume it's about THIS skill/resource first - answer the actual concept question directly (explain it, give an example, clarify the confusion) rather than deflecting to "check the resource." That's the whole point of this chat existing on the module page.
+`
+    : "";
+
   return {
     role: "system",
-    content: `You are the learner's AI learning assistant inside a personalized learning path app. Answer questions about their own path, explain recommendations, and give study advice. Be specific and reference their actual data below rather than speaking generically.
+    content: `You are the learner's AI learning assistant inside a personalized learning path app. Answer questions about their own path, explain recommendations, clear up conceptual doubts while they're learning, and give study advice. Be specific and reference their actual data below rather than speaking generically.
 
 Goal: "${context.goalText}" (domain: ${context.domain}, pace: ${context.trackPace}).
 Current mastery: ${context.masterySummary}
 Path so far: ${context.pathSummary}
 Recent path adaptations: ${context.recentAdaptations || "none yet"}
-
-Keep answers concise (a few sentences unless asked for detail). Respond with plain text only.`,
+${currentModuleBlock}
+Keep answers concise (a few sentences unless asked for detail, e.g. a worked example). Respond with plain text only.`,
   };
 }
 
@@ -144,14 +200,16 @@ export function proctoredReportMessages(opts: {
   correctCount: number;
   missedTopics: string[];
   tabSwitchCount: number;
+  identityFlagCount: number;
 }): ChatMessage[] {
   const system = `You write short, honest, encouraging proctored-test reports for a learning app.
 
 Skill assessed: "${opts.skillName}". Score: ${opts.score}/100 (${opts.correctCount}/${opts.totalQuestions} correct).
 Topics with mistakes: ${opts.missedTopics.length ? opts.missedTopics.join(", ") : "none - clean pass"}.
 Tab-switch/focus-loss flags during the test: ${opts.tabSwitchCount}.
+Face-identity mismatch/no-face-detected flags during the test: ${opts.identityFlagCount}.
 
-Write a short report (3-5 sentences): acknowledge the result honestly, call out the specific weak spot(s) if any, and say concretely what happens next (e.g. "the path will now revisit X before moving on" or "you're clear to move to the next module"). If tab-switch flags are 3 or higher, gently note the test conditions were not fully clean, factually not accusatory. Respond with ONLY plain text.`;
+Write a short report (3-5 sentences): acknowledge the result honestly, call out the specific weak spot(s) if any, and say concretely what happens next (e.g. "the path will now revisit X before moving on" or "you're clear to move to the next module"). If tab-switch flags are 3 or higher, gently note the test conditions were not fully clean, factually not accusatory. If there are any identity flags, note factually that the face check didn't consistently match during the session - again factual, not accusatory (lighting/camera angle are common innocent causes). Respond with ONLY plain text.`;
 
   return [{ role: "system", content: system }];
 }

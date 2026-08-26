@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/auth";
 import { withErrorHandling, jsonError } from "@/lib/apiHelpers";
 import { db } from "@/lib/db";
-import { goals, chatMessages } from "@/db/schema";
+import { goals, chatMessages, profiles } from "@/db/schema";
 import { and, asc, eq } from "drizzle-orm";
 import { chatJson } from "@/lib/llm";
 import { goalIntakeMessages } from "@/lib/prompts";
@@ -60,8 +60,13 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     }
 
     const domainName = DOMAINS.find((d) => d.id === goal.domain)?.name ?? goal.domain;
+    const [profile] = await db.select().from(profiles).where(eq(profiles.userId, user.id));
+    const resumeProfile = profile?.resumeProfile as
+      | { summary: string; currentRole: string | null; careerGoal: string | null }
+      | null;
+
     const result = await chatJson<IntakeResult>(
-      goalIntakeMessages(domainName, goal.goalText, goal.trackPace, history, goal.domain),
+      goalIntakeMessages(domainName, goal.goalText, goal.trackPace, history, goal.domain, resumeProfile),
       { temperature: 0.6 },
     );
 

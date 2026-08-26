@@ -18,14 +18,16 @@ type Props = {
   rationale: string;
   isProgramming: boolean;
   programmingLanguage: string | null;
-  moduleStatus: string;
+  hasResourceDone: boolean;
+  hasPracticeAttempt: boolean;
   proctoredAlreadyTaken: boolean;
   proctoredScore: number | null;
   proctoredReport: string | null;
 };
 
 export function ModuleWorkspace(props: Props) {
-  const [resourceMarked, setResourceMarked] = useState(props.moduleStatus !== "available");
+  const [resourceMarked, setResourceMarked] = useState(props.hasResourceDone);
+  const [practiceAttempted, setPracticeAttempted] = useState(props.hasPracticeAttempt);
   const [feedbackSent, setFeedbackSent] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -122,30 +124,50 @@ export function ModuleWorkspace(props: Props) {
         </div>
       </Card>
 
-      <PracticeQuiz moduleId={props.moduleId} />
+      {resourceMarked ? (
+        <PracticeQuiz moduleId={props.moduleId} onSubmitted={() => setPracticeAttempted(true)} />
+      ) : (
+        <LockedCard title="Practice quiz" reason="Mark the resource above as done to unlock this." />
+      )}
 
-      <Card className="p-5">
-        <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-sm font-semibold">Proctored test</h3>
-          <Badge tone="warning">Determines official mastery</Badge>
-        </div>
-        {props.proctoredAlreadyTaken ? (
-          <div>
-            <p className="mb-2 text-2xl font-semibold text-accent">{props.proctoredScore}/100</p>
-            {props.proctoredReport && <p className="text-sm text-foreground/85">{props.proctoredReport}</p>}
+      {props.proctoredAlreadyTaken ? (
+        <Card className="p-5">
+          <div className="mb-3 flex items-center justify-between">
+            <h3 className="text-sm font-semibold">Proctored test</h3>
+            <Badge tone="warning">Determines official mastery</Badge>
           </div>
-        ) : (
-          <div>
-            <p className="mb-4 text-sm text-muted">
-              A single-attempt, timed, browser-monitored test (fullscreen + tab-switch detection + a live webcam
-              self-view). This is what sets your real mastery score for {props.skillName}.
-            </p>
-            <Link href={`/goals/${props.goalId}/modules/${props.moduleId}/proctored`}>
-              <Button size="sm">Begin proctored test</Button>
-            </Link>
+          <p className="mb-2 text-2xl font-semibold text-accent">{props.proctoredScore}/100</p>
+          {props.proctoredReport && <p className="text-sm text-foreground/85">{props.proctoredReport}</p>}
+        </Card>
+      ) : practiceAttempted ? (
+        <Card className="p-5">
+          <div className="mb-3 flex items-center justify-between">
+            <h3 className="text-sm font-semibold">Proctored test</h3>
+            <Badge tone="warning">Determines official mastery</Badge>
           </div>
-        )}
-      </Card>
+          <p className="mb-4 text-sm text-muted">
+            A single-attempt, timed, browser-monitored test (fullscreen + tab-switch detection + a live webcam
+            self-view). This is what sets your real mastery score for {props.skillName}.
+          </p>
+          <Link href={`/goals/${props.goalId}/modules/${props.moduleId}/proctored`}>
+            <Button size="sm">Begin proctored test</Button>
+          </Link>
+        </Card>
+      ) : (
+        <LockedCard title="Proctored test" reason="Complete at least one practice quiz attempt above to unlock this." />
+      )}
     </div>
+  );
+}
+
+function LockedCard({ title, reason }: { title: string; reason: string }) {
+  return (
+    <Card className="p-5 opacity-60">
+      <div className="mb-2 flex items-center justify-between">
+        <h3 className="text-sm font-semibold">🔒 {title}</h3>
+        <Badge>Locked</Badge>
+      </div>
+      <p className="text-sm text-muted">{reason}</p>
+    </Card>
   );
 }
