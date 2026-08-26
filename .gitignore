@@ -20,8 +20,12 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 
-# large generated catalog data (regenerate via backend/scripts/)
+# large build intermediates (regenerate via backend/scripts/)
 backend/data/catalog_coursera.jsonl
+backend/data/catalog_vectors.npy
+backend/data/catalog_vector_ids.json
+backend/data/seed_labels.jsonl
+# hot_vectors.npy IS a runtime artifact -- keep it tracked for deploy
 
 # os
 .DS_Store
