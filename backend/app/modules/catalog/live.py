@@ -10,6 +10,7 @@ import json
 import re
 import time
 from typing import Any
+from urllib.parse import quote_plus
 
 import httpx
 
@@ -174,3 +175,22 @@ def enrich_live(skill_id: str, skill_name: str) -> list[Resource]:
     # 2. YouTube (if key configured)
     live_items.extend(_search_youtube(skill_id, skill_name, limit=2))
     return live_items
+
+
+def youtube_search_fallback(skill_id: str, skill_name: str) -> Resource:
+    """Always-available zero-cost resource: a YouTube search link that resolves for any skill."""
+    query = quote_plus(f"{skill_name} full course tutorial")
+    return Resource(
+        id=f"youtube-search-{skill_id}",
+        provider=Provider.YOUTUBE,
+        title=f"{skill_name} — Video Tutorials (YouTube)",
+        url=f"https://www.youtube.com/results?search_query={query}",
+        description=f"Curated free video tutorials and full courses for {skill_name}.",
+        duration_hours=4.0,              # estimate; renders as ~4h
+        difficulty=Difficulty.INTERMEDIATE,
+        modality=Modality.VIDEO,
+        cost_type=CostType.FREE,
+        price_usd=0.0,
+        skills_taught=[skill_id],
+        tags_verified=True,
+    )

@@ -4,15 +4,18 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import type { PlanResponse, Node } from "@/lib/api/pathfinder";
 import { insertDetour } from "@/lib/api/pathfinder";
-import { storePlan } from "@/lib/planStore";
 import { emitNudge } from "@/lib/mentorBus";
 import { SkillCard } from "./SkillCard";
 import { ExplanationPanel } from "./ExplanationPanel";
 import { DetourBanner } from "../adapt/DetourBanner";
 import { RelaxerBanner } from "./RelaxerBanner";
 
-export function RoadmapBoard({ plan }: { plan: PlanResponse }) {
-  const [livePlan, setLivePlan] = useState<PlanResponse>(plan);
+interface RoadmapBoardProps {
+  plan: PlanResponse;
+  onPlanUpdated: (p: PlanResponse) => void;
+}
+
+export function RoadmapBoard({ plan, onPlanUpdated }: RoadmapBoardProps) {
   const [selected, setSelected] = useState<Node | null>(null);
   const [detourInfo, setDetourInfo] = useState<{
     blockedSkillName: string;
@@ -22,10 +25,9 @@ export function RoadmapBoard({ plan }: { plan: PlanResponse }) {
 
   const handleSimulateStuck = async (node: Node) => {
     try {
-      const res = await insertDetour(node.skill_id, livePlan.goal);
+      const res = await insertDetour(node.skill_id, plan.goal);
       if (res.success && res.plan) {
-        setLivePlan(res.plan);
-        storePlan(res.plan);
+        onPlanUpdated(res.plan);
         setDetourInfo({
           blockedSkillName: node.skill_name,
           bridgeSkillName: res.bridge_skill_name || "Prerequisite Concept",
@@ -42,8 +44,8 @@ export function RoadmapBoard({ plan }: { plan: PlanResponse }) {
     <div className="mx-auto max-w-6xl px-6 py-8 space-y-6">
       {/* S9 Relaxer Optimizer */}
       <RelaxerBanner
-        plan={livePlan}
-        onPlanUpdated={(newPlan) => setLivePlan(newPlan)}
+        plan={plan}
+        onPlanUpdated={onPlanUpdated}
       />
 
       {/* S4 Detour Money-shot Banner */}
@@ -60,7 +62,7 @@ export function RoadmapBoard({ plan }: { plan: PlanResponse }) {
 
       {/* 4 Phase Columns with Framer Layout Springs */}
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4 items-start">
-        {livePlan.milestones.map((m) => (
+        {plan.milestones.map((m) => (
           <motion.div
             layout
             key={m.phase}

@@ -43,3 +43,12 @@ export const MENTOR_MESSAGES: Record<MentorEvent, string[]> = {
     "Deep work pays off. You're doing great.",
   ],
 };
+
+// Occasional low-key idle thoughts for the global companion
+export const IDLE_THOUGHTS: string[] = [
+  "Ready when you are.",
+  "Take your time.",
+  "You've got this.",
+  "Nice focus.",
+  "One step at a time.",
+];

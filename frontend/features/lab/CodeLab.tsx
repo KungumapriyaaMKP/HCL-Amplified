@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Pill } from "@/components/ui/Pill";
 import { Card } from "@/components/ui/Card";
 import { emitNudge } from "@/lib/mentorBus";
+import { Play, RotateCcw, Copy, Check, Download } from "lucide-react";
 
 interface PyodideRuntime {
   loadPackage: (packages: string[]) => Promise<void>;
@@ -17,10 +18,14 @@ declare global {
   }
 }
 
-const STARTER_SNIPPETS: Record<string, { title: string; skill: string; code: string }> = {
+const STARTER_SNIPPETS: Record<
+  string,
+  { title: string; skill: string; defaultFile: string; code: string }
+> = {
   attention: {
     title: "Scaled Dot-Product Attention",
     skill: "attention-mechanisms",
+    defaultFile: "attention.py",
     code: `import numpy as np
 
 def softmax(x):
@@ -50,6 +55,7 @@ print(np.round(weights[0], 3))
   linreg: {
     title: "Gradient Descent from Scratch",
     skill: "gradient-descent",
+    defaultFile: "linreg.py",
     code: `import numpy as np
 
 # Synthetic Dataset
@@ -75,6 +81,7 @@ print("Fitted Slope (True = 3.0):", round(float(theta[1][0]), 3))
   poincare: {
     title: "Poincaré Distance Metric",
     skill: "linear-algebra",
+    defaultFile: "poincare.py",
     code: `import math
 
 def poincare_dist(u, v):
@@ -95,11 +102,21 @@ print("d_H(root, leaf):", round(poincare_dist(root, leaf), 3))
 print("d_H(intermediate, leaf):", round(poincare_dist(intermediate, leaf), 3))
 `,
   },
+  blank: {
+    title: "Blank Scratchpad",
+    skill: "custom",
+    defaultFile: "scratchpad.py",
+    code: `# Write Python here...
+
+`,
+  },
 };
 
 export function CodeLab() {
   const [selectedSnippet, setSelectedSnippet] = useState("attention");
   const [code, setCode] = useState(STARTER_SNIPPETS.attention.code);
+  const [fileName, setFileName] = useState("attention.py");
+  const [copied, setCopied] = useState(false);
   const [output, setOutput] = useState<string>("");
   const [isRunning, setIsRunning] = useState(false);
   const [pyodideReady, setPyodideReady] = useState(false);
@@ -159,7 +176,43 @@ export function CodeLab() {
   const handleSnippetChange = (key: string) => {
     setSelectedSnippet(key);
     setCode(STARTER_SNIPPETS[key].code);
+    setFileName(STARTER_SNIPPETS[key].defaultFile);
     setOutput("");
+  };
+
+  const handleReset = () => {
+    setCode(STARTER_SNIPPETS[selectedSnippet].code);
+    setOutput("");
+  };
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy code:", err);
+    }
+  };
+
+  const sanitizeFileName = (name: string): string => {
+    const trimmed = name.trim();
+    const withoutExt = trimmed.replace(/\.py$/i, "");
+    const clean = withoutExt.replace(/[^a-zA-Z0-9_-]/g, "_") || "script";
+    return `${clean}.py`;
+  };
+
+  const handleDownload = () => {
+    const finalName = sanitizeFileName(fileName);
+    const blob = new Blob([code], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = finalName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   const runCode = async () => {
@@ -218,7 +271,7 @@ sys.stderr = sys_out
         </div>
 
         {/* Snippet Picker */}
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           {Object.entries(STARTER_SNIPPETS).map(([k, v]) => (
             <button
               key={k}
@@ -239,21 +292,75 @@ sys.stderr = sys_out
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Code Editor (7 cols) */}
         <div className="lg:col-span-7 bg-zinc-950 border border-zinc-800 rounded-2xl overflow-hidden shadow-xl flex flex-col">
-          <div className="p-3 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between">
+          <div className="p-3 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between flex-wrap gap-2">
+            {/* Window controls + Editable filename */}
             <div className="flex items-center gap-2">
               <span className="w-3 h-3 rounded-full bg-red-500/80" />
               <span className="w-3 h-3 rounded-full bg-amber-500/80" />
               <span className="w-3 h-3 rounded-full bg-emerald-500/80" />
-              <span className="text-xs font-mono text-zinc-400 ml-2">solution.py</span>
+              <div className="flex items-center ml-2">
+                <input
+                  type="text"
+                  value={fileName}
+                  onChange={(e) => setFileName(e.target.value)}
+                  className="text-xs font-mono text-zinc-300 bg-zinc-800/90 hover:bg-zinc-800 border border-zinc-700/60 focus:border-emerald-500 rounded px-2 py-0.5 outline-none transition-colors w-32 sm:w-36"
+                  title="Click to rename script"
+                  spellCheck={false}
+                />
+              </div>
             </div>
 
-            <button
-              onClick={runCode}
-              disabled={isRunning}
-              className="bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold text-xs px-4 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 disabled:opacity-50"
-            >
-              {isRunning ? "Running..." : "▶ Run Code"}
-            </button>
+            {/* Actions: Reset, Copy, Download, Run */}
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <button
+                type="button"
+                onClick={handleReset}
+                title="Reset to original starter code"
+                className="text-xs text-zinc-400 hover:text-zinc-200 bg-zinc-800/80 hover:bg-zinc-800 border border-zinc-700/60 px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Reset</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleCopy}
+                title="Copy code to clipboard"
+                className="text-xs text-zinc-400 hover:text-zinc-200 bg-zinc-800/80 hover:bg-zinc-800 border border-zinc-700/60 px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1"
+              >
+                {copied ? (
+                  <>
+                    <Check className="w-3.5 h-3.5 text-emerald-400" />
+                    <span className="text-emerald-400">Copied</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">Copy</span>
+                  </>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={handleDownload}
+                title="Download script as .py file"
+                className="text-xs text-zinc-400 hover:text-zinc-200 bg-zinc-800/80 hover:bg-zinc-800 border border-zinc-700/60 px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Download</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={runCode}
+                disabled={isRunning}
+                className="bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold text-xs px-3.5 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 disabled:opacity-50 shadow-sm ml-1"
+              >
+                <Play className="w-3.5 h-3.5 fill-current" />
+                <span>{isRunning ? "Running..." : "Run Code"}</span>
+              </button>
+            </div>
           </div>
 
           <textarea

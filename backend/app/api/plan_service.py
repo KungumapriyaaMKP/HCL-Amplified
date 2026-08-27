@@ -153,6 +153,10 @@ def build_plan(
                 alts = [s.resource for s in scored[1:4]]
                 factor_scores = scored[0].factors
 
+        # Guarantee every node has a resolving resource.
+        if best_res is None:
+            best_res = catalog.youtube_search_fallback(sid, skill.name)
+
         hours = best_res.duration_hours if best_res and best_res.duration_hours else 6.0
         satisfied = [skills[p].name for p in skill.prerequisites if profile.level(p) >= 0.6]
         node = PathNode(

@@ -116,9 +116,9 @@ export function SocraticModal({
 
             {/* Conceptual Hint */}
             {data.conceptual_hint && (
-              <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl text-xs text-amber-950 dark:text-amber-100 space-y-1">
-                <span className="font-bold">Pedagogical Hint:</span>
-                <FormattedContent text={data.conceptual_hint} className="leading-relaxed" />
+              <div className="p-3 bg-amber-500/10 border border-amber-500/40 rounded-xl text-xs text-ink space-y-1">
+                <span className="font-bold text-amber-700 dark:text-amber-300">Pedagogical Hint:</span>
+                <FormattedContent text={data.conceptual_hint} className="leading-relaxed text-ink" />
               </div>
             )}
 

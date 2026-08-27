@@ -6,11 +6,16 @@ import {
   MentorEvent,
   MentorNudgeDetail,
   MENTOR_MESSAGES,
+  IDLE_THOUGHTS,
   emitNudge,
 } from "@/lib/mentorBus";
 
 // 30-minute focus session threshold
 export const FOCUS_INTERVAL_MS = 30 * 60 * 1000;
+
+// Occasional idle thought interval (2–4 minutes)
+export const IDLE_THOUGHT_MIN_MS = 2 * 60 * 1000;
+export const IDLE_THOUGHT_MAX_MS = 4 * 60 * 1000;
 
 function pickRandomMessage(event: MentorEvent): string {
   const pool = MENTOR_MESSAGES[event] || [];
@@ -37,6 +42,16 @@ export function GlobalMentor() {
   const [state, setState] = useState<GhostMentorState>("idle");
   const [bubble, setBubble] = useState<string | null>(null);
   const dismissTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const stateRef = useRef<GhostMentorState>(state);
+  const bubbleRef = useRef<string | null>(bubble);
+
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
+
+  useEffect(() => {
+    bubbleRef.current = bubble;
+  }, [bubble]);
 
   // Focus accumulator & visibility tracker
   useEffect(() => {
@@ -70,6 +85,47 @@ export function GlobalMentor() {
     return () => {
       clearInterval(interval);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
+
+  // Occasional Idle Thoughts Loop (every 2-4 minutes when idle & visible)
+  useEffect(() => {
+    let thoughtTimer: NodeJS.Timeout;
+
+    const scheduleIdleThought = () => {
+      const delay =
+        IDLE_THOUGHT_MIN_MS +
+        Math.random() * (IDLE_THOUGHT_MAX_MS - IDLE_THOUGHT_MIN_MS);
+
+      thoughtTimer = setTimeout(() => {
+        if (
+          typeof document !== "undefined" &&
+          document.visibilityState === "visible" &&
+          !bubbleRef.current &&
+          stateRef.current === "idle"
+        ) {
+          const pool = IDLE_THOUGHTS;
+          const randomThought = pool[Math.floor(Math.random() * pool.length)];
+          setBubble(randomThought);
+          setState("idle");
+
+          if (dismissTimerRef.current) {
+            clearTimeout(dismissTimerRef.current);
+          }
+
+          dismissTimerRef.current = setTimeout(() => {
+            setBubble(null);
+            setState("idle");
+          }, 5000);
+        }
+        scheduleIdleThought();
+      }, delay);
+    };
+
+    scheduleIdleThought();
+
+    return () => {
+      clearTimeout(thoughtTimer);
     };
   }, []);
 

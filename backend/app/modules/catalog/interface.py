@@ -8,11 +8,18 @@ attaches at query time -- W1.
 from __future__ import annotations
 
 from app.domain import Resource
-from app.modules.catalog.live import enrich_live
+from app.modules.catalog.live import enrich_live, youtube_search_fallback
 from app.modules.catalog.search import search, semantic_scores
 from app.modules.catalog.store import load_index
 
-__all__ = ["search", "semantic_scores", "load_index", "load_hot_index", "enrich_live"]
+__all__ = [
+    "search",
+    "semantic_scores",
+    "load_index",
+    "load_hot_index",
+    "enrich_live",
+    "youtube_search_fallback",
+]
 
 
 def load_hot_index() -> list[Resource]:

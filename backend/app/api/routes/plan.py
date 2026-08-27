@@ -23,6 +23,7 @@ from app.domain import (
     Confidence, Constraints, LearnerProfile, Mastery, PathNode, Resource, Skill,
 )
 from app.modules.adapt import interface as adapt
+from app.modules.catalog import interface as catalog
 from app.modules.profiling import interface as profiling
 
 router = APIRouter()
@@ -295,6 +296,14 @@ async def insert_plan_detour(
     spliced_path, inserted = adapt.insert_detour(
         path, req.blocked_skill_id, bridge_id, bridge_name
     )
+    if inserted:
+        for milestone in spliced_path.milestones:
+            for node in milestone.nodes:
+                if node.is_remediation and node.resource is None:
+                    node.resource = catalog.youtube_search_fallback(
+                        node.skill_id, node.skill_name
+                    )
+
     plan_out = _to_plan_response(spliced_path, role, readiness)
 
     return DetourResponse(
