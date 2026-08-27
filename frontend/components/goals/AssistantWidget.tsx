@@ -63,7 +63,7 @@ export function AssistantWidget({ goalId, moduleId }: { goalId: string; moduleId
         onClick={() => setOpen((o) => !o)}
         className="grid h-14 w-14 place-items-center rounded-full bg-gradient-to-br from-accent to-accent-2 text-xl text-white shadow-lg"
       >
-        {open ? "×" : "💬"}
+        {open ? "×" : ""}
       </button>
     </div>
   );

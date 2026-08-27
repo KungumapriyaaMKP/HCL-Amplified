@@ -1,4 +1,4 @@
-import { Card } from "@/frontend/components/ui/Card";
+import { Card } from "@/frontend/components/ui/card";
 import type { DashboardData } from "@/lib/dashboardData";
 
 // Single-series magnitude comparison across skills -> horizontal bars, one
@@ -17,23 +17,24 @@ export function MasteryChart({ mastery }: { mastery: DashboardData["mastery"] })
   const top = mastery.slice(0, 12);
 
   return (
-    <Card className="p-5">
-      <h3 className="mb-4 text-sm font-semibold">Skill mastery</h3>
-      <div className="space-y-3">
+    <Card className="p-6">
+      <div className="mb-6">
+        <h3 className="text-base font-semibold">Skill mastery</h3>
+        <p className="mt-1 text-xs text-muted">Top skills and your proficiency</p>
+      </div>
+      <div className="space-y-4">
         {top.map((m) => (
-          <div key={m.skillId} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
-            <div>
-              <div className="mb-1 flex items-center justify-between text-xs">
-                <span className="truncate text-foreground">{m.name}</span>
-              </div>
-              <div className="h-3.5 w-full overflow-hidden rounded-full bg-surface-2">
-                <div
-                  className="h-full rounded-full bg-gradient-to-r from-accent/70 to-accent"
-                  style={{ width: `${Math.max(2, m.score)}%` }}
-                />
-              </div>
+          <div key={m.skillId} className="group">
+            <div className="mb-2 flex items-center justify-between">
+              <span className="truncate text-sm font-medium text-foreground group-hover:text-accent transition-colors">{m.name}</span>
+              <span className="text-right text-sm font-semibold tabular-nums text-accent">{m.score}%</span>
             </div>
-            <span className="w-10 text-right text-xs font-medium tabular-nums text-muted">{m.score}%</span>
+            <div className="h-2 w-full overflow-hidden rounded-full bg-surface-2/50 backdrop-blur-sm">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-accent/80 via-accent to-accent-2 transition-all duration-500"
+                style={{ width: `${Math.max(2, m.score)}%` }}
+              />
+            </div>
           </div>
         ))}
       </div>

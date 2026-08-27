@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Card, Badge } from "@/frontend/components/ui/Card";
+import { Card } from "@/frontend/components/ui/card";
+import { Badge } from "@/frontend/components/ui/badge";
 import { Button } from "@/frontend/components/ui/Button";
 
 type Question = { id: string; question: string; options: string[] };

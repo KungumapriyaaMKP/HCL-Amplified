@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Card, Badge } from "@/frontend/components/ui/Card";
+import { Card } from "@/frontend/components/ui/card";
+import { Badge } from "@/frontend/components/ui/badge";
 import { Button } from "@/frontend/components/ui/Button";
 import { loadFaceModels, captureFace, faceDistance, MATCH_THRESHOLD } from "@/lib/faceMatch";
 
@@ -241,7 +242,7 @@ export function ProctoredWorkspace({
         <p className="mb-4 text-sm text-foreground/85">{result.reportText}</p>
         {!!result.badgesAwarded?.length && (
           <div className="mb-4 flex gap-2">
-            {result.badgesAwarded.map((b) => <Badge key={b} tone="success">🏅 {b}</Badge>)}
+            {result.badgesAwarded.map((b) => <Badge key={b} tone="success"> {b}</Badge>)}
           </div>
         )}
         <Button size="sm" onClick={() => router.push(`/goals/${goalId}`)}>Back to path</Button>

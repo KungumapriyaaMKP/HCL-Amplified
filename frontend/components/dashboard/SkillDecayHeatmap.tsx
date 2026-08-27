@@ -1,4 +1,5 @@
-import { Card, Badge } from "@/frontend/components/ui/Card";
+import { Card } from "@/frontend/components/ui/card";
+import { Badge } from "@/frontend/components/ui/badge";
 import type { DashboardData } from "@/lib/dashboardData";
 
 // Status encoding (state, not magnitude): a small fixed 3-step scale with
@@ -37,13 +38,15 @@ export function SkillDecayHeatmap({
   const fadingFoundational = decay.filter((d) => d.foundational && d.tier !== "fresh" && reviewSuggestions[d.skillId]);
 
   return (
-    <Card className="p-5">
-      <div className="mb-1 flex items-center justify-between">
-        <h3 className="text-sm font-semibold">Skill decay</h3>
-        <span className="text-xs text-muted">days since last reinforced</span>
+    <Card className="p-6">
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <div>
+          <h3 className="text-base font-semibold">Skill decay</h3>
+          <p className="mt-1 text-xs text-muted">Days since last reinforced</p>
+        </div>
       </div>
 
-      <div className="mb-4 flex flex-wrap gap-2">
+      <div className="mb-6 flex flex-wrap gap-2">
         {decay.map((d) => {
           const t = TIER[d.tier];
           return (
@@ -55,23 +58,28 @@ export function SkillDecayHeatmap({
       </div>
 
       {fadingFoundational.length > 0 && (
-        <div className="space-y-2 border-t border-border pt-3">
-          <p className="text-xs font-medium text-muted">Quick reviews before these foundational skills fade further:</p>
-          {fadingFoundational.map((d) => (
-            <a
-              key={d.skillId}
-              href={reviewSuggestions[d.skillId].url}
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center justify-between rounded-lg bg-surface-2 px-3 py-2 text-xs hover:bg-[#222b40]"
-            >
-              <span>
-                <span className="font-medium text-foreground">{d.name}</span>
-                <span className="text-muted"> — {reviewSuggestions[d.skillId].title}</span>
-              </span>
-              <span className="text-accent">Review →</span>
-            </a>
-          ))}
+        <div className="space-y-3 border-t border-border/50 pt-6">
+          <div>
+            <p className="text-xs font-semibold text-amber-500 uppercase tracking-wide"> Review suggested</p>
+            <p className="mt-1 text-xs text-muted">Before these foundational skills fade further:</p>
+          </div>
+          <div className="space-y-2">
+            {fadingFoundational.map((d) => (
+              <a
+                key={d.skillId}
+                href={reviewSuggestions[d.skillId].url}
+                target="_blank"
+                rel="noreferrer"
+                className="group flex items-center justify-between rounded-lg border border-amber-500/20 bg-amber-500/5 px-4 py-3 text-xs transition-all hover:bg-amber-500/10 hover:border-amber-500/40"
+              >
+                <div>
+                  <p className="font-semibold text-foreground group-hover:text-amber-400 transition-colors">{d.name}</p>
+                  <p className="mt-1 text-muted text-xs">{reviewSuggestions[d.skillId].title}</p>
+                </div>
+                <span className="ml-3 shrink-0 text-amber-500 font-medium group-hover:translate-x-1 transition-transform">Review →</span>
+              </a>
+            ))}
+          </div>
         </div>
       )}
     </Card>

@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Card, Badge } from "@/frontend/components/ui/Card";
+import { Card } from "@/frontend/components/ui/card";
+import { Badge } from "@/frontend/components/ui/badge";
 import { Button } from "@/frontend/components/ui/Button";
 import { PracticeQuiz } from "@/frontend/components/goals/PracticeQuiz";
 
@@ -61,7 +62,7 @@ export function ModuleWorkspace(props: Props) {
       <Card className="p-5">
         <div className="mb-3 flex items-center justify-between">
           <Badge tone="accent">{props.skillName}</Badge>
-          {props.isProgramming && <Badge tone="default">💻 {props.programmingLanguage}</Badge>}
+          {props.isProgramming && <Badge tone="default"> {props.programmingLanguage}</Badge>}
         </div>
         <h2 className="mb-1 text-lg font-semibold">{props.resourceTitle}</h2>
         <p className="mb-3 text-xs text-muted">

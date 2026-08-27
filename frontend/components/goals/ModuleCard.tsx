@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Card, Badge } from "@/frontend/components/ui/Card";
+import { Card } from "@/frontend/components/ui/card";
+import { Badge } from "@/frontend/components/ui/badge";
 import type { GoalDetail } from "@/lib/goalData";
 
 const STATUS_STYLE: Record<string, { tone: "default" | "success" | "warning" | "accent"; label: string }> = {
@@ -26,7 +27,7 @@ export function ModuleCard({ item, goalId }: { item: GoalDetail["modules"][numbe
         <div>
           <div className="mb-1 flex items-center gap-2">
             <Badge tone="default" className="text-[10px]">{MILESTONE_LABEL[item.module.milestoneType] ?? item.module.milestoneType}</Badge>
-            {item.module.isProgramming && <Badge tone="accent" className="text-[10px]">💻 {item.module.programmingLanguage}</Badge>}
+            {item.module.isProgramming && <Badge tone="accent" className="text-[10px]"> {item.module.programmingLanguage}</Badge>}
           </div>
           <h3 className="font-medium">{item.skill.name}</h3>
           <p className="text-xs text-muted">

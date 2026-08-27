@@ -1,4 +1,5 @@
-import { Card, Badge } from "@/frontend/components/ui/Card";
+import { Card } from "@/frontend/components/ui/card";
+import { Badge } from "@/frontend/components/ui/badge";
 import type { DashboardData } from "@/lib/dashboardData";
 
 const TRIGGER_TONE: Record<string, "success" | "warning" | "accent"> = {

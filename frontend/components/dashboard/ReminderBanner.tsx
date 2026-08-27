@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Card } from "@/frontend/components/ui/Card";
+import { Card } from "@/frontend/components/ui/card";
 import type { DashboardData } from "@/lib/dashboardData";
 
 function daysSince(date: string | Date | null): number | null {
@@ -55,7 +55,7 @@ export function ReminderBanner({
     return (
       <Card className="mb-6 flex flex-wrap items-center justify-between gap-3 border-warning/30 bg-warning/5 p-4">
         <p className="text-sm">
-          🔥 You&apos;re on a <strong>{streak.currentStreak}-day streak</strong> - it&apos;ll reset if you don&apos;t complete
+           You&apos;re on a <strong>{streak.currentStreak}-day streak</strong> - it&apos;ll reset if you don&apos;t complete
           something today.
         </p>
         {withNextAction[0]?.nextAction && (
