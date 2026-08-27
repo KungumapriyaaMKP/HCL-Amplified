@@ -49,6 +49,7 @@ function SignupForm() {
         options: {
           data: {
             display_name: name,
+            onboarding_status: "history_pending",
           },
         },
       });
@@ -59,19 +60,26 @@ function SignupForm() {
         return;
       }
 
-      // If user was created or session is active, sync profile with backend
-      if (data?.user) {
+      // If session is active with an authenticated token, sync profile with backend
+      if (data?.session?.access_token) {
         try {
-          await updateProfile(name);
+          await updateProfile(name, data.session.access_token);
         } catch {
           // Backend profile upsert will also occur automatically upon first authenticated request
         }
       }
 
-      router.push(redirectedFrom);
+      const targetRoute = redirectedFrom !== "/" ? redirectedFrom : "/onboarding/history";
+      router.push(targetRoute);
       router.refresh();
-    } catch (err: any) {
-      setError(err?.message || "An unexpected error occurred during signup.");
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error
+          ? err.message
+          : typeof err === "object" && err !== null && "message" in err
+          ? String((err as { message: unknown }).message)
+          : "An unexpected error occurred during signup.";
+      setError(message);
       setLoading(false);
     }
   }

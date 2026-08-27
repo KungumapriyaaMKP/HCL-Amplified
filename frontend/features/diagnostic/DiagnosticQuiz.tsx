@@ -30,6 +30,7 @@ export function DiagnosticQuiz({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState<Record<number, number>>({});
   const [loading, setLoading] = useState(true);
+  const [hasSparseError, setHasSparseError] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [results, setResults] = useState<DiagnosticSubmitResponse | null>(null);
 
@@ -43,20 +44,50 @@ export function DiagnosticQuiz({
     correct: string;
   } | null>(null);
 
+  const [reloadTrigger, setReloadTrigger] = useState(0);
+
   useEffect(() => {
-    async function load() {
-      setLoading(true);
+    let ignore = false;
+    async function fetchDiagnostic() {
       try {
         const res = await generateDiagnostic(goal, 4);
-        setQuestions(res.questions);
+        if (ignore) return;
+        if (!res.questions || res.questions.length < 2) {
+          console.warn(
+            `Diagnostic returned only ${res.questions?.length ?? 0} question(s) for goal "${goal}". Minimum 2 required.`
+          );
+          setHasSparseError(true);
+          setQuestions([]);
+        } else {
+          setQuestions(res.questions);
+          setHasSparseError(false);
+          setCurrentIndex(0);
+          setSelectedOptions({});
+        }
       } catch (e) {
-        console.error("Failed to load diagnostic:", e);
+        if (!ignore) {
+          console.error("Failed to load diagnostic:", e);
+          setHasSparseError(true);
+        }
       } finally {
-        setLoading(false);
+        if (!ignore) {
+          setLoading(false);
+        }
       }
     }
-    load();
-  }, [goal]);
+
+    fetchDiagnostic();
+
+    return () => {
+      ignore = true;
+    };
+  }, [goal, reloadTrigger]);
+
+  const handleRetry = () => {
+    setLoading(true);
+    setHasSparseError(false);
+    setReloadTrigger((prev) => prev + 1);
+  };
 
   const handleSelect = (optionIdx: number) => {
     setSelectedOptions((prev) => ({ ...prev, [currentIndex]: optionIdx }));
@@ -95,7 +126,7 @@ export function DiagnosticQuiz({
   const currentQ = questions[currentIndex];
   const isSelected = selectedOptions[currentIndex] !== undefined;
   const isLast = currentIndex === questions.length - 1;
-  const allAnswered = questions.every((_, idx) => selectedOptions[idx] !== undefined);
+  const allAnswered = questions.length > 0 && questions.every((_, idx) => selectedOptions[idx] !== undefined);
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
@@ -122,6 +153,22 @@ export function DiagnosticQuiz({
               Generating scenario probes for top fan-out skills...
             </div>
             <p className="text-xs text-muted">Calculating 2PL-IRT item parameters</p>
+          </div>
+        ) : hasSparseError ? (
+          <div className="py-10 text-center space-y-4">
+            <div className="text-sm font-semibold text-ink">
+              Couldn&apos;t load the full quiz
+            </div>
+            <p className="text-xs text-muted max-w-sm mx-auto">
+              Received an incomplete question set from the diagnostic generator. Please retry to generate a full 4-question adaptive assessment.
+            </p>
+            <button
+              type="button"
+              onClick={handleRetry}
+              className="bg-ink text-canvas font-semibold text-xs px-5 py-2.5 rounded-xl hover:bg-ink/90 transition-all cursor-pointer shadow-xs"
+            >
+              Retry Quiz Generation
+            </button>
           </div>
         ) : results ? (
           /* Results View */

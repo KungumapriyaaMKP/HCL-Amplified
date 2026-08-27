@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Compass } from "lucide-react";
 import { createClient, hasSupabase } from "@/lib/supabase/client";
 import { GamificationBar } from "@/features/gamification/GamificationBar";
@@ -17,12 +17,12 @@ const SECTIONS = [
 
 export function TopNav() {
   const router = useRouter();
+  const pathname = usePathname();
   const [userName, setUserName] = useState<string | null>(null);
-  const [isGuest, setIsGuest] = useState(true);
+  const [isGuest, setIsGuest] = useState(() => !hasSupabase());
 
   useEffect(() => {
     if (!hasSupabase()) {
-      setIsGuest(true);
       return;
     }
 
@@ -74,6 +74,10 @@ export function TopNav() {
     setIsGuest(true);
     router.push("/");
     router.refresh();
+  }
+
+  if (pathname?.startsWith("/onboarding")) {
+    return null;
   }
 
   return (

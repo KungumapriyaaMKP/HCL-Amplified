@@ -39,7 +39,7 @@ export interface LearningEventPayload {
   resource_id?: string | null;
   score?: number | null;
   minutes_spent?: number | null;
-  payload?: Record<string, any>;
+  payload?: Record<string, unknown>;
 }
 
 export interface HistoryResponse {
@@ -262,12 +262,19 @@ export async function getMe(): Promise<UserProfile> {
   return res.json();
 }
 
-export async function updateProfile(displayName: string): Promise<UserProfile> {
+export async function updateProfile(
+  displayName: string,
+  customToken?: string
+): Promise<UserProfile> {
   const authHeaders = await getAuthHeaders();
+  if (customToken) {
+    authHeaders["Authorization"] = `Bearer ${customToken}`;
+  }
+  const cleanName = displayName.trim() || "Learner";
   const res = await fetch(`${BASE}/api/profile`, {
     method: "POST",
     headers: authHeaders,
-    body: JSON.stringify({ display_name: displayName }),
+    body: JSON.stringify({ display_name: cleanName }),
   });
   if (!res.ok) throw new Error(`update profile failed: ${res.status}`);
   return res.json();

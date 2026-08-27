@@ -45,15 +45,47 @@ export async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const pathname = request.nextUrl.pathname;
+
   const isGated =
-    request.nextUrl.pathname.startsWith("/roadmap") ||
-    request.nextUrl.pathname.startsWith("/analytics");
+    pathname.startsWith("/roadmap") ||
+    pathname.startsWith("/analytics");
 
   if (!user && isGated) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = "/login";
-    loginUrl.searchParams.set("redirectedFrom", request.nextUrl.pathname);
+    loginUrl.searchParams.set("redirectedFrom", pathname);
     return NextResponse.redirect(loginUrl);
+  }
+
+  // Onboarding status gating for authenticated users
+  if (user) {
+    const status = user.user_metadata?.onboarding_status;
+    const isCompleted = !status || status === "completed";
+    const isOnboarding = pathname.startsWith("/onboarding");
+    const isAuth = pathname.startsWith("/login") || pathname.startsWith("/signup");
+    const isApi = pathname.startsWith("/api");
+
+    // If completed or legacy account, re-entering onboarding routes or visiting "/" directly routes to roadmap
+    if (isCompleted && (isOnboarding || pathname === "/")) {
+      const roadmapUrl = request.nextUrl.clone();
+      roadmapUrl.pathname = "/roadmap";
+      return NextResponse.redirect(roadmapUrl);
+    }
+
+    // If onboarding is in-progress and user navigates to app routes, guide them to current step
+    if (!isCompleted && !isOnboarding && !isAuth && !isApi) {
+      const stepMap: Record<string, string> = {
+        history_pending: "/onboarding/history",
+        discovery_pending: "/onboarding/discovery",
+        role_pending: "/onboarding/role",
+        diagnostic_pending: "/onboarding/diagnostic",
+      };
+      const targetStep = (status && stepMap[status]) || "/onboarding/history";
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.pathname = targetStep;
+      return NextResponse.redirect(redirectUrl);
+    }
   }
 
   return supabaseResponse;

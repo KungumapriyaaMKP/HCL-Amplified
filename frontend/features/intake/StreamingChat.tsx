@@ -15,17 +15,24 @@ interface Message {
 interface StreamingChatProps {
   onIntakeComplete: (planReq: Partial<PlanRequest>) => void;
   knownSkills: Record<string, number>;
+  constraints?: {
+    hoursPerWeek: number;
+    deadlineWeeks: number;
+    budgetUsd: number | null;
+  };
 }
 
 export function StreamingChat({
   onIntakeComplete,
   knownSkills,
+  constraints,
 }: StreamingChatProps) {
-  const [messages, setMessages] = useState<Message[]>([
+  const [messages, setMessages] = useState<Message[]>(() => [
     {
       role: "assistant",
-      content:
-        "Hello! I'm Pathfinder AI. What career role or technical goal are you aiming for? Tell me a bit about your target timeline and available study hours per week.",
+      content: constraints
+        ? `Hello! I'm Pathfinder AI. What career role or technical goal are you aiming for? I've already noted your schedule (${constraints.hoursPerWeek}h/week, ${constraints.deadlineWeeks} weeks${constraints.budgetUsd !== null ? `, budget $${constraints.budgetUsd}` : ""}) from the sliders.`
+        : "Hello! I'm Pathfinder AI. What career role or technical goal are you aiming for? Tell me a bit about your target timeline and available study hours per week.",
     },
   ]);
   const [input, setInput] = useState("");
@@ -53,8 +60,23 @@ export function StreamingChat({
 
     setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
+    const chatPayload: Array<{ role: string; content: string }> = [];
+    if (constraints) {
+      const budgetText =
+        constraints.budgetUsd === null
+          ? "Any / Flexible"
+          : constraints.budgetUsd === 0
+          ? "100% Free"
+          : `$${constraints.budgetUsd}`;
+      chatPayload.push({
+        role: "system",
+        content: `[CONTEXT] The learner has already set: ~${constraints.hoursPerWeek}h/week, a ${constraints.deadlineWeeks}-week deadline, budget ${budgetText}. Do NOT ask for these again — acknowledge them and focus on their goal, sub-interests, and motivation.`,
+      });
+    }
+    chatPayload.push(...newMessages.map((m) => ({ role: m.role, content: m.content })));
+
     await streamChatIntake(
-      newMessages.map((m) => ({ role: m.role, content: m.content })),
+      chatPayload,
       (chunk) => {
         assistantAccum += chunk;
         setMessages((prev) => {
@@ -72,9 +94,9 @@ export function StreamingChat({
             const parsed = JSON.parse(match[1]);
             onIntakeComplete({
               goal: parsed.goal || query,
-              hours_per_week: parsed.hours_per_week || 10.0,
-              deadline_weeks: parsed.deadline_weeks || 24,
-              budget_usd: parsed.budget_usd || null,
+              hours_per_week: constraints?.hoursPerWeek ?? parsed.hours_per_week ?? 10.0,
+              deadline_weeks: constraints?.deadlineWeeks ?? parsed.deadline_weeks ?? 24,
+              budget_usd: constraints ? constraints.budgetUsd : (parsed.budget_usd || null),
               known: knownSkills,
             });
           } catch {}
@@ -86,8 +108,9 @@ export function StreamingChat({
   const handleQuickGoal = (goalText: string, hours: number, weeks: number) => {
     onIntakeComplete({
       goal: goalText,
-      hours_per_week: hours,
-      deadline_weeks: weeks,
+      hours_per_week: constraints?.hoursPerWeek ?? hours,
+      deadline_weeks: constraints?.deadlineWeeks ?? weeks,
+      budget_usd: constraints ? constraints.budgetUsd : null,
       known: knownSkills,
       priority: "balanced",
     });
