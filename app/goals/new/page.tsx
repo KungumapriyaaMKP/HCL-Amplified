@@ -127,9 +127,6 @@ export default function NewGoalPage() {
               <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight leading-tight">
                 Set a New Learning Goal
               </h1>
-              <p className="text-[11px] sm:text-xs text-slate-500 font-normal">
-                Start your journey by choosing what you want to master.
-              </p>
             </div>
           </div>
 
