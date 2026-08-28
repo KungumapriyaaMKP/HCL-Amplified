@@ -8,6 +8,7 @@ import { computeGap, resolveGoalSkills } from "@/lib/skillGraph";
 import { getMasteryMap } from "@/lib/adapt";
 import { getCandidatePool } from "@/lib/catalog";
 import { bestResourceForSkill, CRASH_COURSE_PRACTICE_BIAS, planSkillOrder, type PlannerMode, type ScoredResource } from "@/lib/recommend";
+import { computeFeasibility } from "@/lib/feasibility";
 import { isProgrammingSkill, languageForSkill } from "@/data/programmingSkills";
 import { SKILLS_BY_ID } from "@/data/skills";
 import { DOMAINS } from "@/data/domains";
@@ -172,6 +173,17 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
     await db.update(goals).set({ status: "active" }).where(eq(goals.id, id));
 
-    return NextResponse.json({ pathId: path.id, moduleCount: createdModules.length });
+    const feasibility = computeFeasibility({
+      gapSkills,
+      goalSkillIds,
+      trackPace: goal.trackPace,
+      deadlineWeeks: (subFocus as { timeframeWeeks?: number })?.timeframeWeeks ?? null,
+    });
+
+    return NextResponse.json({
+      pathId: path.id,
+      moduleCount: createdModules.length,
+      feasibility,
+    });
   });
 }
