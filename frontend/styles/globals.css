@@ -36,9 +36,9 @@
   --color-success-light: var(--success-light);
   --color-warning: var(--warning);
   --color-danger: var(--danger);
-  --font-sans: var(--font-sans), "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-display: var(--font-display), "Space Grotesk", sans-serif;
-  --font-mono: var(--font-mono), "JetBrains Mono", monospace;
+  --font-sans: var(--font-sans), "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --font-display: var(--font-sans), "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --font-mono: var(--font-mono), "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 body {
@@ -46,12 +46,17 @@ body {
   color: var(--foreground);
   min-height: 100%;
   font-family: var(--font-sans), "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01";
+  letter-spacing: -0.012em;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-display), var(--font-sans), sans-serif;
-  letter-spacing: -0.02em;
+  font-family: var(--font-sans), "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  letter-spacing: -0.028em;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01";
 }
 
 ::selection {
