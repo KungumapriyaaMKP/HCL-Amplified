@@ -17,13 +17,18 @@ export const metadata: Metadata = {
   description: "A personalized, AI-powered learning path recommender.",
 };
 
+import { GlobalMentor } from "@/frontend/components/ui/GlobalMentor";
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {children}
+        <GlobalMentor />
+      </body>
     </html>
   );
 }

@@ -5,6 +5,7 @@ import { Card } from "@/frontend/components/ui/card";
 import { Badge } from "@/frontend/components/ui/badge";
 import { Button } from "@/frontend/components/ui/Button";
 import { Textarea } from "@/frontend/components/ui/Input";
+import { emitNudge } from "@/lib/mentorBus";
 
 const STARTERS: Record<string, string> = {
   python: '# Write your practice code below\nprint("Hello, world!")\n',
@@ -52,6 +53,7 @@ export function CompilerWorkspace({ moduleId, skillName, language }: { moduleId:
       // Running freely (with your own stdin) doesn't grade anything - clear
       // any stale pass/fail state so it isn't confused with a real result.
       updateCurrent({ output: await res.json(), results: null });
+      emitNudge("code_run");
     } finally {
       setRunning(false);
     }
