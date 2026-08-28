@@ -212,11 +212,7 @@ export default function NewGoalPage() {
                       setDomain(d.id);
                       setStep(1);
                     }}
-                    className={`group relative flex flex-col justify-between overflow-hidden rounded-none border p-4 text-left transition-all duration-200 min-h-[110px] sm:min-h-[118px] cursor-pointer ${
-                      selected
-                        ? "border-2 border-[#7C3AED] bg-[#FAF8FE] ring-2 ring-purple-100 shadow-xs"
-                        : "border-slate-200 bg-white hover:border-purple-300 hover:shadow-xs"
-                    }`}
+                    className="group relative flex flex-col justify-between overflow-hidden rounded-none border-2 border-[#7C3AED] bg-white p-4 text-left transition-all duration-200 min-h-[110px] sm:min-h-[118px] cursor-pointer shadow-[0_0_10px_rgba(124,58,237,0.1)] hover:shadow-[0_0_22px_rgba(124,58,237,0.25)] hover:border-[#6D28D9] hover:bg-[#FAF8FE]"
                   >
                     {/* Top Row: Title & Right Square Arrow */}
                     <div className="relative z-10 flex items-start justify-between gap-3">
@@ -227,13 +223,7 @@ export default function NewGoalPage() {
                         </div>
                       </div>
 
-                      <div
-                        className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-none border transition-all duration-200 ${
-                          selected
-                            ? "border-[#7C3AED] bg-[#7C3AED] text-white shadow-xs"
-                            : "border-slate-200 bg-white text-slate-400 group-hover:border-[#7C3AED] group-hover:bg-[#7C3AED] group-hover:text-white"
-                        }`}
-                      >
+                      <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-none border border-[#7C3AED] bg-[#7C3AED] text-white shadow-xs transition-all duration-200 group-hover:scale-105 group-hover:bg-[#6D28D9]">
                         <IconArrowRight className="h-3 w-3" />
                       </div>
                     </div>
@@ -271,10 +261,10 @@ export default function NewGoalPage() {
                   <button
                     key={t.id}
                     onClick={() => setTrackPace(t.id)}
-                    className={`flex w-full items-center justify-between rounded-none border p-3 sm:p-3.5 text-left transition-all duration-150 cursor-pointer ${
+                    className={`flex w-full items-center justify-between rounded-none border-2 p-3 sm:p-3.5 text-left transition-all duration-150 cursor-pointer ${
                       selected
-                        ? "border-2 border-[#7C3AED] bg-[#FAF8FE] ring-2 ring-purple-100 shadow-xs"
-                        : "border-slate-200 bg-white hover:border-purple-300 hover:shadow-xs"
+                        ? "border-[#7C3AED] bg-[#FAF8FE] shadow-[0_0_12px_rgba(124,58,237,0.15)]"
+                        : "border-slate-200 bg-white hover:border-[#7C3AED] hover:shadow-xs"
                     }`}
                   >
                     <div>
