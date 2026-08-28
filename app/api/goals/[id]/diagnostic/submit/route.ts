@@ -6,8 +6,9 @@ import { goals, diagnosticAttempts } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
 import { upsertMastery } from "@/lib/adapt";
 import { touchStreak } from "@/lib/gamification";
+import { estimateTheta, type IRTItemResponse } from "@/lib/irt";
 
-type StoredQuestion = { id: string; skillId: string; correctIndex: number };
+type StoredQuestion = { id: string; skillId: string; correctIndex: number; a?: number; b?: number };
 type Answer = { id: string; selectedIndex: number };
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -28,32 +29,47 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const questions = attempt.questions as StoredQuestion[];
     const answerMap = new Map(answers.map((a) => [a.id, a.selectedIndex]));
 
-    const bySkill = new Map<string, { correct: number; total: number }>();
-    for (const q of questions) {
-      const entry = bySkill.get(q.skillId) ?? { correct: 0, total: 0 };
-      entry.total++;
-      if (answerMap.get(q.id) === q.correctIndex) entry.correct++;
-      bySkill.set(q.skillId, entry);
-    }
+    const responses: IRTItemResponse[] = questions.map((q) => ({
+      a: q.a ?? 1.0,
+      b: q.b ?? 0.0,
+      correct: answerMap.get(q.id) === q.correctIndex,
+    }));
+    const overallEstimate = estimateTheta(responses);
 
-    let totalCorrect = 0;
-    for (const [skillId, { correct, total }] of bySkill) {
-      const score = Math.round((correct / total) * 100);
-      totalCorrect += correct;
-      await upsertMastery(user.id, skillId, score, "diagnostic");
+    const distinctSkillIds = Array.from(new Set(questions.map((q) => q.skillId)));
+    const bySkillScores: Record<string, number> = {};
+
+    for (const skillId of distinctSkillIds) {
+      const skillResponses: IRTItemResponse[] = questions
+        .filter((q) => q.skillId === skillId)
+        .map((q) => ({
+          a: q.a ?? 1.0,
+          b: q.b ?? 0.0,
+          correct: answerMap.get(q.id) === q.correctIndex,
+        }));
+      const skillEstimate = estimateTheta(skillResponses);
+      bySkillScores[skillId] = skillEstimate.score;
+      await upsertMastery(user.id, skillId, skillEstimate.score, "diagnostic");
     }
-    const overallScore = Math.round((totalCorrect / questions.length) * 100);
 
     await db
       .update(diagnosticAttempts)
-      .set({ answers, score: overallScore })
+      .set({
+        answers,
+        score: overallEstimate.score,
+        theta: overallEstimate.theta,
+        standardError: overallEstimate.standardError,
+      })
       .where(eq(diagnosticAttempts.id, attemptId));
+
     await db.update(goals).set({ status: "ready" }).where(eq(goals.id, id));
     await touchStreak(user.id);
 
     return NextResponse.json({
-      score: overallScore,
-      bySkill: Object.fromEntries([...bySkill.entries()].map(([k, v]) => [k, Math.round((v.correct / v.total) * 100)])),
+      score: overallEstimate.score,
+      theta: overallEstimate.theta,
+      standardError: overallEstimate.standardError,
+      bySkill: bySkillScores,
     });
   });
 }

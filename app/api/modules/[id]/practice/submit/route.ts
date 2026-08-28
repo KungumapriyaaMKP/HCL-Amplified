@@ -7,8 +7,9 @@ import { and, eq } from "drizzle-orm";
 import { getModuleForUser } from "@/lib/moduleAccess";
 import { upsertMastery, updatePreferenceScore } from "@/lib/adapt";
 import { awardXp, awardBadgeIfNew, touchStreak, XP } from "@/lib/gamification";
+import { estimateTheta, type IRTItemResponse } from "@/lib/irt";
 
-type StoredQuestion = { id: string; correctIndex: number; explanation: string };
+type StoredQuestion = { id: string; correctIndex: number; explanation: string; a?: number; b?: number };
 type Answer = { id: string; selectedIndex: number };
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -29,9 +30,24 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const questions = attempt.questions as StoredQuestion[];
     const answerMap = new Map(answers.map((a) => [a.id, a.selectedIndex]));
     const correctCount = questions.filter((q) => answerMap.get(q.id) === q.correctIndex).length;
-    const score = Math.round((correctCount / questions.length) * 100);
 
-    await db.update(practiceAttempts).set({ answers, score }).where(eq(practiceAttempts.id, attemptId));
+    const responses: IRTItemResponse[] = questions.map((q) => ({
+      a: q.a ?? 1.0,
+      b: q.b ?? 0.0,
+      correct: answerMap.get(q.id) === q.correctIndex,
+    }));
+    const estimate = estimateTheta(responses);
+    const score = estimate.score;
+
+    await db
+      .update(practiceAttempts)
+      .set({
+        answers,
+        score,
+        theta: estimate.theta,
+        standardError: estimate.standardError,
+      })
+      .where(eq(practiceAttempts.id, attemptId));
 
     await db.insert(learningEvents).values({
       userId: user.id,
@@ -51,7 +67,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
     await awardXp(user.id, correctCount * XP.PRACTICE_QUIZ_CORRECT_ANSWER, "Practice quiz answers");
     let quizWhiz = false;
-    if (score === 100) {
+    if (score === 100 || correctCount === questions.length) {
       await awardXp(user.id, XP.PRACTICE_QUIZ_PERFECT_BONUS, "Perfect practice quiz");
       quizWhiz = await awardBadgeIfNew(user.id, "quiz_whiz");
     }
@@ -64,6 +80,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       explanation: q.explanation,
     }));
 
-    return NextResponse.json({ score, correctCount, total: questions.length, explanations, badgesAwarded: quizWhiz ? ["quiz_whiz"] : [] });
+    return NextResponse.json({
+      score,
+      theta: estimate.theta,
+      standardError: estimate.standardError,
+      correctCount,
+      total: questions.length,
+      explanations,
+      badgesAwarded: quizWhiz ? ["quiz_whiz"] : [],
+    });
   });
 }
