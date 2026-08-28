@@ -15,7 +15,6 @@ import {
   IconAward,
   IconBook,
   IconUser,
-  IconSettings,
   IconChevronRight,
 } from "@tabler/icons-react";
 
@@ -41,7 +40,6 @@ export function AppSidebar({
     { label: "Achievements", href: "/profile", icon: IconAward },
     { label: "Resources", href: "/dashboard#resources", icon: IconBook },
     { label: "Profile", href: "/profile", icon: IconUser },
-    { label: "Settings", href: "/profile", icon: IconSettings },
   ];
 
   return (
