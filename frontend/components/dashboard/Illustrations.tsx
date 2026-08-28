@@ -338,3 +338,132 @@ export function CircularProgress40({ className = "w-24 h-24" }: { className?: st
     </div>
   );
 }
+
+/**
+ * 3D Waving Astronaut/Robot Mascot Header Graphic
+ */
+export function WavingRobotMascot({ className = "w-24 h-24" }: { className?: string }) {
+  return (
+    <div className={`relative flex items-center justify-center ${className}`}>
+      <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+        <defs>
+          <linearGradient id="body-grad" x1="60" y1="20" x2="60" y2="100" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#FFFFFF" />
+            <stop offset="70%" stopColor="#EFF6FF" />
+            <stop offset="100%" stopColor="#DBEAFE" />
+          </linearGradient>
+          <linearGradient id="visor-grad" x1="45" y1="35" x2="75" y2="65" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#1E3A8A" />
+            <stop offset="50%" stopColor="#2563EB" />
+            <stop offset="100%" stopColor="#3B82F6" />
+          </linearGradient>
+          <linearGradient id="ring-grad" x1="0" y1="0" x2="120" y2="120" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#93C5FD" stopOpacity="0.4" />
+            <stop offset="100%" stopColor="#3B82F6" stopOpacity="0.1" />
+          </linearGradient>
+        </defs>
+
+        {/* Ambient Halo & Sparkles */}
+        <circle cx="60" cy="60" r="50" fill="url(#ring-grad)" />
+        <path d="M102 26 L104 20 L106 26 L112 28 L106 30 L104 36 L102 30 L96 28 Z" fill="#60A5FA" />
+        <path d="M18 42 L19.5 38 L21 42 L25 43.5 L21 45 L19.5 49 L18 45 L14 43.5 Z" fill="#93C5FD" opacity="0.8" />
+        <circle cx="28" cy="22" r="2" fill="#3B82F6" opacity="0.6" />
+        <circle cx="95" cy="85" r="2.5" fill="#60A5FA" opacity="0.5" />
+
+        {/* Helmet / Head */}
+        <ellipse cx="60" cy="50" rx="28" ry="24" fill="url(#body-grad)" stroke="#BFDBFE" strokeWidth="2.5" />
+        {/* Left / Right Ear Cylinders */}
+        <rect x="29" y="44" width="4" height="12" rx="2" fill="#93C5FD" />
+        <rect x="87" y="44" width="4" height="12" rx="2" fill="#93C5FD" />
+
+        {/* Blue Visor Screen */}
+        <ellipse cx="60" cy="50" rx="19" ry="14" fill="url(#visor-grad)" />
+        {/* Cute Blue Glow Eyes / Cheerful Face */}
+        <ellipse cx="53" cy="49" rx="3" ry="4" fill="#93C5FD" />
+        <ellipse cx="67" cy="49" rx="3" ry="4" fill="#93C5FD" />
+        <ellipse cx="54" cy="48" rx="1.2" ry="1.5" fill="#FFFFFF" />
+        <ellipse cx="68" cy="48" rx="1.2" ry="1.5" fill="#FFFFFF" />
+        {/* Visor Glare Reflex */}
+        <path d="M47 42 C51 39, 58 39, 63 41" stroke="#FFFFFF" strokeWidth="1.8" strokeLinecap="round" opacity="0.6" />
+
+        {/* Torso */}
+        <path d="M42 72 C42 66, 78 66, 78 72 L82 92 C82 98, 38 98, 38 92 Z" fill="url(#body-grad)" stroke="#BFDBFE" strokeWidth="2" />
+        {/* Chest Core Badge */}
+        <rect x="52" y="74" width="16" height="10" rx="3" fill="#DBEAFE" stroke="#93C5FD" strokeWidth="1" />
+        <circle cx="60" cy="79" r="2.5" fill="#3B82F6" />
+
+        {/* Left Arm (Relaxed) */}
+        <path d="M38 72 Q 30 78, 32 88" stroke="#DBEAFE" strokeWidth="7" strokeLinecap="round" />
+        <circle cx="32" cy="88" r="4.5" fill="#BFDBFE" />
+
+        {/* Right Arm (Waving!) */}
+        <path d="M80 72 Q 95 62, 98 46" stroke="#DBEAFE" strokeWidth="7" strokeLinecap="round" />
+        <circle cx="98" cy="46" r="5" fill="#93C5FD" />
+        {/* Waving Hand Palm & Fingers */}
+        <circle cx="102" cy="42" r="4" fill="#BFDBFE" />
+      </svg>
+    </div>
+  );
+}
+
+/**
+ * Blue & Gold Wreath Trophy Shield Badge
+ */
+export function WreathTrophyShield({ className = "w-12 h-12" }: { className?: string }) {
+  return (
+    <div className={`relative flex items-center justify-center ${className}`}>
+      <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+        <defs>
+          <linearGradient id="shield-grad" x1="15" y1="10" x2="45" y2="50" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#3B82F6" />
+            <stop offset="50%" stopColor="#2563EB" />
+            <stop offset="100%" stopColor="#1D4ED8" />
+          </linearGradient>
+          <linearGradient id="cup-grad" x1="20" y1="18" x2="40" y2="38" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#FEF08A" />
+            <stop offset="60%" stopColor="#F59E0B" />
+            <stop offset="100%" stopColor="#D97706" />
+          </linearGradient>
+        </defs>
+
+        {/* Blue Shield Base */}
+        <path
+          d="M30 6 C42 6, 48 10, 48 18 C48 34, 38 48, 30 54 C22 48, 12 34, 12 18 C12 10, 18 6, 30 6 Z"
+          fill="url(#shield-grad)"
+          stroke="#93C5FD"
+          strokeWidth="1.5"
+        />
+
+        {/* Left Laurel Wreath Leaves */}
+        <path d="M16 22 Q 13 28, 16 35 Q 20 42, 26 46" stroke="#60A5FA" strokeWidth="2" strokeLinecap="round" fill="none" />
+        <circle cx="14" cy="24" r="2" fill="#93C5FD" />
+        <circle cx="13" cy="30" r="2" fill="#93C5FD" />
+        <circle cx="15" cy="36" r="2" fill="#93C5FD" />
+        <circle cx="20" cy="42" r="2" fill="#93C5FD" />
+
+        {/* Right Laurel Wreath Leaves */}
+        <path d="M44 22 Q 47 28, 44 35 Q 40 42, 34 46" stroke="#60A5FA" strokeWidth="2" strokeLinecap="round" fill="none" />
+        <circle cx="46" cy="24" r="2" fill="#93C5FD" />
+        <circle cx="47" cy="30" r="2" fill="#93C5FD" />
+        <circle cx="45" cy="36" r="2" fill="#93C5FD" />
+        <circle cx="40" cy="42" r="2" fill="#93C5FD" />
+
+        {/* Gold Trophy Cup in Center */}
+        <path d="M22 18 H38 V26 C38 31, 33 34, 30 34 C27 34, 22 31, 22 26 Z" fill="url(#cup-grad)" />
+        {/* Left Cup Handle */}
+        <path d="M22 20 H18 C17 20, 17 26, 22 26" stroke="#FDE047" strokeWidth="2" strokeLinecap="round" fill="none" />
+        {/* Right Cup Handle */}
+        <path d="M38 20 H42 C43 20, 43 26, 38 26" stroke="#FDE047" strokeWidth="2" strokeLinecap="round" fill="none" />
+        {/* Trophy Base */}
+        <rect x="27" y="34" width="6" height="4" fill="#D97706" />
+        <rect x="24" y="38" width="12" height="3" rx="1" fill="#F59E0B" />
+        {/* Trophy Star */}
+        <path d="M30 22 L31 24.5 L33.5 25 L31.5 26.5 L32 29 L30 27.5 L28 29 L28.5 26.5 L26.5 25 L29 24.5 Z" fill="#FEF9C3" />
+
+        {/* Bottom Ribbon / Banner */}
+        <path d="M18 48 Q 30 52, 42 48 L44 54 Q 30 58, 16 54 Z" fill="#1E40AF" stroke="#60A5FA" strokeWidth="1" />
+      </svg>
+    </div>
+  );
+}
+

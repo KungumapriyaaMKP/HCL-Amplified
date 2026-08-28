@@ -1,5 +1,6 @@
+"use client";
+
 import Link from "next/link";
-import { LogoutButton } from "@/frontend/components/layout/LogoutButton";
 import { GoalSwitcher } from "@/frontend/components/layout/GoalSwitcher";
 import {
   IconCompass,
@@ -7,25 +8,24 @@ import {
   IconUsers,
   IconUser,
   IconPlus,
-  IconDeviceGamepad2,
+  IconChevronDown,
 } from "@tabler/icons-react";
+import { QuestLearnBrandIcon } from "@/frontend/components/dashboard/Illustrations";
 
-export function Nav({ displayName }: { displayName?: string }) {
+export function Nav({ displayName = "yuvi" }: { displayName?: string }) {
   return (
-    <header className="sticky top-0 z-40 border-b border-purple-500/20 bg-[#070913]/90 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.8)]">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
+    <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white shadow-xs">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-8">
         
         {/* Brand & Goal Switcher */}
         <div className="flex items-center gap-3 sm:gap-4">
-          <Link href="/dashboard" className="group flex items-center gap-3 transition-transform hover:scale-105">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-purple-600 to-indigo-700 shadow-[0_0_15px_rgba(147,51,234,0.6)] border border-purple-400/40">
-              <IconDeviceGamepad2 className="h-5 w-5 text-white" />
-            </div>
+          <Link href="/dashboard" className="group flex items-center gap-2.5 transition-transform hover:scale-102">
+            <QuestLearnBrandIcon className="h-8 w-8" />
             <div>
-              <div className="text-base font-extrabold tracking-wider text-white">
-                Quest<span className="text-purple-400">Learn</span>
+              <div className="text-base font-extrabold tracking-tight text-slate-900 leading-tight">
+                Quest<span className="text-[#7C3AED]">Learn</span>
               </div>
-              <div className="text-[8px] font-bold tracking-[0.2em] text-purple-300/70 uppercase">
+              <div className="text-[8px] font-bold tracking-[0.2em] text-slate-400 uppercase">
                 LEVEL UP YOUR FUTURE
               </div>
             </div>
@@ -34,58 +34,58 @@ export function Nav({ displayName }: { displayName?: string }) {
         </div>
 
         {/* Navigation */}
-        <nav className="flex items-center gap-1 sm:gap-2 text-xs font-bold">
+        <nav className="flex items-center gap-2 sm:gap-5 text-xs font-semibold">
           <Link
             href="/dashboard"
-            className="flex items-center gap-1.5 rounded-xl border border-transparent px-3 py-2 text-slate-300 transition-all hover:border-purple-500/30 hover:bg-purple-950/40 hover:text-white"
+            className="flex items-center gap-1.5 text-slate-600 hover:text-slate-900 px-2 py-1.5 rounded-md hover:bg-slate-50 transition-colors"
           >
-            <IconCompass className="h-4 w-4 text-purple-400" />
+            <IconCompass className="h-4 w-4 text-slate-500" />
             <span className="hidden sm:inline">Quests</span>
           </Link>
           <Link
             href="/leaderboard"
-            className="flex items-center gap-1.5 rounded-xl border border-transparent px-3 py-2 text-slate-300 transition-all hover:border-amber-500/30 hover:bg-amber-950/40 hover:text-amber-300"
+            className="flex items-center gap-1.5 text-slate-600 hover:text-slate-900 px-2 py-1.5 rounded-md hover:bg-slate-50 transition-colors"
           >
-            <IconTrophy className="h-4 w-4 text-amber-400" />
+            <IconTrophy className="h-4 w-4 text-slate-500" />
             <span className="hidden sm:inline">Leaderboard</span>
           </Link>
           <Link
             href="/community"
-            className="flex items-center gap-1.5 rounded-xl border border-transparent px-3 py-2 text-slate-300 transition-all hover:border-cyan-500/30 hover:bg-cyan-950/40 hover:text-cyan-300"
+            className="flex items-center gap-1.5 text-slate-600 hover:text-slate-900 px-2 py-1.5 rounded-md hover:bg-slate-50 transition-colors"
           >
-            <IconUsers className="h-4 w-4 text-cyan-400" />
+            <IconUsers className="h-4 w-4 text-slate-500" />
             <span className="hidden sm:inline">Guilds</span>
           </Link>
           <Link
             href="/profile"
-            className="flex items-center gap-1.5 rounded-xl border border-transparent px-3 py-2 text-slate-300 transition-all hover:border-fuchsia-500/30 hover:bg-fuchsia-950/40 hover:text-fuchsia-300"
+            className="flex items-center gap-1.5 text-slate-600 hover:text-slate-900 px-2 py-1.5 rounded-md hover:bg-slate-50 transition-colors"
           >
-            <IconUser className="h-4 w-4 text-fuchsia-400" />
+            <IconUser className="h-4 w-4 text-slate-500" />
             <span className="hidden sm:inline">Profile</span>
           </Link>
           <Link
             href="/goals/new"
-            className="flex items-center gap-1.5 rounded-xl border border-purple-500/40 bg-purple-950/60 px-3 py-2 text-purple-300 shadow-[0_0_12px_rgba(168,85,247,0.3)] transition-all hover:border-purple-400 hover:bg-purple-900/80 hover:text-white"
+            className="flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-[#3B82F6] via-[#6366F1] to-[#7C3AED] px-4 py-2 text-white font-bold shadow-sm transition-all hover:opacity-95 active:scale-98"
           >
-            <IconPlus className="h-4 w-4 text-purple-300" />
-            <span className="hidden sm:inline">New Quest</span>
+            <IconPlus className="h-4 w-4" />
+            <span>New Quest</span>
           </Link>
 
-          {/* Player HUD Tag & Logout */}
-          <div className="ml-2 flex items-center gap-2 border-l border-purple-500/20 pl-3">
-            {displayName && (
-              <Link
-                href="/profile"
-                className="hidden items-center gap-2 rounded-xl border border-purple-500/30 bg-[#0d1226]/90 px-3 py-1.5 text-xs transition-all hover:border-purple-400 hover:bg-[#151c3d] md:flex"
-                title="View Profile & Skill Analytics"
-              >
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-tr from-purple-500 to-indigo-500 text-[10px] font-black text-white">
-                  {displayName[0]?.toUpperCase()}
-                </span>
-                <span className="font-bold text-slate-200">{displayName}</span>
-              </Link>
-            )}
-            <LogoutButton />
+          {/* User Profile Tag */}
+          <div className="flex items-center gap-2 pl-2">
+            <Link
+              href="/profile"
+              className="flex items-center gap-2 text-left hover:opacity-90 transition-opacity"
+            >
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#2563EB] text-xs font-bold text-white shadow-xs">
+                {displayName[0]?.toUpperCase() || "Y"}
+              </div>
+              <div className="hidden lg:block leading-tight">
+                <div className="text-xs font-bold text-slate-900">{displayName}</div>
+                <div className="text-[10px] font-medium text-slate-400">Level 1</div>
+              </div>
+              <IconChevronDown className="h-3.5 w-3.5 text-slate-400" />
+            </Link>
           </div>
         </nav>
 
