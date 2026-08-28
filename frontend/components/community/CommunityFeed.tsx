@@ -158,14 +158,14 @@ export function CommunityFeed({ domain }: { domain: string }) {
       </div>
 
       {/* ================= CARD 2: NOTICE CARD WITH 3D AVATAR TRIO ================= */}
-      <div className="rounded-2xl border border-slate-100 bg-white px-6 py-3.5 shadow-sm flex items-center justify-between gap-4 overflow-hidden">
+      <div className="rounded-2xl border border-slate-100 bg-white px-6 py-3 shadow-xs flex items-center justify-between gap-4 overflow-hidden select-none">
         
-        {/* Left Side: Icon + Message */}
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 text-[#7C3AED] shrink-0">
-            <IconUsers className="h-5 w-5" />
+        {/* Left Side: Purple Rounded Icon + Message */}
+        <div className="flex items-center gap-3.5">
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#F3E8FF] text-[#7C3AED] shrink-0">
+            <IconUsers className="h-5 w-5 stroke-[2.2]" />
           </div>
-          <p className="text-xs sm:text-sm font-medium text-slate-600 leading-snug">
+          <p className="text-xs sm:text-sm font-medium text-slate-700 leading-snug">
             Join this community above to publish discussions and reply to peers.
           </p>
         </div>
@@ -175,8 +175,8 @@ export function CommunityFeed({ domain }: { domain: string }) {
           <Image
             src="/images/community/avatars_trio_3d.png"
             alt="Community Members"
-            width={140}
-            height={50}
+            width={160}
+            height={56}
             className="object-contain select-none"
             unoptimized
           />
