@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Card } from "@/frontend/components/ui/card";
+import { Card } from "@/frontend/components/ui/Card";
 import { Badge } from "@/frontend/components/ui/badge";
 import { Button } from "@/frontend/components/ui/Button";
 import { loadFaceModels, captureFace, faceDistance, MATCH_THRESHOLD } from "@/lib/faceMatch";

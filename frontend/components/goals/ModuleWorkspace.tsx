@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Card } from "@/frontend/components/ui/card";
+import { Card } from "@/frontend/components/ui/Card";
 import { Badge } from "@/frontend/components/ui/badge";
 import { Button } from "@/frontend/components/ui/Button";
 import { PracticeQuiz } from "@/frontend/components/goals/PracticeQuiz";

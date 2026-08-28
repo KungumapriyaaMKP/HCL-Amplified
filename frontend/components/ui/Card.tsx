@@ -77,3 +77,5 @@ const CardFooter = React.forwardRef<
 CardFooter.displayName = "CardFooter"
 
 export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
+export { Badge } from "./badge";
+export { ProgressBar } from "./progress-bar";

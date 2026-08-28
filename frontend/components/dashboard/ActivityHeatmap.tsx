@@ -1,4 +1,4 @@
-import { Card } from "@/frontend/components/ui/card";
+import { Card } from "@/frontend/components/ui/Card";
 import type { DashboardData } from "@/lib/dashboardData";
 
 // Sequential magnitude encoding (how much activity, not which category): one

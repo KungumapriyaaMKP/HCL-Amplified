@@ -1,4 +1,4 @@
-import { Card } from "@/frontend/components/ui/card";
+import { Card } from "@/frontend/components/ui/Card";
 import type { DashboardData } from "@/lib/dashboardData";
 
 // Single-series magnitude comparison across skills -> horizontal bars, one

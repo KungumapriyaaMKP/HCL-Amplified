@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card } from "@/frontend/components/ui/card";
+import { Card } from "@/frontend/components/ui/Card";
 import { Badge } from "@/frontend/components/ui/badge";
 import { Button } from "@/frontend/components/ui/Button";
 import { Textarea } from "@/frontend/components/ui/Input";

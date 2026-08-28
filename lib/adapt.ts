@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { goals, learningPaths, pathModules, skillMastery, adaptationLog, profiles, streaks } from "@/db/schema";
+import { goals, learningPaths, pathModules, skillMastery, adaptationLog, profiles, streaks, practiceAttempts } from "@/db/schema";
 import { and, eq, gt, asc } from "drizzle-orm";
 import { rankResources, CRASH_COURSE_PRACTICE_BIAS } from "@/lib/recommend";
 import { getCandidatePool } from "@/lib/catalog";

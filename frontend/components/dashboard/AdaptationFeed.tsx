@@ -1,4 +1,4 @@
-import { Card } from "@/frontend/components/ui/card";
+import { Card } from "@/frontend/components/ui/Card";
 import { Badge } from "@/frontend/components/ui/badge";
 import type { DashboardData } from "@/lib/dashboardData";
 

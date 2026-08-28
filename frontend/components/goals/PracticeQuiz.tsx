@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Card } from "@/frontend/components/ui/card";
+import { Card } from "@/frontend/components/ui/Card";
 import { Badge } from "@/frontend/components/ui/badge";
 import { Button } from "@/frontend/components/ui/Button";
 import { emitNudge } from "@/lib/mentorBus";
@@ -38,6 +38,8 @@ export function PracticeQuiz({ moduleId, onSubmitted }: { moduleId: string; onSu
       const res = await fetch(`/api/modules/${moduleId}/practice/submit`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ attemptId, answers: payload }),
+      });
       const data = await res.json();
       setResult(data);
       if (data.score >= 70) emitNudge("quiz_pass");
