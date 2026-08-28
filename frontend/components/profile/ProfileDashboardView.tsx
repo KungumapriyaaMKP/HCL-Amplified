@@ -119,10 +119,7 @@ export function ProfileDashboardView({
           {/* Left Welcome Greeting + Exact 3D Robot Mascot */}
           <div className="flex items-center gap-4 sm:gap-6">
             <div>
-              <div className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#7C3AED]">
-                LEARNER IDENTITY & ANALYTICS
-              </div>
-              <h1 className="mt-0.5 text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">
                 Welcome back, <span className="text-[#7C3AED]">{displayName}!</span> 👏
               </h1>
               <p className="mt-1 text-xs sm:text-sm text-slate-500 font-normal">
