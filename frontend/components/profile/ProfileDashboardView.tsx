@@ -96,25 +96,24 @@ export function ProfileDashboardView({
   return (
     <div className="relative min-h-screen bg-[#F8F9FD] text-slate-900 font-sans pb-16 overflow-x-hidden">
       
-      {/* Background Decorative Floating Sky Islands (Positioned outside text so they never overlap) */}
-      <div className="pointer-events-none absolute inset-0 max-w-[1600px] mx-auto overflow-hidden">
-        <FloatingSkyIsland className="absolute top-4 left-2 w-28 h-28 hidden 2xl:block opacity-90" />
-        <IslandWithFlagIllustration className="absolute bottom-28 left-4 w-32 h-32 hidden 2xl:block opacity-90" />
-        <FloatingSkyIsland className="absolute top-6 right-4 w-32 h-32 hidden 2xl:block opacity-90" />
+      {/* Background Decorative Floating Sky Islands on far edges */}
+      <div className="pointer-events-none absolute inset-0 max-w-[1700px] mx-auto overflow-hidden">
+        <IslandWithFlagIllustration className="absolute bottom-20 left-2 w-28 h-28 hidden 2xl:block opacity-80" />
+        <FloatingSkyIsland className="absolute top-2 right-2 w-28 h-28 hidden 2xl:block opacity-80" />
       </div>
 
-      {/* Left-Hand Vertical Floating Quick-Action Pill Menu */}
-      <aside className="fixed left-6 top-1/2 -translate-y-1/2 z-30 hidden 2xl:flex flex-col items-center gap-4 rounded-3xl border border-slate-200/90 bg-white p-3 shadow-md">
-        <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-purple-50 text-[#7C3AED] hover:bg-purple-100 transition-colors shadow-xs cursor-pointer" title="Goals">
-          <IconTarget className="h-6 w-6" />
+      {/* Left-Hand Vertical Floating Quick-Action Menu with Sharp Edges */}
+      <aside className="fixed left-5 top-1/2 -translate-y-1/2 z-30 hidden 2xl:flex flex-col items-center gap-3 rounded-none border border-slate-200 bg-white p-2.5 shadow-md">
+        <button className="flex h-10 w-10 items-center justify-center rounded-none bg-purple-50 text-[#7C3AED] hover:bg-purple-100 transition-colors shadow-xs cursor-pointer" title="Goals">
+          <IconTarget className="h-5 w-5" />
         </button>
-        <button className="flex h-10 w-10 items-center justify-center rounded-2xl text-sky-500 hover:bg-sky-50 transition-colors cursor-pointer" title="Proficiency">
+        <button className="flex h-10 w-10 items-center justify-center rounded-none text-sky-500 hover:bg-sky-50 transition-colors cursor-pointer" title="Proficiency">
           <IconChartBar className="h-5 w-5" />
         </button>
-        <button className="flex h-10 w-10 items-center justify-center rounded-2xl text-slate-400 hover:bg-slate-50 transition-colors cursor-pointer" title="Practice">
+        <button className="flex h-10 w-10 items-center justify-center rounded-none text-slate-400 hover:bg-slate-50 transition-colors cursor-pointer" title="Practice">
           <IconBarbell className="h-5 w-5" />
         </button>
-        <button className="flex h-10 w-10 items-center justify-center rounded-2xl text-blue-500 hover:bg-blue-50 transition-colors cursor-pointer" title="Achievements">
+        <button className="flex h-10 w-10 items-center justify-center rounded-none text-blue-500 hover:bg-blue-50 transition-colors cursor-pointer" title="Achievements">
           <IconAward className="h-5 w-5" />
         </button>
       </aside>
@@ -143,10 +142,10 @@ export function ProfileDashboardView({
             <WavingRobotMascot className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 hidden sm:block drop-shadow-sm" />
           </div>
 
-          {/* Right Stats HUD (4 White Pill Cards) */}
+          {/* Right Stats HUD (4 Sharp Pill Cards) */}
           <div className="flex flex-wrap items-center gap-3">
             {/* Streak */}
-            <div className="flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-white px-4 py-2.5 shadow-xs">
+            <div className="flex items-center gap-3 rounded-none border border-slate-200 bg-white px-4 py-2.5 shadow-xs">
               <IconFlame className="h-5 w-5 fill-orange-400 text-orange-500 shrink-0" />
               <div className="leading-tight">
                 <div className="text-base font-extrabold text-slate-900">{streak}</div>
@@ -155,8 +154,8 @@ export function ProfileDashboardView({
             </div>
 
             {/* Active Goals */}
-            <div className="flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-white px-4 py-2.5 shadow-xs">
-              <div className="flex h-5 w-5 items-center justify-center rounded-full border-2 border-emerald-500 text-emerald-600 font-black text-[9px]">
+            <div className="flex items-center gap-3 rounded-none border border-slate-200 bg-white px-4 py-2.5 shadow-xs">
+              <div className="flex h-5 w-5 items-center justify-center rounded-none border-2 border-emerald-500 text-emerald-600 font-black text-[9px]">
                 🎯
               </div>
               <div className="leading-tight">
@@ -166,7 +165,7 @@ export function ProfileDashboardView({
             </div>
 
             {/* Total XP */}
-            <div className="flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-white px-4 py-2.5 shadow-xs">
+            <div className="flex items-center gap-3 rounded-none border border-slate-200 bg-white px-4 py-2.5 shadow-xs">
               <IconBolt className="h-5 w-5 fill-amber-400 text-amber-500 shrink-0" />
               <div className="leading-tight">
                 <div className="text-base font-extrabold text-slate-900">{xp} XP</div>
@@ -175,7 +174,7 @@ export function ProfileDashboardView({
             </div>
 
             {/* Current Level */}
-            <div className="flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-white px-4 py-2.5 shadow-xs">
+            <div className="flex items-center gap-3 rounded-none border border-slate-200 bg-white px-4 py-2.5 shadow-xs">
               <IconShield className="h-5 w-5 fill-purple-100 text-[#7C3AED] shrink-0" />
               <div className="leading-tight">
                 <div className="text-base font-extrabold text-slate-900">Level {level}</div>
@@ -189,9 +188,9 @@ export function ProfileDashboardView({
         {/* ================= TOP GRID: MAIN HERO PROFILE + CREDENTIALS ================= */}
         <div className="grid gap-5 lg:grid-cols-12 items-stretch">
           
-          {/* Left: Main Identity Card (7 Cols) */}
+          {/* Left: Main Identity Card (7 Cols) with Sharp Edges */}
           <div className="lg:col-span-7">
-            <div className="relative h-full flex flex-col justify-between rounded-3xl border-2 border-purple-300/80 bg-white p-6 sm:p-7 shadow-xs overflow-hidden">
+            <div className="relative h-full flex flex-col justify-between rounded-none border-2 border-purple-400 bg-white p-6 sm:p-7 shadow-xs overflow-hidden">
               
               {/* Top Identity Row */}
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -200,10 +199,10 @@ export function ProfileDashboardView({
                 <div className="flex items-start gap-4">
                   {/* Avatar with level badge */}
                   <div className="relative shrink-0">
-                    <div className="flex h-18 w-18 items-center justify-center rounded-full bg-gradient-to-tr from-[#6366F1] to-[#7C3AED] text-2xl font-black text-white shadow-md">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-none bg-gradient-to-tr from-[#6366F1] to-[#7C3AED] text-2xl font-black text-white shadow-md">
                       {displayName[0]?.toUpperCase() || "Y"}
                     </div>
-                    <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 rounded-full bg-[#2563EB] px-2 py-0.5 text-[9px] font-bold text-white shadow-xs">
+                    <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 rounded-none bg-[#2563EB] px-2 py-0.5 text-[9px] font-bold text-white shadow-xs">
                       lvl {level}
                     </div>
                   </div>
@@ -214,8 +213,8 @@ export function ProfileDashboardView({
                       <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#7C3AED]">
                         {gamification.levelTitle || "NEWCOMER"}
                       </span>
-                      <span className="flex items-center gap-1 rounded-md border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[9px] font-bold text-emerald-700">
-                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      <span className="flex items-center gap-1 rounded-none border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[9px] font-bold text-emerald-700">
+                        <span className="h-1.5 w-1.5 rounded-none bg-emerald-500 animate-pulse" />
                         ONLINE
                       </span>
                     </div>
@@ -225,17 +224,17 @@ export function ProfileDashboardView({
                     </h2>
                     <p className="text-xs text-slate-400">{userEmail}</p>
 
-                    {/* 3 Stat Pills */}
+                    {/* 3 Stat Pills with Sharp Edges */}
                     <div className="mt-3 flex flex-wrap items-center gap-2">
-                      <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-0.5 text-[11px] font-bold text-amber-700">
+                      <span className="inline-flex items-center gap-1 rounded-none border border-amber-200 bg-amber-50 px-2.5 py-0.5 text-[11px] font-bold text-amber-700">
                         <IconBolt className="h-3 w-3 fill-amber-500 text-amber-500" />
                         <span>{xp} XP</span>
                       </span>
-                      <span className="inline-flex items-center gap-1 rounded-full border border-orange-200 bg-orange-50 px-2.5 py-0.5 text-[11px] font-bold text-orange-700">
+                      <span className="inline-flex items-center gap-1 rounded-none border border-orange-200 bg-orange-50 px-2.5 py-0.5 text-[11px] font-bold text-orange-700">
                         <IconFlame className="h-3 w-3 fill-orange-500 text-orange-500" />
                         <span>{streak} Day Streak</span>
                       </span>
-                      <span className="inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 px-2.5 py-0.5 text-[11px] font-bold text-blue-700">
+                      <span className="inline-flex items-center gap-1 rounded-none border border-blue-200 bg-blue-50 px-2.5 py-0.5 text-[11px] font-bold text-blue-700">
                         <IconTarget className="h-3 w-3 text-blue-500" />
                         <span>{activeGoals} Active Goals</span>
                       </span>
@@ -260,9 +259,9 @@ export function ProfileDashboardView({
                   <span className="text-slate-500">{pct}% to Level {level + 1}</span>
                 </div>
 
-                <div className="h-2.5 w-full rounded-full bg-slate-100 overflow-hidden">
+                <div className="h-2.5 w-full rounded-none bg-slate-100 overflow-hidden">
                   <div
-                    className="h-full rounded-full bg-gradient-to-r from-[#6366F1] to-[#7C3AED] transition-all duration-500"
+                    className="h-full rounded-none bg-gradient-to-r from-[#6366F1] to-[#7C3AED] transition-all duration-500"
                     style={{ width: `${Math.max(5, pct)}%` }}
                   />
                 </div>
@@ -276,21 +275,21 @@ export function ProfileDashboardView({
             </div>
           </div>
 
-          {/* Right: 2 Vertical Verification & Experience Cards (5 Cols) */}
+          {/* Right: 2 Vertical Verification & Experience Cards with Sharp Edges (5 Cols) */}
           <div className="lg:col-span-5 flex flex-col justify-between gap-4">
             
             {/* Biometric Calibration Card */}
-            <div className="relative flex items-center justify-between rounded-3xl border border-slate-200/90 bg-white p-5 shadow-xs overflow-hidden">
+            <div className="relative flex items-center justify-between rounded-none border border-slate-200 bg-white p-5 shadow-xs overflow-hidden">
               <div className="pr-2 max-w-[65%]">
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-100 text-[#7C3AED] shadow-xs shrink-0">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-none bg-purple-100 text-[#7C3AED] shadow-xs shrink-0">
                     <IconShieldCheck className="h-4.5 w-4.5" />
                   </div>
                   <div>
                     <div className="text-xs font-extrabold text-slate-900 leading-tight">BIOMETRIC CALIBRATION</div>
                     <div className="text-[9px] text-slate-400 font-medium">Proctored Identity Verification</div>
                   </div>
-                  <span className="ml-auto rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[9px] font-bold text-amber-700">
+                  <span className="ml-auto rounded-none border border-amber-200 bg-amber-50 px-2 py-0.5 text-[9px] font-bold text-amber-700">
                     PENDING
                   </span>
                 </div>
@@ -312,17 +311,17 @@ export function ProfileDashboardView({
             </div>
 
             {/* Experience Profile Card */}
-            <div className="relative flex items-center justify-between rounded-3xl border border-slate-200/90 bg-white p-5 shadow-xs overflow-hidden">
+            <div className="relative flex items-center justify-between rounded-none border border-slate-200 bg-white p-5 shadow-xs overflow-hidden">
               <div className="pr-2 max-w-[65%]">
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-100 text-sky-600 shadow-xs shrink-0">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-none bg-sky-100 text-sky-600 shadow-xs shrink-0">
                     <IconFileText className="h-4.5 w-4.5" />
                   </div>
                   <div>
                     <div className="text-xs font-extrabold text-slate-900 leading-tight">EXPERIENCE PROFILE</div>
                     <div className="text-[9px] text-slate-400 font-medium">Prerequisite & Starting Mastery</div>
                   </div>
-                  <span className="ml-auto rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[9px] font-bold text-slate-600">
+                  <span className="ml-auto rounded-none border border-slate-200 bg-slate-50 px-2 py-0.5 text-[9px] font-bold text-slate-600">
                     NOT SET
                   </span>
                 </div>
@@ -348,7 +347,7 @@ export function ProfileDashboardView({
         </div>
 
         {/* ================= MIDDLE: SKILL PROFICIENCY MATRIX ================= */}
-        <div className="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-xs space-y-5">
+        <div className="rounded-none border border-slate-200 bg-white p-6 shadow-xs space-y-5">
           
           {/* Header & Tabs */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -361,11 +360,11 @@ export function ProfileDashboardView({
               </h2>
             </div>
 
-            {/* Right Mode Toggle Tabs */}
+            {/* Right Mode Toggle Tabs with Sharp Edges */}
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setActiveMatrixTab("proficiency")}
-                className={`flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold transition-all shadow-xs cursor-pointer ${
+                className={`flex items-center gap-1.5 rounded-none px-4 py-2 text-xs font-bold transition-all shadow-xs cursor-pointer ${
                   activeMatrixTab === "proficiency"
                     ? "bg-[#4338CA] text-white"
                     : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
@@ -376,7 +375,7 @@ export function ProfileDashboardView({
               </button>
               <button
                 onClick={() => setActiveMatrixTab("retention")}
-                className={`flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 rounded-none px-4 py-2 text-xs font-bold transition-all cursor-pointer ${
                   activeMatrixTab === "retention"
                     ? "bg-[#4338CA] text-white shadow-xs"
                     : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
@@ -387,7 +386,7 @@ export function ProfileDashboardView({
             </div>
           </div>
 
-          {/* Search Bar & Tier Filter Pills */}
+          {/* Search Bar & Tier Filter Pills with Sharp Edges */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-1">
             <div className="relative w-full max-w-xs">
               <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
@@ -396,7 +395,7 @@ export function ProfileDashboardView({
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search skills by name..."
-                className="w-full rounded-xl border border-slate-200 bg-slate-50/70 py-1.5 pl-8 pr-3 text-xs text-slate-800 placeholder-slate-400 focus:border-[#7C3AED] focus:bg-white focus:outline-none"
+                className="w-full rounded-none border border-slate-200 bg-slate-50/70 py-1.5 pl-8 pr-3 text-xs text-slate-800 placeholder-slate-400 focus:border-[#7C3AED] focus:bg-white focus:outline-none"
               />
             </div>
 
@@ -406,7 +405,7 @@ export function ProfileDashboardView({
                 <button
                   key={tier}
                   onClick={() => setFilterTier(tier)}
-                  className={`rounded-lg px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider transition-all cursor-pointer ${
+                  className={`rounded-none px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider transition-all cursor-pointer ${
                     filterTier === tier
                       ? "bg-[#7C3AED] text-white shadow-xs"
                       : "border border-slate-200 bg-white text-slate-500 hover:bg-slate-50"
@@ -418,18 +417,18 @@ export function ProfileDashboardView({
             </div>
           </div>
 
-          {/* 3 Skill Cards Grid */}
+          {/* 3 Skill Cards Grid with Sharp Edges */}
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {filteredSkills.map((s) => (
               <div
                 key={s.id}
-                className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-xs hover:border-purple-300 hover:shadow-md transition-all flex flex-col justify-between min-h-[140px]"
+                className="rounded-none border border-slate-200 bg-white p-4 shadow-xs hover:border-purple-400 hover:shadow-md transition-all flex flex-col justify-between min-h-[140px]"
               >
                 <div>
                   {/* Top Row: Symbol Icon & Title & Novice Badge */}
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2.5">
-                      <div className={`flex h-9 w-9 items-center justify-center rounded-xl ${s.iconBg} text-xs font-black shadow-xs shrink-0`}>
+                      <div className={`flex h-9 w-9 items-center justify-center rounded-none ${s.iconBg} text-xs font-black shadow-xs shrink-0`}>
                         {s.symbol}
                       </div>
                       <div>
@@ -438,7 +437,7 @@ export function ProfileDashboardView({
                       </div>
                     </div>
 
-                    <span className="rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-[9px] font-bold text-slate-500 uppercase">
+                    <span className="rounded-none border border-slate-200 bg-slate-50 px-2 py-0.5 text-[9px] font-bold text-slate-500 uppercase">
                       {s.badge}
                     </span>
                   </div>
@@ -468,8 +467,8 @@ export function ProfileDashboardView({
                 </div>
 
                 {/* Bottom Progress Bar */}
-                <div className="mt-3 h-1.5 w-full rounded-full bg-slate-100 overflow-hidden">
-                  <div className={`h-full rounded-full ${s.progressBg}`} style={{ width: `${s.score}%` }} />
+                <div className="mt-3 h-1.5 w-full rounded-none bg-slate-100 overflow-hidden">
+                  <div className={`h-full rounded-none ${s.progressBg}`} style={{ width: `${s.score}%` }} />
                 </div>
               </div>
             ))}
@@ -479,7 +478,7 @@ export function ProfileDashboardView({
           <div className="pt-2 flex justify-center">
             <Link
               href="/dashboard#skill-map"
-              className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-6 py-2 text-xs font-bold text-[#2563EB] shadow-xs hover:bg-slate-50 transition-all"
+              className="inline-flex items-center gap-1.5 rounded-none border border-slate-200 bg-white px-6 py-2 text-xs font-bold text-[#2563EB] shadow-xs hover:bg-slate-50 transition-all"
             >
               <span>Explore All Skills</span>
               <IconArrowRight className="h-3.5 w-3.5" />
@@ -491,8 +490,8 @@ export function ProfileDashboardView({
         {/* ================= BOTTOM ROW: ACTIVITY HEATMAP & AI PATH LOG ================= */}
         <div className="grid gap-5 lg:grid-cols-2">
           
-          {/* Left: Learning Activity Heatmap */}
-          <div className="rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs flex flex-col justify-between">
+          {/* Left: Learning Activity Heatmap with Sharp Edges */}
+          <div className="rounded-none border border-slate-200 bg-white p-5 sm:p-6 shadow-xs flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between gap-3 mb-4">
                 <div className="flex items-center gap-3">
@@ -507,7 +506,7 @@ export function ProfileDashboardView({
                   </div>
                 </div>
 
-                <div className="flex items-center gap-1 rounded-xl border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-bold text-slate-700 shadow-xs cursor-pointer">
+                <div className="flex items-center gap-1 rounded-none border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-bold text-slate-700 shadow-xs cursor-pointer">
                   <span>This Week</span>
                   <IconChevronDown className="h-3.5 w-3.5 text-slate-400" />
                 </div>
@@ -519,7 +518,7 @@ export function ProfileDashboardView({
                   <div key={day} className="space-y-1.5">
                     <span>{day}</span>
                     <div
-                      className={`h-9 w-full rounded-lg transition-all ${
+                      className={`h-9 w-full rounded-none transition-all ${
                         i === 4
                           ? "bg-[#2563EB]"
                           : i === 3
@@ -537,20 +536,20 @@ export function ProfileDashboardView({
             {/* Less / More Legend */}
             <div className="mt-5 flex items-center justify-end gap-1.5 text-[10px] font-semibold text-slate-400">
               <span>Less</span>
-              <span className="h-2.5 w-2.5 rounded-xs bg-slate-100" />
-              <span className="h-2.5 w-2.5 rounded-xs bg-[#BFDBFE]" />
-              <span className="h-2.5 w-2.5 rounded-xs bg-[#60A5FA]" />
-              <span className="h-2.5 w-2.5 rounded-xs bg-[#2563EB]" />
+              <span className="h-2.5 w-2.5 rounded-none bg-slate-100" />
+              <span className="h-2.5 w-2.5 rounded-none bg-[#BFDBFE]" />
+              <span className="h-2.5 w-2.5 rounded-none bg-[#60A5FA]" />
+              <span className="h-2.5 w-2.5 rounded-none bg-[#2563EB]" />
               <span>More</span>
             </div>
           </div>
 
-          {/* Right: AI Adaptive Path Log */}
-          <div className="relative rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs flex flex-col justify-between overflow-hidden">
+          {/* Right: AI Adaptive Path Log with Sharp Edges */}
+          <div className="relative rounded-none border border-slate-200 bg-white p-5 sm:p-6 shadow-xs flex flex-col justify-between overflow-hidden">
             <div>
               <div className="flex items-center justify-between gap-3 mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-100 text-[#7C3AED] shadow-xs shrink-0">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-none bg-purple-100 text-[#7C3AED] shadow-xs shrink-0">
                     <IconSparkles className="h-5 w-5" />
                   </div>
                   <div>
@@ -565,7 +564,7 @@ export function ProfileDashboardView({
 
                 <Link
                   href="/dashboard"
-                  className="rounded-xl border border-slate-200 bg-white px-3 py-1 text-xs font-bold text-slate-700 hover:bg-slate-50 shadow-xs"
+                  className="rounded-none border border-slate-200 bg-white px-3 py-1 text-xs font-bold text-slate-700 hover:bg-slate-50 shadow-xs"
                 >
                   View All
                 </Link>
@@ -573,7 +572,7 @@ export function ProfileDashboardView({
 
               {/* Timeline Item */}
               <div className="relative pl-6 border-l-2 border-purple-200 mt-5 space-y-1">
-                <span className="absolute -left-[5px] top-1 h-2 w-2 rounded-full bg-[#7C3AED]" />
+                <span className="absolute -left-[5px] top-1 h-2 w-2 rounded-none bg-[#7C3AED]" />
                 <div className="text-[10px] font-bold text-slate-400">Today, 09:15 PM</div>
                 <div className="text-xs font-bold text-[#7C3AED]">Welcome to QuestLearn!</div>
                 <p className="text-[11px] text-slate-500 leading-relaxed font-normal">
@@ -582,7 +581,7 @@ export function ProfileDashboardView({
               </div>
             </div>
 
-            {/* Cute 3D Purple Brain Mascot sitting at bottom right */}
+            {/* Cute 3D Purple Brain Mascot */}
             <div className="absolute right-4 bottom-3 pointer-events-none">
               <CuteBrainMascotIllustration className="w-22 h-22" />
             </div>
