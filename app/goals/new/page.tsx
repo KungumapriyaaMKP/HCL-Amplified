@@ -6,7 +6,6 @@ import { Nav } from "@/frontend/components/layout/Nav";
 import { TRACK_PACES } from "@/data/domains";
 import {
   WavingRobotMascot,
-  WreathTrophyShield,
   WebDevPastelIllustration,
   DataSciencePastelIllustration,
   AiMlPastelIllustration,
@@ -267,28 +266,16 @@ export default function NewGoalPage() {
               })}
             </div>
 
-            {/* Bottom Banner: "Not sure yet?" */}
-            <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-none border border-slate-200/90 bg-gradient-to-r from-[#FAF8FF] via-white to-[#FAF8FF] p-3 shadow-xs">
-              <div className="flex items-center gap-3">
-                <WreathTrophyShield className="h-9 w-9 shrink-0" />
-                <div>
-                  <div className="text-xs sm:text-sm font-bold text-slate-900">Not sure yet?</div>
-                  <div className="text-[10px] sm:text-[11px] text-slate-500">
-                    You can change your goal domain later anytime.
-                  </div>
-                </div>
-              </div>
-
-              <div className="relative flex items-center">
-                <button
-                  disabled={!domain}
-                  onClick={() => setStep(1)}
-                  className="inline-flex items-center gap-1.5 rounded-none bg-gradient-to-r from-[#3B82F6] via-[#6366F1] to-[#9333EA] px-5 py-2 text-xs font-bold text-white shadow-xs transition-all hover:opacity-95 active:scale-98 disabled:opacity-50 cursor-pointer"
-                >
-                  <span>Continue to Pace</span>
-                  <IconArrowRight className="h-3.5 w-3.5" />
-                </button>
-              </div>
+            {/* Bottom Action Bar */}
+            <div className="mt-4 flex items-center justify-end border-t border-slate-100 pt-3.5">
+              <button
+                disabled={!domain}
+                onClick={() => setStep(1)}
+                className="inline-flex items-center gap-1.5 rounded-none bg-gradient-to-r from-[#3B82F6] via-[#6366F1] to-[#9333EA] px-6 py-2.5 text-xs font-bold text-white shadow-xs transition-all hover:opacity-95 active:scale-98 disabled:opacity-50 cursor-pointer"
+              >
+                <span>Continue to Pace</span>
+                <IconArrowRight className="h-3.5 w-3.5" />
+              </button>
             </div>
 
           </div>
