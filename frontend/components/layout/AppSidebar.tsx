@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   QuestLearnBrandIcon,
-  StargazerIllustration,
 } from "@/frontend/components/dashboard/Illustrations";
 import {
   IconSmartHome,
@@ -90,18 +89,7 @@ export function AppSidebar({
       </div>
 
       {/* Bottom Section */}
-      <div className="space-y-4 pt-4">
-        {/* Consistency / Astronaut Card */}
-        <div className="rounded-lg border border-slate-150/70 bg-gradient-to-b from-[#FFFDF9] to-[#FAF8FE] p-3.5 shadow-sm">
-          <div className="text-xs font-bold text-slate-900">
-            Consistency is your superpower.
-          </div>
-          <div className="text-[10px] text-slate-400 mt-0.5 mb-2.5 font-medium">
-            Keep going, you&apos;re doing great!
-          </div>
-          <StargazerIllustration className="w-full h-20 rounded-md" />
-        </div>
-
+      <div className="pt-4 border-t border-slate-100">
         {/* User Profile Footer */}
         <Link
           href="/profile"
