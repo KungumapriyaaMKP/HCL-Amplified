@@ -231,22 +231,22 @@ export default function NewGoalPage() {
                     <button
                       key={d.id}
                       onClick={() => setDomain(d.id)}
-                      className={`group relative flex flex-col justify-between overflow-hidden rounded-xl border p-4 sm:p-5 text-left transition-all duration-200 min-h-[135px] sm:min-h-[145px] cursor-pointer ${
+                      className={`group relative flex flex-col justify-between overflow-hidden rounded-xl border p-4 sm:p-5 text-left transition-all duration-300 min-h-[135px] sm:min-h-[145px] cursor-pointer ${
                         selected
-                          ? "border-2 border-[#7C3AED] bg-[#FAF8FE] ring-4 ring-purple-100/60 shadow-xs"
-                          : "border-slate-200/80 bg-white hover:border-purple-300 hover:shadow-md"
+                          ? "border-2 border-[#7C3AED] bg-[#FAF8FE] ring-4 ring-purple-100/80 shadow-md scale-[1.01]"
+                          : "border-slate-200/80 bg-white hover:border-purple-300 hover:shadow-lg hover:-translate-y-1"
                       }`}
                     >
                       {/* Top Row: Left Icon Badge & Right Circle Arrow */}
                       <div className="relative z-10 flex items-start justify-between">
-                        <div className={`flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full shadow-xs ${d.gradient}`}>
+                        <div className={`flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-md ${d.gradient}`}>
                           {d.icon}
                         </div>
                         <div
-                          className={`flex h-6 w-6 sm:h-7 sm:w-7 items-center justify-center rounded-full border transition-all ${
+                          className={`flex h-6 w-6 sm:h-7 sm:w-7 items-center justify-center rounded-full border transition-all duration-300 ${
                             selected
                               ? "border-[#7C3AED] bg-[#7C3AED] text-white shadow-xs"
-                              : "border-slate-200 bg-white text-slate-400 group-hover:border-purple-300 group-hover:text-[#7C3AED]"
+                              : "border-slate-200 bg-white text-slate-400 group-hover:translate-x-1 group-hover:border-[#7C3AED] group-hover:bg-[#7C3AED] group-hover:text-white"
                           }`}
                         >
                           <IconArrowRight className="h-3.5 w-3.5" />
@@ -255,13 +255,13 @@ export default function NewGoalPage() {
 
                       {/* Text Title & Subtitle */}
                       <div className="relative z-10 mt-3 pr-20 max-w-[85%]">
-                        <div className="text-sm font-bold text-slate-900">{d.name}</div>
+                        <div className="text-sm font-bold text-slate-900 transition-colors group-hover:text-[#6D28D9]">{d.name}</div>
                         <div className="mt-1 text-xs text-slate-500 leading-relaxed font-normal">
                           {d.description}
                         </div>
                       </div>
 
-                      {/* Custom Vector Pastel Illustration */}
+                      {/* Custom Vector Pastel Illustration (Dynamic Interactive) */}
                       {d.illustration}
                     </button>
                   );
