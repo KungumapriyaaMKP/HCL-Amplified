@@ -1,11 +1,13 @@
 import { requireUser } from "@/lib/auth";
 import { getDashboardData, type DashboardData } from "@/lib/dashboardData";
-import { Nav } from "@/frontend/components/layout/Nav";
+import { AppSidebar } from "@/frontend/components/layout/AppSidebar";
 import { ProfileDashboardView } from "@/frontend/components/profile/ProfileDashboardView";
 
 export default async function ProfilePage() {
   let userEmail = "yuvi@gmail.com";
   let displayName = "yuvi";
+  let level = 1;
+  let levelTitle = "Newcomer";
   let data: DashboardData;
 
   try {
@@ -13,6 +15,8 @@ export default async function ProfilePage() {
     userEmail = user.email || "yuvi@gmail.com";
     data = await getDashboardData(user.id);
     displayName = data.profile?.displayName || "yuvi";
+    level = data.gamification.level ?? 1;
+    levelTitle = data.gamification.levelTitle ?? "Newcomer";
   } catch (_err) {
     // Graceful fallback when unauthenticated so UI loads seamlessly without crashing
     data = {
@@ -53,9 +57,18 @@ export default async function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F8F9FD] text-slate-900 font-sans pb-16">
-      <Nav displayName={displayName} />
-      <ProfileDashboardView data={data} userEmail={userEmail} />
+    <div className="flex min-h-screen bg-[#F8F9FD] text-slate-900 font-sans">
+      {/* 1. Left Sidebar Navigation */}
+      <AppSidebar
+        displayName={displayName}
+        level={level}
+        levelTitle={levelTitle}
+      />
+
+      {/* 2. Main Scrollable Content */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto max-h-screen">
+        <ProfileDashboardView data={data} userEmail={userEmail} />
+      </div>
     </div>
   );
 }
