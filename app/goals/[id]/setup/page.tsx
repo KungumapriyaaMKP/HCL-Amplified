@@ -26,6 +26,7 @@ export default function GoalSetupPage() {
   const [diagLoading, setDiagLoading] = useState(false);
 
   const [generating, setGenerating] = useState(false);
+  const [plannerMode, setPlannerMode] = useState<"fastest" | "cheapest" | "most_rigorous">("fastest");
   const [error, setError] = useState<string | null>(null);
   const [historyChecked, setHistoryChecked] = useState(false);
 
@@ -140,7 +141,11 @@ export default function GoalSetupPage() {
     setGenerating(true);
     setError(null);
     try {
-      const res = await fetch(`/api/goals/${id}/path/generate`, { method: "POST" });
+      const res = await fetch(`/api/goals/${id}/path/generate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plannerMode }),
+      });
       const body = await res.json();
       if (!res.ok) throw new Error(body.error);
       router.push(`/goals/${id}`);
@@ -239,14 +244,54 @@ export default function GoalSetupPage() {
         )}
 
         {goal.status === "ready" && (
-          <Card className="p-6 text-center">
-            <p className="mb-4 text-sm text-muted">
-              We have what we need. Time to build your personalized roadmap - this runs the skill-gap analysis and
-              recommendation engine and generates rationale for every step.
-            </p>
-            <Button disabled={generating} onClick={generatePath}>
-              {generating ? "Generating your path..." : "Generate my learning path"}
-            </Button>
+          <Card className="p-6 space-y-6">
+            <div className="text-center">
+              <h2 className="text-lg font-semibold mb-1">Choose Planning Priority</h2>
+              <p className="text-xs text-muted max-w-md mx-auto">
+                Our A* path search will optimize the sequencing of modules and resources based on your chosen focus.
+              </p>
+            </div>
+
+            {/* 3-Way Segmented Planner Priority */}
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+              {[
+                {
+                  id: "fastest" as const,
+                  title: "⚡ Fastest",
+                  desc: "Minimizes time to reach your goal milestone",
+                },
+                {
+                  id: "cheapest" as const,
+                  title: "💡 Cheapest",
+                  desc: "Prioritizes free & high-value open resources",
+                },
+                {
+                  id: "most_rigorous" as const,
+                  title: "🎯 Rigorous",
+                  desc: "Gradual difficulty jumps & deep prerequisites",
+                },
+              ].map((opt) => (
+                <button
+                  key={opt.id}
+                  type="button"
+                  onClick={() => setPlannerMode(opt.id)}
+                  className={`rounded-xl border p-3.5 text-left transition-all ${
+                    plannerMode === opt.id
+                      ? "border-accent bg-accent/10 ring-1 ring-accent"
+                      : "border-border bg-surface-2 hover:border-accent/40"
+                  }`}
+                >
+                  <div className="text-xs font-semibold text-foreground">{opt.title}</div>
+                  <div className="mt-1 text-[11px] text-muted leading-tight">{opt.desc}</div>
+                </button>
+              ))}
+            </div>
+
+            <div className="text-center pt-2">
+              <Button disabled={generating} onClick={generatePath} className="w-full sm:w-auto px-8">
+                {generating ? "Generating your path..." : "Generate my learning path"}
+              </Button>
+            </div>
           </Card>
         )}
       </main>
