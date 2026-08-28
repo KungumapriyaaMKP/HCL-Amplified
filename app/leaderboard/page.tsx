@@ -4,7 +4,8 @@ import { eq, desc, sql } from "drizzle-orm";
 import { levelForXp, levelTitle } from "@/lib/gamification";
 import { createClient } from "@/lib/supabase/server";
 import { Nav } from "@/frontend/components/layout/Nav";
-import { Card, Badge } from "@/frontend/components/ui/Card";
+import { Card } from "@/frontend/components/ui/Card";
+import { Badge } from "@/frontend/components/ui/badge";
 
 export default async function LeaderboardPage() {
   const supabase = await createClient();

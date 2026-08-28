@@ -4,7 +4,8 @@ import { db } from "@/lib/db";
 import { profiles } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { Nav } from "@/frontend/components/layout/Nav";
-import { Card, Badge } from "@/frontend/components/ui/Card";
+import { Card } from "@/frontend/components/ui/Card";
+import { Badge } from "@/frontend/components/ui/badge";
 import Link from "next/link";
 
 export default async function CommunityLandingPage() {
