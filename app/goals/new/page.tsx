@@ -212,7 +212,7 @@ export default function NewGoalPage() {
                       setDomain(d.id);
                       setStep(1);
                     }}
-                    className="group relative flex flex-col justify-between overflow-hidden rounded-none border-2 border-[#7C3AED] bg-white p-4 text-left transition-all duration-200 min-h-[110px] sm:min-h-[118px] cursor-pointer shadow-[0_0_10px_rgba(124,58,237,0.1)] hover:shadow-[0_0_22px_rgba(124,58,237,0.25)] hover:border-[#6D28D9] hover:bg-[#FAF8FE]"
+                    className="electric-glow-border group relative flex flex-col justify-between overflow-hidden rounded-none bg-white p-4 text-left min-h-[110px] sm:min-h-[118px] cursor-pointer"
                   >
                     {/* Top Row: Title & Right Square Arrow */}
                     <div className="relative z-10 flex items-start justify-between gap-3">
