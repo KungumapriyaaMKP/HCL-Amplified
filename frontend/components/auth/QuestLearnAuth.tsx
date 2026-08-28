@@ -174,10 +174,13 @@ export function QuestLearnAuth({ initialMode = "login" }: { initialMode?: "login
 
           {/* RIGHT COLUMN: Glassmorphic Auth Card (6 cols) */}
           <div className="w-full max-w-md mx-auto lg:col-span-6 lg:max-w-lg">
-            <div className="relative rounded-3xl border-2 border-purple-500/40 bg-[#0c1026]/90 p-6 sm:p-8 shadow-[0_0_40px_rgba(139,92,246,0.35),inset_0_0_20px_rgba(139,92,246,0.1)] backdrop-blur-2xl">
+            <div className="relative rounded-lg border-2 border-purple-500/40 bg-[#0c1026]/90 p-6 sm:p-8 shadow-[0_0_40px_rgba(139,92,246,0.35),inset_0_0_20px_rgba(139,92,246,0.1)] backdrop-blur-2xl">
               
-              <div className="pointer-events-none absolute -top-1 -right-1 h-8 w-8 rounded-tr-2xl border-t-2 border-r-2 border-cyan-400 shadow-[0_0_10px_#22d3ee]" />
-              <div className="pointer-events-none absolute -bottom-1 -left-1 h-8 w-8 rounded-bl-2xl border-b-2 border-l-2 border-purple-400 shadow-[0_0_10px_#a855f7]" />
+              {/* Sharp Cyber HUD Corner Accents */}
+              <div className="pointer-events-none absolute -top-1.5 -right-1.5 h-6 w-6 border-t-2 border-r-2 border-cyan-400 shadow-[0_0_12px_#22d3ee]" />
+              <div className="pointer-events-none absolute -bottom-1.5 -left-1.5 h-6 w-6 border-b-2 border-l-2 border-purple-400 shadow-[0_0_12px_#a855f7]" />
+              <div className="pointer-events-none absolute -top-1.5 -left-1.5 h-6 w-6 border-t-2 border-l-2 border-purple-400/50 shadow-[0_0_8px_#a855f7]" />
+              <div className="pointer-events-none absolute -bottom-1.5 -right-1.5 h-6 w-6 border-b-2 border-r-2 border-cyan-400/50 shadow-[0_0_8px_#22d3ee]" />
 
               <div className="mb-6">
                 <div className="text-[11px] font-extrabold tracking-[0.2em] text-purple-300/80 uppercase">
@@ -210,7 +213,7 @@ export function QuestLearnAuth({ initialMode = "login" }: { initialMode?: "login
                         value={displayName}
                         onChange={(e) => setDisplayName(e.target.value)}
                         placeholder="Display Name"
-                        className="w-full rounded-xl border border-purple-500/30 bg-[#080a1a]/90 py-3 pl-10 pr-4 text-xs text-white placeholder-slate-500 shadow-inner focus:border-purple-400 focus:outline-none focus:ring-1 focus:ring-purple-400"
+                        className="w-full rounded-md border border-purple-500/30 bg-[#080a1a]/90 py-3 pl-10 pr-4 text-xs text-white placeholder-slate-500 shadow-inner focus:border-purple-400 focus:outline-none focus:ring-1 focus:ring-purple-400"
                       />
                     </div>
                   </div>
@@ -230,7 +233,7 @@ export function QuestLearnAuth({ initialMode = "login" }: { initialMode?: "login
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="Email or Username"
-                      className="w-full rounded-xl border border-purple-500/30 bg-[#080a1a]/90 py-3 pl-10 pr-4 text-xs text-white placeholder-slate-500 shadow-inner focus:border-purple-400 focus:outline-none focus:ring-1 focus:ring-purple-400"
+                      className="w-full rounded-md border border-purple-500/30 bg-[#080a1a]/90 py-3 pl-10 pr-4 text-xs text-white placeholder-slate-500 shadow-inner focus:border-purple-400 focus:outline-none focus:ring-1 focus:ring-purple-400"
                     />
                   </div>
                 </div>
@@ -250,7 +253,7 @@ export function QuestLearnAuth({ initialMode = "login" }: { initialMode?: "login
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="Password"
-                      className="w-full rounded-xl border border-purple-500/30 bg-[#080a1a]/90 py-3 pl-10 pr-10 text-xs text-white placeholder-slate-500 shadow-inner focus:border-purple-400 focus:outline-none focus:ring-1 focus:ring-purple-400"
+                      className="w-full rounded-md border border-purple-500/30 bg-[#080a1a]/90 py-3 pl-10 pr-10 text-xs text-white placeholder-slate-500 shadow-inner focus:border-purple-400 focus:outline-none focus:ring-1 focus:ring-purple-400"
                     />
                     <button
                       type="button"
@@ -293,7 +296,7 @@ export function QuestLearnAuth({ initialMode = "login" }: { initialMode?: "login
 
                 {/* Error Banner */}
                 {error && (
-                  <div className="rounded-xl border border-red-500/40 bg-red-950/80 p-2.5 text-center text-xs font-semibold text-red-300 shadow-[0_0_15px_rgba(239,68,68,0.3)]">
+                  <div className="rounded-md border border-red-500/40 bg-red-950/80 p-2.5 text-center text-xs font-semibold text-red-300 shadow-[0_0_15px_rgba(239,68,68,0.3)]">
                     {error}
                   </div>
                 )}
@@ -302,7 +305,7 @@ export function QuestLearnAuth({ initialMode = "login" }: { initialMode?: "login
                 <button
                   type="submit"
                   disabled={loading}
-                  className="group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl border border-fuchsia-400/50 bg-gradient-to-r from-[#d946ef] via-[#a855f7] to-[#7c3aed] py-3.5 text-xs font-black tracking-wider text-white uppercase shadow-[0_0_25px_rgba(217,70,239,0.6)] transition-all duration-300 hover:brightness-110 hover:shadow-[0_0_35px_rgba(217,70,239,0.9)] active:scale-98 disabled:opacity-50"
+                  className="group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-md border border-fuchsia-400/50 bg-gradient-to-r from-[#d946ef] via-[#a855f7] to-[#7c3aed] py-3.5 text-xs font-black tracking-wider text-white uppercase shadow-[0_0_25px_rgba(217,70,239,0.6)] transition-all duration-300 hover:brightness-110 hover:shadow-[0_0_35px_rgba(217,70,239,0.9)] active:scale-98 disabled:opacity-50"
                 >
                   <span>{loading ? "AUTHENTICATING..." : mode === "signup" ? "CREATE ACCOUNT" : "START LEARNING"}</span>
                   <IconArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
