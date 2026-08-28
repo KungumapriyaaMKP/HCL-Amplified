@@ -87,6 +87,18 @@ export default async function CommunityDomainPage({ params }: { params: Promise<
             <CommunityFeed domain={domain} />
           </div>
 
+          {/* Floating Mascot in Bottom-Right Corner */}
+          <div className="fixed right-6 bottom-4 pointer-events-none z-20 hidden md:block">
+            <Image
+              src="/images/community/cute_ghost_mascot.png"
+              alt="Mascot"
+              width={40}
+              height={40}
+              className="object-contain opacity-90 drop-shadow-sm select-none"
+              unoptimized
+            />
+          </div>
+
         </main>
       </div>
     </div>

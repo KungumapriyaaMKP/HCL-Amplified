@@ -229,25 +229,25 @@ export function CommunityFeed({ domain }: { domain: string }) {
           </div>
         </div>
       ) : posts.length === 0 ? (
-        /* Exact Empty State matching Image 1 */
-        <div className="rounded-2xl border border-slate-100 bg-white p-12 sm:p-14 shadow-sm flex flex-col items-center justify-center text-center">
+        /* Exact Empty State matching user screenshot */
+        <div className="rounded-3xl border border-slate-100 bg-white py-14 px-8 shadow-xs flex flex-col items-center justify-center text-center select-none">
           
-          {/* 3D Purple Chat Bubbles */}
-          <div className="mb-2">
+          {/* 3D Purple Chat Bubbles with Radiating Sparkles */}
+          <div className="mb-1">
             <Image
               src="/images/community/chat_bubbles_3d.png"
               alt="No Discussions Yet"
-              width={90}
-              height={55}
+              width={140}
+              height={70}
               className="object-contain select-none drop-shadow-sm"
               unoptimized
             />
           </div>
 
-          <h3 className="text-base sm:text-lg font-bold text-slate-900 mt-2">
+          <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight mt-3">
             No discussions posted in this community yet
           </h3>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-md">
+          <p className="text-xs sm:text-sm text-slate-500 font-normal mt-1.5 max-w-md">
             Be the first to start a conversation and help this community grow!
           </p>
 
@@ -256,7 +256,7 @@ export function CommunityFeed({ domain }: { domain: string }) {
               if (!joined) join();
               setShowCompose(true);
             }}
-            className="inline-flex items-center gap-2 rounded-xl border border-purple-200 bg-white px-6 py-2.5 text-xs sm:text-sm font-bold text-[#7C3AED] hover:bg-purple-50 shadow-xs transition-all mt-5 cursor-pointer"
+            className="inline-flex items-center gap-2 rounded-2xl border-2 border-purple-200/90 bg-[#FAF5FF]/40 px-6 py-2.5 text-xs sm:text-sm font-bold text-[#7C3AED] hover:bg-purple-50 shadow-xs transition-all mt-6 cursor-pointer"
           >
             <span>Start a Discussion</span>
             <IconPencil className="h-3.5 w-3.5" />
