@@ -20,17 +20,20 @@ export default async function CommunityDomainPage({ params }: { params: Promise<
   const domainMeta = DOMAINS.find((d) => d.id === domain)!;
 
   return (
-    <div className="min-h-screen bg-[#070913] text-white">
+    <div className="min-h-screen bg-[#F8F9FD] text-slate-900 font-sans pb-16">
       <Nav displayName={profile?.displayName} />
-      <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6">
+      <main className="mx-auto w-full max-w-[1440px] px-4 sm:px-8 py-6 space-y-6">
         
-        <Link href="/community" className="mb-3 inline-flex items-center gap-1.5 text-xs font-bold text-purple-400 hover:text-purple-300">
+        <Link
+          href="/community"
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-[#7C3AED] hover:underline"
+        >
           <IconArrowLeft className="h-4 w-4" />
-          <span>Back to Communities</span>
+          <span>Back to All Guilds</span>
         </Link>
         
-        <div className="mb-6 flex items-center gap-3.5">
-          <div className="flex h-14 w-14 items-center justify-center border-2 border-purple-500/40 bg-[#0d1226] p-1 shadow-[0_0_20px_rgba(168,85,247,0.3)] shrink-0 overflow-hidden">
+        <div className="flex items-center gap-4">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-purple-200 bg-white p-2 shadow-xs shrink-0 overflow-hidden">
             {["web-dev", "data-science", "ai-ml", "cloud-devops", "mobile-dev", "cybersecurity"].includes(domainMeta.id) ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -39,20 +42,22 @@ export default async function CommunityDomainPage({ params }: { params: Promise<
                 className="h-full w-full object-contain"
               />
             ) : (
-              <DomainIcon id={domainMeta.id} className="h-7 w-7 text-purple-400" />
+              <DomainIcon id={domainMeta.id} className="h-7 w-7 text-[#7C3AED]" />
             )}
           </div>
           <div>
-            <span className="text-[10px] font-black uppercase tracking-[0.25em] text-cyan-400">
-              DOMAIN GUILD
+            <span className="text-[11px] font-extrabold uppercase tracking-[0.25em] text-[#7C3AED]">
+              PEER DISCUSSION GUILD
             </span>
-            <h1 className="mt-0.5 text-2xl font-black text-white drop-shadow-[0_2px_10px_rgba(255,255,255,0.2)]">
-              {domainMeta.name} Community
+            <h1 className="mt-0.5 text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              {domainMeta.name} Community Hub
             </h1>
           </div>
         </div>
 
-        <CommunityFeed domain={domain} />
+        <div className="max-w-4xl">
+          <CommunityFeed domain={domain} />
+        </div>
       </main>
     </div>
   );

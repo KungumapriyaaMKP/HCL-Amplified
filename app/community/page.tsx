@@ -12,20 +12,20 @@ export default async function CommunityLandingPage() {
   const domains = await getCommunityOverview();
 
   return (
-    <div className="min-h-screen bg-[#070913] text-white">
+    <div className="min-h-screen bg-[#F8F9FD] text-slate-900 font-sans pb-16">
       <Nav displayName={profile?.displayName} />
-      <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+      <main className="mx-auto w-full max-w-[1440px] px-4 sm:px-8 py-6 space-y-6">
         
         {/* Header */}
-        <div className="mb-8">
-          <span className="text-[10px] font-black uppercase tracking-[0.25em] text-cyan-400">
+        <div className="max-w-2xl">
+          <span className="text-[11px] font-extrabold uppercase tracking-[0.25em] text-[#7C3AED]">
             PEER NETWORKS & DISCUSSION HUBS
           </span>
-          <h1 className="mt-1 text-3xl font-black text-white drop-shadow-[0_2px_12px_rgba(255,255,255,0.2)]">
-            Domain Communities
+          <h1 className="mt-1 text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+            Domain Guilds & Communities
           </h1>
-          <p className="mt-1 text-xs text-slate-400">
-            Join domain hubs to discuss concepts, share code solutions, and collaborate with peers across specialized engineering fields.
+          <p className="mt-1 text-xs sm:text-sm text-slate-500 font-normal">
+            Join domain hubs to discuss concepts, share code solutions, ask questions, and collaborate with peers.
           </p>
         </div>
 
