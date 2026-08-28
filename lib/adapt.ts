@@ -308,3 +308,154 @@ export async function onDifficultyFeedback(opts: {
 
   return newBias;
 }
+
+/**
+ * Walks upstream along the skill DAG to find the deepest unmastered prerequisite (< 60 mastery).
+ * Returns the true root gap rather than an intermediate node.
+ */
+export function findBridgeConcept(
+  skillId: string,
+  mastery: Map<string, number>,
+  visited = new Set<string>()
+): string | null {
+  if (visited.has(skillId)) return null;
+  visited.add(skillId);
+
+  const skill = SKILLS_BY_ID.get(skillId);
+  if (!skill || skill.prerequisites.length === 0) return null;
+
+  const weakPrereqs = skill.prerequisites.filter((p) => (mastery.get(p) ?? 0) < 60);
+  if (weakPrereqs.length === 0) return null;
+
+  for (const p of weakPrereqs) {
+    const deeper = findBridgeConcept(p, mastery, visited);
+    if (deeper) return deeper;
+  }
+
+  return weakPrereqs[0];
+}
+
+/**
+ * Checks for repeated failure streak on a module (e.g. 2 consecutive attempts < 60 score),
+ * detects root missing prerequisite, and splices a prerequisite bridge module.
+ */
+export async function checkAndSpliceDetour(
+  userId: string,
+  moduleId: string
+): Promise<{
+  spliced: boolean;
+  detour?: {
+    blockedSkillName: string;
+    bridgeSkillName: string;
+    rationale: string;
+  };
+}> {
+  const [mod] = await db.select().from(pathModules).where(eq(pathModules.id, moduleId));
+  if (!mod) return { spliced: false };
+
+  // GUARD 1: never remediate a remediation
+  if (mod.milestoneType === "remediation") return { spliced: false };
+
+  const [path] = await db.select().from(learningPaths).where(eq(learningPaths.id, mod.pathId));
+  if (!path) return { spliced: false };
+
+  // Check attempt streak in practiceAttempts
+  const attempts = await db
+    .select()
+    .from(practiceAttempts)
+    .where(and(eq(practiceAttempts.moduleId, moduleId), eq(practiceAttempts.userId, userId)))
+    .orderBy(asc(practiceAttempts.createdAt));
+
+  const recent = attempts.slice(-2);
+  const failureStreak = recent.length >= 2 && recent.every((a) => (a.score ?? 0) < 60);
+  if (!failureStreak && attempts.length < 2) return { spliced: false };
+
+  // GUARD 2: cap detours for this skill
+  const existingDetours = await db
+    .select()
+    .from(pathModules)
+    .where(
+      and(
+        eq(pathModules.pathId, mod.pathId),
+        eq(pathModules.milestoneType, "remediation"),
+      )
+    );
+  if (existingDetours.length >= 3) return { spliced: false };
+
+  const mastery = await getMasteryMap(userId);
+  const blockedSkill = SKILLS_BY_ID.get(mod.skillId);
+  const blockedSkillName = blockedSkill?.name ?? mod.skillId;
+
+  const bridgeSkillId = findBridgeConcept(mod.skillId, mastery) ?? mod.skillId;
+  const bridgeSkill = SKILLS_BY_ID.get(bridgeSkillId);
+  const bridgeSkillName = bridgeSkill?.name ?? bridgeSkillId;
+
+  const pool = await getCandidatePool();
+  const [profile] = await db.select().from(profiles).where(eq(profiles.userId, userId));
+  const modalityPreference = (profile?.preferenceScores ?? {}) as Record<string, number>;
+  const [goal] = await db.select().from(goals).where(eq(goals.id, path.goalId));
+
+  const candidates = pool.filter(
+    (r) => (r.skillWeights[bridgeSkillId] ?? 0) > 0 && r.difficulty !== "advanced"
+  );
+  const best = rankResources(
+    candidates.length > 0
+      ? candidates
+      : pool.filter((r) => (r.skillWeights[bridgeSkillId] ?? 0) > 0),
+    {
+      targetSkillId: bridgeSkillId,
+      masteryBySkill: mastery,
+      interestSkillIds: [],
+      difficultyBias: -1,
+      practiceBias: goal?.trackPace === "crash-course" ? CRASH_COURSE_PRACTICE_BIAS : 0,
+      goalText: goal?.goalText,
+      modalityPreference,
+    }
+  )[0];
+
+  if (!best) return { spliced: false };
+
+  const rationale = `Adaptive bridge spliced: quick refresher on ${bridgeSkillName} to unlock ${blockedSkillName}.`;
+
+  await db.transaction(async (tx) => {
+    const later = await tx
+      .select()
+      .from(pathModules)
+      .where(and(eq(pathModules.pathId, mod.pathId), gt(pathModules.order, mod.order)))
+      .orderBy(asc(pathModules.order));
+
+    for (const m of later) {
+      await tx.update(pathModules).set({ order: m.order + 1 }).where(eq(pathModules.id, m.id));
+    }
+
+    await tx.insert(pathModules).values({
+      pathId: mod.pathId,
+      order: mod.order + 1,
+      skillId: bridgeSkillId,
+      resourceId: best.id,
+      status: "available",
+      milestoneType: "remediation",
+      isProgramming: isProgrammingSkill(bridgeSkillId),
+      programmingLanguage: languageForSkill(bridgeSkillId),
+      rationale,
+    });
+  });
+
+  await logAdaptation(
+    userId,
+    path.goalId,
+    "repeated_practice_failure",
+    "splice_detour_bridge",
+    `Detected struggle streak on ${blockedSkillName}; dynamically spliced bridge module for ${bridgeSkillName} into roadmap.`
+  );
+
+  return {
+    spliced: true,
+    detour: {
+      blockedSkillName,
+      bridgeSkillName,
+      rationale,
+    },
+  };
+}
+

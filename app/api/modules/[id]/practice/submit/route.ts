@@ -5,7 +5,7 @@ import { db } from "@/lib/db";
 import { practiceAttempts, skillMastery, learningEvents } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
 import { getModuleForUser } from "@/lib/moduleAccess";
-import { upsertMastery, updatePreferenceScore } from "@/lib/adapt";
+import { upsertMastery, updatePreferenceScore, checkAndSpliceDetour } from "@/lib/adapt";
 import { awardXp, awardBadgeIfNew, touchStreak, XP } from "@/lib/gamification";
 import { estimateTheta, type IRTItemResponse } from "@/lib/irt";
 
@@ -73,6 +73,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     }
     await touchStreak(user.id);
 
+    const { spliced, detour } = await checkAndSpliceDetour(user.id, id);
+
     const explanations = questions.map((q) => ({
       id: q.id,
       correctIndex: q.correctIndex,
@@ -88,6 +90,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       total: questions.length,
       explanations,
       badgesAwarded: quizWhiz ? ["quiz_whiz"] : [],
+      detour: spliced ? detour : undefined,
     });
   });
 }
