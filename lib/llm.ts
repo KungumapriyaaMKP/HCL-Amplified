@@ -1,3 +1,4 @@
+const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 
 export type ChatMessage = { role: "system" | "user" | "assistant"; content: string };
@@ -5,8 +6,8 @@ export type ChatMessage = { role: "system" | "user" | "assistant"; content: stri
 export class LlmError extends Error {}
 
 /**
- * Calls Claude via OpenRouter's OpenAI-compatible Chat Completions API.
- * This is the single choke point for every Claude call in the app
+ * Calls LLM via Groq (or OpenRouter fallback) OpenAI-compatible Chat Completions API.
+ * This is the single choke point for every AI call in the app
  * (onboarding extraction, question generation, rationale/report writing,
  * the assistant chat) - see lib/prompts.ts for the actual prompts.
  */
@@ -14,36 +15,69 @@ export async function chatComplete(
   messages: ChatMessage[],
   opts: { temperature?: number; maxTokens?: number } = {},
 ): Promise<string> {
-  const apiKey = process.env.OPENROUTER_API_KEY;
-  if (!apiKey) throw new LlmError("OPENROUTER_API_KEY is not set");
+  const groqKey = process.env.GROQ_API_KEY;
+  const openRouterKey = process.env.OPENROUTER_API_KEY;
 
-  const res = await fetch(OPENROUTER_URL, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-      "HTTP-Referer": "https://localhost",
-      "X-Title": "AI Learning Path Recommender",
-    },
-    body: JSON.stringify({
-      model: process.env.OPENROUTER_MODEL || "anthropic/claude-sonnet-5",
-      messages,
-      temperature: opts.temperature ?? 0.5,
-      max_tokens: opts.maxTokens ?? 1800,
-    }),
-  });
+  if (groqKey) {
+    const model = process.env.GROQ_MODEL || "gpt-oss-120b";
+    const res = await fetch(GROQ_URL, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${groqKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model,
+        messages,
+        temperature: opts.temperature ?? 0.5,
+        max_tokens: opts.maxTokens ?? 1800,
+      }),
+    });
 
-  if (!res.ok) {
-    const text = await res.text();
-    throw new LlmError(`OpenRouter request failed (${res.status}): ${text.slice(0, 500)}`);
+    if (!res.ok) {
+      const text = await res.text();
+      throw new LlmError(`Groq request failed (${res.status}): ${text.slice(0, 500)}`);
+    }
+
+    const data = await res.json();
+    const content = data?.choices?.[0]?.message?.content;
+    if (typeof content !== "string") {
+      throw new LlmError("Groq returned no message content");
+    }
+    return content;
   }
 
-  const data = await res.json();
-  const content = data?.choices?.[0]?.message?.content;
-  if (typeof content !== "string") {
-    throw new LlmError("OpenRouter returned no message content");
+  if (openRouterKey) {
+    const res = await fetch(OPENROUTER_URL, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${openRouterKey}`,
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://localhost",
+        "X-Title": "AI Learning Path Recommender",
+      },
+      body: JSON.stringify({
+        model: process.env.OPENROUTER_MODEL || "anthropic/claude-sonnet-5",
+        messages,
+        temperature: opts.temperature ?? 0.5,
+        max_tokens: opts.maxTokens ?? 1800,
+      }),
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new LlmError(`OpenRouter request failed (${res.status}): ${text.slice(0, 500)}`);
+    }
+
+    const data = await res.json();
+    const content = data?.choices?.[0]?.message?.content;
+    if (typeof content !== "string") {
+      throw new LlmError("OpenRouter returned no message content");
+    }
+    return content;
   }
-  return content;
+
+  throw new LlmError("Neither GROQ_API_KEY nor OPENROUTER_API_KEY is set");
 }
 
 function extractJsonBlock(text: string): string {
