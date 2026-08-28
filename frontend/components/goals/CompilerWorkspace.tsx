@@ -19,6 +19,8 @@ type RunResult = { stdout: string; stderr: string; compileError?: string };
 type TestResult = { passed: boolean; input: string; expected: string; actual: string; error: string | null };
 type ExerciseState = { code: string; stdin: string; output: RunResult | null; results: TestResult[] | null };
 
+import { runPythonInBrowser } from "@/lib/pyodideRunner";
+
 export function CompilerWorkspace({ moduleId, skillName, language }: { moduleId: string; skillName: string; language: string }) {
   const [exercises, setExercises] = useState<Exercise[] | null>(null);
   const [current, setCurrent] = useState(0);
@@ -41,18 +43,24 @@ export function CompilerWorkspace({ moduleId, skillName, language }: { moduleId:
     setByExercise((prev) => ({ ...prev, [current]: { ...stateFor(current), ...patch } }));
   }
 
+  async function executeCode(codeToRun: string, stdinInput: string): Promise<RunResult> {
+    if (language === "python") {
+      return await runPythonInBrowser(codeToRun, stdinInput);
+    }
+    const res = await fetch("/api/compiler/run", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ language, code: codeToRun, stdin: stdinInput }),
+    });
+    return await res.json();
+  }
+
   async function run() {
     setRunning(true);
     const { code, stdin } = stateFor(current);
     try {
-      const res = await fetch("/api/compiler/run", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ language, code, stdin }),
-      });
-      // Running freely (with your own stdin) doesn't grade anything - clear
-      // any stale pass/fail state so it isn't confused with a real result.
-      updateCurrent({ output: await res.json(), results: null });
+      const output = await executeCode(code, stdin);
+      updateCurrent({ output, results: null });
       emitNudge("code_run");
     } finally {
       setRunning(false);
@@ -70,12 +78,7 @@ export function CompilerWorkspace({ moduleId, skillName, language }: { moduleId:
     try {
       const results: TestResult[] = [];
       for (const tc of ex.testCases) {
-        const res = await fetch("/api/compiler/run", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ language, code, stdin: tc.input }),
-        });
-        const body: RunResult = await res.json();
+        const body: RunResult = await executeCode(code, tc.input);
         const actual = (body.stdout ?? "").trim();
         const expected = tc.expectedOutput.trim();
         results.push({
