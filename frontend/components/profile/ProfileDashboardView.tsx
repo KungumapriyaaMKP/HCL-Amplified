@@ -568,64 +568,101 @@ export function ProfileDashboardView({
         {/* ================= BOTTOM ROW: ACTIVITY HEATMAP & AI PATH LOG ================= */}
         <div className="grid gap-5 lg:grid-cols-2">
           
-          {/* Left: Learning Activity Heatmap with Sharp Edges & Exact 3D Calendar */}
-          <div className="rounded-none border border-slate-200 bg-white p-5 sm:p-6 shadow-xs flex flex-col justify-between">
+          {/* Left: Exact GitHub-Style Learning Activity Contribution Heatmap */}
+          <div className="rounded-none border border-[#30363D] bg-[#0D1117] text-slate-200 p-5 sm:p-6 shadow-md flex flex-col justify-between overflow-hidden">
             <div>
+              {/* Header: Total Contributions + Settings Dropdown */}
               <div className="flex items-center justify-between gap-3 mb-4">
-                <div className="flex items-center gap-3">
-                  <Image
-                    src="/images/profile/calendar_3d.png"
-                    alt="Calendar 3D"
-                    width={40}
-                    height={40}
-                    className="object-contain shrink-0"
-                    unoptimized
-                  />
-                  <div>
-                    <div className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#7C3AED]">
-                      VELOCITY & FREQUENCY
-                    </div>
-                    <h3 className="text-base font-extrabold text-slate-900 leading-tight">
-                      Learning Activity Heatmap
-                    </h3>
-                  </div>
-                </div>
+                <h3 className="text-sm sm:text-base font-semibold text-slate-100 tracking-tight">
+                  994 contributions in the last year
+                </h3>
 
-                <div className="flex items-center gap-1 rounded-none border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-bold text-slate-700 shadow-xs cursor-pointer">
-                  <span>This Week</span>
-                  <IconChevronDown className="h-3.5 w-3.5 text-slate-400" />
+                <div className="flex items-center gap-1 text-xs text-slate-400 hover:text-slate-200 transition-colors cursor-pointer select-none">
+                  <span>Contribution settings</span>
+                  <IconChevronDown className="h-3.5 w-3.5" />
                 </div>
               </div>
 
-              {/* Weekday Block Matrix */}
-              <div className="grid grid-cols-7 gap-2 text-center text-[10px] font-bold text-slate-400 mt-5">
-                {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day, i) => (
-                  <div key={day} className="space-y-1.5">
-                    <span>{day}</span>
-                    <div
-                      className={`h-9 w-full rounded-none transition-all ${
-                        i === 4
-                          ? "bg-[#2563EB]"
-                          : i === 3
-                          ? "bg-[#60A5FA]"
-                          : i === 2
-                          ? "bg-[#93C5FD]"
-                          : "bg-slate-100"
-                      }`}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
+              {/* Heatmap Matrix Box */}
+              <div className="rounded-none border border-[#30363D] bg-[#0D1117] p-3 sm:p-4 overflow-x-auto scrollbar-thin">
+                
+                {/* Month Labels along top */}
+                <div className="flex justify-between text-[10px] text-slate-400 pl-7 pr-1 mb-2 font-mono select-none">
+                  {["Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"].map((m, i) => (
+                    <span key={i}>{m}</span>
+                  ))}
+                </div>
 
-            {/* Less / More Legend */}
-            <div className="mt-5 flex items-center justify-end gap-1.5 text-[10px] font-semibold text-slate-400">
-              <span>Less</span>
-              <span className="h-2.5 w-2.5 rounded-none bg-slate-100" />
-              <span className="h-2.5 w-2.5 rounded-none bg-[#BFDBFE]" />
-              <span className="h-2.5 w-2.5 rounded-none bg-[#60A5FA]" />
-              <span className="h-2.5 w-2.5 rounded-none bg-[#2563EB]" />
-              <span>More</span>
+                {/* 7 Days Row Grid with Mon/Wed/Fri Labels */}
+                <div className="flex items-start gap-1.5 min-w-[580px]">
+                  {/* Day Labels Column */}
+                  <div className="flex flex-col justify-between text-[9px] text-slate-400 h-[88px] font-mono pr-1 select-none">
+                    <span className="leading-none pt-0.5">Mon</span>
+                    <span className="leading-none">Wed</span>
+                    <span className="leading-none pb-0.5">Fri</span>
+                  </div>
+
+                  {/* 52 Columns of 7 Day Blocks */}
+                  <div className="flex-1 grid grid-flow-col grid-rows-7 gap-[3px]">
+                    {Array.from({ length: 52 * 7 }).map((_, idx) => {
+                      const col = Math.floor(idx / 7);
+                      const row = idx % 7;
+                      // Seeded distribution matching the density in the user screenshot
+                      const seed = (col * 19 + row * 37 + (col > 35 ? 45 : 0)) % 100;
+                      let bgClass = "bg-[#161B22]";
+                      let tooltipCount = 0;
+
+                      if (col >= 36 && col <= 41 && row <= 2) {
+                        // High activity cluster in May/Jun matching screenshot
+                        bgClass = seed > 50 ? "bg-[#39D353]" : "bg-[#26A641]";
+                        tooltipCount = seed > 50 ? 9 : 6;
+                      } else if (col >= 48) {
+                        // High activity cluster in recent August
+                        bgClass = seed > 60 ? "bg-[#39D353]" : seed > 30 ? "bg-[#26A641]" : "bg-[#006D32]";
+                        tooltipCount = seed > 60 ? 8 : 4;
+                      } else if (seed > 86) {
+                        bgClass = "bg-[#39D353]";
+                        tooltipCount = 8;
+                      } else if (seed > 70) {
+                        bgClass = "bg-[#26A641]";
+                        tooltipCount = 5;
+                      } else if (seed > 50) {
+                        bgClass = "bg-[#006D32]";
+                        tooltipCount = 3;
+                      } else if (seed > 28) {
+                        bgClass = "bg-[#0E4429]";
+                        tooltipCount = 1;
+                      }
+
+                      return (
+                        <div
+                          key={idx}
+                          title={`${tooltipCount} contributions on this day`}
+                          className={`w-[9px] h-[9px] sm:w-[10px] sm:h-[10px] rounded-[1.5px] ${bgClass} transition-transform hover:scale-125 cursor-pointer`}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Bottom Row: Link & Legend */}
+                <div className="mt-3 flex items-center justify-between text-[11px] text-slate-400 pt-2 border-t border-[#30363D]/60 select-none">
+                  <span className="hover:text-[#58A6FF] transition-colors cursor-pointer">
+                    Learn how we count contributions
+                  </span>
+
+                  <div className="flex items-center gap-1.5">
+                    <span>Less</span>
+                    <span className="w-2.5 h-2.5 rounded-[1.5px] bg-[#161B22] border border-[#30363D]" />
+                    <span className="w-2.5 h-2.5 rounded-[1.5px] bg-[#0E4429]" />
+                    <span className="w-2.5 h-2.5 rounded-[1.5px] bg-[#006D32]" />
+                    <span className="w-2.5 h-2.5 rounded-[1.5px] bg-[#26A641]" />
+                    <span className="w-2.5 h-2.5 rounded-[1.5px] bg-[#39D353]" />
+                    <span>More</span>
+                  </div>
+                </div>
+
+              </div>
             </div>
           </div>
 
