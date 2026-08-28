@@ -670,54 +670,85 @@ export function CybersecurityPastelIllustration({ className = "w-28 h-20" }: { c
   );
 }
 
+
+
 /**
  * 3D Student Anime Avatar with Backpack & Floating XP Sparkles
  */
 export function StudentAvatarIllustration({ className = "w-36 h-36" }: { className?: string }) {
   return (
     <div className={`relative flex items-center justify-center ${className}`}>
-      <svg viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+      <svg viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full drop-shadow-md">
+        <defs>
+          <radialGradient id="face-glow" cx="0.5" cy="0.4" r="0.6">
+            <stop offset="0%" stopColor="#FFF2E8" />
+            <stop offset="100%" stopColor="#FDBA74" />
+          </radialGradient>
+          <linearGradient id="jacket-grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#3B82F6" />
+            <stop offset="100%" stopColor="#1D4ED8" />
+          </linearGradient>
+          <linearGradient id="hair-grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#475569" />
+            <stop offset="100%" stopColor="#1E293B" />
+          </linearGradient>
+          <linearGradient id="xp-coin-grad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#38BDF8" />
+            <stop offset="100%" stopColor="#0284C7" />
+          </linearGradient>
+        </defs>
+
         {/* Floating Sparkles & XP Badge */}
         <g className="animate-pulse">
-          <circle cx="115" cy="30" r="10" fill="#38BDF8" opacity="0.9" />
-          <text x="115" y="33.5" fill="white" fontSize="8" fontWeight="bold" textAnchor="middle">XP</text>
-          <path d="M25 35 L27 40 L32 42 L27 44 L25 49 L23 44 L18 42 L23 40 Z" fill="#FBBF24" />
-          <path d="M125 70 L126.5 73.5 L130 75 L126.5 76.5 L125 80 L123.5 76.5 L120 75 L123.5 73.5 Z" fill="#34D399" />
+          <circle cx="118" cy="34" r="10" fill="url(#xp-coin-grad)" stroke="#BAE6FD" strokeWidth="1.5" />
+          <text x="118" y="37.5" fill="white" fontSize="7.5" fontWeight="900" textAnchor="middle">XP</text>
+          
+          {/* Sparkles */}
+          <path d="M22 38 L24 43 L29 45 L24 47 L22 52 L20 47 L15 45 L20 43 Z" fill="#FBBF24" />
+          <path d="M126 68 L127.5 71.5 L131 73 L127.5 74.5 L126 78 L124.5 74.5 L121 73 L124.5 71.5 Z" fill="#34D399" />
+          <circle cx="120" cy="18" r="2" fill="#FDE047" />
+          <circle cx="28" cy="62" r="1.5" fill="#60A5FA" />
         </g>
 
         {/* Backpack Straps */}
-        <path d="M45 80 C40 90, 42 110, 48 120" stroke="#3B82F6" strokeWidth="6" strokeLinecap="round" />
-        <path d="M95 80 C100 90, 98 110, 92 120" stroke="#3B82F6" strokeWidth="6" strokeLinecap="round" />
+        <path d="M44 80 C38 92, 40 114, 46 124" stroke="#2563EB" strokeWidth="7" strokeLinecap="round" />
+        <path d="M96 80 C102 92, 100 114, 94 124" stroke="#2563EB" strokeWidth="7" strokeLinecap="round" />
 
-        {/* Jacket Body */}
-        <path d="M44 85 C44 75, 96 75, 96 85 L102 125 H38 Z" fill="#2563EB" />
-        <path d="M60 85 L70 105 L80 85 Z" fill="#F8FAFC" />
-        <path d="M66 100 L70 125 L74 100 Z" fill="#DC2626" />
+        {/* Jacket Body with depth */}
+        <path d="M42 85 C42 74, 98 74, 98 85 L104 128 H36 Z" fill="url(#jacket-grad)" />
+        {/* Collar & Tie */}
+        <path d="M58 85 L70 108 L82 85 Z" fill="#FFFFFF" />
+        <path d="M66 102 L70 128 L74 102 Z" fill="#EF4444" />
+        <path d="M65 85 L70 95 L75 85 Z" fill="#DC2626" />
 
         {/* Neck */}
-        <rect x="62" y="70" width="16" height="12" rx="4" fill="#FED7AA" />
+        <rect x="62" y="68" width="16" height="14" rx="4" fill="#FED7AA" />
 
-        {/* Head */}
-        <ellipse cx="70" cy="50" rx="24" ry="26" fill="#FFEDD5" />
+        {/* 3D Round Face */}
+        <ellipse cx="70" cy="50" rx="25" ry="27" fill="url(#face-glow)" />
 
-        {/* Ears */}
-        <circle cx="45" cy="50" r="5" fill="#FED7AA" />
-        <circle cx="95" cy="50" r="5" fill="#FED7AA" />
+        {/* Ears with inner detail */}
+        <circle cx="44" cy="51" r="5.5" fill="#FED7AA" />
+        <circle cx="44" cy="51" r="3" fill="#FDBA74" />
+        <circle cx="96" cy="51" r="5.5" fill="#FED7AA" />
+        <circle cx="96" cy="51" r="3" fill="#FDBA74" />
 
-        {/* Anime Hair */}
-        <path d="M43 45 C43 28, 55 20, 70 20 C85 20, 97 28, 97 45 C97 38, 92 32, 85 30 C78 28, 62 28, 55 30 C48 32, 43 38, 43 45 Z" fill="#334155" />
-        <path d="M44 42 C48 40, 52 46, 56 46 C60 46, 64 38, 70 38 C76 38, 80 46, 84 46 C88 46, 92 40, 96 42 C92 34, 82 28, 70 28 C58 28, 48 34, 44 42 Z" fill="#1E293B" />
+        {/* 3D Wavy Anime Hair */}
+        <path d="M42 46 C42 26, 54 18, 70 18 C86 18, 98 26, 98 46 C98 38, 93 30, 85 28 C78 26, 62 26, 55 28 C47 30, 42 38, 42 46 Z" fill="url(#hair-grad)" />
+        <path d="M44 42 C49 38, 54 46, 58 46 C63 46, 66 36, 72 36 C78 36, 82 46, 86 46 C90 46, 94 38, 97 42 C93 32, 83 26, 70 26 C57 26, 47 32, 44 42 Z" fill="#334155" />
 
-        {/* Friendly Anime Eyes */}
-        <ellipse cx="58" cy="50" rx="4.5" ry="5.5" fill="#0F172A" />
-        <ellipse cx="82" cy="50" rx="4.5" ry="5.5" fill="#0F172A" />
-        <circle cx="60" cy="48" r="1.5" fill="white" />
-        <circle cx="84" cy="48" r="1.5" fill="white" />
+        {/* Big Bright 3D Anime Eyes */}
+        <ellipse cx="58" cy="50" rx="4.5" ry="6" fill="#0F172A" />
+        <ellipse cx="82" cy="50" rx="4.5" ry="6" fill="#0F172A" />
+        <circle cx="60" cy="48" r="1.8" fill="white" />
+        <circle cx="84" cy="48" r="1.8" fill="white" />
+        <circle cx="57" cy="53" r="0.8" fill="white" />
+        <circle cx="81" cy="53" r="0.8" fill="white" />
 
-        {/* Cheeks & Warm Smile */}
-        <ellipse cx="53" cy="56" rx="3" ry="1.5" fill="#F472B6" opacity="0.6" />
-        <ellipse cx="87" cy="56" rx="3" ry="1.5" fill="#F472B6" opacity="0.6" />
-        <path d="M64 58 Q 70 64, 76 58" stroke="#0F172A" strokeWidth="2" strokeLinecap="round" fill="none" />
+        {/* Rosy Cheeks & Cheerful Smile */}
+        <ellipse cx="52" cy="57" rx="3.5" ry="2" fill="#F472B6" opacity="0.75" />
+        <ellipse cx="88" cy="57" rx="3.5" ry="2" fill="#F472B6" opacity="0.75" />
+        <path d="M64 58 Q 70 65, 76 58" stroke="#0F172A" strokeWidth="2.2" strokeLinecap="round" fill="none" />
       </svg>
     </div>
   );
@@ -729,24 +760,39 @@ export function StudentAvatarIllustration({ className = "w-36 h-36" }: { classNa
 export function FaceHologramIllustration({ className = "w-24 h-24" }: { className?: string }) {
   return (
     <div className={`relative flex items-center justify-center ${className}`}>
-      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-        {/* Hologram Glow */}
-        <circle cx="50" cy="50" r="38" fill="#E0F2FE" opacity="0.7" className="animate-pulse" />
+      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full drop-shadow-sm">
+        <defs>
+          <radialGradient id="holo-glow" cx="0.5" cy="0.5" r="0.5">
+            <stop offset="0%" stopColor="#E0F2FE" stopOpacity="0.9" />
+            <stop offset="100%" stopColor="#BAE6FD" stopOpacity="0" />
+          </radialGradient>
+          <linearGradient id="head-3d" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#60A5FA" />
+            <stop offset="100%" stopColor="#2563EB" />
+          </linearGradient>
+        </defs>
+
+        {/* Ambient Glow */}
+        <circle cx="50" cy="50" r="42" fill="url(#holo-glow)" className="animate-pulse" />
 
         {/* Scan Bracket Targets */}
-        <path d="M22 34 V22 H34" stroke="#38BDF8" strokeWidth="3.5" strokeLinecap="round" />
-        <path d="M78 34 V22 H66" stroke="#38BDF8" strokeWidth="3.5" strokeLinecap="round" />
-        <path d="M22 66 V78 H34" stroke="#38BDF8" strokeWidth="3.5" strokeLinecap="round" />
-        <path d="M78 66 V78 H66" stroke="#38BDF8" strokeWidth="3.5" strokeLinecap="round" />
+        <path d="M20 34 V20 H34" stroke="#38BDF8" strokeWidth="3" strokeLinecap="round" />
+        <path d="M80 34 V20 H66" stroke="#38BDF8" strokeWidth="3" strokeLinecap="round" />
+        <path d="M20 66 V80 H34" stroke="#38BDF8" strokeWidth="3" strokeLinecap="round" />
+        <path d="M80 66 V80 H66" stroke="#38BDF8" strokeWidth="3" strokeLinecap="round" />
 
         {/* 3D Cyan Facial Mesh */}
-        <ellipse cx="50" cy="50" rx="18" ry="22" fill="#38BDF8" />
-        <ellipse cx="50" cy="50" rx="14" ry="18" fill="#60A5FA" />
-        {/* Eyes & Nose Bridge */}
-        <circle cx="44" cy="46" r="2.5" fill="#0369A1" />
-        <circle cx="56" cy="46" r="2.5" fill="#0369A1" />
-        <path d="M50 46 V53 H53" stroke="#0369A1" strokeWidth="1.5" strokeLinecap="round" />
-        <path d="M45 58 Q 50 62, 55 58" stroke="#0369A1" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+        <ellipse cx="50" cy="50" rx="19" ry="24" fill="url(#head-3d)" />
+        <ellipse cx="50" cy="50" rx="15" ry="20" fill="#38BDF8" opacity="0.8" />
+        
+        {/* Facial Details */}
+        <circle cx="44" cy="46" r="2.5" fill="#0C4A6E" />
+        <circle cx="56" cy="46" r="2.5" fill="#0C4A6E" />
+        <path d="M50 45 V53 H53" stroke="#0C4A6E" strokeWidth="1.8" strokeLinecap="round" />
+        <path d="M45 58 Q 50 62, 55 58" stroke="#0C4A6E" strokeWidth="1.8" strokeLinecap="round" fill="none" />
+
+        {/* Horizontal Laser Scanning Line */}
+        <line x1="28" y1="50" x2="72" y2="50" stroke="#E0F2FE" strokeWidth="1.5" strokeLinecap="round" opacity="0.8" />
       </svg>
     </div>
   );
@@ -758,25 +804,41 @@ export function FaceHologramIllustration({ className = "w-24 h-24" }: { classNam
 export function FolderUploadIllustration({ className = "w-24 h-24" }: { className?: string }) {
   return (
     <div className={`relative flex items-center justify-center ${className}`}>
-      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full drop-shadow-sm">
+        <defs>
+          <linearGradient id="folder-front" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#60A5FA" />
+            <stop offset="100%" stopColor="#2563EB" />
+          </linearGradient>
+          <linearGradient id="folder-back" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#3B82F6" />
+            <stop offset="100%" stopColor="#1D4ED8" />
+          </linearGradient>
+        </defs>
+
         {/* Ambient Cloud */}
         <path
-          d="M65 30 C62 30, 59 33, 60 36 C57 37, 57 41, 60 42 H76 C80 42, 80 37, 77 36 C77 31, 71 30, 68 32 C65 27, 53 26, 65 30 Z"
+          d="M66 28 C63 28, 60 31, 61 34 C58 35, 58 39, 61 40 H77 C81 40, 81 35, 78 34 C78 29, 72 28, 69 30 C66 25, 54 24, 66 28 Z"
           fill="#EFF6FF"
           stroke="#93C5FD"
           strokeWidth="1.5"
         />
 
         {/* Back Folder Flap */}
-        <path d="M20 38 C20 35, 22 34, 25 34 H40 L46 40 H75 C78 40, 80 42, 80 45 V70 C80 73, 78 75, 75 75 H25 C22 75, 20 73, 20 70 Z" fill="#3B82F6" />
+        <path d="M18 36 C18 33, 20 32, 23 32 H38 L44 38 H77 C80 38, 82 40, 82 43 V70 C82 73, 80 75, 77 75 H23 C20 75, 18 73, 18 70 Z" fill="url(#folder-back)" />
+
+        {/* White Documents sticking out */}
+        <rect x="26" y="24" width="46" height="30" rx="3" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1" />
+        <line x1="32" y1="30" x2="52" y2="30" stroke="#CBD5E1" strokeWidth="2" strokeLinecap="round" />
+        <line x1="32" y1="36" x2="62" y2="36" stroke="#CBD5E1" strokeWidth="2" strokeLinecap="round" />
 
         {/* Front Isometric Folder Pocket */}
-        <path d="M18 48 C18 45, 20 44, 23 44 H77 C80 44, 82 45, 82 48 L80 75 C80 78, 78 80, 75 80 H25 C22 80, 20 78, 18 75 Z" fill="#60A5FA" />
+        <path d="M16 46 C16 43, 18 42, 21 42 H79 C82 42, 84 43, 84 46 L82 75 C82 78, 80 80, 77 80 H23 C20 80, 18 78, 16 75 Z" fill="url(#folder-front)" />
 
         {/* Cloud Upload Arrow in Foreground */}
         <g className="transition-transform duration-300 group-hover:-translate-y-1">
-          <circle cx="50" cy="62" r="14" fill="#FFFFFF" />
-          <path d="M50 54 L44 60 H48 V68 H52 V60 H56 Z" fill="#2563EB" />
+          <ellipse cx="64" cy="62" rx="14" ry="12" fill="#FFFFFF" />
+          <path d="M64 54 L58 60 H61 V68 H67 V60 H70 Z" fill="#2563EB" />
         </g>
       </svg>
     </div>
@@ -789,9 +851,9 @@ export function FolderUploadIllustration({ className = "w-24 h-24" }: { classNam
 export function Calendar3DIllustration({ className = "w-14 h-14" }: { className?: string }) {
   return (
     <div className={`relative flex items-center justify-center ${className}`}>
-      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full drop-shadow-sm">
         {/* Calendar Card Body */}
-        <rect x="14" y="18" width="52" height="52" rx="10" fill="#8B5CF6" />
+        <rect x="14" y="18" width="52" height="52" rx="10" fill="#7C3AED" />
         <rect x="14" y="30" width="52" height="40" rx="8" fill="#F8FAFC" />
 
         {/* Spiral Top Rings */}
@@ -817,18 +879,18 @@ export function Calendar3DIllustration({ className = "w-14 h-14" }: { className?
 export function CuteBrainMascotIllustration({ className = "w-20 h-20" }: { className?: string }) {
   return (
     <div className={`relative flex items-center justify-center ${className}`}>
-      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full drop-shadow-sm">
         {/* Ambient Soft Glow */}
         <ellipse cx="50" cy="55" rx="35" ry="25" fill="#EDE9FE" opacity="0.6" className="animate-pulse" />
 
         {/* Brain Body Folds */}
         <path
           d="M35 35 C28 35, 24 42, 25 50 C22 55, 25 65, 32 68 C35 76, 45 78, 50 76 C55 78, 65 76, 68 68 C75 65, 78 55, 75 50 C76 42, 72 35, 65 35 C62 26, 52 26, 50 30 C48 26, 38 26, 35 35 Z"
-          fill="#A855F7"
+          fill="#8B5CF6"
         />
         <path
           d="M38 38 C32 38, 28 44, 29 51 C27 55, 29 63, 35 65 C38 72, 46 74, 50 72 C54 74, 62 72, 65 65 C71 63, 73 55, 71 51 C72 44, 68 38, 62 38 C60 30, 52 30, 50 33 C48 30, 40 30, 38 38 Z"
-          fill="#C084FC"
+          fill="#A78BFA"
         />
 
         {/* Sparkle Eyes */}
@@ -851,21 +913,48 @@ export function CuteBrainMascotIllustration({ className = "w-20 h-20" }: { class
  */
 export function FloatingSkyIsland({ className = "w-28 h-28" }: { className?: string }) {
   return (
-    <div className={`pointer-events-none absolute select-none ${className}`}>
-      <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full opacity-80 hover:opacity-100 transition-opacity">
+    <div className={`pointer-events-none select-none ${className}`}>
+      <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full drop-shadow-sm">
         {/* Soft Cloud Puff below */}
-        <ellipse cx="60" cy="90" rx="35" ry="12" fill="#F1F5F9" opacity="0.8" />
+        <ellipse cx="60" cy="90" rx="32" ry="10" fill="#F1F5F9" opacity="0.9" />
 
         {/* Rock Bottom Island */}
-        <path d="M25 60 C35 75, 45 95, 60 95 C75 95, 85 75, 95 60 Z" fill="#94A3B8" />
-        <path d="M20 55 C20 52, 100 52, 100 55 C100 62, 85 68, 60 68 C35 68, 20 62, 20 55 Z" fill="#86EFAC" />
-        <ellipse cx="60" cy="54" rx="38" ry="7" fill="#4ADE80" />
+        <path d="M28 58 C38 72, 46 90, 60 90 C74 90, 82 72, 92 58 Z" fill="#94A3B8" />
+        <path d="M22 54 C22 50, 98 50, 98 54 C98 60, 84 66, 60 66 C36 66, 22 60, 22 54 Z" fill="#86EFAC" />
+        <ellipse cx="60" cy="53" rx="36" ry="6.5" fill="#4ADE80" />
 
-        {/* Mini Trees & Castle / Flag */}
-        <ellipse cx="40" cy="44" rx="8" ry="10" fill="#22C55E" />
-        <ellipse cx="75" cy="42" rx="9" ry="12" fill="#16A34A" />
-        <rect x="52" y="36" width="14" height="14" rx="2" fill="#F8FAFC" stroke="#CBD5E1" strokeWidth="1" />
-        <path d="M52 36 L59 28 L66 36 Z" fill="#60A5FA" />
+        {/* Mini Trees & Castle */}
+        <ellipse cx="40" cy="42" rx="7" ry="9" fill="#22C55E" />
+        <ellipse cx="76" cy="40" rx="8" ry="11" fill="#16A34A" />
+        <rect x="52" y="34" width="14" height="14" rx="2" fill="#F8FAFC" stroke="#CBD5E1" strokeWidth="1" />
+        <path d="M52 34 L59 26 L66 34 Z" fill="#60A5FA" />
+      </svg>
+    </div>
+  );
+}
+
+/**
+ * 3D Island with Flag
+ */
+export function IslandWithFlagIllustration({ className = "w-28 h-28" }: { className?: string }) {
+  return (
+    <div className={`pointer-events-none select-none ${className}`}>
+      <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full drop-shadow-sm">
+        {/* Soft Cloud Puff below */}
+        <ellipse cx="60" cy="92" rx="30" ry="9" fill="#F1F5F9" opacity="0.9" />
+
+        {/* Rock Bottom Island */}
+        <path d="M30 62 C38 74, 46 88, 60 88 C74 88, 82 74, 90 62 Z" fill="#94A3B8" />
+        <path d="M24 58 C24 54, 96 54, 96 58 C96 64, 82 70, 60 70 C38 70, 24 64, 24 58 Z" fill="#86EFAC" />
+        <ellipse cx="60" cy="57" rx="34" ry="6" fill="#4ADE80" />
+
+        {/* Trees */}
+        <ellipse cx="75" cy="46" rx="8" ry="10" fill="#22C55E" />
+        <ellipse cx="42" cy="48" rx="6" ry="8" fill="#16A34A" />
+
+        {/* Flag Pole & Blue Flag */}
+        <line x1="56" y1="28" x2="56" y2="58" stroke="#64748B" strokeWidth="2.5" strokeLinecap="round" />
+        <path d="M56 28 L72 35 L56 42 Z" fill="#3B82F6" />
       </svg>
     </div>
   );
