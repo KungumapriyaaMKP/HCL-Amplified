@@ -8,8 +8,11 @@ import { getModuleForUser } from "@/lib/moduleAccess";
 import { upsertMastery, updatePreferenceScore, checkAndSpliceDetour } from "@/lib/adapt";
 import { awardXp, awardBadgeIfNew, touchStreak, XP } from "@/lib/gamification";
 import { estimateTheta, type IRTItemResponse } from "@/lib/irt";
+import misconceptionsData from "@/data/misconceptions.json";
+import { socraticDialogueMessages } from "@/lib/prompts";
+import { chatJson } from "@/lib/llm";
 
-type StoredQuestion = { id: string; correctIndex: number; explanation: string; a?: number; b?: number };
+type StoredQuestion = { id: string; question?: string; options?: string[]; correctIndex: number; explanation: string; a?: number; b?: number };
 type Answer = { id: string; selectedIndex: number };
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -75,6 +78,78 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
     const { spliced, detour } = await checkAndSpliceDetour(user.id, id);
 
+    // Socratic Misconception Scaffolding for missed answers
+    const skillMisconceptions = (misconceptionsData as Record<string, Record<string, string>>)[row.skill.id] ?? {};
+    let socraticGuidance: {
+      questionId: string;
+      skillName: string;
+      chosenAnswer: string;
+      scaffoldingQuestions: string[];
+      conceptualHint: string;
+      diagram?: string | null;
+    } | null = null;
+
+    const firstMissed = questions.find((q) => {
+      const selected = answerMap.get(q.id);
+      return selected !== undefined && selected !== q.correctIndex;
+    });
+
+    if (firstMissed) {
+      const chosenIndex = answerMap.get(firstMissed.id) ?? 0;
+      const chosenText = firstMissed.options?.[chosenIndex] ?? `Option ${chosenIndex + 1}`;
+      const correctText = firstMissed.options?.[firstMissed.correctIndex] ?? firstMissed.explanation;
+
+      let matchedMisconception: string | undefined;
+      for (const [key, desc] of Object.entries(skillMisconceptions)) {
+        if (chosenText.toLowerCase().includes(key.replace(/_/g, " ")) || chosenText.toLowerCase().includes(key)) {
+          matchedMisconception = desc;
+          break;
+        }
+      }
+
+      try {
+        const socraticRes = await chatJson<{
+          scaffoldingQuestions: string[];
+          conceptualHint: string;
+          diagram?: string | null;
+        }>(
+          socraticDialogueMessages({
+            skillName: row.skill.name,
+            question: firstMissed.question ?? "Conceptual question",
+            chosenAnswer: chosenText,
+            correctAnswer: correctText,
+            misconceptionHint: matchedMisconception,
+          }),
+          { temperature: 0.4, maxTokens: 400 }
+        );
+
+        socraticGuidance = {
+          questionId: firstMissed.id,
+          skillName: row.skill.name,
+          chosenAnswer: chosenText,
+          scaffoldingQuestions: socraticRes.scaffoldingQuestions ?? [
+            `What fundamental invariant of ${row.skill.name} might contradict this choice?`,
+            "Consider what assumptions this answer makes about the underlying state.",
+          ],
+          conceptualHint: socraticRes.conceptualHint ?? (matchedMisconception || "Review the relationship between inputs and outputs."),
+          diagram: socraticRes.diagram ?? null,
+        };
+      } catch {
+        if (matchedMisconception) {
+          socraticGuidance = {
+            questionId: firstMissed.id,
+            skillName: row.skill.name,
+            chosenAnswer: chosenText,
+            scaffoldingQuestions: [
+              `Consider why this approach might lead to an unintended side effect.`,
+              `How does ${row.skill.name} handle this condition?`,
+            ],
+            conceptualHint: matchedMisconception,
+          };
+        }
+      }
+    }
+
     const explanations = questions.map((q) => ({
       id: q.id,
       correctIndex: q.correctIndex,
@@ -91,6 +166,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       explanations,
       badgesAwarded: quizWhiz ? ["quiz_whiz"] : [],
       detour: spliced ? detour : undefined,
+      socraticGuidance: socraticGuidance ?? undefined,
     });
   });
 }
