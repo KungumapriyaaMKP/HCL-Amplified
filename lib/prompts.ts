@@ -213,3 +213,29 @@ Write a short report (3-5 sentences): acknowledge the result honestly, call out 
 
   return [{ role: "system", content: system }];
 }
+
+export function socraticDialogueMessages(opts: {
+  skillName: string;
+  question: string;
+  chosenAnswer: string;
+  correctAnswer?: string;
+  misconceptionHint?: string;
+}): ChatMessage[] {
+  const system = `You are a Socratic tutor. When a student chooses an incorrect answer, generate guided reflective questions and a conceptual hint to guide them toward self-discovery without revealing the correct answer directly.
+
+Skill: "${opts.skillName}"
+Question: "${opts.question}"
+Student's Incorrect Answer: "${opts.chosenAnswer}"
+${opts.correctAnswer ? `Target Concept / Invariant: "${opts.correctAnswer}"` : ""}
+${opts.misconceptionHint ? `Known Misconception Note: "${opts.misconceptionHint}"` : ""}
+
+Respond with ONLY a valid JSON object of this exact shape:
+{
+  "scaffoldingQuestions": ["<probing reflection question 1>", "<probing reflection question 2>"],
+  "conceptualHint": "<a pedagogical hint guiding them to the underlying principle>",
+  "diagram": "<optional ASCII concept matrix or invariant illustration, or null>"
+}`;
+
+  return [{ role: "system", content: system }];
+}
+

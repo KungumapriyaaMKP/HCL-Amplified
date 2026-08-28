@@ -222,3 +222,276 @@ export function bestResourceForSkill(
   if (eligible.length === 0) return null;
   return rankResources(eligible, ctx)[0];
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// A* Path Planning Engine
+// ─────────────────────────────────────────────────────────────────────────────
+
+export type PlannerMode = "fastest" | "cheapest" | "most_rigorous";
+
+export interface PlannerWeights {
+  time: number;
+  cost: number;
+  difficultyJump: number;
+  priorExperience: number;
+}
+
+export const PLANNER_WEIGHTS: Record<PlannerMode, PlannerWeights> = {
+  fastest: { time: 2.0, cost: 0.2, difficultyJump: 0.4, priorExperience: 0.5 },
+  cheapest: { time: 0.4, cost: 2.0, difficultyJump: 0.4, priorExperience: 0.5 },
+  most_rigorous: { time: 0.4, cost: 0.4, difficultyJump: 1.5, priorExperience: 0.5 },
+};
+
+const TIER_HOURS: Record<number, number> = { 0: 6.0, 1: 10.0, 2: 16.0 };
+const DEPTH_DIFFICULTY = 3;
+const ASTAR_TARGET_LIMIT = 16;
+const MAX_EXPANSIONS = 6000;
+
+function skillTierDifficulty(depth: number): number {
+  return Math.min(2, Math.floor(depth / DEPTH_DIFFICULTY));
+}
+
+function computeStepCost(
+  sid: string,
+  masteryBySkill: Map<string, number>,
+  depthMap: Map<string, number>,
+  weights: PlannerWeights
+): number {
+  const skill = SKILLS_BY_ID.get(sid);
+  const depth = depthMap.get(sid) ?? 0;
+  const d = skillTierDifficulty(depth);
+  const hours = TIER_HOURS[d] ?? 10.0;
+
+  let prereqMax = 0;
+  if (skill && skill.prerequisites.length > 0) {
+    for (const p of skill.prerequisites) {
+      const pd = depthMap.get(p) ?? 0;
+      const pt = skillTierDifficulty(pd);
+      if (pt > prereqMax) prereqMax = pt;
+    }
+  }
+
+  const jump = Math.max(0, d - prereqMax);
+  const prior = (masteryBySkill.get(sid) ?? 0) / 100;
+  const step =
+    weights.time * hours +
+    weights.difficultyJump * jump * 5.0 -
+    weights.priorExperience * prior * hours;
+
+  return Math.max(0.5, step);
+}
+
+class PriorityQueue<T> {
+  private items: { item: T; priority: number }[] = [];
+
+  push(item: T, priority: number) {
+    this.items.push({ item, priority });
+    this.items.sort((a, b) => a.priority - b.priority);
+  }
+
+  pop(): T | undefined {
+    return this.items.shift()?.item;
+  }
+
+  get length(): number {
+    return this.items.length;
+  }
+}
+
+function resolveTargetSubsets(
+  gapSkillIds: string[],
+  masteryBySkill: Map<string, number>
+): { needed: Set<string>; already: Set<string> } {
+  const already = new Set<string>();
+  for (const [id] of SKILLS_BY_ID) {
+    const m = masteryBySkill.get(id) ?? 0;
+    if (m >= 70) already.add(id);
+  }
+
+  const needed = new Set<string>();
+  const stack = [...gapSkillIds];
+  while (stack.length > 0) {
+    const sid = stack.pop()!;
+    if (needed.has(sid) || already.has(sid)) continue;
+    needed.add(sid);
+    const skill = SKILLS_BY_ID.get(sid);
+    if (skill) {
+      for (const p of skill.prerequisites) {
+        if (!already.has(p)) stack.push(p);
+      }
+    }
+  }
+
+  return { needed, already };
+}
+
+function greedyOrder(
+  needed: Set<string>,
+  already: Set<string>,
+  masteryBySkill: Map<string, number>,
+  depthMap: Map<string, number>,
+  weights: PlannerWeights
+): string[] {
+  const order: string[] = [];
+  const mastered = new Set(already);
+  const remaining = new Set(needed);
+
+  while (remaining.size > 0) {
+    const ready: string[] = [];
+    for (const s of remaining) {
+      const skill = SKILLS_BY_ID.get(s);
+      const prereqs = skill?.prerequisites ?? [];
+      if (prereqs.every((p) => mastered.has(p))) {
+        ready.push(s);
+      }
+    }
+
+    if (ready.length === 0) {
+      order.push(...Array.from(remaining).sort());
+      break;
+    }
+
+    ready.sort((a, b) => {
+      const costA = computeStepCost(a, masteryBySkill, depthMap, weights);
+      const costB = computeStepCost(b, masteryBySkill, depthMap, weights);
+      if (costA !== costB) return costA - costB;
+      const depthA = depthMap.get(a) ?? 0;
+      const depthB = depthMap.get(b) ?? 0;
+      if (depthA !== depthB) return depthA - depthB;
+      return a.localeCompare(b);
+    });
+
+    const chosen = ready[0];
+    order.push(chosen);
+    mastered.add(chosen);
+    remaining.delete(chosen);
+  }
+
+  return order;
+}
+
+/**
+ * Plans the optimal prerequisite-respecting learning sequence using A* search
+ * over the skill-DAG powerset with heuristic estimation and greedy fallback.
+ */
+export function planSkillOrder(
+  gapSkillIds: string[],
+  masteryBySkill: Map<string, number>,
+  mode: PlannerMode = "fastest",
+  customWeights?: PlannerWeights
+): string[] {
+  const weights = customWeights ?? PLANNER_WEIGHTS[mode] ?? PLANNER_WEIGHTS.fastest;
+  const { needed, already } = resolveTargetSubsets(gapSkillIds, masteryBySkill);
+  if (needed.size === 0) return [];
+
+  // Compute depths
+  const depthMap = new Map<string, number>();
+  const getDepth = (id: string, visited = new Set<string>()): number => {
+    if (depthMap.has(id)) return depthMap.get(id)!;
+    if (visited.has(id)) return 0;
+    visited.add(id);
+    const skill = SKILLS_BY_ID.get(id);
+    if (!skill || skill.prerequisites.length === 0) {
+      depthMap.set(id, 0);
+      return 0;
+    }
+    const maxP = Math.max(...skill.prerequisites.map((p) => getDepth(p, visited)));
+    const d = maxP + 1;
+    depthMap.set(id, d);
+    return d;
+  };
+
+  for (const s of needed) getDepth(s);
+  for (const s of already) getDepth(s);
+
+  // Large target set -> use greedy topological sort
+  if (needed.size > ASTAR_TARGET_LIMIT) {
+    return greedyOrder(needed, already, masteryBySkill, depthMap, weights);
+  }
+
+  const learnable = (mastered: Set<string>): string[] => {
+    const list: string[] = [];
+    for (const sid of needed) {
+      if (mastered.has(sid)) continue;
+      const skill = SKILLS_BY_ID.get(sid);
+      const prereqs = skill?.prerequisites ?? [];
+      if (prereqs.every((p) => mastered.has(p))) {
+        list.push(sid);
+      }
+    }
+    return list.sort();
+  };
+
+  const heuristic = (mastered: Set<string>): number => {
+    let remainingHours = 0;
+    for (const s of needed) {
+      if (!mastered.has(s)) {
+        const d = skillTierDifficulty(depthMap.get(s) ?? 0);
+        remainingHours += (TIER_HOURS[d] ?? 10.0) * 0.5;
+      }
+    }
+    return weights.time * remainingHours;
+  };
+
+  interface AStarNode {
+    f: number;
+    g: number;
+    mastered: Set<string>;
+    order: string[];
+  }
+
+  const setKey = (s: Set<string>) => Array.from(s).sort().join(",");
+  const startMastered = new Set(already);
+  const frontier = new PriorityQueue<AStarNode>();
+  frontier.push({ f: 0, g: 0, mastered: startMastered, order: [] }, 0);
+
+  const bestG = new Map<string, number>();
+  bestG.set(setKey(startMastered), 0);
+  let expansions = 0;
+
+  while (frontier.length > 0 && expansions < MAX_EXPANSIONS) {
+    const node = frontier.pop()!;
+    let allNeededMastered = true;
+    for (const n of needed) {
+      if (!node.mastered.has(n)) {
+        allNeededMastered = false;
+        break;
+      }
+    }
+    if (allNeededMastered) {
+      return node.order;
+    }
+
+    const currentKey = setKey(node.mastered);
+    if (node.g > (bestG.get(currentKey) ?? Infinity)) {
+      continue;
+    }
+    expansions++;
+
+    const candidates = learnable(node.mastered);
+    for (const sid of candidates) {
+      const step = computeStepCost(sid, masteryBySkill, depthMap, weights);
+      const newMastered = new Set(node.mastered);
+      newMastered.add(sid);
+      const newG = node.g + step;
+      const nextKey = setKey(newMastered);
+
+      if (newG < (bestG.get(nextKey) ?? Infinity)) {
+        bestG.set(nextKey, newG);
+        const f = newG + heuristic(newMastered);
+        frontier.push(
+          {
+            f,
+            g: newG,
+            mastered: newMastered,
+            order: [...node.order, sid],
+          },
+          f
+        );
+      }
+    }
+  }
+
+  return greedyOrder(needed, already, masteryBySkill, depthMap, weights);
+}
+

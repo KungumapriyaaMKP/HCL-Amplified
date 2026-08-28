@@ -152,6 +152,8 @@ export const skillMastery = pgTable(
       .notNull()
       .references(() => skills.id, { onDelete: "cascade" }),
     score: integer("score").notNull().default(0),
+    theta: real("theta"),
+    standardError: real("standard_error"),
     source: text("source").notNull(), // 'stated'|'diagnostic'|'practice'|'proctored'
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
   },
@@ -167,6 +169,8 @@ export const diagnosticAttempts = pgTable("diagnostic_attempts", {
   questions: jsonb("questions").notNull(),
   answers: jsonb("answers").notNull().default([]),
   score: integer("score"),
+  theta: real("theta"),
+  standardError: real("standard_error"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
 
@@ -179,6 +183,8 @@ export const practiceAttempts = pgTable("practice_attempts", {
   questions: jsonb("questions").notNull(),
   answers: jsonb("answers").notNull().default([]),
   score: integer("score"),
+  theta: real("theta"),
+  standardError: real("standard_error"),
   attemptNo: integer("attempt_no").notNull().default(1),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });

@@ -1,0 +1,32 @@
+{
+  "linear-algebra": {
+    "dimension_mismatch": "Assuming matrix multiplication is commutative (AB == BA) or neglecting inner dimension matching.",
+    "null_space_confusion": "Confusing the row space dimension with the null space dimension instead of using the Rank-Nullity theorem.",
+    "eigenvector_scaling": "Thinking eigenvectors change direction when scaled by a scalar."
+  },
+  "neural-networks": {
+    "gradient_saturation": "Believing higher learning rates fix vanishing gradients in saturated sigmoid neurons.",
+    "bias_omission": "Thinking weights alone can shift decision boundaries away from the origin without bias terms.",
+    "backprop_order": "Believing layer activations update immediately during the forward pass."
+  },
+  "attention-mechanisms": {
+    "dimension_scaling": "Forgetting the sqrt(d_k) denominator in scaled dot-product attention causing vanishing softmax gradients.",
+    "causal_masking": "Applying bidirectional attention during autoregressive generation leading to label leakage."
+  },
+  "sql": {
+    "where_vs_having": "Using WHERE to filter aggregated GROUP BY metrics instead of HAVING.",
+    "join_multiplication": "Neglecting Cartesian products when joining on non-unique foreign keys without proper grouping."
+  },
+  "statistics-fundamentals": {
+    "p_value_fallacy": "Interpreting p-value as the probability that the null hypothesis is true.",
+    "correlation_causation": "Assuming strong Pearson correlation implies direct causal relationship."
+  },
+  "javascript": {
+    "closure_scope": "Assuming var declarations inside loops create separate block scopes.",
+    "event_loop_sync": "Expecting asynchronous callbacks to execute synchronously in microtask queue order."
+  },
+  "react-fundamentals": {
+    "state_mutation": "Directly mutating state variables instead of passing new immutable objects to setState.",
+    "effect_dependencies": "Omitting used variables from useEffect dependency arrays leading to stale closures."
+  }
+}

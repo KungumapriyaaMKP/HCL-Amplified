@@ -6,7 +6,7 @@ import { Nav } from "@/frontend/components/layout/Nav";
 import { Card } from "@/frontend/components/ui/Card";
 import { Button } from "@/frontend/components/ui/Button";
 import { ChatThread, type ChatBubble } from "@/frontend/components/chat/ChatThread";
-import { IconSparkles, IconArrowRight, IconShieldCheck, IconCheck } from "@tabler/icons-react";
+import { IconSparkles, IconArrowRight, IconShieldCheck, IconCheck, IconBolt, IconCoin, IconTarget } from "@tabler/icons-react";
 
 type Goal = { id: string; status: string; domain: string; goalText: string };
 type DiagQuestion = { id: string; skillId: string; question: string; options: string[] };
@@ -27,6 +27,7 @@ export default function GoalSetupPage() {
   const [diagLoading, setDiagLoading] = useState(false);
 
   const [generating, setGenerating] = useState(false);
+  const [plannerMode, setPlannerMode] = useState<"fastest" | "cheapest" | "most_rigorous">("fastest");
   const [error, setError] = useState<string | null>(null);
   const [historyChecked, setHistoryChecked] = useState(false);
 
@@ -135,7 +136,11 @@ export default function GoalSetupPage() {
     setGenerating(true);
     setError(null);
     try {
-      const res = await fetch(`/api/goals/${id}/path/generate`, { method: "POST" });
+      const res = await fetch(`/api/goals/${id}/path/generate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plannerMode }),
+      });
       const body = await res.json();
       if (!res.ok) throw new Error(body.error);
       router.push(`/goals/${id}`);
@@ -242,7 +247,7 @@ export default function GoalSetupPage() {
                 <IconSparkles className="h-10 w-10 text-cyan-400 mx-auto mb-3" />
                 <h2 className="text-xl font-black text-white">Diagnostic Assessment</h2>
                 <p className="mt-1 text-xs text-slate-400 max-w-md mx-auto mb-6">
-                  A dynamic, Claude-generated assessment targeting domain prerequisites to pinpoint your skill baseline.
+                  A dynamic assessment targeting domain prerequisites with 2PL-IRT ability estimation to pinpoint your skill baseline.
                 </p>
                 <Button disabled={diagLoading} onClick={startDiagnostic} size="lg">
                   {diagLoading ? "Generating Questions..." : "Begin Diagnostic Assessment"}
@@ -323,16 +328,56 @@ export default function GoalSetupPage() {
 
         {/* STEP D: Ready to Forge Path */}
         {goal.status === "ready" && (
-          <Card className="p-8 text-center">
-            <IconSparkles className="h-12 w-12 text-purple-400 mx-auto mb-3" />
-            <h2 className="text-xl font-black text-white">Calibration Complete</h2>
-            <p className="mt-1 text-xs text-slate-400 max-w-md mx-auto mb-6">
-              The recommendation engine will now evaluate prerequisites, compute skill gap priorities, and construct your milestone path.
-            </p>
-            <Button disabled={generating} onClick={generatePath} size="lg">
-              <span>{generating ? "Generating Roadmap..." : "Generate Learning Path"}</span>
-              <IconArrowRight className="h-4 w-4" />
-            </Button>
+          <Card className="p-6 sm:p-8 space-y-6">
+            <div className="text-center">
+              <IconSparkles className="h-10 w-10 text-purple-400 mx-auto mb-3" />
+              <h2 className="text-xl font-black text-white">Choose Planning Priority</h2>
+              <p className="mt-1 text-xs text-slate-400 max-w-md mx-auto">
+                Our A* path search will optimize the sequencing of modules and resources based on your chosen focus.
+              </p>
+            </div>
+
+            {/* 3-Way Segmented Planner Priority */}
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+              {[
+                {
+                  id: "fastest" as const,
+                  title: "⚡ Fastest",
+                  desc: "Minimizes time to reach your goal milestone",
+                },
+                {
+                  id: "cheapest" as const,
+                  title: "💡 Cheapest",
+                  desc: "Prioritizes free & high-value open resources",
+                },
+                {
+                  id: "most_rigorous" as const,
+                  title: "🎯 Rigorous",
+                  desc: "Gradual difficulty jumps & deep prerequisites",
+                },
+              ].map((opt) => (
+                <button
+                  key={opt.id}
+                  type="button"
+                  onClick={() => setPlannerMode(opt.id)}
+                  className={`rounded-xl border p-4 text-left transition-all ${
+                    plannerMode === opt.id
+                      ? "border-purple-400 bg-purple-950/60 shadow-[0_0_15px_rgba(168,85,247,0.4)] ring-1 ring-purple-400"
+                      : "border-purple-500/20 bg-[#0c1026] hover:border-purple-500/40 hover:bg-[#121838]"
+                  }`}
+                >
+                  <div className="text-sm font-bold text-white">{opt.title}</div>
+                  <div className="mt-1 text-[11px] text-slate-400 leading-tight">{opt.desc}</div>
+                </button>
+              ))}
+            </div>
+
+            <div className="text-center pt-2">
+              <Button disabled={generating} onClick={generatePath} size="lg" className="w-full sm:w-auto px-8">
+                <span>{generating ? "Generating Roadmap..." : "Generate Learning Path"}</span>
+                <IconArrowRight className="h-4 w-4" />
+              </Button>
+            </div>
           </Card>
         )}
 

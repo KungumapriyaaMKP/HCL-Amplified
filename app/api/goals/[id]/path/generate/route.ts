@@ -7,7 +7,8 @@ import { and, eq } from "drizzle-orm";
 import { computeGap, resolveGoalSkills } from "@/lib/skillGraph";
 import { getMasteryMap } from "@/lib/adapt";
 import { getCandidatePool } from "@/lib/catalog";
-import { bestResourceForSkill, CRASH_COURSE_PRACTICE_BIAS, type ScoredResource } from "@/lib/recommend";
+import { bestResourceForSkill, CRASH_COURSE_PRACTICE_BIAS, planSkillOrder, type PlannerMode, type ScoredResource } from "@/lib/recommend";
+import { computeFeasibility } from "@/lib/feasibility";
 import { isProgrammingSkill, languageForSkill } from "@/data/programmingSkills";
 import { SKILLS_BY_ID } from "@/data/skills";
 import { DOMAINS } from "@/data/domains";
@@ -15,11 +16,12 @@ import { syncMsLearnResourcesForSkill } from "@/lib/external/msLearn";
 import { chatComplete } from "@/lib/llm";
 import { moduleRationaleMessages } from "@/lib/prompts";
 
-export async function POST(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   return withErrorHandling(async () => {
     const user = await requireUser();
     const { id } = await params;
 
+    const reqBody = await req.json().catch(() => ({}));
     const [goal] = await db.select().from(goals).where(and(eq(goals.id, id), eq(goals.userId, user.id)));
     if (!goal) return jsonError("Not found", 404);
 
@@ -28,10 +30,14 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
     const goalSkillIds = mappedIds.length > 0 ? mappedIds : resolveGoalSkills(goal.domain, goal.goalText, subFocus.tags ?? []);
 
     const mastery = await getMasteryMap(user.id);
-    const gapSkills = computeGap(goalSkillIds, mastery);
-    if (gapSkills.length === 0) {
+    const rawGapSkills = computeGap(goalSkillIds, mastery);
+    if (rawGapSkills.length === 0) {
       return jsonError("You already have every prerequisite mastered for this goal - nothing to generate.");
     }
+
+    const plannerMode: PlannerMode = reqBody?.plannerMode ?? (goal.preferences as { plannerMode?: PlannerMode } | null)?.plannerMode ?? "fastest";
+    const orderedPlannedSkills = planSkillOrder(rawGapSkills, mastery, plannerMode);
+    const gapSkills = orderedPlannedSkills.length > 0 ? orderedPlannedSkills : rawGapSkills;
 
     // Best-effort: pull in live Microsoft Learn content for each gap skill.
     // Network hiccups here don't block path generation (internal + curated
@@ -167,6 +173,17 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
 
     await db.update(goals).set({ status: "active" }).where(eq(goals.id, id));
 
-    return NextResponse.json({ pathId: path.id, moduleCount: createdModules.length });
+    const feasibility = computeFeasibility({
+      gapSkills,
+      goalSkillIds,
+      trackPace: goal.trackPace,
+      deadlineWeeks: (subFocus as { timeframeWeeks?: number })?.timeframeWeeks ?? null,
+    });
+
+    return NextResponse.json({
+      pathId: path.id,
+      moduleCount: createdModules.length,
+      feasibility,
+    });
   });
 }

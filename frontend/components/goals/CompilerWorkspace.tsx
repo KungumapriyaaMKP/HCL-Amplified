@@ -13,6 +13,8 @@ import {
   IconArrowLeft,
   IconArrowRight,
 } from "@tabler/icons-react";
+import { emitNudge } from "@/lib/mentorBus";
+import { runPythonInBrowser } from "@/lib/pyodideRunner";
 
 const STARTERS: Record<string, string> = {
   python: '# Write your solution below\nprint("Hello, QuestLearn!")\n',
@@ -48,16 +50,25 @@ export function CompilerWorkspace({ moduleId, skillName, language }: { moduleId:
     setByExercise((prev) => ({ ...prev, [current]: { ...stateFor(current), ...patch } }));
   }
 
+  async function executeCode(codeToRun: string, stdinInput: string): Promise<RunResult> {
+    if (language === "python") {
+      return await runPythonInBrowser(codeToRun, stdinInput);
+    }
+    const res = await fetch("/api/compiler/run", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ language, code: codeToRun, stdin: stdinInput }),
+    });
+    return await res.json();
+  }
+
   async function run() {
     setRunning(true);
     const { code, stdin } = stateFor(current);
     try {
-      const res = await fetch("/api/compiler/run", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ language, code, stdin }),
-      });
-      updateCurrent({ output: await res.json(), results: null });
+      const output = await executeCode(code, stdin);
+      updateCurrent({ output, results: null });
+      emitNudge("code_run");
     } finally {
       setRunning(false);
     }
@@ -71,12 +82,7 @@ export function CompilerWorkspace({ moduleId, skillName, language }: { moduleId:
     try {
       const results: TestResult[] = [];
       for (const tc of ex.testCases) {
-        const res = await fetch("/api/compiler/run", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ language, code, stdin: tc.input }),
-        });
-        const body: RunResult = await res.json();
+        const body: RunResult = await executeCode(code, tc.input);
         const actual = (body.stdout ?? "").trim();
         const expected = tc.expectedOutput.trim();
         results.push({

@@ -5,6 +5,7 @@ import { Card } from "@/frontend/components/ui/Card";
 import { Badge } from "@/frontend/components/ui/badge";
 import { Button } from "@/frontend/components/ui/Button";
 import { IconTarget, IconArrowRight, IconRefresh, IconCheck, IconX } from "@tabler/icons-react";
+import { emitNudge } from "@/lib/mentorBus";
 
 type Question = { id: string; question: string; options: string[] };
 type Explanation = { id: string; correctIndex: number; selectedIndex: number | null; explanation: string };
@@ -40,7 +41,10 @@ export function PracticeQuiz({ moduleId, onSubmitted }: { moduleId: string; onSu
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ attemptId, answers: payload }),
       });
-      setResult(await res.json());
+      const data = await res.json();
+      setResult(data);
+      if (data.score >= 70) emitNudge("quiz_pass");
+      if (data.detour) emitNudge("detour_splice");
       onSubmitted?.();
     } finally {
       setLoading(false);

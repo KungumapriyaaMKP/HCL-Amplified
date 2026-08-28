@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { LogoutButton } from "@/frontend/components/layout/LogoutButton";
+import { GoalSwitcher } from "@/frontend/components/layout/GoalSwitcher";
 import {
   IconCompass,
   IconTrophy,
@@ -14,20 +15,23 @@ export function Nav({ displayName }: { displayName?: string }) {
     <header className="sticky top-0 z-40 border-b border-purple-500/20 bg-[#070913]/90 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.8)]">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
         
-        {/* Brand */}
-        <Link href="/dashboard" className="group flex items-center gap-3 transition-transform hover:scale-105">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-purple-600 to-indigo-700 shadow-[0_0_15px_rgba(147,51,234,0.6)] border border-purple-400/40">
-            <IconDeviceGamepad2 className="h-5 w-5 text-white" />
-          </div>
-          <div>
-            <div className="text-base font-extrabold tracking-wider text-white">
-              Quest<span className="text-purple-400">Learn</span>
+        {/* Brand & Goal Switcher */}
+        <div className="flex items-center gap-3 sm:gap-4">
+          <Link href="/dashboard" className="group flex items-center gap-3 transition-transform hover:scale-105">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-purple-600 to-indigo-700 shadow-[0_0_15px_rgba(147,51,234,0.6)] border border-purple-400/40">
+              <IconDeviceGamepad2 className="h-5 w-5 text-white" />
             </div>
-            <div className="text-[8px] font-bold tracking-[0.2em] text-purple-300/70 uppercase">
-              LEVEL UP YOUR FUTURE
+            <div>
+              <div className="text-base font-extrabold tracking-wider text-white">
+                Quest<span className="text-purple-400">Learn</span>
+              </div>
+              <div className="text-[8px] font-bold tracking-[0.2em] text-purple-300/70 uppercase">
+                LEVEL UP YOUR FUTURE
+              </div>
             </div>
-          </div>
-        </Link>
+          </Link>
+          <GoalSwitcher />
+        </div>
 
         {/* Navigation */}
         <nav className="flex items-center gap-1 sm:gap-2 text-xs font-bold">
