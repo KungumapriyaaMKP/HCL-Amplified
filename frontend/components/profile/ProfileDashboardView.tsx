@@ -12,12 +12,9 @@ import {
   IconFileText,
   IconArrowRight,
   IconTarget,
-  IconAward,
   IconSearch,
   IconSparkles,
   IconChevronDown,
-  IconChartBar,
-  IconBarbell,
 } from "@tabler/icons-react";
 
 export function ProfileDashboardView({
@@ -111,21 +108,7 @@ export function ProfileDashboardView({
         </div>
       </div>
 
-      {/* Left-Hand Vertical Floating Quick-Action Menu with Razor Sharp Corners */}
-      <aside className="fixed left-5 top-1/2 -translate-y-1/2 z-30 hidden 2xl:flex flex-col items-center gap-3 rounded-none border border-slate-200 bg-white p-2.5 shadow-md">
-        <button className="flex h-10 w-10 items-center justify-center rounded-none bg-purple-50 text-[#7C3AED] hover:bg-purple-100 transition-colors shadow-xs cursor-pointer" title="Goals">
-          <IconTarget className="h-5 w-5" />
-        </button>
-        <button className="flex h-10 w-10 items-center justify-center rounded-none text-sky-500 hover:bg-sky-50 transition-colors cursor-pointer" title="Proficiency">
-          <IconChartBar className="h-5 w-5" />
-        </button>
-        <button className="flex h-10 w-10 items-center justify-center rounded-none text-slate-400 hover:bg-slate-50 transition-colors cursor-pointer" title="Practice">
-          <IconBarbell className="h-5 w-5" />
-        </button>
-        <button className="flex h-10 w-10 items-center justify-center rounded-none text-blue-500 hover:bg-blue-50 transition-colors cursor-pointer" title="Achievements">
-          <IconAward className="h-5 w-5" />
-        </button>
-      </aside>
+
 
       {/* Main Content Precision Container */}
       <div className="relative z-10 mx-auto w-full max-w-[1380px] px-4 sm:px-8 py-5 space-y-6">
