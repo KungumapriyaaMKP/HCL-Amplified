@@ -18,12 +18,6 @@ import {
   IconArrowRight,
   IconArrowLeft,
   IconCompass,
-  IconCode,
-  IconChartBar,
-  IconBrain,
-  IconCloud,
-  IconDeviceMobile,
-  IconShieldLock,
   IconClock,
 } from "@tabler/icons-react";
 
@@ -31,8 +25,6 @@ interface DomainOption {
   id: string;
   name: string;
   description: string;
-  gradient: string;
-  icon: React.ReactNode;
   illustration: React.ReactNode;
 }
 
@@ -41,48 +33,36 @@ const DOMAIN_OPTIONS: DomainOption[] = [
     id: "web-dev",
     name: "Web Development",
     description: "Build websites and web applications from scratch.",
-    gradient: "bg-gradient-to-br from-[#6366F1] to-[#7C3AED]",
-    icon: <IconCode className="h-4 w-4 text-white stroke-[2.5]" />,
     illustration: <WebDevPastelIllustration className="pointer-events-none absolute right-2 bottom-1 w-24 h-18 sm:w-28 sm:h-20" />,
   },
   {
     id: "data-science",
     name: "Data Science",
     description: "Analyze data and extract valuable insights.",
-    gradient: "bg-gradient-to-br from-[#38BDF8] to-[#2563EB]",
-    icon: <IconChartBar className="h-4 w-4 text-white stroke-[2.5]" />,
     illustration: <DataSciencePastelIllustration className="pointer-events-none absolute right-2 bottom-1 w-24 h-18 sm:w-28 sm:h-20" />,
   },
   {
     id: "ai-ml",
     name: "AI & Machine Learning",
     description: "Build intelligent models and smart systems.",
-    gradient: "bg-gradient-to-br from-[#34D399] to-[#059669]",
-    icon: <IconBrain className="h-4 w-4 text-white stroke-[2.5]" />,
     illustration: <AiMlPastelIllustration className="pointer-events-none absolute right-2 bottom-1 w-24 h-18 sm:w-28 sm:h-20" />,
   },
   {
     id: "cloud-devops",
     name: "Cloud & DevOps",
     description: "Deploy, automate and scale applications in the cloud.",
-    gradient: "bg-gradient-to-br from-[#FBBF24] to-[#EA580C]",
-    icon: <IconCloud className="h-4 w-4 text-white stroke-[2.5]" />,
     illustration: <CloudDevOpsPastelIllustration className="pointer-events-none absolute right-2 bottom-1 w-24 h-18 sm:w-28 sm:h-20" />,
   },
   {
     id: "mobile-dev",
     name: "Mobile Development",
     description: "Create modern mobile apps for Android and iOS.",
-    gradient: "bg-gradient-to-br from-[#F472B6] to-[#E11D48]",
-    icon: <IconDeviceMobile className="h-4 w-4 text-white stroke-[2.5]" />,
     illustration: <MobileDevPastelIllustration className="pointer-events-none absolute right-2 bottom-1 w-24 h-18 sm:w-28 sm:h-20" />,
   },
   {
     id: "cybersecurity",
     name: "Cybersecurity",
     description: "Learn to protect systems and secure data.",
-    gradient: "bg-gradient-to-br from-[#818CF8] to-[#4F46E5]",
-    icon: <IconShieldLock className="h-4 w-4 text-white stroke-[2.5]" />,
     illustration: <CybersecurityPastelIllustration className="pointer-events-none absolute right-2 bottom-1 w-24 h-18 sm:w-28 sm:h-20" />,
   },
 ];
@@ -232,33 +212,29 @@ export default function NewGoalPage() {
                       setDomain(d.id);
                       setStep(1);
                     }}
-                    className={`group relative flex flex-col justify-between overflow-hidden rounded-none border p-4 text-left transition-all duration-200 min-h-[118px] sm:min-h-[125px] cursor-pointer ${
+                    className={`group relative flex flex-col justify-between overflow-hidden rounded-none border p-4 text-left transition-all duration-200 min-h-[110px] sm:min-h-[118px] cursor-pointer ${
                       selected
                         ? "border-2 border-[#7C3AED] bg-[#FAF8FE] ring-2 ring-purple-100 shadow-xs"
                         : "border-slate-200 bg-white hover:border-purple-300 hover:shadow-xs"
                     }`}
                   >
-                    {/* Top Row: Left Icon Badge & Right Square Arrow */}
-                    <div className="relative z-10 flex items-start justify-between">
-                      <div className={`flex h-8 w-8 items-center justify-center rounded-none shadow-xs transition-transform duration-200 group-hover:scale-105 ${d.gradient}`}>
-                        {d.icon}
+                    {/* Top Row: Title & Right Square Arrow */}
+                    <div className="relative z-10 flex items-start justify-between gap-3">
+                      <div className="pr-16 max-w-[78%]">
+                        <div className="text-sm font-bold text-slate-900 group-hover:text-[#6D28D9] transition-colors">{d.name}</div>
+                        <div className="mt-1 text-[11px] text-slate-500 leading-relaxed font-normal">
+                          {d.description}
+                        </div>
                       </div>
+
                       <div
-                        className={`flex h-6 w-6 items-center justify-center rounded-none border transition-all duration-200 ${
+                        className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-none border transition-all duration-200 ${
                           selected
                             ? "border-[#7C3AED] bg-[#7C3AED] text-white shadow-xs"
                             : "border-slate-200 bg-white text-slate-400 group-hover:border-[#7C3AED] group-hover:bg-[#7C3AED] group-hover:text-white"
                         }`}
                       >
                         <IconArrowRight className="h-3 w-3" />
-                      </div>
-                    </div>
-
-                    {/* Text Title & Subtitle - Spanning Horizontally with clean right padding */}
-                    <div className="relative z-10 mt-2.5 pr-24 max-w-[75%]">
-                      <div className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-[#6D28D9] transition-colors">{d.name}</div>
-                      <div className="mt-0.5 text-[10px] sm:text-[11px] text-slate-500 leading-relaxed font-normal">
-                        {d.description}
                       </div>
                     </div>
 
