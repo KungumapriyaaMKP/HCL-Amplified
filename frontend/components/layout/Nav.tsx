@@ -15,7 +15,7 @@ import { QuestLearnBrandIcon } from "@/frontend/components/dashboard/Illustratio
 export function Nav({ displayName = "yuvi" }: { displayName?: string }) {
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white shadow-xs">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-8">
+      <div className="mx-auto flex max-w-[1440px] items-center justify-between px-4 py-3 sm:px-8">
         
         {/* Brand & Goal Switcher */}
         <div className="flex items-center gap-3 sm:gap-4">

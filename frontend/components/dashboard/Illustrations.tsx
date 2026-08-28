@@ -467,3 +467,175 @@ export function WreathTrophyShield({ className = "w-12 h-12" }: { className?: st
   );
 }
 
+/**
+ * Domain Corner Pastel Illustrations Matching Design
+ */
+export function WebDevPastelIllustration({ className = "w-28 h-20" }: { className?: string }) {
+  return (
+    <div className={`relative flex items-center justify-center ${className}`}>
+      <svg viewBox="0 0 120 90" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+        {/* Soft Ambient Glow */}
+        <ellipse cx="60" cy="50" rx="45" ry="30" fill="#EDE9FE" opacity="0.6" />
+        
+        {/* Browser Window */}
+        <rect x="25" y="15" width="80" height="60" rx="8" fill="#F8FAFC" stroke="#CBD5E1" strokeWidth="1.5" />
+        <path d="M25 25 H105" stroke="#E2E8F0" strokeWidth="1.5" />
+        <circle cx="33" cy="20" r="2" fill="#FCA5A5" />
+        <circle cx="39" cy="20" r="2" fill="#FDE047" />
+        <circle cx="45" cy="20" r="2" fill="#86EFAC" />
+
+        {/* Floating Code Card */}
+        <rect x="35" y="32" width="45" height="34" rx="6" fill="url(#web-card-grad)" stroke="#A78BFA" strokeWidth="1" />
+        <defs>
+          <linearGradient id="web-card-grad" x1="35" y1="32" x2="80" y2="66" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#8B5CF6" />
+            <stop offset="100%" stopColor="#6D28D9" />
+          </linearGradient>
+        </defs>
+        <path d="M48 44 L44 49 L48 54 M67 44 L71 49 L67 54 M59 42 L56 56" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </div>
+  );
+}
+
+export function DataSciencePastelIllustration({ className = "w-28 h-20" }: { className?: string }) {
+  return (
+    <div className={`relative flex items-center justify-center ${className}`}>
+      <svg viewBox="0 0 120 90" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+        {/* Soft Ambient Glow */}
+        <ellipse cx="65" cy="50" rx="45" ry="30" fill="#E0F2FE" opacity="0.6" />
+
+        {/* Rising Bar Chart */}
+        <rect x="30" y="45" width="10" height="30" rx="3" fill="#BAE6FD" />
+        <rect x="44" y="32" width="10" height="43" rx="3" fill="#60A5FA" />
+        <rect x="58" y="20" width="10" height="55" rx="3" fill="#3B82F6" />
+
+        {/* 3D Pie Chart Graphic */}
+        <circle cx="85" cy="38" r="18" fill="#93C5FD" opacity="0.5" />
+        <path d="M85 38 L85 20 A18 18 0 0 1 103 38 Z" fill="#2563EB" />
+        <path d="M85 38 L103 38 A18 18 0 0 1 85 56 Z" fill="#60A5FA" />
+        <circle cx="85" cy="38" r="8" fill="#FFFFFF" />
+      </svg>
+    </div>
+  );
+}
+
+export function AiMlPastelIllustration({ className = "w-28 h-20" }: { className?: string }) {
+  return (
+    <div className={`relative flex items-center justify-center ${className}`}>
+      <svg viewBox="0 0 120 90" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+        {/* Soft Mint Ambient Glow */}
+        <ellipse cx="65" cy="50" rx="45" ry="30" fill="#D1FAE5" opacity="0.6" />
+
+        {/* Cute AI Mint Robot Head */}
+        <ellipse cx="70" cy="46" rx="22" ry="19" fill="#FFFFFF" stroke="#A7F3D0" strokeWidth="2" />
+        <rect x="46" y="41" width="3" height="10" rx="1.5" fill="#6EE7B7" />
+        <rect x="91" y="41" width="3" height="10" rx="1.5" fill="#6EE7B7" />
+
+        {/* Antenna */}
+        <path d="M70 27 V20" stroke="#10B981" strokeWidth="2" strokeLinecap="round" />
+        <circle cx="70" cy="18" r="3" fill="#059669" />
+
+        {/* Visor Screen */}
+        <rect x="55" y="38" width="30" height="16" rx="8" fill="#065F46" />
+        {/* Glowing Eyes */}
+        <circle cx="63" cy="46" r="3" fill="#34D399" />
+        <circle cx="77" cy="46" r="3" fill="#34D399" />
+        <circle cx="64" cy="45" r="1" fill="#FFFFFF" />
+        <circle cx="78" cy="45" r="1" fill="#FFFFFF" />
+
+        {/* Cheeks */}
+        <circle cx="56" cy="56" r="2.5" fill="#F472B6" opacity="0.6" />
+        <circle cx="84" cy="56" r="2.5" fill="#F472B6" opacity="0.6" />
+
+        {/* Body Base */}
+        <path d="M54 65 Q 70 60, 86 65 L88 78 Q 70 82, 52 78 Z" fill="#F0FDF4" stroke="#A7F3D0" strokeWidth="1.5" />
+      </svg>
+    </div>
+  );
+}
+
+export function CloudDevOpsPastelIllustration({ className = "w-28 h-20" }: { className?: string }) {
+  return (
+    <div className={`relative flex items-center justify-center ${className}`}>
+      <svg viewBox="0 0 120 90" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+        {/* Soft Amber Glow */}
+        <ellipse cx="65" cy="50" rx="45" ry="30" fill="#FEF3C7" opacity="0.6" />
+
+        {/* Cloud Base */}
+        <path
+          d="M50 40 C45 40, 40 45, 42 50 C38 52, 38 58, 43 60 H90 C96 60, 96 52, 91 50 C91 42, 82 40, 78 44 C74 36, 56 34, 50 40 Z"
+          fill="#FFFBEB"
+          stroke="#FCD34D"
+          strokeWidth="1.5"
+        />
+
+        {/* Server Box Rack */}
+        <rect x="52" y="52" width="40" height="24" rx="4" fill="#FFFFFF" stroke="#FBBF24" strokeWidth="1.5" />
+        <line x1="58" y1="59" x2="78" y2="59" stroke="#E2E8F0" strokeWidth="2" strokeLinecap="round" />
+        <circle cx="85" cy="59" r="1.5" fill="#10B981" />
+        <line x1="58" y1="67" x2="78" y2="67" stroke="#E2E8F0" strokeWidth="2" strokeLinecap="round" />
+        <circle cx="85" cy="67" r="1.5" fill="#F59E0B" />
+      </svg>
+    </div>
+  );
+}
+
+export function MobileDevPastelIllustration({ className = "w-28 h-20" }: { className?: string }) {
+  return (
+    <div className={`relative flex items-center justify-center ${className}`}>
+      <svg viewBox="0 0 120 90" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+        {/* Soft Pink Glow */}
+        <ellipse cx="65" cy="50" rx="45" ry="30" fill="#FCE7F3" opacity="0.6" />
+
+        {/* Smartphone */}
+        <rect x="52" y="16" width="36" height="60" rx="7" fill="#FFFFFF" stroke="#F472B6" strokeWidth="2" />
+        {/* Speaker / Notch */}
+        <line x1="65" y1="21" x2="75" y2="21" stroke="#CBD5E1" strokeWidth="1.5" strokeLinecap="round" />
+        
+        {/* Screen Display with Rocket */}
+        <rect x="56" y="26" width="28" height="42" rx="3" fill="#FDF2F8" />
+        <path d="M70 33 C73 37, 75 42, 75 48 H65 C65 42, 67 37, 70 33 Z" fill="#EC4899" />
+        <circle cx="70" cy="40" r="2" fill="#FFFFFF" />
+        <path d="M66 48 L64 52 H76 L74 48 Z" fill="#F43F5E" />
+        <path d="M68 52 L70 56 L72 52 Z" fill="#FBBF24" />
+
+        {/* Bottom Bar Indicator */}
+        <line x1="64" y1="71" x2="76" y2="71" stroke="#94A3B8" strokeWidth="1.5" strokeLinecap="round" />
+      </svg>
+    </div>
+  );
+}
+
+export function CybersecurityPastelIllustration({ className = "w-28 h-20" }: { className?: string }) {
+  return (
+    <div className={`relative flex items-center justify-center ${className}`}>
+      <svg viewBox="0 0 120 90" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+        {/* Soft Purple Glow */}
+        <ellipse cx="65" cy="50" rx="45" ry="30" fill="#EDE9FE" opacity="0.6" />
+
+        {/* Security Shield */}
+        <path
+          d="M70 18 C82 18, 88 22, 88 30 C88 46, 78 58, 70 64 C62 58, 52 46, 52 30 C52 22, 58 18, 70 18 Z"
+          fill="url(#sec-shield-grad)"
+          stroke="#818CF8"
+          strokeWidth="1.8"
+        />
+        <defs>
+          <linearGradient id="sec-shield-grad" x1="52" y1="18" x2="88" y2="64" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#EEF2FF" />
+            <stop offset="100%" stopColor="#C7D2FE" />
+          </linearGradient>
+        </defs>
+
+        {/* Padlock */}
+        <rect x="63" y="37" width="14" height="12" rx="2.5" fill="#4F46E5" />
+        <path d="M66 37 V32 C66 29.5, 74 29.5, 74 32 V37" stroke="#4F46E5" strokeWidth="2" strokeLinecap="round" fill="none" />
+        <circle cx="70" cy="42" r="1.5" fill="#FFFFFF" />
+        <path d="M70 43.5 V46" stroke="#FFFFFF" strokeWidth="1.2" strokeLinecap="round" />
+      </svg>
+    </div>
+  );
+}
+
+
