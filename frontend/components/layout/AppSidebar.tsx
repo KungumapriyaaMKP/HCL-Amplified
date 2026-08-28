@@ -25,7 +25,7 @@ interface AppSidebarProps {
 }
 
 export function AppSidebar({
-  displayName = "Yuvi",
+  displayName = "yuvi",
   level = 1,
   levelTitle = "Newcomer",
 }: AppSidebarProps) {
@@ -64,13 +64,16 @@ export function AppSidebar({
         <nav className="space-y-1">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const isActive = pathname === item.href || (item.href === "/dashboard" && pathname === "/dashboard");
+            const isActive =
+              pathname === item.href ||
+              (item.href === "/community" && pathname.startsWith("/community")) ||
+              (item.href === "/dashboard" && pathname === "/dashboard");
 
             return (
               <Link
                 key={item.label}
                 href={item.href}
-                className={`flex items-center gap-3.5 px-3.5 py-2.5 rounded-md text-sm font-semibold transition-all ${
+                className={`flex items-center gap-3.5 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
                   isActive
                     ? "bg-[#EDE9FE] text-[#6D28D9]"
                     : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
@@ -86,27 +89,40 @@ export function AppSidebar({
         </nav>
       </div>
 
-      {/* Bottom Section */}
-      <div className="pt-4 border-t border-slate-100">
-        {/* User Profile Footer */}
+      {/* Bottom User Profile Section */}
+      <div className="pt-3">
         <Link
           href="/profile"
-          className="flex items-center justify-between p-2 rounded-md hover:bg-slate-50 transition-colors"
+          className="flex flex-col gap-2 p-3 rounded-2xl border border-slate-100 bg-white shadow-xs hover:border-purple-200 transition-all group"
         >
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-md bg-[#6D28D9] text-xs font-bold text-white shadow-sm">
-              {displayName[0]?.toUpperCase() || "Y"}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#4A0E78] text-sm font-black text-white shadow-xs">
+                N
+              </div>
+              <div>
+                <div className="text-xs font-bold text-slate-900 leading-tight">
+                  {displayName}
+                </div>
+                <div className="text-[10px] font-medium text-slate-400">
+                  Level {level} • {levelTitle}
+                </div>
+              </div>
             </div>
-            <div>
-              <div className="text-xs font-bold text-slate-900 leading-tight">
-                {displayName}
-              </div>
-              <div className="text-[10px] font-medium text-slate-400">
-                Level {level} • {levelTitle}
-              </div>
+            <IconChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+          </div>
+
+          <div className="w-full space-y-1 mt-0.5">
+            <div className="h-1.5 w-full rounded-full bg-slate-100 overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-[#7C3AED] to-[#A855F7] rounded-full"
+                style={{ width: "20%" }}
+              />
+            </div>
+            <div className="text-[9px] font-semibold text-slate-400 text-right">
+              100 / 500 XP
             </div>
           </div>
-          <IconChevronRight className="w-4 h-4 text-slate-400" />
         </Link>
       </div>
     </aside>

@@ -7,8 +7,8 @@ import { eq } from "drizzle-orm";
 import { AppSidebar } from "@/frontend/components/layout/AppSidebar";
 import { CommunityFeed } from "@/frontend/components/community/CommunityFeed";
 import { DOMAINS } from "@/data/domains";
-import { DomainIcon } from "@/frontend/components/ui/DomainIcon";
 import { IconArrowLeft } from "@tabler/icons-react";
+import Image from "next/image";
 import Link from "next/link";
 
 export default async function CommunityDomainPage({ params }: { params: Promise<{ domain: string }> }) {
@@ -23,48 +23,70 @@ export default async function CommunityDomainPage({ params }: { params: Promise<
     <div className="flex min-h-screen bg-[#F8F9FD] text-slate-900 font-sans">
       {/* 1. Left Sidebar Navigation */}
       <AppSidebar
-        displayName={profile?.displayName || "Yuvi"}
+        displayName={profile?.displayName || "yuvi"}
         level={1}
         levelTitle="Newcomer"
       />
 
       {/* 2. Main Scrollable Content */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto max-h-screen">
-        <main className="mx-auto w-full max-w-[1440px] px-4 sm:px-8 py-6 space-y-6">
-          <Link
-            href="/community"
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#7C3AED] hover:underline"
-          >
-            <IconArrowLeft className="h-4 w-4" />
-            <span>Back to All Guilds</span>
-          </Link>
+      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto max-h-screen relative">
+        <main className="mx-auto w-full max-w-[1380px] px-6 sm:px-10 py-6 space-y-5">
           
-          <div className="flex items-center gap-4">
-            <div className="flex h-14 w-14 items-center justify-center rounded-none border border-purple-200 bg-white p-2 shadow-xs shrink-0 overflow-hidden">
-              {["web-dev", "data-science", "ai-ml", "cloud-devops", "mobile-dev", "cybersecurity"].includes(domainMeta.id) ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={`/guilds/${domainMeta.id}.png`}
-                  alt={domainMeta.name}
-                  className="h-full w-full object-contain"
-                />
-              ) : (
-                <DomainIcon id={domainMeta.id} className="h-7 w-7 text-[#7C3AED]" />
-              )}
-            </div>
-            <div>
-              <span className="text-[11px] font-extrabold uppercase tracking-[0.25em] text-[#7C3AED]">
-                PEER DISCUSSION GUILD
-              </span>
-              <h1 className="mt-0.5 text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                {domainMeta.name} Community Hub
-              </h1>
-            </div>
+          {/* Back Navigation Link */}
+          <div>
+            <Link
+              href="/community"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-[#7C3AED] hover:underline"
+            >
+              <IconArrowLeft className="h-3.5 w-3.5" />
+              <span>Back to All Guilds</span>
+            </Link>
           </div>
 
-          <div className="max-w-4xl">
+          {/* ================= HERO HEADER: BADGE + TITLE + 3D CODE EDITOR ================= */}
+          <div className="relative flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            
+            {/* Left Column: Icon Badge + Typography */}
+            <div className="flex items-start gap-4 sm:gap-5 max-w-2xl">
+              
+              {/* Purple Square Icon Container with White Code Tag */}
+              <div className="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-2xl bg-gradient-to-tr from-[#6366F1] to-[#7C3AED] text-white text-2xl sm:text-3xl font-black shadow-md shrink-0 border-4 border-white">
+                {"</>"}
+              </div>
+
+              <div>
+                <div className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#7C3AED]">
+                  PEER DISCUSSION GUILD
+                </div>
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight mt-0.5">
+                  {domainMeta.name} <br className="hidden sm:inline" />
+                  <span className="text-[#7C3AED]">Community Hub</span>
+                </h1>
+                <p className="mt-2 text-xs sm:text-sm text-slate-500 font-normal leading-relaxed">
+                  A place for developers to share ideas, ask questions, and grow together.
+                </p>
+              </div>
+            </div>
+
+            {/* Right Column: Exact 3D Code Editor Window with Chat & Heart Bubbles */}
+            <div className="shrink-0 hidden md:block">
+              <Image
+                src="/images/community/webdev_header_3d.png"
+                alt="Web Development 3D Code Hub"
+                width={280}
+                height={160}
+                className="object-contain select-none drop-shadow-sm"
+                unoptimized
+              />
+            </div>
+
+          </div>
+
+          {/* ================= COMMUNITY FEED & INTERACTIVE CARDS ================= */}
+          <div className="w-full">
             <CommunityFeed domain={domain} />
           </div>
+
         </main>
       </div>
     </div>
