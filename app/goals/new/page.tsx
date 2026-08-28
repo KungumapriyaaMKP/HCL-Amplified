@@ -228,7 +228,10 @@ export default function NewGoalPage() {
                 return (
                   <button
                     key={d.id}
-                    onClick={() => setDomain(d.id)}
+                    onClick={() => {
+                      setDomain(d.id);
+                      setStep(1);
+                    }}
                     className={`group relative flex flex-col justify-between overflow-hidden rounded-none border p-4 text-left transition-all duration-200 min-h-[118px] sm:min-h-[125px] cursor-pointer ${
                       selected
                         ? "border-2 border-[#7C3AED] bg-[#FAF8FE] ring-2 ring-purple-100 shadow-xs"
@@ -264,18 +267,6 @@ export default function NewGoalPage() {
                   </button>
                 );
               })}
-            </div>
-
-            {/* Bottom Action Bar */}
-            <div className="mt-4 flex items-center justify-end border-t border-slate-100 pt-3.5">
-              <button
-                disabled={!domain}
-                onClick={() => setStep(1)}
-                className="inline-flex items-center gap-1.5 rounded-none bg-gradient-to-r from-[#3B82F6] via-[#6366F1] to-[#9333EA] px-6 py-2.5 text-xs font-bold text-white shadow-xs transition-all hover:opacity-95 active:scale-98 disabled:opacity-50 cursor-pointer"
-              >
-                <span>Continue to Pace</span>
-                <IconArrowRight className="h-3.5 w-3.5" />
-              </button>
             </div>
 
           </div>
