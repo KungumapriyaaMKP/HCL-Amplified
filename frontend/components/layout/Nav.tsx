@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { GoalSwitcher } from "@/frontend/components/layout/GoalSwitcher";
 import {
   IconCompass,
@@ -13,6 +14,8 @@ import {
 import { QuestLearnBrandIcon } from "@/frontend/components/dashboard/Illustrations";
 
 export function Nav({ displayName = "yuvi" }: { displayName?: string }) {
+  const pathname = usePathname();
+
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white shadow-xs">
       <div className="mx-auto flex max-w-[1440px] items-center justify-between px-4 py-3 sm:px-8">
@@ -37,30 +40,46 @@ export function Nav({ displayName = "yuvi" }: { displayName?: string }) {
         <nav className="flex items-center gap-2 sm:gap-5 text-xs font-semibold">
           <Link
             href="/dashboard"
-            className="flex items-center gap-1.5 text-slate-600 hover:text-slate-900 px-2 py-1.5 rounded-md hover:bg-slate-50 transition-colors"
+            className={`flex items-center gap-1.5 px-2 py-1.5 rounded-md transition-colors ${
+              pathname === "/dashboard"
+                ? "text-[#2563EB] font-bold border-b-2 border-[#2563EB] rounded-none"
+                : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+            }`}
           >
-            <IconCompass className="h-4 w-4 text-slate-500" />
+            <IconCompass className="h-4 w-4" />
             <span className="hidden sm:inline">Quests</span>
           </Link>
           <Link
             href="/leaderboard"
-            className="flex items-center gap-1.5 text-slate-600 hover:text-slate-900 px-2 py-1.5 rounded-md hover:bg-slate-50 transition-colors"
+            className={`flex items-center gap-1.5 px-2 py-1.5 rounded-md transition-colors ${
+              pathname === "/leaderboard"
+                ? "text-[#2563EB] font-bold border-b-2 border-[#2563EB] rounded-none"
+                : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+            }`}
           >
-            <IconTrophy className="h-4 w-4 text-slate-500" />
+            <IconTrophy className="h-4 w-4" />
             <span className="hidden sm:inline">Leaderboard</span>
           </Link>
           <Link
             href="/community"
-            className="flex items-center gap-1.5 text-slate-600 hover:text-slate-900 px-2 py-1.5 rounded-md hover:bg-slate-50 transition-colors"
+            className={`flex items-center gap-1.5 px-2 py-1.5 rounded-md transition-colors ${
+              pathname.startsWith("/community")
+                ? "text-[#2563EB] font-bold border-b-2 border-[#2563EB] rounded-none"
+                : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+            }`}
           >
-            <IconUsers className="h-4 w-4 text-slate-500" />
+            <IconUsers className="h-4 w-4" />
             <span className="hidden sm:inline">Guilds</span>
           </Link>
           <Link
             href="/profile"
-            className="flex items-center gap-1.5 text-slate-600 hover:text-slate-900 px-2 py-1.5 rounded-md hover:bg-slate-50 transition-colors"
+            className={`flex items-center gap-1.5 px-2 py-1.5 rounded-md transition-colors ${
+              pathname === "/profile"
+                ? "text-[#2563EB] font-bold border-b-2 border-[#2563EB] rounded-none"
+                : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+            }`}
           >
-            <IconUser className="h-4 w-4 text-slate-500" />
+            <IconUser className="h-4 w-4" />
             <span className="hidden sm:inline">Profile</span>
           </Link>
           <Link

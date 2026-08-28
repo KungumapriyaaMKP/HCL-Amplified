@@ -2,563 +2,576 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { ProgressBar } from "@/frontend/components/ui/progress-bar";
-import { Badge } from "@/frontend/components/ui/badge";
 import type { DashboardData } from "@/lib/dashboardData";
+import {
+  WavingRobotMascot,
+  StudentAvatarIllustration,
+  FaceHologramIllustration,
+  FolderUploadIllustration,
+  Calendar3DIllustration,
+  CuteBrainMascotIllustration,
+  FloatingSkyIsland,
+} from "@/frontend/components/dashboard/Illustrations";
 import {
   IconBolt,
   IconFlame,
+  IconShield,
   IconShieldCheck,
   IconFileText,
   IconArrowRight,
-  IconBriefcase,
   IconTarget,
   IconAward,
   IconSearch,
-  IconActivity,
-  IconBrain,
-  IconCalendar,
-  IconAdjustments,
-  IconRefresh,
-  IconCompass,
   IconSparkles,
-  IconChevronRight,
-  IconCheck,
+  IconChevronDown,
+  IconChartBar,
+  IconBarbell,
+  IconCode,
 } from "@tabler/icons-react";
-
-const TIER_CLASSES = [
-  "bg-[#090d1f] border border-white/5",
-  "bg-purple-950/80 border border-purple-600/40 text-purple-300",
-  "bg-purple-700/70 border border-purple-500/60 shadow-[0_0_8px_rgba(168,85,247,0.4)]",
-  "bg-purple-500 border border-purple-300 shadow-[0_0_12px_rgba(168,85,247,0.7)]",
-  "bg-cyan-400 border border-white shadow-[0_0_15px_rgba(6,182,212,0.9)]",
-];
-
-function tierFor(count: number): number {
-  if (count === 0) return 0;
-  if (count === 1) return 1;
-  if (count <= 3) return 2;
-  if (count <= 6) return 3;
-  return 4;
-}
-
-function formatDate(iso: string): string {
-  return new Date(iso + "T00:00:00").toLocaleDateString(undefined, { month: "short", day: "numeric" });
-}
-
-function getRankBadge(score: number) {
-  if (score >= 85) return { label: "MASTER", color: "text-amber-300 border-amber-500/50 bg-amber-950/70 shadow-[0_0_10px_rgba(245,158,11,0.3)]" };
-  if (score >= 70) return { label: "EXPERT", color: "text-purple-300 border-purple-500/50 bg-purple-950/70 shadow-[0_0_10px_rgba(168,85,247,0.3)]" };
-  if (score >= 50) return { label: "ADEPT", color: "text-cyan-300 border-cyan-500/50 bg-cyan-950/70 shadow-[0_0_10px_rgba(6,182,212,0.3)]" };
-  return { label: "NOVICE", color: "text-slate-400 border-slate-700 bg-slate-900/80" };
-}
-
-const TRIGGER_TONE: Record<string, "success" | "warning" | "accent" | "cyan"> = {
-  low_proctored_score: "warning",
-  high_proctored_score: "success",
-  feedback_too_easy: "cyan",
-  feedback_too_hard: "accent",
-};
 
 export function ProfileDashboardView({
   data,
-  userEmail,
+  userEmail = "yuvi@gmail.com",
 }: {
   data: DashboardData;
   userEmail?: string;
 }) {
   const profile = data.profile;
   const gamification = data.gamification;
-  const pct = gamification.xpForNextLevel > 0 ? (gamification.xpIntoLevel / gamification.xpForNextLevel) * 100 : 0;
-  const hasFace = !!profile?.faceDescriptor;
-  const resume = profile?.resumeProfile as {
-    currentRole?: string;
-    careerGoal?: string;
-    yearsExperience?: number;
-    summary?: string;
-  } | null;
+  const displayName = profile?.displayName || "yuvi";
+  const xp = gamification.xp || 0;
+  const level = gamification.level || 1;
+  const streak = gamification.streak?.currentStreak || 0;
+  const activeGoals = data.goals?.length || 2;
+  const xpIntoLevel = gamification.xpIntoLevel || 0;
+  const xpForNextLevel = gamification.xpForNextLevel || 50;
+  const pct = xpForNextLevel > 0 ? Math.min(100, Math.round((xpIntoLevel / xpForNextLevel) * 100)) : 0;
 
-  const [skillTab, setSkillTab] = useState<"mastery" | "retention">("mastery");
-  const [skillSearch, setSkillSearch] = useState("");
-  const [tierFilter, setTierFilter] = useState<"all" | "master" | "expert" | "adept" | "novice">("all");
+  const [activeMatrixTab, setActiveMatrixTab] = useState<"proficiency" | "retention">("proficiency");
+  const [filterTier, setFilterTier] = useState<string>("ALL");
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const filteredMastery = data.mastery.filter((m) => {
-    const matchesSearch = m.name.toLowerCase().includes(skillSearch.toLowerCase());
-    const rank = getRankBadge(m.score).label.toLowerCase();
-    const matchesTier = tierFilter === "all" || rank === tierFilter;
-    return matchesSearch && matchesTier;
+  const skillCards = [
+    {
+      id: "linear-algebra",
+      name: "Linear Algebra",
+      symbol: "1:1",
+      iconBg: "bg-emerald-500 text-white",
+      badge: "NOVICE",
+      score: 15,
+      sparkColor: "#10B981",
+      progressBg: "bg-emerald-500",
+    },
+    {
+      id: "calculus-basics",
+      name: "Calculus Basics",
+      symbol: "∫ dx",
+      iconBg: "bg-blue-600 text-white",
+      badge: "NOVICE",
+      score: 15,
+      sparkColor: "#3B82F6",
+      progressBg: "bg-blue-600",
+    },
+    {
+      id: "python-programming",
+      name: "Python Programming",
+      symbol: "Py",
+      iconBg: "bg-amber-400 text-amber-950 font-bold",
+      badge: "NOVICE",
+      score: 10,
+      sparkColor: "#F59E0B",
+      progressBg: "bg-amber-500",
+    },
+  ];
+
+  const filteredSkills = skillCards.filter((s) => {
+    const matchesSearch = s.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesFilter = filterTier === "ALL" || s.badge === filterTier;
+    return matchesSearch && matchesFilter;
   });
 
-  const fadingFoundational = data.decay.filter(
-    (d) => d.foundational && d.tier !== "fresh" && data.reviewSuggestions[d.skillId]
-  );
-
-  // Activity Heatmap padding
-  const hasActivity = data.activity.some((d) => d.count > 0);
-  const firstDow = data.activity.length > 0 ? new Date(data.activity[0].date + "T00:00:00").getDay() : 0;
-  const padded = [...Array.from({ length: firstDow }, () => null), ...data.activity];
-  const weeks: (DashboardData["activity"][number] | null)[][] = [];
-  for (let i = 0; i < padded.length; i += 7) weeks.push(padded.slice(i, i + 7));
-
   return (
-    <div className="space-y-8">
+    <div className="relative mx-auto w-full max-w-[1440px] px-4 sm:px-8 py-5 space-y-6">
       
-      {/* Top Grid: Hero Identity + Credentials */}
-      <div className="grid gap-6 lg:grid-cols-12">
+      {/* Decorative Floating Sky Islands */}
+      <FloatingSkyIsland className="top-2 -left-6 w-24 h-24 hidden xl:block" />
+      <FloatingSkyIsland className="top-8 -right-6 w-28 h-28 hidden xl:block" />
+      <FloatingSkyIsland className="bottom-24 -left-10 w-32 h-32 hidden xl:block" />
+
+      {/* Left-Hand Vertical Floating Quick-Action Pill Menu */}
+      <div className="fixed left-3 top-1/2 -translate-y-1/2 z-30 hidden 2xl:flex flex-col items-center gap-3 rounded-full border border-slate-200/90 bg-white/90 p-2 shadow-lg backdrop-blur-md">
+        <button className="flex h-9 w-9 items-center justify-center rounded-full bg-purple-50 text-[#7C3AED] hover:bg-purple-100 transition-colors shadow-xs" title="Goals">
+          <IconTarget className="h-5 w-5" />
+        </button>
+        <button className="flex h-9 w-9 items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors" title="Proficiency">
+          <IconChartBar className="h-5 w-5" />
+        </button>
+        <button className="flex h-9 w-9 items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors" title="Practice">
+          <IconBarbell className="h-5 w-5" />
+        </button>
+        <button className="flex h-9 w-9 items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors" title="Achievements">
+          <IconAward className="h-5 w-5" />
+        </button>
+      </div>
+
+      {/* ================= HERO HEADER & TOP STATS HUD ================= */}
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         
-        {/* Left: Main Identity Card (7 cols) */}
-        <div className="lg:col-span-7">
-          <div className="relative h-full overflow-hidden border-2 border-purple-500/30 bg-[#0c1026]/90 p-6 sm:p-7 shadow-[0_0_35px_rgba(139,92,246,0.25)] backdrop-blur-2xl">
-            
-            {/* Cyber Corner Brackets */}
-            <div className="pointer-events-none absolute -top-1 -right-1 h-5 w-5 border-t-2 border-r-2 border-cyan-400" />
-            <div className="pointer-events-none absolute -bottom-1 -left-1 h-5 w-5 border-b-2 border-l-2 border-purple-400" />
-
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
-              
-              {/* Sci-Fi Avatar Hologram */}
-              <div className="relative flex h-22 w-22 shrink-0 items-center justify-center border-2 border-purple-400/60 bg-gradient-to-tr from-purple-900 via-fuchsia-700 to-indigo-900 p-1 shadow-[0_0_25px_rgba(168,85,247,0.6)]">
-                <div className="flex h-full w-full flex-col items-center justify-center bg-[#090c20] relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-400/10 to-transparent animate-pulse" />
-                  <span className="text-3xl font-black text-white drop-shadow-[0_0_12px_rgba(255,255,255,0.7)]">
-                    {profile?.displayName?.[0]?.toUpperCase() || "L"}
-                  </span>
-                  <span className="text-[10px] font-black uppercase tracking-widest text-cyan-300">
-                    LVL {gamification.level}
-                  </span>
-                </div>
-              </div>
-
-              {/* Profile Details */}
-              <div className="flex-1">
-                <div className="flex items-center gap-2">
-                  <span className="text-[11px] font-black uppercase tracking-[0.2em] text-purple-300">
-                    {gamification.levelTitle}
-                  </span>
-                  <span className="border border-emerald-500/40 bg-emerald-950/70 px-2 py-0.5 text-[9px] font-black text-emerald-300 flex items-center gap-1">
-                    <span className="h-1.5 w-1.5 bg-emerald-400 animate-pulse" />
-                    ONLINE
-                  </span>
-                </div>
-                
-                <h2 className="text-2xl sm:text-3xl font-black text-white drop-shadow-[0_2px_10px_rgba(255,255,255,0.3)] mt-0.5">
-                  {profile?.displayName || "Learner"}
-                </h2>
-                <p className="text-xs text-slate-400">{userEmail}</p>
-
-                {/* Quick Stat Badges */}
-                <div className="mt-3.5 flex flex-wrap items-center gap-2.5 text-xs">
-                  <div className="flex items-center gap-1.5 border border-amber-500/40 bg-amber-950/60 px-3 py-1 text-amber-300 font-bold shadow-[0_0_12px_rgba(245,158,11,0.2)]">
-                    <IconBolt className="h-4 w-4 text-amber-400" />
-                    <span>{gamification.xp.toLocaleString()} XP</span>
-                  </div>
-
-                  <div className="flex items-center gap-1.5 border border-orange-500/40 bg-orange-950/60 px-3 py-1 text-orange-300 font-bold shadow-[0_0_12px_rgba(249,115,22,0.2)]">
-                    <IconFlame className="h-4 w-4 text-orange-400" />
-                    <span>{gamification.streak.currentStreak} Day Streak</span>
-                  </div>
-
-                  <div className="flex items-center gap-1.5 border border-cyan-500/40 bg-cyan-950/60 px-3 py-1 text-cyan-300 font-bold shadow-[0_0_12px_rgba(6,182,212,0.2)]">
-                    <IconCompass className="h-4 w-4 text-cyan-400" />
-                    <span>{data.goals.length} Active Goals</span>
-                  </div>
-                </div>
-              </div>
-
+        {/* Left Welcome Greeting */}
+        <div className="flex items-center gap-4">
+          <div>
+            <div className="text-[11px] font-extrabold uppercase tracking-[0.2em] text-[#7C3AED]">
+              LEARNER IDENTITY & ANALYTICS
             </div>
-
-            {/* Level XP Progress Bar */}
-            <div className="mt-6 border border-purple-500/20 bg-[#070a1a]/90 p-4 shadow-inner">
-              <div className="mb-2 flex items-center justify-between text-xs font-black">
-                <span className="text-purple-300 flex items-center gap-1.5">
-                  <IconSparkles className="h-3.5 w-3.5 text-purple-400" />
-                  <span>Level {gamification.level} Calibration</span>
-                </span>
-                <span className="text-amber-400 font-bold">{Math.round(pct)}% to Level {gamification.level + 1}</span>
-              </div>
-              <ProgressBar value={pct} variant="gold" />
-              <div className="mt-2 flex justify-between text-[10px] font-semibold text-slate-400">
-                <span>Current Tier Mastery</span>
-                <span className="tabular-nums font-bold text-amber-300">{gamification.xpIntoLevel.toLocaleString()} / {gamification.xpForNextLevel.toLocaleString()} XP</span>
-              </div>
-            </div>
-
-            {/* Badges Section */}
-            {gamification.badges.length > 0 && (
-              <div className="mt-5 border-t border-purple-500/20 pt-4">
-                <div className="mb-2.5 text-[10px] font-extrabold uppercase tracking-[0.2em] text-purple-300/80">
-                  EARNED VALOR BADGES ({gamification.badges.length})
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {gamification.badges.map((b) => (
-                    <div
-                      key={b.id}
-                      title={b.description}
-                      className="group flex items-center gap-2 border border-purple-500/30 bg-[#121633]/90 px-3 py-1.5 text-xs font-bold text-slate-200 shadow-[0_2px_10px_rgba(0,0,0,0.4)] transition-all hover:border-purple-400 hover:shadow-[0_0_15px_rgba(168,85,247,0.4)]"
-                    >
-                      <IconAward className="h-4 w-4 text-purple-400" />
-                      <span>{b.name}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
+            <h1 className="mt-0.5 text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">
+              Welcome back, <span className="text-[#7C3AED]">{displayName}!</span> 👏
+            </h1>
+            <p className="mt-1 text-xs sm:text-sm text-slate-500 font-normal">
+              Let&apos;s continue your journey of mastering skills and achieving your goals.
+            </p>
           </div>
+          
+          {/* Mascot in Header */}
+          <WavingRobotMascot className="w-14 h-14 sm:w-16 sm:h-16 shrink-0 hidden sm:block" />
         </div>
 
-        {/* Right: Credentials & Biometrics (5 cols) */}
-        <div className="lg:col-span-5 flex flex-col gap-4">
-          
-          {/* Biometric Verification Card */}
-          <div className="border border-purple-500/25 bg-[#0d1226]/90 p-5 backdrop-blur-xl shadow-lg transition-all hover:border-purple-400/50">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center border border-purple-400/40 bg-purple-950 text-purple-300">
-                  <IconShieldCheck className="h-5 w-5" />
-                </div>
-                <div>
-                  <h3 className="text-xs font-black uppercase tracking-wider text-white">Biometric Calibration</h3>
-                  <p className="text-[10px] text-slate-400">Proctoring Identity Verification</p>
-                </div>
-              </div>
-              <Badge tone={hasFace ? "success" : "warning"}>
-                {hasFace ? "VERIFIED" : "PENDING"}
-              </Badge>
-            </div>
-
-            <p className="mt-3 text-xs text-slate-300 leading-relaxed">
-              {hasFace
-                ? "Biometric facial signature enrolled for automated proctoring verification."
-                : "Calibrate your facial scan before your first proctored examination."}
-            </p>
-
-            <div className="mt-4 pt-3 border-t border-purple-500/15">
-              <Link
-                href="/onboarding/face?next=/profile"
-                className="inline-flex items-center gap-1.5 text-xs font-black text-cyan-400 hover:text-cyan-300 transition-colors uppercase tracking-wider"
-              >
-                <span>{hasFace ? "Recalibrate Signature" : "Enroll Face Signature"}</span>
-                <IconArrowRight className="h-3.5 w-3.5" />
-              </Link>
+        {/* Right Stats HUD (4 White Pill Cards) */}
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Streak */}
+          <div className="flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-white px-4 py-2.5 shadow-xs">
+            <IconFlame className="h-5 w-5 fill-orange-400 text-orange-500 shrink-0" />
+            <div className="leading-tight">
+              <div className="text-sm sm:text-base font-extrabold text-slate-900">{streak}</div>
+              <div className="text-[10px] font-semibold text-slate-400">Day Streak</div>
             </div>
           </div>
 
-          {/* Resume & Prior Experience Profile */}
-          <div className="flex-1 border border-purple-500/25 bg-[#0d1226]/90 p-5 backdrop-blur-xl shadow-lg transition-all hover:border-purple-400/50">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center border border-cyan-400/40 bg-cyan-950 text-cyan-300">
-                  <IconFileText className="h-5 w-5" />
-                </div>
-                <div>
-                  <h3 className="text-xs font-black uppercase tracking-wider text-white">Experience Profile</h3>
-                  <p className="text-[10px] text-slate-400">Prerequisite & Starting Mastery</p>
-                </div>
-              </div>
-              <Badge tone={resume ? "cyan" : "default"}>
-                {resume ? "CALIBRATED" : "NOT SET"}
-              </Badge>
-            </div>
-
-            {resume ? (
-              <div className="mt-3 space-y-2 text-xs">
-                {resume.currentRole && (
-                  <div className="flex items-center gap-2 text-slate-200">
-                    <IconBriefcase className="h-4 w-4 text-purple-400 shrink-0" />
-                    <span className="font-bold">{resume.currentRole}</span>
-                    {resume.yearsExperience !== undefined && (
-                      <span className="text-slate-400">({resume.yearsExperience} yrs)</span>
-                    )}
-                  </div>
-                )}
-                {resume.careerGoal && (
-                  <div className="flex items-center gap-2 text-slate-300">
-                    <IconTarget className="h-4 w-4 text-cyan-400 shrink-0" />
-                    <span>{resume.careerGoal}</span>
-                  </div>
-                )}
-                {resume.summary && (
-                  <p className="text-[11px] text-slate-400 line-clamp-2 leading-relaxed pt-1">
-                    {resume.summary}
-                  </p>
-                )}
-              </div>
-            ) : (
-              <p className="mt-3 text-xs text-slate-300 leading-relaxed">
-                Upload your resume to calibrate starting mastery and tailor milestone prerequisites.
-              </p>
-            )}
-
-            <div className="mt-4 pt-3 border-t border-purple-500/15">
-              <Link
-                href="/onboarding/resume?next=/profile"
-                className="inline-flex items-center gap-1.5 text-xs font-black text-cyan-400 hover:text-cyan-300 transition-colors uppercase tracking-wider"
-              >
-                <span>{resume ? "Update Resume Profile" : "Upload Resume"}</span>
-                <IconArrowRight className="h-3.5 w-3.5" />
-              </Link>
+          {/* Active Goals */}
+          <div className="flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-white px-4 py-2.5 shadow-xs">
+            <IconTarget className="h-5 w-5 text-emerald-500 shrink-0" />
+            <div className="leading-tight">
+              <div className="text-sm sm:text-base font-extrabold text-slate-900">{activeGoals}</div>
+              <div className="text-[10px] font-semibold text-slate-400">Active Goals</div>
             </div>
           </div>
 
+          {/* Total XP */}
+          <div className="flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-white px-4 py-2.5 shadow-xs">
+            <IconBolt className="h-5 w-5 fill-amber-400 text-amber-500 shrink-0" />
+            <div className="leading-tight">
+              <div className="text-sm sm:text-base font-extrabold text-slate-900">{xp} XP</div>
+              <div className="text-[10px] font-semibold text-slate-400">Total XP</div>
+            </div>
+          </div>
+
+          {/* Current Level */}
+          <div className="flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-white px-4 py-2.5 shadow-xs">
+            <IconShield className="h-5 w-5 fill-purple-100 text-[#7C3AED] shrink-0" />
+            <div className="leading-tight">
+              <div className="text-sm sm:text-base font-extrabold text-slate-900">Level {level}</div>
+              <div className="text-[10px] font-semibold text-slate-400">Current Level</div>
+            </div>
+          </div>
         </div>
 
       </div>
 
-      {/* Interactive Section 1: Skill Proficiency & Memory Retention */}
-      <div className="border border-purple-500/30 bg-[#0c1026]/90 p-6 backdrop-blur-2xl shadow-[0_0_35px_rgba(139,92,246,0.2)]">
+      {/* ================= TOP GRID: MAIN HERO PROFILE + CREDENTIALS ================= */}
+      <div className="grid gap-5 lg:grid-cols-12 items-stretch">
         
-        {/* Section Header & Interactive Tabs */}
-        <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-purple-500/20 pb-4">
-          <div>
-            <span className="text-[10px] font-black uppercase tracking-[0.25em] text-cyan-400">
-              ALGORITHMIC MASTERY & MEMORY
-            </span>
-            <h2 className="text-xl font-black text-white">Skill Proficiency Matrix</h2>
-          </div>
+        {/* Left: Main Identity Card (7 Cols) */}
+        <div className="lg:col-span-7">
+          <div className="electric-glow-border relative h-full flex flex-col justify-between rounded-2xl bg-white p-6 sm:p-7 shadow-xs overflow-hidden">
+            
+            {/* Top Identity Row */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              
+              {/* Avatar + Info */}
+              <div className="flex items-start gap-4">
+                {/* Avatar with level badge */}
+                <div className="relative">
+                  <div className="flex h-18 w-18 items-center justify-center rounded-full bg-gradient-to-tr from-[#6366F1] to-[#7C3AED] text-2xl font-black text-white shadow-md">
+                    {displayName[0]?.toUpperCase() || "Y"}
+                  </div>
+                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 rounded-full bg-[#2563EB] px-2 py-0.5 text-[9px] font-bold text-white shadow-xs">
+                    lvl {level}
+                  </div>
+                </div>
 
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setSkillTab("mastery")}
-              className={`flex items-center gap-1.5 px-4 py-2 text-xs font-black uppercase tracking-wider border transition-all ${
-                skillTab === "mastery"
-                  ? "border-purple-400 bg-purple-950 text-purple-200 shadow-[0_0_15px_rgba(168,85,247,0.4)]"
-                  : "border-purple-500/20 bg-[#080b18] text-slate-400 hover:text-white"
-              }`}
-            >
-              <IconActivity className="h-4 w-4" />
-              <span>Proficiency Ratings ({data.mastery.length})</span>
-            </button>
-            <button
-              onClick={() => setSkillTab("retention")}
-              className={`flex items-center gap-1.5 px-4 py-2 text-xs font-black uppercase tracking-wider border transition-all ${
-                skillTab === "retention"
-                  ? "border-cyan-400 bg-cyan-950 text-cyan-200 shadow-[0_0_15px_rgba(6,182,212,0.4)]"
-                  : "border-purple-500/20 bg-[#080b18] text-slate-400 hover:text-white"
-              }`}
-            >
-              <IconBrain className="h-4 w-4" />
-              <span>Retention & Vitality ({data.decay.length})</span>
-            </button>
-          </div>
-        </div>
+                {/* Profile Details */}
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#7C3AED]">
+                      {gamification.levelTitle || "NEWCOMER"}
+                    </span>
+                    <span className="flex items-center gap-1 rounded-md border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[9px] font-bold text-emerald-700">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      ONLINE
+                    </span>
+                  </div>
 
-        {/* Tab 1: Live Mastery Scores */}
-        {skillTab === "mastery" && (
-          <div className="space-y-5">
-            {/* Filter Bar */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-              <div className="relative flex-1 max-w-sm">
-                <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                <input
-                  type="text"
-                  value={skillSearch}
-                  onChange={(e) => setSkillSearch(e.target.value)}
-                  placeholder="Filter skills by name..."
-                  className="w-full border border-purple-500/30 bg-[#070918] py-2 pl-9 pr-3 text-xs text-white placeholder-slate-500 focus:border-purple-400 focus:outline-none"
+                  <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight mt-0.5">
+                    {displayName}
+                  </h2>
+                  <p className="text-xs text-slate-400">{userEmail}</p>
+
+                  {/* 3 Stat Pills */}
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
+                    <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-0.5 text-[11px] font-bold text-amber-700">
+                      <IconBolt className="h-3 w-3 fill-amber-500 text-amber-500" />
+                      <span>{xp} XP</span>
+                    </span>
+                    <span className="inline-flex items-center gap-1 rounded-full border border-orange-200 bg-orange-50 px-2.5 py-0.5 text-[11px] font-bold text-orange-700">
+                      <IconFlame className="h-3 w-3 fill-orange-500 text-orange-500" />
+                      <span>{streak} Day Streak</span>
+                    </span>
+                    <span className="inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 px-2.5 py-0.5 text-[11px] font-bold text-blue-700">
+                      <IconTarget className="h-3 w-3 text-blue-500" />
+                      <span>{activeGoals} Active Goals</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 3D Student Anime Avatar Graphic */}
+              <div className="shrink-0 self-end sm:self-center">
+                <StudentAvatarIllustration className="w-28 h-28 sm:w-32 sm:h-32" />
+              </div>
+
+            </div>
+
+            {/* Bottom Progress Bar Row */}
+            <div className="mt-6 pt-4 border-t border-slate-100">
+              <div className="flex items-center justify-between text-xs font-bold text-slate-700 mb-2">
+                <span className="flex items-center gap-1.5 text-[#7C3AED]">
+                  <IconSparkles className="h-3.5 w-3.5" />
+                  Level {level} Calibration
+                </span>
+                <span className="text-slate-500">{pct}% to Level {level + 1}</span>
+              </div>
+
+              <div className="h-2.5 w-full rounded-full bg-slate-100 overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-[#6366F1] to-[#7C3AED] transition-all duration-500"
+                  style={{ width: `${Math.max(5, pct)}%` }}
                 />
               </div>
 
-              <div className="flex flex-wrap items-center gap-1">
-                {(["all", "master", "expert", "adept", "novice"] as const).map((tier) => (
-                  <button
-                    key={tier}
-                    onClick={() => setTierFilter(tier)}
-                    className={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider border transition-all ${
-                      tierFilter === tier
-                        ? "border-purple-400 bg-purple-900/60 text-purple-200"
-                        : "border-purple-500/20 bg-[#070918] text-slate-400 hover:text-white"
-                    }`}
-                  >
-                    {tier}
-                  </button>
-                ))}
+              <div className="mt-2 flex items-center justify-between text-[11px] text-slate-400 font-medium">
+                <span>Current Tier Mastery</span>
+                <span>{xpIntoLevel} / {xpForNextLevel} XP</span>
               </div>
             </div>
 
-            {filteredMastery.length === 0 ? (
-              <div className="border border-dashed border-purple-500/20 p-8 text-center text-xs text-slate-400">
-                {data.mastery.length === 0
-                  ? "No skills assessed yet — embark on a goal to build your skill profile."
-                  : "No skills matched your search filter."}
-              </div>
-            ) : (
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {filteredMastery.map((m) => {
-                  const rank = getRankBadge(m.score);
-                  return (
-                    <div
-                      key={m.skillId}
-                      className="border border-purple-500/25 bg-[#090d22]/90 p-3.5 shadow-md transition-all hover:border-purple-400/60 hover:shadow-[0_0_20px_rgba(168,85,247,0.2)]"
-                    >
-                      <div className="flex items-center justify-between gap-2 mb-2">
-                        <span className="truncate text-xs font-bold text-white">{m.name}</span>
-                        <span className={`border px-1.5 py-0.5 text-[9px] font-black tracking-wider ${rank.color}`}>
-                          {rank.label}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center justify-between text-[11px] font-black mb-1.5">
-                        <span className="text-slate-400 font-semibold">Mastery Score</span>
-                        <span className="text-cyan-300 font-black tabular-nums">{m.score}%</span>
-                      </div>
-
-                      <div className="h-2 w-full overflow-hidden bg-[#070915] ring-1 ring-white/5">
-                        <div
-                          className="h-full bg-gradient-to-r from-purple-600 via-indigo-500 to-cyan-400 shadow-[0_0_10px_rgba(168,85,247,0.7)] transition-all duration-700"
-                          style={{ width: `${Math.max(5, m.score)}%` }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
           </div>
-        )}
+        </div>
 
-        {/* Tab 2: Memory Retention & Decay */}
-        {skillTab === "retention" && (
-          <div className="space-y-6">
-            <div className="flex flex-wrap gap-2">
-              {data.decay.map((d) => {
-                const tone = d.tier === "fresh" ? "success" : d.tier === "fading" ? "warning" : "danger";
-                return (
-                  <Badge key={d.skillId} tone={tone} title={`${d.daysSince} day(s) since last reinforcement`}>
-                    <span>{d.name}</span>
-                    <span className="opacity-70 ml-1">· {d.daysSince}d ago</span>
-                  </Badge>
-                );
-              })}
+        {/* Right: 2 Vertical Verification & Experience Cards (5 Cols) */}
+        <div className="lg:col-span-5 flex flex-col justify-between gap-4">
+          
+          {/* Biometric Calibration Card */}
+          <div className="relative flex items-center justify-between rounded-2xl border border-slate-200/90 bg-white p-5 shadow-xs overflow-hidden">
+            <div className="pr-2 max-w-[65%]">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-100 text-[#7C3AED] shadow-xs shrink-0">
+                  <IconShieldCheck className="h-4.5 w-4.5" />
+                </div>
+                <div>
+                  <div className="text-xs font-extrabold text-slate-900 leading-tight">BIOMETRIC CALIBRATION</div>
+                  <div className="text-[9px] text-slate-400 font-medium">Proctored Identity Verification</div>
+                </div>
+                <span className="ml-auto rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[9px] font-bold text-amber-700">
+                  PENDING
+                </span>
+              </div>
+
+              <p className="text-[11px] text-slate-500 leading-relaxed font-normal">
+                Calibrate your facial scan before your first proctored examination.
+              </p>
+
+              <Link
+                href="/calibration/face"
+                className="mt-3 inline-flex items-center gap-1 text-xs font-extrabold text-[#2563EB] hover:underline"
+              >
+                <span>ENROLL FACE SIGNATURE</span>
+                <IconArrowRight className="h-3.5 w-3.5" />
+              </Link>
             </div>
 
-            {fadingFoundational.length > 0 ? (
-              <div className="border border-amber-500/30 bg-amber-950/20 p-4 space-y-3">
-                <div className="flex items-center gap-2 text-amber-400 font-black text-xs uppercase tracking-wider">
-                  <IconRefresh className="h-4 w-4" />
-                  <span>Foundational Skill Reinforcement Recommended</span>
-                </div>
-                <div className="grid gap-2 sm:grid-cols-2">
-                  {fadingFoundational.map((d) => (
-                    <a
-                      key={d.skillId}
-                      href={data.reviewSuggestions[d.skillId].url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex items-center justify-between border border-amber-500/40 bg-amber-950/40 p-3 text-xs transition-all hover:bg-amber-900/50 hover:border-amber-400"
-                    >
-                      <div>
-                        <p className="font-bold text-white">{d.name}</p>
-                        <p className="text-[10px] text-slate-300">{data.reviewSuggestions[d.skillId].title}</p>
-                      </div>
-                      <IconArrowRight className="h-4 w-4 text-amber-400 shrink-0 ml-2" />
-                    </a>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <div className="border border-emerald-500/30 bg-emerald-950/20 p-4 text-xs text-emerald-300 flex items-center gap-2">
-                <IconCheck className="h-4 w-4 text-emerald-400 shrink-0" />
-                <span>All foundational skills are currently within optimal memory retention thresholds!</span>
-              </div>
-            )}
+            <FaceHologramIllustration className="w-22 h-22 shrink-0" />
           </div>
-        )}
+
+          {/* Experience Profile Card */}
+          <div className="relative flex items-center justify-between rounded-2xl border border-slate-200/90 bg-white p-5 shadow-xs overflow-hidden">
+            <div className="pr-2 max-w-[65%]">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-100 text-sky-600 shadow-xs shrink-0">
+                  <IconFileText className="h-4.5 w-4.5" />
+                </div>
+                <div>
+                  <div className="text-xs font-extrabold text-slate-900 leading-tight">EXPERIENCE PROFILE</div>
+                  <div className="text-[9px] text-slate-400 font-medium">Prerequisite & Starting Mastery</div>
+                </div>
+                <span className="ml-auto rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[9px] font-bold text-slate-600">
+                  NOT SET
+                </span>
+              </div>
+
+              <p className="text-[11px] text-slate-500 leading-relaxed font-normal">
+                Upload your resume to calibrate starting mastery and tailor milestone prerequisites.
+              </p>
+
+              <Link
+                href="/profile#resume"
+                className="mt-3 inline-flex items-center gap-1 text-xs font-extrabold text-[#2563EB] hover:underline"
+              >
+                <span>UPLOAD RESUME</span>
+                <IconArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+
+            <FolderUploadIllustration className="w-22 h-22 shrink-0" />
+          </div>
+
+        </div>
 
       </div>
 
-      {/* Interactive Section 2: Learning Activity & AI Adaptations */}
-      <div className="grid gap-6 lg:grid-cols-2">
+      {/* ================= MIDDLE: SKILL PROFICIENCY MATRIX ================= */}
+      <div className="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-xs space-y-5">
         
-        {/* Activity Heatmap */}
-        <div className="border border-purple-500/30 bg-[#0c1026]/90 p-6 backdrop-blur-2xl shadow-[0_0_35px_rgba(139,92,246,0.2)]">
-          <div className="mb-4 flex items-center justify-between">
-            <div>
-              <span className="text-[10px] font-black uppercase tracking-[0.25em] text-purple-400">
-                VELOCITY & FREQUENCY
-              </span>
-              <h3 className="text-lg font-black text-white flex items-center gap-2">
-                <IconCalendar className="h-5 w-5 text-purple-400" />
-                <span>Learning Activity Heatmap</span>
-              </h3>
-            </div>
+        {/* Header & Tabs */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <span className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#7C3AED]">
+              ALGORITHMIC MASTERY & MEMORY
+            </span>
+            <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">
+              Skill Proficiency Matrix
+            </h2>
           </div>
 
-          {!hasActivity ? (
-            <p className="text-xs text-slate-400 p-6 text-center border border-dashed border-purple-500/20">
-              No activity logged yet — complete quizzes and coding challenges to record your progress.
-            </p>
-          ) : (
-            <>
-              <div className="flex gap-[4px] overflow-x-auto pb-2 scrollbar-thin">
-                {weeks.map((week, wi) => (
-                  <div key={wi} className="flex flex-col gap-[4px]">
-                    {week.map((day, di) => (
-                      <div
-                        key={di}
-                        title={
-                          day
-                            ? `${formatDate(day.date)} - ${day.count} action${day.count === 1 ? "" : "s"}${
-                                day.skillNames.length ? ` (${day.skillNames.join(", ")})` : ""
-                              }`
-                            : undefined
-                        }
-                        className={`h-[14px] w-[14px] transition-transform hover:scale-125 cursor-pointer ${
-                          day ? TIER_CLASSES[tierFor(day.count)] : "bg-transparent"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-4 flex items-center justify-between border-t border-purple-500/15 pt-3 text-[10px] font-bold text-slate-400">
-                <span>Activity Scale</span>
-                <div className="flex items-center gap-1.5">
-                  <span>Low</span>
-                  {TIER_CLASSES.map((c, i) => (
-                    <div key={i} className={`h-[12px] w-[12px] ${c}`} />
-                  ))}
-                  <span>High</span>
-                </div>
-              </div>
-            </>
-          )}
+          {/* Right Mode Toggle Tabs */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setActiveMatrixTab("proficiency")}
+              className={`flex items-center gap-1.5 rounded-lg px-4 py-2 text-xs font-bold transition-all shadow-xs cursor-pointer ${
+                activeMatrixTab === "proficiency"
+                  ? "bg-[#4338CA] text-white"
+                  : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+              }`}
+            >
+              <IconSparkles className="h-3.5 w-3.5" />
+              <span>PROFICIENCY RATINGS (2)</span>
+            </button>
+            <button
+              onClick={() => setActiveMatrixTab("retention")}
+              className={`flex items-center gap-1.5 rounded-lg px-4 py-2 text-xs font-bold transition-all cursor-pointer ${
+                activeMatrixTab === "retention"
+                  ? "bg-[#4338CA] text-white shadow-xs"
+                  : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+              }`}
+            >
+              <span>RETENTION & VITALITY (2)</span>
+            </button>
+          </div>
         </div>
 
-        {/* AI Adaptation Feed */}
-        <div className="border border-purple-500/30 bg-[#0c1026]/90 p-6 backdrop-blur-2xl shadow-[0_0_35px_rgba(139,92,246,0.2)]">
-          <div className="mb-4 flex items-center justify-between">
-            <div>
-              <span className="text-[10px] font-black uppercase tracking-[0.25em] text-cyan-400">
-                DYNAMIC RECALIBRATION
-              </span>
-              <h3 className="text-lg font-black text-white flex items-center gap-2">
-                <IconAdjustments className="h-5 w-5 text-cyan-400" />
-                <span>AI Adaptive Path Log</span>
-              </h3>
+        {/* Search Bar & Tier Filter Pills */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-1">
+          <div className="relative w-full max-w-xs">
+            <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search skills by name..."
+              className="w-full rounded-xl border border-slate-200 bg-slate-50/70 py-1.5 pl-8 pr-3 text-xs text-slate-800 placeholder-slate-400 focus:border-[#7C3AED] focus:bg-white focus:outline-none"
+            />
+          </div>
+
+          {/* Filter Pills */}
+          <div className="flex flex-wrap items-center gap-1.5">
+            {["ALL", "MASTER", "EXPERT", "ADEPT", "NOVICE"].map((tier) => (
+              <button
+                key={tier}
+                onClick={() => setFilterTier(tier)}
+                className={`rounded-md px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider transition-all cursor-pointer ${
+                  filterTier === tier
+                    ? "bg-[#7C3AED] text-white shadow-xs"
+                    : "border border-slate-200 bg-white text-slate-500 hover:bg-slate-50"
+                }`}
+              >
+                {tier}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* 3 Skill Cards Grid */}
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredSkills.map((s) => (
+            <div
+              key={s.id}
+              className="rounded-xl border border-slate-200/90 bg-white p-4 shadow-xs hover:border-purple-300 hover:shadow-md transition-all flex flex-col justify-between min-h-[140px]"
+            >
+              <div>
+                {/* Top Row: Symbol Icon & Title & Novice Badge */}
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-center gap-2.5">
+                    <div className={`flex h-9 w-9 items-center justify-center rounded-lg ${s.iconBg} text-xs font-extrabold shadow-xs shrink-0`}>
+                      {s.symbol}
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold text-slate-900 leading-tight">{s.name}</div>
+                      <div className="text-[11px] text-slate-400 mt-0.5">Mastery Score</div>
+                    </div>
+                  </div>
+
+                  <span className="rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-[9px] font-bold text-slate-500 uppercase">
+                    {s.badge}
+                  </span>
+                </div>
+
+                {/* Score & Sparkline Graph */}
+                <div className="mt-3 flex items-end justify-between">
+                  <span className="text-lg font-black text-slate-900 leading-none">
+                    {s.score}%
+                  </span>
+
+                  {/* Sparkline Graph Vector */}
+                  <svg viewBox="0 0 100 24" className="w-24 h-6 overflow-visible">
+                    <path
+                      d="M0 20 L20 18 L40 22 L60 14 L80 18 L100 8"
+                      fill="none"
+                      stroke={s.sparkColor}
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                    <circle cx="100" cy="8" r="2.5" fill={s.sparkColor} />
+                  </svg>
+                </div>
+              </div>
+
+              {/* Bottom Progress Bar */}
+              <div className="mt-3 h-1.5 w-full rounded-full bg-slate-100 overflow-hidden">
+                <div className={`h-full rounded-full ${s.progressBg}`} style={{ width: `${s.score}%` }} />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Explore All Skills Centered Button */}
+        <div className="pt-2 flex justify-center">
+          <Link
+            href="/dashboard#skill-map"
+            className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-6 py-2 text-xs font-bold text-[#2563EB] shadow-xs hover:bg-slate-50 transition-all"
+          >
+            <span>Explore All Skills</span>
+            <IconArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
+
+      </div>
+
+      {/* ================= BOTTOM ROW: ACTIVITY HEATMAP & AI PATH LOG ================= */}
+      <div className="grid gap-5 lg:grid-cols-2">
+        
+        {/* Left: Learning Activity Heatmap */}
+        <div className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <div className="flex items-center gap-3">
+                <Calendar3DIllustration className="w-10 h-10 shrink-0" />
+                <div>
+                  <div className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#7C3AED]">
+                    VELOCITY & FREQUENCY
+                  </div>
+                  <h3 className="text-base font-extrabold text-slate-900 leading-tight">
+                    Learning Activity Heatmap
+                  </h3>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-700 shadow-xs cursor-pointer">
+                <span>This Week</span>
+                <IconChevronDown className="h-3.5 w-3.5 text-slate-400" />
+              </div>
+            </div>
+
+            {/* Weekday Block Matrix */}
+            <div className="grid grid-cols-7 gap-2 text-center text-[10px] font-bold text-slate-400 mt-5">
+              {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day, i) => (
+                <div key={day} className="space-y-1.5">
+                  <span>{day}</span>
+                  <div
+                    className={`h-9 w-full rounded-md transition-all ${
+                      i === 4
+                        ? "bg-[#2563EB]"
+                        : i === 3
+                        ? "bg-[#60A5FA]"
+                        : i === 2
+                        ? "bg-[#93C5FD]"
+                        : "bg-slate-100"
+                    }`}
+                  />
+                </div>
+              ))}
             </div>
           </div>
 
-          {data.adaptations.length === 0 ? (
-            <p className="text-xs text-slate-400 p-6 text-center border border-dashed border-purple-500/20">
-              No adaptations logged yet — as you complete assessments and provide feedback, the AI dynamically reconfigures your curriculum roadmap.
-            </p>
-          ) : (
-            <ul className="space-y-3 max-h-[280px] overflow-y-auto pr-1 scrollbar-thin">
-              {data.adaptations.map((a) => (
-                <li key={a.id} className="border border-purple-500/20 bg-[#070918]/90 p-3 border-l-4 border-l-purple-500">
-                  <div className="mb-1.5 flex items-center justify-between gap-2">
-                    <Badge tone={TRIGGER_TONE[a.trigger] ?? "accent"} className="text-[9px]">
-                      {a.action.replace(/_/g, " ")}
-                    </Badge>
-                    <span className="text-[10px] font-bold text-slate-500">{new Date(a.createdAt).toLocaleDateString()}</span>
+          {/* Less / More Legend */}
+          <div className="mt-5 flex items-center justify-end gap-1.5 text-[10px] font-semibold text-slate-400">
+            <span>Less</span>
+            <span className="h-2.5 w-2.5 rounded-xs bg-slate-100" />
+            <span className="h-2.5 w-2.5 rounded-xs bg-[#BFDBFE]" />
+            <span className="h-2.5 w-2.5 rounded-xs bg-[#60A5FA]" />
+            <span className="h-2.5 w-2.5 rounded-xs bg-[#2563EB]" />
+            <span>More</span>
+          </div>
+        </div>
+
+        {/* Right: AI Adaptive Path Log */}
+        <div className="relative rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs flex flex-col justify-between overflow-hidden">
+          <div>
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-100 text-[#7C3AED] shadow-xs shrink-0">
+                  <IconSparkles className="h-5 w-5" />
+                </div>
+                <div>
+                  <div className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#7C3AED]">
+                    DYNAMIC RECALIBRATION
                   </div>
-                  <p className="text-xs font-medium text-slate-200 leading-relaxed">{a.reason}</p>
-                </li>
-              ))}
-            </ul>
-          )}
+                  <h3 className="text-base font-extrabold text-slate-900 leading-tight">
+                    AI Adaptive Path Log
+                  </h3>
+                </div>
+              </div>
+
+              <Link
+                href="/dashboard"
+                className="rounded-lg border border-slate-200 bg-white px-3 py-1 text-xs font-bold text-slate-700 hover:bg-slate-50 shadow-xs"
+              >
+                View All
+              </Link>
+            </div>
+
+            {/* Timeline Item */}
+            <div className="relative pl-6 border-l-2 border-purple-200 mt-5 space-y-1">
+              <span className="absolute -left-[5px] top-1 h-2 w-2 rounded-full bg-[#7C3AED]" />
+              <div className="text-[10px] font-bold text-slate-400">Today, 09:15 PM</div>
+              <div className="text-xs font-bold text-[#7C3AED]">Welcome to QuestLearn!</div>
+              <p className="text-[11px] text-slate-500 leading-relaxed font-normal">
+                Initial assessment completed. Starting adaptive journey...
+              </p>
+            </div>
+          </div>
+
+          {/* Cute 3D Purple Brain Mascot sitting at bottom right */}
+          <div className="absolute right-4 bottom-3 pointer-events-none">
+            <CuteBrainMascotIllustration className="w-22 h-22" />
+          </div>
         </div>
 
       </div>
