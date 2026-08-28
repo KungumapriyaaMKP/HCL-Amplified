@@ -2,10 +2,19 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Card } from "@/frontend/components/ui/card";
+import Link from "next/link";
+import { Card } from "@/frontend/components/ui/Card";
 import { Badge } from "@/frontend/components/ui/badge";
 import { Button } from "@/frontend/components/ui/Button";
 import { loadFaceModels, captureFace, faceDistance, MATCH_THRESHOLD } from "@/lib/faceMatch";
+import {
+  IconClock,
+  IconAlertTriangle,
+  IconArrowRight,
+  IconCheck,
+  IconAward,
+  IconShieldCheck,
+} from "@tabler/icons-react";
 
 type Question = { id: string; question: string; options: string[] };
 type Flag = { type: "tab_switch" | "blur" | "fullscreen_exit" | "identity_mismatch" | "no_face_detected"; at: number };
@@ -50,10 +59,6 @@ export function ProctoredWorkspace({
   const referenceDescriptorRef = useRef<number[] | null>(null);
   const submittedRef = useRef(false);
 
-  // The countdown timer is set up once inside begin() and its callback must
-  // always submit with the LATEST answers/flags, not whatever they were at
-  // that render - a plain closure over state would go stale. Keep a ref in
-  // sync with the state that submit() actually needs.
   const latestRef = useRef({ questions, answers, attemptId, flags, cameraActive });
   useEffect(() => {
     latestRef.current = { questions, answers, attemptId, flags, cameraActive };
@@ -64,15 +69,6 @@ export function ProctoredWorkspace({
     setFlags((f) => [...f, { type, at: Date.now() }]);
   }
 
-  /**
-   * Captures the current webcam frame and either enrolls it (first time
-   * this learner has ever been face-checked - nothing to compare against
-   * yet, so this capture *becomes* the reference) or compares it against
-   * the stored reference descriptor. `isInitial` only changes how a
-   * mismatch gets recorded (flag() is gated on phase==="in_progress", which
-   * isn't true yet during the very first check in begin()) - the actual
-   * detection/matching logic is identical either way.
-   */
   async function checkFace(isInitial: boolean) {
     if (!videoRef.current) return;
     setFaceStatus("checking");
@@ -104,122 +100,128 @@ export function ProctoredWorkspace({
         setFaceStatus("verified");
       }
     } catch {
-      // Model load or detection hiccup - never let this block the test.
+      // Non-blocking face detection fallback
     }
   }
 
-  // Spot-checks every FACE_CHECK_INTERVAL_MS while the test is actually in
-  // progress, so identity verification isn't just a one-time check at the
-  // start that could be gamed by swapping who's at the keyboard afterward.
   useEffect(() => {
     if (phase !== "in_progress") return;
-    faceCheckTimerRef.current = setInterval(() => checkFace(false), FACE_CHECK_INTERVAL_MS);
-    return () => {
-      if (faceCheckTimerRef.current) clearInterval(faceCheckTimerRef.current);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase]);
 
-  useEffect(() => {
-    function onVisibility() {
+    const onVisibility = () => {
       if (document.hidden) flag("tab_switch");
-    }
-    function onBlur() {
-      flag("blur");
-    }
-    function onFullscreenChange() {
+    };
+    const onBlur = () => flag("blur");
+    const onFullscreen = () => {
       if (!document.fullscreenElement) flag("fullscreen_exit");
-    }
+    };
+
     document.addEventListener("visibilitychange", onVisibility);
     window.addEventListener("blur", onBlur);
-    document.addEventListener("fullscreenchange", onFullscreenChange);
+    document.addEventListener("fullscreenchange", onFullscreen);
+
     return () => {
       document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("blur", onBlur);
-      document.removeEventListener("fullscreenchange", onFullscreenChange);
+      document.removeEventListener("fullscreenchange", onFullscreen);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase]);
 
   function cleanup() {
     if (timerRef.current) clearInterval(timerRef.current);
     if (faceCheckTimerRef.current) clearInterval(faceCheckTimerRef.current);
-    streamRef.current?.getTracks().forEach((t) => t.stop());
-    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((t) => t.stop());
+      streamRef.current = null;
+    }
+    if (document.fullscreenElement) {
+      document.exitFullscreen().catch(() => {});
+    }
   }
 
-  useEffect(() => () => cleanup(), []);
-
   async function begin() {
+    setStartError(null);
     setPhase("loading");
+
     try {
-      await document.documentElement.requestFullscreen?.().catch(() => {});
-    } catch {}
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      await loadFaceModels().catch(() => {});
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
       streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        // Wait for the video element to actually have a frame to give the
-        // face detector before running it - srcObject being set doesn't
-        // mean there's decoded video data yet.
-        await new Promise<void>((resolve) => {
-          const v = videoRef.current!;
-          if (v.readyState >= 2) return resolve();
-          v.onloadeddata = () => resolve();
-        });
-        fetch("/api/profile/face")
-          .then((r) => r.json())
-          .then((body) => {
-            referenceDescriptorRef.current = body.descriptor ?? null;
-          })
-          .catch(() => {})
-          .then(() => loadFaceModels())
-          .then(() => checkFace(true))
-          .catch(() => {});
-      }
       setCameraActive(true);
-    } catch {
-      setCameraActive(false);
-    }
 
-    const res = await fetch(`/api/modules/${moduleId}/proctored/start`, { method: "POST" });
-    const body = await res.json();
-    if (!res.ok) {
-      // Server-side gate (practice quiz not attempted yet) rejected this -
-      // the UI normally prevents reaching "Begin proctored test" at all
-      // without that, so this only fires if someone got here another way.
-      cleanup();
-      setStartError(body.error || "Couldn't start the proctored test");
-      setPhase("intro");
-      return;
-    }
-    if (body.alreadyTaken) {
-      cleanup();
-      setResult({ score: body.score, reportText: body.reportText });
-      setPhase("done");
-      return;
-    }
-
-    setAttemptId(body.attemptId);
-    setQuestions(body.questions);
-    setSecondsLeft(body.timeLimitSeconds);
-    setPhase("in_progress");
-
-    timerRef.current = setInterval(() => {
-      setSecondsLeft((s) => {
-        if (s <= 1) {
-          submit();
-          return 0;
+      const profileRes = await fetch("/api/profile");
+      if (profileRes.ok) {
+        const p = await profileRes.json();
+        if (p.profile?.faceDescriptor) {
+          referenceDescriptorRef.current = p.profile.faceDescriptor;
         }
-        return s - 1;
-      });
-    }, 1000);
+      }
+
+      const res = await fetch(`/api/modules/${moduleId}/proctored/generate`, { method: "POST" });
+      const body = await res.json();
+      if (!res.ok) throw new Error(body.error || "Could not generate questions");
+
+      setAttemptId(body.attemptId);
+      setQuestions(body.questions);
+      setSecondsLeft(body.timeLimitMinutes ? body.timeLimitMinutes * 60 : 600);
+
+      try {
+        if (!document.fullscreenElement) {
+          await document.documentElement.requestFullscreen();
+        }
+      } catch {
+        // Fullscreen non-critical
+      }
+
+      setPhase("in_progress");
+
+      setTimeout(() => {
+        if (videoRef.current && streamRef.current) {
+          videoRef.current.srcObject = streamRef.current;
+          checkFace(true);
+        }
+      }, 500);
+
+      timerRef.current = setInterval(() => {
+        setSecondsLeft((s) => {
+          if (s <= 1) {
+            clearInterval(timerRef.current!);
+            submitAuto();
+            return 0;
+          }
+          return s - 1;
+        });
+      }, 1000);
+
+      faceCheckTimerRef.current = setInterval(() => {
+        checkFace(false);
+      }, FACE_CHECK_INTERVAL_MS);
+    } catch (err) {
+      cleanup();
+      setPhase("intro");
+      setStartError(err instanceof Error ? err.message : "Could not initialize proctored session");
+    }
+  }
+
+  function submitAuto() {
+    if (submittedRef.current) return;
+    const { questions: qs, answers: ans, attemptId: aid, flags: flgs, cameraActive: cam } = latestRef.current;
+    if (!aid || qs.length === 0) return;
+    performSubmit(aid, qs, ans, flgs, cam);
   }
 
   async function submit() {
-    const { questions: qs, answers: ans, attemptId: aid, flags: flgs, cameraActive: cam } = latestRef.current;
-    if (submittedRef.current || !aid) return;
+    if (submittedRef.current) return;
+    if (!attemptId || questions.length === 0) return;
+    performSubmit(attemptId, questions, answers, flags, cameraActive);
+  }
+
+  async function performSubmit(
+    aid: string,
+    qs: Question[],
+    ans: Record<string, number>,
+    flgs: Flag[],
+    cam: boolean,
+  ) {
     submittedRef.current = true;
     setPhase("submitting");
     cleanup();
@@ -237,95 +239,195 @@ export function ProctoredWorkspace({
 
   if (phase === "done" && result) {
     return (
-      <Card className="p-6">
-        <p className="mb-2 text-4xl font-semibold text-accent">{result.score}/100</p>
-        <p className="mb-4 text-sm text-foreground/85">{result.reportText}</p>
+      <Card className="p-8 text-center">
+        <div className="inline-flex h-24 w-24 items-center justify-center rounded-3xl bg-gradient-to-tr from-purple-700 via-fuchsia-600 to-cyan-500 shadow-[0_0_35px_rgba(168,85,247,0.6)] mb-4">
+          <span className="text-3xl font-black text-white">{result.score}/100</span>
+        </div>
+        
+        <h2 className="text-2xl font-black text-white">Proctored Assessment Complete</h2>
+        
+        <div className="my-5 max-w-lg mx-auto rounded-2xl border border-purple-500/20 bg-[#070918]/90 p-4 text-xs font-medium text-slate-300 leading-relaxed text-left">
+          <span className="text-[10px] font-black uppercase tracking-widest text-cyan-400 block mb-1">
+            EVALUATION REPORT & SKILL MASTERY
+          </span>
+          {result.reportText}
+        </div>
+
         {!!result.badgesAwarded?.length && (
-          <div className="mb-4 flex gap-2">
-            {result.badgesAwarded.map((b) => <Badge key={b} tone="success"> {b}</Badge>)}
+          <div className="mb-6 flex flex-wrap justify-center gap-2">
+            {result.badgesAwarded.map((b) => (
+              <Badge key={b} tone="success" className="flex items-center gap-1 text-xs py-1 px-3">
+                <IconAward className="h-3.5 w-3.5" />
+                <span>{b} Earned</span>
+              </Badge>
+            ))}
           </div>
         )}
-        <Button size="sm" onClick={() => router.push(`/goals/${goalId}`)}>Back to path</Button>
+
+        <Button size="lg" onClick={() => router.push(`/goals/${goalId}`)}>
+          <span>Return to Roadmap</span>
+          <IconArrowRight className="h-4 w-4" />
+        </Button>
       </Card>
     );
   }
 
   if (phase === "intro") {
     return (
-      <Card className="p-6">
-        <h2 className="mb-2 text-lg font-semibold">Proctored test: {skillName}</h2>
-        <ul className="mb-6 list-inside list-disc space-y-1 text-sm text-muted">
-          <li>Single attempt, timed (10 minutes)</li>
-          <li>Runs in fullscreen; switching tabs or losing focus is flagged</li>
-          <li>
-            Requests camera access and checks your face against a reference photo (your first proctored test
-            registers it automatically) - a mismatch or no face detected is flagged, not blocking
-          </li>
-          <li>This score sets your official mastery for this skill</li>
-        </ul>
-        {startError && <p className="mb-4 text-sm text-danger">{startError}</p>}
-        <Button onClick={begin}>Begin proctored test</Button>
+      <Card className="p-8">
+        <div className="mb-2">
+          <span className="text-[10px] font-black uppercase tracking-[0.25em] text-purple-400">
+            OFFICIAL EVALUATION
+          </span>
+          <h1 className="mt-1 text-2xl font-black text-white drop-shadow-[0_2px_10px_rgba(255,255,255,0.2)]">
+            Proctored Assessment: {skillName}
+          </h1>
+        </div>
+
+        <div className="my-6 rounded-2xl border border-purple-500/25 bg-[#070918]/80 p-5 space-y-3 text-xs text-slate-300">
+          <div className="flex items-center gap-2 font-bold text-purple-300">
+            <IconShieldCheck className="h-5 w-5 text-purple-400" />
+            <span>EXAMINATION PROTOCOLS:</span>
+          </div>
+          <ul className="list-inside list-disc space-y-2 text-slate-400 pl-2">
+            <li>Single attempt trial, timed countdown (10 minutes).</li>
+            <li>Executes in full-screen mode; window blur or tab switching is logged by telemetric flags.</li>
+            <li>Webcam biometric presence check actively ensures identity integrity.</li>
+            <li>Completing this assessment calculates official skill mastery and unlocks subsequent branch nodes.</li>
+          </ul>
+        </div>
+
+        {startError && (
+          <div className="mb-4 rounded-xl border border-red-500/40 bg-red-950/60 p-3 text-xs font-bold text-red-300">
+            {startError}
+          </div>
+        )}
+
+        <Button onClick={begin} size="lg" variant="primary">
+          <span>Enter Fullscreen Assessment</span>
+          <IconArrowRight className="h-4 w-4" />
+        </Button>
       </Card>
     );
   }
 
   if (phase === "loading" || phase === "submitting") {
-    return <Card className="p-6 text-center text-sm text-muted">{phase === "loading" ? "Preparing your test..." : "Scoring..."}</Card>;
+    return (
+      <Card className="p-12 text-center">
+        <div className="flex items-center justify-center gap-2 text-purple-400 text-sm font-bold">
+          <span className="h-3 w-3 rounded-full bg-purple-400 animate-ping" />
+          <span>{phase === "loading" ? "Initializing Biometrics & Assessment Environment..." : "AI Examiner Grading Responses..."}</span>
+        </div>
+      </Card>
+    );
   }
 
   const minutes = Math.floor(secondsLeft / 60);
   const seconds = secondsLeft % 60;
 
   return (
-    <div>
-      <div className="mb-4 flex items-center justify-between">
-        <Badge tone={secondsLeft < 60 ? "danger" : "warning"} className="text-sm">
-          ⏱ {minutes}:{seconds.toString().padStart(2, "0")}
-        </Badge>
-        <div className="flex items-center gap-2">
-          {flags.length > 0 && <Badge tone="danger">{flags.length} flag(s)</Badge>}
-          {faceStatus && (
-            <Badge tone={faceStatus === "verified" || faceStatus === "enrolled" ? "success" : faceStatus === "checking" ? "default" : "danger"}>
-              {faceStatus === "checking" && "Checking face…"}
-              {faceStatus === "enrolled" && "Face registered"}
-              {faceStatus === "verified" && "Identity verified"}
-              {faceStatus === "mismatch" && "Face mismatch"}
-              {faceStatus === "no_face" && "No face detected"}
+    <div className="space-y-5">
+      
+      {/* Live Proctored HUD Bar */}
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-purple-500/30 bg-[#0c1026]/90 p-4 shadow-[0_0_25px_rgba(139,92,246,0.3)] backdrop-blur-xl">
+        
+        {/* Timer */}
+        <div className="flex items-center gap-3">
+          <IconClock className="h-6 w-6 text-purple-400" />
+          <div>
+            <div className="text-[10px] font-black uppercase tracking-wider text-slate-400">TIME REMAINING</div>
+            <div className={`text-xl font-black tabular-nums ${secondsLeft < 60 ? "text-red-400 animate-pulse" : "text-amber-400"}`}>
+              {minutes}:{seconds.toString().padStart(2, "0")}
+            </div>
+          </div>
+        </div>
+
+        {/* Biometrics & Flags */}
+        <div className="flex items-center gap-3">
+          {flags.length > 0 && (
+            <Badge tone="danger" className="flex items-center gap-1">
+              <IconAlertTriangle className="h-3.5 w-3.5" />
+              <span>{flags.length} Flag(s) Logged</span>
             </Badge>
           )}
-          <div className="h-16 w-20 overflow-hidden rounded-lg border border-border bg-surface-2">
+
+          {faceStatus && (
+            <Badge tone={faceStatus === "verified" || faceStatus === "enrolled" ? "success" : faceStatus === "checking" ? "cyan" : "danger"}>
+              {faceStatus === "checking" && "Scanning..."}
+              {faceStatus === "enrolled" && "Face Enrolled"}
+              {faceStatus === "verified" && "Identity Verified"}
+              {faceStatus === "mismatch" && "Identity Warning"}
+              {faceStatus === "no_face" && "No Face Detected"}
+            </Badge>
+          )}
+
+          {/* Cyber Webcam Frame */}
+          <div className="relative h-14 w-20 overflow-hidden rounded-xl border border-cyan-400/50 bg-black shadow-[0_0_12px_rgba(6,182,212,0.4)]">
             {cameraActive ? (
               <video ref={videoRef} autoPlay muted playsInline className="h-full w-full object-cover" />
             ) : (
-              <div className="grid h-full w-full place-items-center text-[10px] text-muted">No camera</div>
+              <div className="grid h-full w-full place-items-center text-[9px] font-bold text-slate-500">NO CAM</div>
             )}
+            <div className="pointer-events-none absolute inset-0 border border-cyan-400/30 rounded-xl" />
           </div>
         </div>
+
       </div>
 
-      <Card className="space-y-5 p-6">
+      {/* Question Sheet */}
+      <Card className="space-y-6 p-6 sm:p-8">
+        <div className="border-b border-purple-500/20 pb-3 flex items-center justify-between">
+          <h2 className="text-sm font-black text-white uppercase tracking-wider">Assessment Questions</h2>
+          <span className="rounded-full bg-purple-950 border border-purple-500/40 px-3 py-1 text-xs font-bold text-purple-300">
+            {Object.keys(answers).length} / {questions.length} Answered
+          </span>
+        </div>
+
         {questions.map((q, qi) => (
-          <div key={q.id}>
-            <p className="mb-2 text-sm font-medium">{qi + 1}. {q.question}</p>
-            <div className="space-y-1.5">
-              {q.options.map((opt, oi) => (
-                <label
-                  key={oi}
-                  className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm ${
-                    answers[q.id] === oi ? "border-accent bg-accent/10" : "border-border bg-surface-2"
-                  }`}
-                >
-                  <input type="radio" name={q.id} checked={answers[q.id] === oi} onChange={() => setAnswers((a) => ({ ...a, [q.id]: oi }))} />
-                  {opt}
-                </label>
-              ))}
+          <div key={q.id} className="rounded-2xl border border-purple-500/20 bg-[#080b1a]/90 p-5">
+            <p className="mb-3 text-xs font-bold text-slate-200">
+              <span className="text-purple-400 mr-1.5">{qi + 1}.</span> {q.question}
+            </p>
+            <div className="space-y-2">
+              {q.options.map((opt, oi) => {
+                const selected = answers[q.id] === oi;
+                return (
+                  <label
+                    key={oi}
+                    className={`flex cursor-pointer items-center gap-3 rounded-xl border p-3 text-xs font-medium transition-all ${
+                      selected
+                        ? "border-cyan-400 bg-cyan-950/60 text-cyan-200 shadow-[0_0_12px_rgba(6,182,212,0.3)] ring-1 ring-cyan-400/40"
+                        : "border-purple-500/20 bg-[#0c1026] text-slate-300 hover:border-purple-500/40 hover:bg-[#121838]"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name={q.id}
+                      checked={selected}
+                      onChange={() => setAnswers((a) => ({ ...a, [q.id]: oi }))}
+                      className="accent-purple-500"
+                    />
+                    <span>{opt}</span>
+                  </label>
+                );
+              })}
             </div>
           </div>
         ))}
-        <Button onClick={submit} disabled={Object.keys(answers).length < questions.length}>
-          Submit test
-        </Button>
+
+        <div className="flex justify-end pt-4">
+          <Button
+            size="lg"
+            variant="primary"
+            onClick={submit}
+            disabled={Object.keys(answers).length < questions.length}
+          >
+            <span>Submit Official Assessment</span>
+            <IconArrowRight className="h-4 w-4" />
+          </Button>
+        </div>
       </Card>
+
     </div>
   );
 }

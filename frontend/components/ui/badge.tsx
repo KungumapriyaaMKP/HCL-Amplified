@@ -1,50 +1,55 @@
-import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
-
-import { cn } from "@/lib/utils"
+import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  "inline-flex items-center rounded-md border px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider transition-all",
   {
     variants: {
       variant: {
         default:
-          "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
+          "border-slate-700 bg-slate-900/80 text-slate-300",
         secondary:
-          "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
+          "border-purple-500/30 bg-purple-950/50 text-purple-300",
         destructive:
-          "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
-        outline: "text-foreground",
-        success: "border-transparent bg-green-100 text-green-800 hover:bg-green-200",
-        warning: "border-transparent bg-yellow-100 text-yellow-800 hover:bg-yellow-200",
-        accent: "border-transparent bg-blue-100 text-blue-800 hover:bg-blue-200",
+          "border-red-500/50 bg-red-950/70 text-red-300 shadow-[0_0_10px_rgba(239,68,68,0.3)]",
+        outline: "border-purple-500/40 text-purple-300 bg-transparent",
+        success:
+          "border-emerald-500/50 bg-emerald-950/70 text-emerald-300 shadow-[0_0_10px_rgba(16,185,129,0.3)]",
+        warning:
+          "border-amber-500/50 bg-amber-950/70 text-amber-300 shadow-[0_0_10px_rgba(245,158,11,0.3)]",
+        accent:
+          "border-purple-500/50 bg-purple-950/70 text-purple-300 shadow-[0_0_10px_rgba(168,85,247,0.35)]",
+        cyan:
+          "border-cyan-500/50 bg-cyan-950/70 text-cyan-300 shadow-[0_0_10px_rgba(6,182,212,0.35)]",
       },
       tone: {
-        default: "bg-gray-100 text-gray-800",
-        success: "bg-green-100 text-green-800",
-        warning: "bg-yellow-100 text-yellow-800",
-        accent: "bg-blue-100 text-blue-800",
+        default: "border-slate-700 bg-slate-900/80 text-slate-300",
+        success: "border-emerald-500/50 bg-emerald-950/70 text-emerald-300 shadow-[0_0_10px_rgba(16,185,129,0.3)]",
+        warning: "border-amber-500/50 bg-amber-950/70 text-amber-300 shadow-[0_0_10px_rgba(245,158,11,0.3)]",
+        accent: "border-purple-500/50 bg-purple-950/70 text-purple-300 shadow-[0_0_10px_rgba(168,85,247,0.35)]",
+        cyan: "border-cyan-500/50 bg-cyan-950/70 text-cyan-300 shadow-[0_0_10px_rgba(6,182,212,0.35)]",
+        danger: "border-red-500/50 bg-red-950/70 text-red-300 shadow-[0_0_10px_rgba(239,68,68,0.3)]",
       },
     },
     defaultVariants: {
       variant: "default",
     },
   }
-)
+);
 
 export interface BadgeProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof badgeVariants> {
-  tone?: "default" | "success" | "warning" | "accent"
+  tone?: "default" | "success" | "warning" | "accent" | "cyan" | "danger";
 }
 
 function Badge({ className, variant, tone, ...props }: BadgeProps) {
-  // If tone is specified, use it as the variant
-  const effectiveVariant = tone ? tone : variant
+  const effectiveVariant = tone ? tone : variant;
 
   return (
     <div className={cn(badgeVariants({ variant: effectiveVariant as any }), className)} {...props} />
-  )
+  );
 }
 
-export { Badge, badgeVariants }
+export { Badge, badgeVariants };

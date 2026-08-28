@@ -57,7 +57,7 @@ export const Navbar = ({ children, className }: NavbarProps) => {
   });
   const [visible, setVisible] = useState<boolean>(false);
 
-  useMotionValueEvent(scrollY, "change", (latest) => {
+  useMotionValueEvent(scrollY, "change", (latest: number) => {
     if (latest > 100) {
       setVisible(true);
     } else {
@@ -152,7 +152,7 @@ export const MobileNav = ({ children, className, visible }: MobileNavProps) => {
         width: visible ? "90%" : "100%",
         paddingRight: visible ? "12px" : "0px",
         paddingLeft: visible ? "12px" : "0px",
-        borderRadius: visible ? "16px" : "2rem",
+        borderRadius: "0px",
         y: visible ? 16 : 0,
       }}
       transition={{

@@ -1,10 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card } from "@/frontend/components/ui/card";
+import { Card } from "@/frontend/components/ui/Card";
 import { Badge } from "@/frontend/components/ui/badge";
 import { Button } from "@/frontend/components/ui/Button";
 import { Textarea } from "@/frontend/components/ui/Input";
+import {
+  IconMessage,
+  IconArrowRight,
+  IconCheck,
+  IconUsers,
+  IconMessages,
+} from "@tabler/icons-react";
 
 type Reply = { reply: { id: string; content: string; createdAt: string }; authorName: string };
 type Post = { post: { id: string; content: string; createdAt: string }; authorName: string; replies: Reply[] };
@@ -36,9 +43,7 @@ export function CommunityFeed({ domain }: { domain: string }) {
   }
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- initial data fetch on mount
     load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [domain]);
 
   async function join() {
@@ -66,7 +71,7 @@ export function CommunityFeed({ domain }: { domain: string }) {
       setDraft("");
       await load();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      setError(err instanceof Error ? err.message : "Something went wrong posting message");
     } finally {
       setPosting(false);
     }
@@ -88,81 +93,116 @@ export function CommunityFeed({ domain }: { domain: string }) {
       setOpenReplyFor(null);
       await load();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      setError(err instanceof Error ? err.message : "Something went wrong sending reply");
     } finally {
       setReplying(false);
     }
   }
 
   return (
-    <div className="space-y-4">
-      <Card className="flex flex-wrap items-center justify-between gap-3 p-4">
-        <Badge>
-          {memberCount} member{memberCount === 1 ? "" : "s"}
-        </Badge>
+    <div className="space-y-5">
+      
+      {/* Guild Status Bar */}
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-purple-500/30 bg-[#0c1026]/90 p-4 backdrop-blur-xl">
+        <div className="flex items-center gap-2">
+          <Badge tone="cyan" className="flex items-center gap-1">
+            <IconUsers className="h-3.5 w-3.5" />
+            <span>{memberCount} Enrolled Members</span>
+          </Badge>
+        </div>
         {joined ? (
-          <Badge tone="success">You&apos;re a member</Badge>
+          <Badge tone="success" className="flex items-center gap-1">
+            <IconCheck className="h-3.5 w-3.5" />
+            <span>Community Member</span>
+          </Badge>
         ) : (
-          <Button size="sm" disabled={joining} onClick={join}>
-            {joining ? "Joining..." : "Join community"}
+          <Button size="sm" variant="primary" disabled={joining} onClick={join}>
+            <span>{joining ? "Joining..." : "Join Community"}</span>
+            <IconArrowRight className="h-3.5 w-3.5" />
           </Button>
         )}
-      </Card>
+      </div>
 
-      {error && <p className="text-sm text-danger">{error}</p>}
+      {error && (
+        <div className="rounded-xl border border-red-500/40 bg-red-950/60 p-3 text-xs font-bold text-red-300">
+          {error}
+        </div>
+      )}
 
-      <Card className="p-4">
+      {/* Post Compose Box */}
+      <Card className="p-5">
         {joined ? (
           <>
+            <h3 className="mb-2 text-xs font-bold text-slate-200 uppercase tracking-wider">Start a Discussion</h3>
             <Textarea
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
               rows={3}
-              placeholder="Ask a question, share what you're working on..."
+              placeholder="Ask a question, share a breakthrough, or discuss concepts with peers..."
+              className="text-xs"
             />
-            <div className="mt-2 flex justify-end">
-              <Button size="sm" disabled={posting || !draft.trim()} onClick={submitPost}>
-                {posting ? "Posting..." : "Post"}
+            <div className="mt-3 flex justify-end">
+              <Button size="md" disabled={posting || !draft.trim()} onClick={submitPost}>
+                <span>{posting ? "Posting..." : "Publish Post"}</span>
+                <IconArrowRight className="h-4 w-4" />
               </Button>
             </div>
           </>
         ) : (
-          <p className="text-sm text-muted">Join this community to post and reply.</p>
+          <p className="text-xs text-slate-400">Join this community above to publish discussions and reply to peers.</p>
         )}
       </Card>
 
+      {/* Posts Feed */}
       {!posts ? (
-        <p className="text-sm text-muted">Loading discussion...</p>
+        <div className="py-12 text-center text-slate-400">
+          <div className="flex items-center justify-center gap-2 text-purple-400 text-xs font-bold">
+            <span className="h-2 w-2 rounded-full bg-purple-400 animate-ping" />
+            <span>Loading Community Discussions...</span>
+          </div>
+        </div>
       ) : posts.length === 0 ? (
-        <p className="text-sm text-muted">No posts yet - be the first to say something.</p>
+        <Card className="p-8 text-center">
+          <IconMessages className="h-10 w-10 text-purple-400 mx-auto mb-2" />
+          <p className="mt-2 text-xs text-slate-400">No discussions posted in this community yet — be the first to start a conversation.</p>
+        </Card>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {posts.map(({ post, authorName, replies }) => (
-            <Card key={post.id} className="p-4">
-              <div className="mb-1 flex items-center gap-2 text-xs text-muted">
-                <span className="font-medium text-foreground">{authorName}</span>
-                <span>·</span>
-                <span>{formatTime(post.createdAt)}</span>
+            <div
+              key={post.id}
+              className="rounded-3xl border border-purple-500/20 bg-[#0d1226]/80 p-5 shadow-[0_4px_20px_rgba(0,0,0,0.4)] backdrop-blur-xl transition-all hover:border-purple-500/40"
+            >
+              <div className="mb-2 flex items-center gap-2.5">
+                <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-purple-950 border border-purple-500/30 text-xs font-bold text-purple-300">
+                  {authorName[0]?.toUpperCase() || "A"}
+                </div>
+                <div>
+                  <span className="text-xs font-bold text-white">{authorName}</span>
+                  <span className="text-[10px] text-slate-500 ml-2">{formatTime(post.createdAt)}</span>
+                </div>
               </div>
-              <p className="whitespace-pre-wrap text-sm">{post.content}</p>
 
+              <p className="whitespace-pre-wrap text-xs text-slate-200 leading-relaxed pl-9">{post.content}</p>
+
+              {/* Replies */}
               {replies.length > 0 && (
-                <div className="mt-3 space-y-2 border-l-2 border-border pl-3">
+                <div className="mt-4 space-y-2.5 border-l-2 border-purple-500/30 pl-4 ml-4">
                   {replies.map(({ reply, authorName: replyAuthor }) => (
-                    <div key={reply.id}>
-                      <div className="mb-0.5 flex items-center gap-2 text-xs text-muted">
-                        <span className="font-medium text-foreground">{replyAuthor}</span>
-                        <span>·</span>
-                        <span>{formatTime(reply.createdAt)}</span>
+                    <div key={reply.id} className="rounded-xl border border-purple-500/15 bg-[#070918]/70 p-3">
+                      <div className="mb-1 flex items-center gap-2">
+                        <span className="text-xs font-bold text-purple-300">{replyAuthor}</span>
+                        <span className="text-[9px] text-slate-500">{formatTime(reply.createdAt)}</span>
                       </div>
-                      <p className="whitespace-pre-wrap text-sm text-foreground/85">{reply.content}</p>
+                      <p className="whitespace-pre-wrap text-xs text-slate-300 leading-snug">{reply.content}</p>
                     </div>
                   ))}
                 </div>
               )}
 
+              {/* Reply Button / Box */}
               {joined && (
-                <div className="mt-3">
+                <div className="mt-4 pl-9">
                   {openReplyFor === post.id ? (
                     <div className="space-y-2">
                       <Textarea
@@ -170,13 +210,15 @@ export function CommunityFeed({ domain }: { domain: string }) {
                         onChange={(e) => setReplyDraft(e.target.value)}
                         rows={2}
                         placeholder="Write a reply..."
+                        className="text-xs"
                       />
                       <div className="flex justify-end gap-2">
                         <Button size="sm" variant="secondary" onClick={() => setOpenReplyFor(null)}>
                           Cancel
                         </Button>
                         <Button size="sm" disabled={replying || !replyDraft.trim()} onClick={() => submitReply(post.id)}>
-                          {replying ? "Replying..." : "Reply"}
+                          <span>{replying ? "Sending..." : "Reply"}</span>
+                          <IconArrowRight className="h-3.5 w-3.5" />
                         </Button>
                       </div>
                     </div>
@@ -186,14 +228,15 @@ export function CommunityFeed({ domain }: { domain: string }) {
                         setOpenReplyFor(post.id);
                         setReplyDraft("");
                       }}
-                      className="text-xs font-medium text-accent hover:underline"
+                      className="text-xs font-bold text-purple-400 hover:text-purple-300 hover:underline flex items-center gap-1.5"
                     >
-                      Reply
+                      <IconMessage className="h-3.5 w-3.5" />
+                      <span>Reply</span>
                     </button>
                   )}
                 </div>
               )}
-            </Card>
+            </div>
           ))}
         </div>
       )}

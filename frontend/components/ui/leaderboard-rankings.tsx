@@ -118,4 +118,3 @@ const LeaderboardRankings = React.forwardRef<
 LeaderboardRankings.displayName = "LeaderboardRankings"
 
 export { LeaderboardRankings }
-export type { LeaderboardRankingItem }

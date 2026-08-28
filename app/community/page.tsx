@@ -4,8 +4,7 @@ import { db } from "@/lib/db";
 import { profiles } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { Nav } from "@/frontend/components/layout/Nav";
-import { Card, Badge } from "@/frontend/components/ui/Card";
-import Link from "next/link";
+import { CommunityHubView } from "@/frontend/components/community/CommunityHubView";
 
 export default async function CommunityLandingPage() {
   const user = await requireUser();
@@ -13,29 +12,26 @@ export default async function CommunityLandingPage() {
   const domains = await getCommunityOverview();
 
   return (
-    <div>
+    <div className="min-h-screen bg-[#070913] text-white">
       <Nav displayName={profile?.displayName} />
-      <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
-        <h1 className="mb-1 text-2xl font-semibold">Community</h1>
-        <p className="mb-6 text-sm text-muted">
-          Join the discussion for whichever domain you&apos;re learning - ask questions, compare notes, help someone
-          else out.
-        </p>
-
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {domains.map((d) => (
-            <Link key={d.id} href={`/community/${d.id}`}>
-              <Card className="h-full p-5 transition-colors hover:border-accent/50">
-                <div className="mb-3 text-2xl">{d.icon}</div>
-                <h3 className="mb-2 font-semibold">{d.name}</h3>
-                <div className="flex gap-2">
-                  <Badge>{d.memberCount} member{d.memberCount === 1 ? "" : "s"}</Badge>
-                  <Badge>{d.postCount} post{d.postCount === 1 ? "" : "s"}</Badge>
-                </div>
-              </Card>
-            </Link>
-          ))}
+      <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+        
+        {/* Header */}
+        <div className="mb-8">
+          <span className="text-[10px] font-black uppercase tracking-[0.25em] text-cyan-400">
+            PEER NETWORKS & DISCUSSION HUBS
+          </span>
+          <h1 className="mt-1 text-3xl font-black text-white drop-shadow-[0_2px_12px_rgba(255,255,255,0.2)]">
+            Domain Communities
+          </h1>
+          <p className="mt-1 text-xs text-slate-400">
+            Join domain hubs to discuss concepts, share code solutions, and collaborate with peers across specialized engineering fields.
+          </p>
         </div>
+
+        {/* Interactive Community Hub Grid */}
+        <CommunityHubView domains={domains} />
+
       </main>
     </div>
   );

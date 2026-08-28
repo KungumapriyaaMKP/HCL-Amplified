@@ -28,22 +28,30 @@ export default async function SkillGraphPage({ params }: { params: Promise<{ id:
   const { nodes, edges } = domainSkillGraph(detail.goal.domain);
 
   return (
-    <div>
+    <div className="min-h-screen bg-[#070913] text-white">
       <Nav displayName={profile?.displayName} />
-      <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
-        <Link href={`/goals/${id}`} className="mb-2 inline-block text-sm text-muted hover:text-foreground">
-          ‹ Back to roadmap
+      <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+        
+        <Link href={`/goals/${id}`} className="mb-3 inline-flex items-center gap-1 text-xs font-bold text-purple-400 hover:text-purple-300">
+          <span>❮</span> Back to Quest Roadmap
         </Link>
-        <p className="text-xs text-muted">{domain?.icon} {domain?.name} knowledge graph</p>
-        <h1 className="mb-1 text-2xl font-semibold">{detail.goal.goalText}</h1>
-        <p className="mb-6 text-sm text-muted">
-          Every skill in this domain and how it depends on the others - this is the same prerequisite graph the
-          recommendation engine runs skill-gap analysis over to build your roadmap, colored by your current mastery.
+        
+        <div className="mb-2 flex items-center gap-2">
+          <span className="text-xs font-black uppercase tracking-widest text-cyan-400">
+            {domain?.icon} {domain?.name} TOPOLOGICAL SKILL TREE
+          </span>
+        </div>
+
+        <h1 className="mb-2 text-3xl font-black text-white drop-shadow-[0_2px_12px_rgba(255,255,255,0.2)]">
+          {detail.goal.goalText}
+        </h1>
+        <p className="mb-6 text-xs text-slate-400 max-w-2xl">
+          Visual DAG of prerequisites and skill gap dependencies, dynamically updated by proctored battle attempts and diagnostic evaluations.
         </p>
 
-        <Card className="mb-4 p-4">
+        <div className="mb-5 rounded-lg border border-purple-500/20 bg-[#0c1026]/90 p-4 backdrop-blur-xl">
           <SkillGraphLegend />
-        </Card>
+        </div>
 
         <SkillGraphView
           nodes={nodes}

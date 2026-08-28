@@ -6,6 +6,7 @@ import { Nav } from "@/frontend/components/layout/Nav";
 import { Card } from "@/frontend/components/ui/Card";
 import { Button } from "@/frontend/components/ui/Button";
 import { ChatThread, type ChatBubble } from "@/frontend/components/chat/ChatThread";
+import { IconSparkles, IconArrowRight, IconShieldCheck, IconCheck } from "@tabler/icons-react";
 
 type Goal = { id: string; status: string; domain: string; goalText: string };
 type DiagQuestion = { id: string; skillId: string; question: string; options: string[] };
@@ -39,14 +40,9 @@ export default function GoalSetupPage() {
   }, [id, router]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- initial data fetch on mount
     loadGoal();
   }, [loadGoal]);
 
-  // On entering the intake step, first hydrate any prior chat history (e.g.
-  // after a page refresh mid-conversation) before deciding whether to kick
-  // off the model's opening question - otherwise a refresh would both lose
-  // the visible history and trigger a redundant seed turn.
   useEffect(() => {
     if (goal?.status !== "intake" || historyChecked) return;
     (async () => {
@@ -60,8 +56,7 @@ export default function GoalSetupPage() {
         sendIntake(null);
       }
     })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [goal?.status, historyChecked]);
+  }, [goal?.status, historyChecked, id]);
 
   async function sendIntake(message: string | null) {
     setChatLoading(true);
@@ -77,7 +72,7 @@ export default function GoalSetupPage() {
       setMessages((m) => [...m, { role: "assistant", content: body.reply }]);
       if (body.done) await loadGoal();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      setError(err instanceof Error ? err.message : "Something went wrong in intake");
     } finally {
       setChatLoading(false);
     }
@@ -109,7 +104,7 @@ export default function GoalSetupPage() {
       setDiagAttemptId(body.attemptId);
       setDiagQuestions(body.questions);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      setError(err instanceof Error ? err.message : "Something went wrong generating questions");
     } finally {
       setDiagLoading(false);
     }
@@ -130,7 +125,7 @@ export default function GoalSetupPage() {
       setDiagScore(body.score);
       await loadGoal();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      setError(err instanceof Error ? err.message : "Something went wrong submitting answers");
     } finally {
       setDiagLoading(false);
     }
@@ -145,110 +140,202 @@ export default function GoalSetupPage() {
       if (!res.ok) throw new Error(body.error);
       router.push(`/goals/${id}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      setError(err instanceof Error ? err.message : "Something went wrong generating path");
       setGenerating(false);
     }
   }
 
   if (!goal) {
     return (
-      <div>
+      <div className="min-h-screen bg-[#070913] text-white">
         <Nav />
-        <main className="mx-auto max-w-2xl px-4 py-10 text-center text-muted">Loading...</main>
+        <main className="mx-auto max-w-2xl px-4 py-20 text-center text-slate-400">
+          <div className="flex items-center justify-center gap-2 text-purple-400">
+            <span className="h-3 w-3 rounded-full bg-purple-400 animate-ping" />
+            <span>Loading Goal Setup...</span>
+          </div>
+        </main>
       </div>
     );
   }
 
   return (
-    <div>
+    <div className="min-h-screen bg-[#070913] text-white">
       <Nav />
-      <main className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
-        <h1 className="mb-1 text-xl font-semibold">{goal.goalText}</h1>
-        <p className="mb-6 text-sm text-muted">Let&apos;s finish setting this goal up.</p>
-        {error && <p className="mb-4 text-sm text-danger">{error}</p>}
+      <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+        
+        {/* Header */}
+        <div className="mb-6">
+          <span className="text-[10px] font-black uppercase tracking-[0.25em] text-purple-400">
+            INTAKE & CALIBRATION
+          </span>
+          <h1 className="mt-1 text-2xl font-black text-white drop-shadow-[0_2px_10px_rgba(255,255,255,0.2)]">
+            {goal.goalText}
+          </h1>
+          <p className="mt-1 text-xs text-slate-400">
+            Complete calibration so the recommendation engine can calculate your exact skill gap roadmap.
+          </p>
+        </div>
 
-        {goal.status === "intake" && (
-          <Card className="h-[480px] overflow-hidden">
-            <ChatThread messages={messages} onSend={(t) => sendIntake(t)} loading={chatLoading} placeholder="Your answer..." />
-          </Card>
+        {error && (
+          <div className="mb-6 rounded-md border border-red-500/40 bg-red-950/60 p-4 text-xs font-bold text-red-300">
+            {error}
+          </div>
         )}
 
+        {/* STEP A: Intake Chat */}
+        {goal.status === "intake" && (
+          <div className="overflow-hidden rounded-lg border-2 border-purple-500/30 shadow-[0_0_35px_rgba(139,92,246,0.25)] backdrop-blur-2xl">
+            <div className="border-b border-purple-500/20 bg-[#0c1026] px-5 py-3.5 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <IconSparkles className="h-5 w-5 text-purple-400" />
+                <div>
+                  <div className="text-xs font-black text-white">AI INTAKE DIALOGUE</div>
+                  <div className="text-[10px] text-purple-300/70">Answering these prompts identifies your target skills</div>
+                </div>
+              </div>
+            </div>
+            <div className="h-[480px]">
+              <ChatThread
+                messages={messages}
+                onSend={(t) => sendIntake(t)}
+                loading={chatLoading}
+                placeholder="Type your reply..."
+              />
+            </div>
+          </div>
+        )}
+
+        {/* STEP B: Beginner Check */}
         {goal.status === "beginner_check" && (
-          <Card className="p-6 text-center">
-            <p className="mb-6 text-sm">Are you a complete beginner in this domain?</p>
-            <div className="flex justify-center gap-3">
-              <Button variant="secondary" disabled={beginnerLoading} onClick={() => submitBeginner(true)}>
-                Yes, I&apos;m starting from scratch
+          <Card className="p-8 text-center">
+            <IconShieldCheck className="h-12 w-12 text-purple-400 mx-auto mb-3" />
+            <h2 className="text-xl font-black text-white">Declare Your Starting Proficiency</h2>
+            <p className="mt-1 text-xs text-slate-400 max-w-md mx-auto">
+              Are you starting from absolute scratch in this domain, or would you like to take a diagnostic assessment to test out of foundational prerequisites?
+            </p>
+            <div className="mt-8 flex flex-col sm:flex-row justify-center gap-3">
+              <Button
+                variant="secondary"
+                disabled={beginnerLoading}
+                onClick={() => submitBeginner(true)}
+                size="lg"
+              >
+                I am starting from scratch
               </Button>
-              <Button disabled={beginnerLoading} onClick={() => submitBeginner(false)}>
-                No, test my current level
+              <Button
+                disabled={beginnerLoading}
+                onClick={() => submitBeginner(false)}
+                size="lg"
+              >
+                Test my current level (Diagnostic)
               </Button>
             </div>
           </Card>
         )}
 
+        {/* STEP C: Diagnostic Quiz */}
         {goal.status === "diagnostic" && (
-          <Card className="p-6">
+          <Card className="p-6 sm:p-8">
             {!diagQuestions ? (
-              <div className="text-center">
-                <p className="mb-4 text-sm text-muted">A quick calibration quiz to see what you already know.</p>
-                <Button disabled={diagLoading} onClick={startDiagnostic}>
-                  {diagLoading ? "Preparing..." : "Start diagnostic quiz"}
+              <div className="text-center py-6">
+                <IconSparkles className="h-10 w-10 text-cyan-400 mx-auto mb-3" />
+                <h2 className="text-xl font-black text-white">Diagnostic Assessment</h2>
+                <p className="mt-1 text-xs text-slate-400 max-w-md mx-auto mb-6">
+                  A dynamic, Claude-generated assessment targeting domain prerequisites to pinpoint your skill baseline.
+                </p>
+                <Button disabled={diagLoading} onClick={startDiagnostic} size="lg">
+                  {diagLoading ? "Generating Questions..." : "Begin Diagnostic Assessment"}
                 </Button>
               </div>
             ) : diagScore !== null ? (
-              <div className="text-center">
-                <p className="mb-2 text-3xl font-semibold text-accent">{diagScore}%</p>
-                <p className="mb-4 text-sm text-muted">Your starting mastery has been recorded.</p>
-                <Button onClick={loadGoal}>Continue</Button>
+              <div className="text-center py-6">
+                <div className="inline-flex h-20 w-20 items-center justify-center rounded-lg bg-gradient-to-tr from-purple-700 to-cyan-500 shadow-[0_0_25px_rgba(6,182,212,0.5)] mb-3">
+                  <span className="text-3xl font-black text-white">{diagScore}%</span>
+                </div>
+                <h2 className="text-xl font-black text-white">Starting Mastery Recorded</h2>
+                <p className="mt-1 text-xs text-slate-400 mb-6">
+                  Your baseline proficiency has been calibrated. Ready to generate your path.
+                </p>
+                <Button onClick={loadGoal} size="lg">
+                  <span>Continue to Roadmap</span>
+                  <IconArrowRight className="h-4 w-4" />
+                </Button>
               </div>
             ) : (
-              <div className="space-y-5">
+              <div className="space-y-6">
+                <div className="border-b border-purple-500/20 pb-3 flex items-center justify-between">
+                  <div>
+                    <h3 className="text-sm font-black text-white uppercase tracking-wider">Diagnostic Assessment</h3>
+                    <p className="text-[11px] text-slate-400">Answer all questions to calibrate starting skill vector</p>
+                  </div>
+                  <span className="rounded-sm bg-purple-950 border border-purple-500/40 px-3 py-1 text-xs font-bold text-purple-300">
+                    {Object.keys(diagAnswers).length} / {diagQuestions.length} Answered
+                  </span>
+                </div>
+
                 {diagQuestions.map((q, qi) => (
-                  <div key={q.id}>
-                    <p className="mb-2 text-sm font-medium">{qi + 1}. {q.question}</p>
-                    <div className="space-y-1.5">
-                      {q.options.map((opt, oi) => (
-                        <label
-                          key={oi}
-                          className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm ${
-                            diagAnswers[q.id] === oi ? "border-accent bg-accent/10" : "border-border bg-surface-2"
-                          }`}
-                        >
-                          <input
-                            type="radio"
-                            name={q.id}
-                            checked={diagAnswers[q.id] === oi}
-                            onChange={() => setDiagAnswers((a) => ({ ...a, [q.id]: oi }))}
-                          />
-                          {opt}
-                        </label>
-                      ))}
+                  <div key={q.id} className="rounded-md border border-purple-500/20 bg-[#080b1a]/90 p-4">
+                    <p className="mb-3 text-xs font-bold text-slate-200">
+                      <span className="text-purple-400 mr-1.5">{qi + 1}.</span> {q.question}
+                    </p>
+                    <div className="space-y-2">
+                      {q.options.map((opt, oi) => {
+                        const selected = diagAnswers[q.id] === oi;
+                        return (
+                          <label
+                            key={oi}
+                            className={`flex cursor-pointer items-center gap-3 rounded-md border p-3 text-xs font-medium transition-all ${
+                              selected
+                                ? "border-cyan-400 bg-cyan-950/60 text-cyan-200 shadow-[0_0_12px_rgba(6,182,212,0.3)] ring-1 ring-cyan-400/40"
+                                : "border-purple-500/20 bg-[#0c1026] text-slate-300 hover:border-purple-500/40 hover:bg-[#121838]"
+                            }`}
+                          >
+                            <input
+                              type="radio"
+                              name={q.id}
+                              checked={selected}
+                              onChange={() => setDiagAnswers((a) => ({ ...a, [q.id]: oi }))}
+                              className="accent-purple-500"
+                            />
+                            <span>{opt}</span>
+                          </label>
+                        );
+                      })}
                     </div>
                   </div>
                 ))}
-                <Button
-                  disabled={diagLoading || Object.keys(diagAnswers).length < diagQuestions.length}
-                  onClick={submitDiagnostic}
-                >
-                  {diagLoading ? "Scoring..." : "Submit answers"}
-                </Button>
+
+                <div className="pt-4 flex justify-end">
+                  <Button
+                    disabled={diagLoading || Object.keys(diagAnswers).length < diagQuestions.length}
+                    onClick={submitDiagnostic}
+                    size="lg"
+                  >
+                    <span>{diagLoading ? "Evaluating..." : "Submit Answers"}</span>
+                    <IconArrowRight className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             )}
           </Card>
         )}
 
+        {/* STEP D: Ready to Forge Path */}
         {goal.status === "ready" && (
-          <Card className="p-6 text-center">
-            <p className="mb-4 text-sm text-muted">
-              We have what we need. Time to build your personalized roadmap - this runs the skill-gap analysis and
-              recommendation engine and generates rationale for every step.
+          <Card className="p-8 text-center">
+            <IconSparkles className="h-12 w-12 text-purple-400 mx-auto mb-3" />
+            <h2 className="text-xl font-black text-white">Calibration Complete</h2>
+            <p className="mt-1 text-xs text-slate-400 max-w-md mx-auto mb-6">
+              The recommendation engine will now evaluate prerequisites, compute skill gap priorities, and construct your milestone path.
             </p>
-            <Button disabled={generating} onClick={generatePath}>
-              {generating ? "Generating your path..." : "Generate my learning path"}
+            <Button disabled={generating} onClick={generatePath} size="lg">
+              <span>{generating ? "Generating Roadmap..." : "Generate Learning Path"}</span>
+              <IconArrowRight className="h-4 w-4" />
             </Button>
           </Card>
         )}
+
       </main>
     </div>
   );

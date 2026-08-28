@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Card } from "@/frontend/components/ui/Card";
 import { Button } from "@/frontend/components/ui/Button";
 import { loadFaceModels, captureFace, type FaceCapture } from "@/lib/faceMatch";
+import { IconCamera, IconRefresh, IconArrowRight, IconShieldCheck } from "@tabler/icons-react";
 
 function FaceOnboarding() {
   const router = useRouter();
@@ -43,12 +44,12 @@ function FaceOnboarding() {
     try {
       const result = await captureFace(videoRef.current);
       if (!result) {
-        setError("No face detected - center your face in frame and try again.");
+        setError("No face detected — center your face inside the scan frame and retry.");
         return;
       }
       setCapture(result);
     } catch {
-      setError("Couldn't process that frame - try again.");
+      setError("Could not process frame — try again.");
     } finally {
       setCapturing(false);
     }
@@ -66,55 +67,75 @@ function FaceOnboarding() {
       if (!res.ok) throw new Error();
       router.push(next);
     } catch {
-      setError("Couldn't save your reference photo - you can register it later before your first proctored test instead.");
+      setError("Could not save biometric profile — you can register later before your first proctored test.");
       setSaving(false);
     }
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4">
-      <Card className="w-full max-w-md p-8">
-        <h1 className="mb-1 text-xl font-semibold">Register your face</h1>
-        <p className="mb-6 text-sm text-muted">
-          Proctored tests check your face against this reference photo, right in your browser - it&apos;s used only
-          for that comparison, never for anything else.
-        </p>
+    <div className="flex min-h-screen items-center justify-center bg-[#070913] px-4 text-white">
+      <Card className="w-full max-w-lg p-8">
+        <div className="text-center mb-6">
+          <span className="text-[10px] font-black uppercase tracking-[0.25em] text-purple-400">
+            BIOMETRIC REGISTRATION
+          </span>
+          <h1 className="mt-1 text-2xl font-black text-white drop-shadow-[0_2px_10px_rgba(255,255,255,0.2)]">
+            Biometric Calibration
+          </h1>
+          <p className="mt-1 text-xs text-slate-400">
+            Proctored assessments check your face against this encrypted descriptor in-browser for integrity.
+          </p>
+        </div>
 
-        <div className="mb-4 aspect-video overflow-hidden rounded-xl border border-border bg-surface-2">
+        {/* Camera Viewport Frame */}
+        <div className="relative mb-6 aspect-video overflow-hidden rounded-3xl border-2 border-purple-500/40 bg-black shadow-[0_0_25px_rgba(168,85,247,0.3)]">
           {capture ? (
-            // eslint-disable-next-line @next/next/no-img-element -- a captured data: URL, not an optimizable remote image
+            // eslint-disable-next-line @next/next/no-img-element
             <img src={capture.photoDataUrl} alt="Captured reference" className="h-full w-full object-cover" />
           ) : cameraError ? (
-            <div className="grid h-full place-items-center text-center text-sm text-muted">
-              Camera access is needed for this step.
+            <div className="grid h-full place-items-center p-6 text-center text-xs text-slate-400">
+              Camera access required for instant registration.
               <br />
-              You can skip it and register later instead.
+              You can proceed and register later before your first proctored assessment.
             </div>
           ) : (
             <video ref={videoRef} autoPlay muted playsInline className="h-full w-full object-cover" />
           )}
+
+          {/* Cyber reticle overlay */}
+          <div className="pointer-events-none absolute inset-4 border border-cyan-400/30 rounded-2xl flex items-center justify-center">
+            <div className="h-24 w-24 border border-dashed border-cyan-400/50 rounded-full animate-pulse" />
+          </div>
         </div>
 
-        {error && <p className="mb-3 text-sm text-danger">{error}</p>}
+        {error && (
+          <div className="mb-4 rounded-xl border border-red-500/40 bg-red-950/60 p-3 text-xs font-bold text-red-300">
+            {error}
+          </div>
+        )}
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
           {capture ? (
             <>
-              <Button disabled={saving} onClick={saveAndContinue}>
-                {saving ? "Saving..." : "Save & continue"}
+              <Button size="lg" disabled={saving} onClick={saveAndContinue}>
+                <span>{saving ? "Registering Descriptor..." : "Save Biometrics & Continue"}</span>
+                <IconArrowRight className="h-4 w-4" />
               </Button>
-              <Button variant="secondary" disabled={saving} onClick={() => setCapture(null)}>
-                Retake
+              <Button size="md" variant="secondary" disabled={saving} onClick={() => setCapture(null)}>
+                <IconRefresh className="h-4 w-4" />
+                <span>Recalibrate Frame</span>
               </Button>
             </>
           ) : (
-            <Button disabled={!cameraReady || capturing} onClick={takeCapture}>
-              {capturing ? "Capturing..." : "Capture photo"}
+            <Button size="lg" disabled={!cameraReady || capturing} onClick={takeCapture}>
+              <IconCamera className="h-4 w-4" />
+              <span>{capturing ? "Scanning..." : "Capture Reference Photo"}</span>
             </Button>
           )}
+
           <button
             onClick={() => router.push(next)}
-            className="text-center text-sm text-muted hover:text-foreground"
+            className="mt-2 text-center text-xs font-bold text-slate-500 hover:text-purple-300 transition-colors"
           >
             Skip for now
           </button>

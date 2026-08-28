@@ -11,9 +11,9 @@ export default async function ProctoredPage({ params }: { params: Promise<{ id: 
   if (!detail) redirect(`/goals/${id}`);
 
   return (
-    <div>
+    <div className="min-h-screen bg-[#070913] text-white">
       <Nav />
-      <main className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
+      <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
         <ProctoredWorkspace
           goalId={id}
           moduleId={moduleId}

@@ -1,15 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card } from "@/frontend/components/ui/card";
+import { Card } from "@/frontend/components/ui/Card";
 import { Badge } from "@/frontend/components/ui/badge";
 import { Button } from "@/frontend/components/ui/Button";
 import { Textarea } from "@/frontend/components/ui/Input";
+import {
+  IconPlayerPlay,
+  IconCheck,
+  IconX,
+  IconCode,
+  IconArrowLeft,
+  IconArrowRight,
+} from "@tabler/icons-react";
 
 const STARTERS: Record<string, string> = {
-  python: '# Write your practice code below\nprint("Hello, world!")\n',
-  javascript: '// Write your practice code below\nconsole.log("Hello, world!");\n',
-  typescript: '// Write your practice code below\nconst message: string = "Hello, world!";\nconsole.log(message);\n',
+  python: '# Write your solution below\nprint("Hello, QuestLearn!")\n',
+  javascript: '// Write your solution below\nconsole.log("Hello, QuestLearn!");\n',
+  typescript: '// Write your solution below\nconst message: string = "Hello, QuestLearn!";\nconsole.log(message);\n',
 };
 
 type TestCase = { input: string; expectedOutput: string };
@@ -49,17 +57,12 @@ export function CompilerWorkspace({ moduleId, skillName, language }: { moduleId:
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ language, code, stdin }),
       });
-      // Running freely (with your own stdin) doesn't grade anything - clear
-      // any stale pass/fail state so it isn't confused with a real result.
       updateCurrent({ output: await res.json(), results: null });
     } finally {
       setRunning(false);
     }
   }
 
-  // The only way an exercise counts as done: every one of its test cases
-  // actually passes when run for real. No manual override - this is the
-  // point of grading it instead of taking the learner's word for it.
   async function submit() {
     const ex = exercises?.[current];
     if (!ex || ex.testCases.length === 0) return;
@@ -91,10 +94,17 @@ export function CompilerWorkspace({ moduleId, skillName, language }: { moduleId:
   }
 
   if (!exercises) {
-    return <p className="text-sm text-muted">Generating practice exercises...</p>;
+    return (
+      <div className="py-20 text-center text-slate-400">
+        <div className="flex items-center justify-center gap-2 text-purple-400">
+          <span className="h-3 w-3 rounded-full bg-purple-400 animate-ping" />
+          <span>Generating Coding Exercises...</span>
+        </div>
+      </div>
+    );
   }
   if (exercises.length === 0) {
-    return <p className="text-sm text-muted">Couldn&apos;t generate exercises for this module - try refreshing.</p>;
+    return <p className="text-sm text-slate-400">Could not generate challenges for this module — try refreshing.</p>;
   }
 
   const ex = exercises[current];
@@ -106,13 +116,14 @@ export function CompilerWorkspace({ moduleId, skillName, language }: { moduleId:
   };
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
-      {/* One-at-a-time exercise list: click any to revisit and revise. The
-          checkmark only appears once that exercise's tests have actually
-          passed - it's not something the learner can just toggle on. */}
-      <Card className="h-fit p-3">
-        <h3 className="mb-2 px-1 text-sm font-semibold">Practice exercises</h3>
-        <ol className="space-y-1">
+    <div className="grid gap-6 lg:grid-cols-[260px_1fr]">
+      
+      {/* Exercise Sidebar */}
+      <Card className="h-fit p-4">
+        <h3 className="mb-3 text-xs font-black uppercase tracking-widest text-purple-300">
+          PRACTICE EXERCISES
+        </h3>
+        <ol className="space-y-1.5">
           {exercises.map((item, i) => {
             const active = i === current;
             const complete = isDoneByIndex(i);
@@ -120,16 +131,18 @@ export function CompilerWorkspace({ moduleId, skillName, language }: { moduleId:
               <li key={i}>
                 <button
                   onClick={() => setCurrent(i)}
-                  className={`flex w-full items-start gap-2 rounded-lg px-2 py-2 text-left text-sm transition-colors ${
-                    active ? "bg-accent/15 text-foreground" : "text-muted hover:bg-surface-2 hover:text-foreground"
+                  className={`flex w-full items-start gap-2.5 rounded-md px-3 py-2.5 text-left text-xs font-bold transition-all ${
+                    active
+                      ? "border border-purple-400 bg-purple-950/80 text-white shadow-[0_0_12px_rgba(168,85,247,0.4)]"
+                      : "border border-transparent text-slate-400 hover:bg-[#121633] hover:text-slate-200"
                   }`}
                 >
                   <span
-                    className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-medium ${
-                      complete ? "bg-success/20 text-success" : "bg-surface-2 text-muted"
+                    className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-sm text-[10px] font-black ${
+                      complete ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40" : "bg-slate-800 text-slate-400"
                     }`}
                   >
-                    {complete ? "✓" : i + 1}
+                    {complete ? <IconCheck className="h-3 w-3" /> : i + 1}
                   </span>
                   <span className="truncate">{item.title}</span>
                 </button>
@@ -139,102 +152,129 @@ export function CompilerWorkspace({ moduleId, skillName, language }: { moduleId:
         </ol>
       </Card>
 
-      <div className="space-y-3">
-        <Card className="p-4">
-          <div className="mb-1 flex items-center justify-between gap-3">
-            <Badge tone="accent">{skillName}</Badge>
-            <span className="text-xs text-muted">
+      {/* Main Coding IDE Terminal */}
+      <div className="space-y-4">
+        
+        {/* Prompt Card */}
+        <Card className="p-5">
+          <div className="mb-2 flex items-center justify-between gap-3">
+            <Badge tone="cyan">{skillName}</Badge>
+            <span className="text-xs font-bold text-slate-400">
               Exercise {current + 1} of {exercises.length}
             </span>
           </div>
-          <h3 className="mt-2 font-medium">{ex.title}</h3>
-          <p className="mt-1 text-sm text-muted">{ex.prompt}</p>
+          <h2 className="text-lg font-black text-white">{ex.title}</h2>
+          <p className="mt-1 text-xs text-slate-300 leading-relaxed font-medium">{ex.prompt}</p>
         </Card>
 
-        <Card className="p-0">
-          <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
-            <span className="text-xs text-muted">{language}</span>
-            {passedAll && <Badge tone="success">All tests passed ✓</Badge>}
+        {/* Code Editor Container */}
+        <div className="overflow-hidden rounded-lg border-2 border-purple-500/30 bg-[#070918] shadow-[0_0_35px_rgba(139,92,246,0.2)]">
+          <div className="flex items-center justify-between border-b border-purple-500/20 bg-[#0c1026] px-5 py-3">
+            <div className="flex items-center gap-2">
+              <div className="flex gap-1.5">
+                <span className="h-3 w-3 rounded-full bg-red-500/80" />
+                <span className="h-3 w-3 rounded-full bg-yellow-500/80" />
+                <span className="h-3 w-3 rounded-full bg-green-500/80" />
+              </div>
+              <span className="text-xs font-bold text-purple-300 uppercase tracking-wider ml-2">
+                CODE WORKSPACE · {language.toUpperCase()}
+              </span>
+            </div>
+            {passedAll && (
+              <Badge tone="success" className="flex items-center gap-1">
+                <IconCheck className="h-3 w-3" />
+                <span>ALL TESTS PASSED</span>
+              </Badge>
+            )}
           </div>
+
           <Textarea
             value={code}
             onChange={(e) => updateCurrent({ code: e.target.value })}
             rows={14}
-            className="rounded-none border-0 font-mono text-[13px] leading-relaxed focus:ring-0"
+            className="w-full rounded-none border-0 bg-[#060814] p-5 font-mono text-xs text-emerald-300 leading-relaxed focus:ring-0 focus:border-0 shadow-none"
           />
-        </Card>
+        </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <Button size="sm" variant="secondary" disabled={running} onClick={run}>
-            {running ? "Running..." : "Run ▶"}
+        {/* Action Controls */}
+        <div className="flex flex-wrap items-center gap-3">
+          <Button size="md" variant="secondary" disabled={running} onClick={run}>
+            <IconPlayerPlay className="h-4 w-4" />
+            <span>{running ? "Running..." : "Run Code"}</span>
           </Button>
-          <Textarea
+
+          <input
+            type="text"
             value={stdin}
             onChange={(e) => updateCurrent({ stdin: e.target.value })}
-            rows={1}
-            placeholder="stdin (optional, for free-form Run)"
-            className="max-w-xs"
+            placeholder="stdin input (optional for free-run)"
+            className="flex-1 min-w-[200px] rounded-md border border-purple-500/30 bg-[#080a1a] px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-400"
           />
+
           <Button
-            size="sm"
+            size="md"
+            variant="primary"
             disabled={submitting || ex.testCases.length === 0}
             onClick={submit}
-            title={ex.testCases.length === 0 ? "No test cases available for this exercise" : undefined}
           >
-            {submitting ? "Checking..." : "Submit ✓"}
+            <IconCheck className="h-4 w-4" />
+            <span>{submitting ? "Checking Tests..." : "Submit Solution"}</span>
           </Button>
         </div>
 
+        {/* Terminal Run Output */}
         {output && (
-          <Card className="p-4 font-mono text-xs">
-            <p className="mb-2 text-[11px] font-sans text-muted">Free-run output (not graded):</p>
-            {output.compileError && <pre className="whitespace-pre-wrap text-warning">{output.compileError}</pre>}
-            {output.stdout && <pre className="whitespace-pre-wrap text-foreground">{output.stdout}</pre>}
-            {output.stderr && <pre className="whitespace-pre-wrap text-danger">{output.stderr}</pre>}
-            {!output.stdout && !output.stderr && !output.compileError && <p className="text-muted">(no output)</p>}
-          </Card>
+          <div className="rounded-md border border-purple-500/30 bg-[#060814] p-4 font-mono text-xs shadow-inner">
+            <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">Execution Output (stdout / stderr):</p>
+            {output.compileError && <pre className="whitespace-pre-wrap text-amber-400">{output.compileError}</pre>}
+            {output.stdout && <pre className="whitespace-pre-wrap text-emerald-400">{output.stdout}</pre>}
+            {output.stderr && <pre className="whitespace-pre-wrap text-red-400">{output.stderr}</pre>}
+            {!output.stdout && !output.stderr && !output.compileError && <p className="text-slate-500">(No output)</p>}
+          </div>
         )}
 
+        {/* Test Cases Results */}
         {results && (
-          <Card className="divide-y divide-border p-0">
+          <div className="divide-y divide-purple-500/20 rounded-md border border-purple-500/30 bg-[#0a0e24] overflow-hidden">
             {results.map((r, i) => (
-              <div key={i} className="p-3">
-                <div className="mb-1 flex items-center gap-2">
-                  <Badge tone={r.passed ? "success" : "danger"}>{r.passed ? "Passed" : "Failed"}</Badge>
-                  <span className="text-xs text-muted">Test case {i + 1}</span>
+              <div key={i} className="p-4">
+                <div className="mb-2 flex items-center gap-2">
+                  <Badge tone={r.passed ? "success" : "danger"} className="flex items-center gap-1">
+                    {r.passed ? <IconCheck className="h-3 w-3" /> : <IconX className="h-3 w-3" />}
+                    <span>{r.passed ? "PASSED" : "FAILED"}</span>
+                  </Badge>
+                  <span className="text-xs font-bold text-slate-300">Test Case #{i + 1}</span>
                 </div>
                 {!r.passed && (
-                  <div className="grid gap-1 font-mono text-xs text-muted">
-                    <p>
-                      input: <span className="text-foreground">{r.input || "(none)"}</span>
-                    </p>
-                    <p>
-                      expected: <span className="text-foreground">{r.expected}</span>
-                    </p>
-                    <p>
-                      got: <span className="text-danger">{r.actual}</span>
-                    </p>
+                  <div className="grid gap-1 font-mono text-xs text-slate-400 mt-2 bg-black/40 p-3 rounded-sm">
+                    <p>Input: <span className="text-white">{r.input || "(none)"}</span></p>
+                    <p>Expected: <span className="text-emerald-400">{r.expected}</span></p>
+                    <p>Actual Output: <span className="text-red-400">{r.actual}</span></p>
                   </div>
                 )}
               </div>
             ))}
-          </Card>
+          </div>
         )}
 
+        {/* Navigation */}
         <div className="flex items-center justify-between pt-2">
           <Button variant="secondary" size="sm" disabled={current === 0} onClick={() => setCurrent((c) => c - 1)}>
-            ‹ Previous
+            <IconArrowLeft className="h-4 w-4" />
+            <span>Previous</span>
           </Button>
-          <span className="text-xs text-muted">You can come back and revise any exercise any time.</span>
+          <span className="text-[11px] text-slate-400">Revise any exercise at any time.</span>
           <Button
             variant="secondary"
             size="sm"
             disabled={current === exercises.length - 1}
             onClick={() => setCurrent((c) => c + 1)}
           >
-            Next ›
+            <span>Next</span>
+            <IconArrowRight className="h-4 w-4" />
           </Button>
         </div>
+
       </div>
     </div>
   );

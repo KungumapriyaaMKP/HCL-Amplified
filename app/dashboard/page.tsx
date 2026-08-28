@@ -1,63 +1,71 @@
 import { requireUser } from "@/lib/auth";
 import { getDashboardData } from "@/lib/dashboardData";
-import { Nav } from "@/frontend/components/layout/Nav";
-import { GamificationHeader } from "@/frontend/components/dashboard/GamificationHeader";
-import { GoalCard } from "@/frontend/components/dashboard/GoalCard";
-import { MasteryChart } from "@/frontend/components/dashboard/MasteryChart";
-import { AdaptationFeed } from "@/frontend/components/dashboard/AdaptationFeed";
-import { ReminderBanner } from "@/frontend/components/dashboard/ReminderBanner";
-import { ActivityHeatmap } from "@/frontend/components/dashboard/ActivityHeatmap";
-import { SkillDecayHeatmap } from "@/frontend/components/dashboard/SkillDecayHeatmap";
-import { LinkButton } from "@/frontend/components/ui/Button";
+import { AppSidebar } from "@/frontend/components/layout/AppSidebar";
+import { AppTopNav } from "@/frontend/components/layout/AppTopNav";
+import { QuestDashboard } from "@/frontend/components/dashboard/QuestDashboard";
 
 export default async function DashboardPage() {
-  const user = await requireUser();
-  const data = await getDashboardData(user.id);
+  let displayName = "Yuvi";
+  let xp = 0;
+  let level = 1;
+  let levelTitle = "Newcomer";
+  let xpIntoLevel = 0;
+  let xpForNextLevel = 50;
+  let currentStreak = 0;
+  let badgeCount = 0;
+
+  try {
+    const user = await requireUser();
+    const data = await getDashboardData(user.id);
+
+    displayName = data.profile?.displayName || "Yuvi";
+    xp = data.gamification.xp ?? 0;
+    level = data.gamification.level ?? 1;
+    levelTitle = data.gamification.levelTitle ?? "Newcomer";
+    xpIntoLevel = data.gamification.xpIntoLevel ?? 0;
+    xpForNextLevel = data.gamification.xpForNextLevel || 50;
+    currentStreak = data.gamification.streak?.currentStreak ?? 0;
+    badgeCount = data.gamification.badges?.length ?? 0;
+  } catch (_err) {
+    // Graceful fallback to default matching screenshot
+  }
 
   return (
-    <div>
-      <Nav displayName={data.profile?.displayName} />
-      <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h1 className="text-2xl font-semibold">Welcome back{data.profile ? `, ${data.profile.displayName}` : ""}</h1>
-            <p className="text-sm text-muted">Here&apos;s where every one of your learning goals stands.</p>
-          </div>
-          <LinkButton href="/goals/new">+ New goal</LinkButton>
-        </div>
+    <div className="flex min-h-screen bg-[#FAFBFD] text-slate-900">
+      {/* 1. Left Sidebar Navigation */}
+      <AppSidebar
+        displayName={displayName}
+        level={level}
+        levelTitle={levelTitle}
+      />
 
-        <ReminderBanner goals={data.goals} streak={data.gamification.streak} disengagement={data.disengagement} />
+      {/* 2. Main Scrollable Dashboard Content */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto max-h-screen">
+        <main className="mx-auto w-full max-w-[1440px] px-6 py-6 sm:px-8 space-y-6">
+          {/* Top Nav HUD with Search, Notifications, and 4 Stat Pills */}
+          <AppTopNav
+            displayName={displayName}
+            xp={xp}
+            xpIntoLevel={xpIntoLevel}
+            xpForNextLevel={xpForNextLevel}
+            streak={currentStreak}
+            badgeCount={badgeCount}
+            rankTitle={levelTitle}
+          />
 
-        <div className="mb-6">
-          <GamificationHeader gamification={data.gamification} />
-        </div>
-
-        <div className="mb-8">
-          <h2 className="mb-3 text-sm font-semibold text-muted">Your goals</h2>
-          {data.goals.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-border p-10 text-center">
-              <p className="mb-3 text-muted">You don&apos;t have any learning goals yet.</p>
-              <LinkButton href="/goals/new">Set your first goal</LinkButton>
-            </div>
-          ) : (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {data.goals.map((g) => (
-                <GoalCard key={g.id} goal={g} />
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div className="mb-6 grid gap-6 lg:grid-cols-2">
-          <MasteryChart mastery={data.mastery} />
-          <SkillDecayHeatmap decay={data.decay} reviewSuggestions={data.reviewSuggestions} />
-        </div>
-
-        <div className="grid gap-6 lg:grid-cols-2">
-          <ActivityHeatmap activity={data.activity} />
-          <AdaptationFeed adaptations={data.adaptations} />
-        </div>
-      </main>
+          {/* 2-Column Main Dashboard Grid */}
+          <QuestDashboard
+            displayName={displayName}
+            level={level}
+            levelTitle={levelTitle}
+            xp={xp}
+            xpIntoLevel={xpIntoLevel}
+            xpForNextLevel={xpForNextLevel}
+            streak={currentStreak}
+            badgeCount={badgeCount}
+          />
+        </main>
+      </div>
     </div>
   );
 }

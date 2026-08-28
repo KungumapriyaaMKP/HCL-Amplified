@@ -1,10 +1,10 @@
 export const DOMAINS = [
-  { id: "web-dev", name: "Web Development", icon: "🌐" },
-  { id: "data-science", name: "Data Science", icon: "📊" },
-  { id: "ai-ml", name: "AI & Machine Learning", icon: "🤖" },
-  { id: "cloud-devops", name: "Cloud & DevOps", icon: "☁️" },
-  { id: "mobile-dev", name: "Mobile Development", icon: "📱" },
-  { id: "cybersecurity", name: "Cybersecurity", icon: "🛡️" },
+  { id: "web-dev", name: "Web Development", icon: "" },
+  { id: "data-science", name: "Data Science", icon: "" },
+  { id: "ai-ml", name: "AI & Machine Learning", icon: "" },
+  { id: "cloud-devops", name: "Cloud & DevOps", icon: "" },
+  { id: "mobile-dev", name: "Mobile Development", icon: "" },
+  { id: "cybersecurity", name: "Cybersecurity", icon: "" },
 ] as const;
 
 export type DomainId = (typeof DOMAINS)[number]["id"];

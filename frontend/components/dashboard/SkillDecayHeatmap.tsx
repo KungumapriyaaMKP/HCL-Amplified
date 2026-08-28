@@ -1,24 +1,14 @@
-import { Card } from "@/frontend/components/ui/card";
+import { Card } from "@/frontend/components/ui/Card";
 import { Badge } from "@/frontend/components/ui/badge";
 import type { DashboardData } from "@/lib/dashboardData";
+import { IconBrain, IconRefresh, IconArrowRight } from "@tabler/icons-react";
 
-// Status encoding (state, not magnitude): a small fixed 3-step scale with
-// reserved meaning (good -> warning -> critical), always icon + label, never
-// color alone - this is exactly the "decay tier" job, not a sequential ramp.
-const TIER: Record<string, { tone: "success" | "warning" | "danger"; icon: string; label: string }> = {
-  fresh: { tone: "success", icon: "●", label: "Fresh" },
-  fading: { tone: "warning", icon: "◐", label: "Fading" },
-  decayed: { tone: "danger", icon: "○", label: "Decayed" },
+const TIER: Record<string, { tone: "success" | "warning" | "danger"; label: string }> = {
+  fresh: { tone: "success", label: "Active" },
+  fading: { tone: "warning", label: "Fading" },
+  decayed: { tone: "danger", label: "Depleted" },
 };
 
-/**
- * Skill-decay heatmap: every skill the learner has ever mastered, colored by
- * how long it's been since that mastery was last reinforced (a diagnostic,
- * practice, or proctored score touching it) - not since it was first
- * learned. Fading/decayed *foundational* skills get a one-click review link
- * straight to a suggested resource (lib/decay.ts + the same recommendation
- * engine that built the original path).
- */
 export function SkillDecayHeatmap({
   decay,
   reviewSuggestions,
@@ -28,9 +18,12 @@ export function SkillDecayHeatmap({
 }) {
   if (decay.length === 0) {
     return (
-      <Card className="p-5">
-        <h3 className="mb-1 text-sm font-semibold">Skill decay</h3>
-        <p className="text-sm text-muted">Nothing to show yet - this fills in once you&apos;ve mastered at least one skill.</p>
+      <Card className="p-6">
+        <h3 className="text-base font-black text-white flex items-center gap-2">
+          <IconBrain className="h-5 w-5 text-purple-400" />
+          <span>SKILL VITALITY MATRIX</span>
+        </h3>
+        <p className="mt-2 text-xs text-slate-400">Tracks memory retention and suggests reinforcement sessions once skills are mastered.</p>
       </Card>
     );
   }
@@ -39,29 +32,36 @@ export function SkillDecayHeatmap({
 
   return (
     <Card className="p-6">
-      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+      <div className="mb-5 flex items-center justify-between">
         <div>
-          <h3 className="text-base font-semibold">Skill decay</h3>
-          <p className="mt-1 text-xs text-muted">Days since last reinforced</p>
+          <h3 className="text-base font-black text-white flex items-center gap-2 drop-shadow-[0_2px_8px_rgba(255,255,255,0.2)]">
+            <IconBrain className="h-5 w-5 text-purple-400" />
+            <span>SKILL VITALITY & RETENTION</span>
+          </h3>
+          <p className="mt-1 text-xs text-slate-400">Reinforcement status based on memory curve</p>
         </div>
       </div>
 
-      <div className="mb-6 flex flex-wrap gap-2">
+      <div className="mb-5 flex flex-wrap gap-2">
         {decay.map((d) => {
-          const t = TIER[d.tier];
+          const t = TIER[d.tier] ?? TIER.fresh;
           return (
-            <Badge key={d.skillId} tone={t.tone} title={`${d.daysSince} day(s) since last touched`}>
-              {t.icon} {d.name} · {d.daysSince}d
+            <Badge key={d.skillId} tone={t.tone} title={`${d.daysSince} day(s) since last reinforcement`}>
+              <span>{d.name}</span>
+              <span className="opacity-70 ml-1">· {d.daysSince}d</span>
             </Badge>
           );
         })}
       </div>
 
       {fadingFoundational.length > 0 && (
-        <div className="space-y-3 border-t border-border/50 pt-6">
+        <div className="space-y-3 border-t border-purple-500/20 pt-4">
           <div>
-            <p className="text-xs font-semibold text-amber-500 uppercase tracking-wide"> Review suggested</p>
-            <p className="mt-1 text-xs text-muted">Before these foundational skills fade further:</p>
+            <p className="text-xs font-black uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+              <IconRefresh className="h-4 w-4" />
+              <span>REINFORCEMENT SUGGESTED</span>
+            </p>
+            <p className="mt-0.5 text-xs text-slate-400">Prevent foundational skill decay before advancing:</p>
           </div>
           <div className="space-y-2">
             {fadingFoundational.map((d) => (
@@ -70,13 +70,16 @@ export function SkillDecayHeatmap({
                 href={reviewSuggestions[d.skillId].url}
                 target="_blank"
                 rel="noreferrer"
-                className="group flex items-center justify-between rounded-lg border border-amber-500/20 bg-amber-500/5 px-4 py-3 text-xs transition-all hover:bg-amber-500/10 hover:border-amber-500/40"
+                className="group flex items-center justify-between rounded-md border border-amber-500/30 bg-amber-950/30 px-4 py-3 text-xs transition-all hover:bg-amber-950/60 hover:border-amber-400 hover:shadow-[0_0_15px_rgba(245,158,11,0.2)]"
               >
                 <div>
-                  <p className="font-semibold text-foreground group-hover:text-amber-400 transition-colors">{d.name}</p>
-                  <p className="mt-1 text-muted text-xs">{reviewSuggestions[d.skillId].title}</p>
+                  <p className="font-bold text-white group-hover:text-amber-300 transition-colors">{d.name}</p>
+                  <p className="mt-0.5 text-[11px] text-slate-400">{reviewSuggestions[d.skillId].title}</p>
                 </div>
-                <span className="ml-3 shrink-0 text-amber-500 font-medium group-hover:translate-x-1 transition-transform">Review →</span>
+                <span className="ml-3 shrink-0 flex items-center gap-1 font-bold text-amber-400 group-hover:translate-x-1 transition-transform">
+                  <span>Review Resource</span>
+                  <IconArrowRight className="h-3.5 w-3.5" />
+                </span>
               </a>
             ))}
           </div>

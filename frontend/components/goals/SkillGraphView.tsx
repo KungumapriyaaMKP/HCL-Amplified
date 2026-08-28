@@ -2,12 +2,12 @@ import type { GraphNode, GraphEdge } from "@/lib/skillGraph";
 
 type Status = "mastered" | "target" | "required" | "in_progress" | "outside";
 
-const STATUS_COLOR: Record<Status, { fill: string; stroke: string; text: string }> = {
-  mastered: { fill: "rgba(52,211,153,0.14)", stroke: "#34d399", text: "#34d399" },
-  in_progress: { fill: "rgba(251,191,36,0.14)", stroke: "#fbbf24", text: "#fbbf24" },
-  target: { fill: "rgba(124,92,255,0.16)", stroke: "#7c5cff", text: "#c9bdff" },
-  required: { fill: "rgba(34,211,238,0.12)", stroke: "#22d3ee", text: "#7fe3f3" },
-  outside: { fill: "rgba(35,43,61,0.6)", stroke: "#232b3d", text: "#8b95a7" },
+const STATUS_COLOR: Record<Status, { fill: string; stroke: string; text: string; shadow: string }> = {
+  mastered: { fill: "rgba(16,185,129,0.18)", stroke: "#10b981", text: "#34d399", shadow: "rgba(16,185,129,0.5)" },
+  in_progress: { fill: "rgba(245,158,11,0.18)", stroke: "#f59e0b", text: "#fbbf24", shadow: "rgba(245,158,11,0.5)" },
+  target: { fill: "rgba(168,85,247,0.22)", stroke: "#a855f7", text: "#e9d5ff", shadow: "rgba(168,85,247,0.7)" },
+  required: { fill: "rgba(6,182,212,0.18)", stroke: "#06b6d4", text: "#67e8f9", shadow: "rgba(6,182,212,0.5)" },
+  outside: { fill: "rgba(15,23,42,0.6)", stroke: "#1e293b", text: "#64748b", shadow: "transparent" },
 };
 
 function statusFor(mastery: number, isTarget: boolean, isRequired: boolean): Status {
@@ -18,19 +18,12 @@ function statusFor(mastery: number, isTarget: boolean, isRequired: boolean): Sta
   return "outside";
 }
 
-const NODE_W = 168;
-const NODE_H = 46;
-const COL_GAP = 216;
-const ROW_GAP = 60;
-const MARGIN = 28;
+const NODE_W = 180;
+const NODE_H = 50;
+const COL_GAP = 230;
+const ROW_GAP = 68;
+const MARGIN = 32;
 
-/**
- * Renders the domain's skill/prerequisite graph as inline SVG: columns are
- * prerequisite depth (0 = no prerequisites, on the left), each node colored
- * by this learner's mastery and relevance to the current goal. This is the
- * visual face of the same DAG lib/skillGraph.ts uses for gap analysis and
- * path ordering - not a separate data structure.
- */
 export function SkillGraphView({
   nodes,
   edges,
@@ -62,11 +55,11 @@ export function SkillGraphView({
   const height = MARGIN * 2 + maxRows * ROW_GAP - (ROW_GAP - NODE_H);
 
   return (
-    <div className="overflow-x-auto rounded-2xl border border-border bg-surface/60 p-4">
+    <div className="overflow-x-auto rounded-3xl border-2 border-purple-500/30 bg-[#070a1a]/95 p-6 shadow-[0_0_35px_rgba(139,92,246,0.25)] backdrop-blur-2xl">
       <svg width={Math.max(width, 320)} height={Math.max(height, 200)} className="min-w-full">
         <defs>
           <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-            <path d="M0 0 L10 5 L0 10 z" fill="#8b95a7" />
+            <path d="M0 0 L10 5 L0 10 z" fill="#818cf8" />
           </marker>
         </defs>
 
@@ -84,8 +77,8 @@ export function SkillGraphView({
               key={i}
               d={`M ${x1} ${y1} C ${midX} ${y1}, ${midX} ${y2}, ${x2} ${y2}`}
               fill="none"
-              stroke="#2a3348"
-              strokeWidth={1.5}
+              stroke="rgba(129,140,248,0.4)"
+              strokeWidth={2}
               markerEnd="url(#arrow)"
             />
           );
@@ -97,7 +90,7 @@ export function SkillGraphView({
           const colors = STATUS_COLOR[pos.status];
           const mastery = masteryBySkill.get(node.id) ?? 0;
           return (
-            <g key={node.id}>
+            <g key={node.id} className="cursor-pointer transition-transform hover:scale-105">
               <title>
                 {node.name} - {mastery}% mastery
               </title>
@@ -106,15 +99,16 @@ export function SkillGraphView({
                 y={pos.y}
                 width={NODE_W}
                 height={NODE_H}
-                rx={10}
+                rx={14}
                 fill={colors.fill}
                 stroke={colors.stroke}
-                strokeWidth={pos.status === "target" ? 2 : 1.25}
+                strokeWidth={pos.status === "target" ? 2.5 : 1.5}
+                style={{ filter: `drop-shadow(0 0 8px ${colors.shadow})` }}
               />
-              <text x={pos.x + 10} y={pos.y + 19} fontSize={11.5} fontWeight={600} fill={colors.text}>
+              <text x={pos.x + 12} y={pos.y + 22} fontSize={12} fontWeight={800} fill={colors.text}>
                 {node.name.length > 20 ? node.name.slice(0, 19) + "…" : node.name}
               </text>
-              <text x={pos.x + 10} y={pos.y + 34} fontSize={10} fill="#8b95a7">
+              <text x={pos.x + 12} y={pos.y + 38} fontSize={10} fontWeight={600} fill="#94a3b8">
                 {mastery}% mastery
               </text>
             </g>
@@ -128,17 +122,17 @@ export function SkillGraphView({
 export function SkillGraphLegend() {
   const items: { status: Status; label: string }[] = [
     { status: "mastered", label: "Mastered (60%+)" },
-    { status: "in_progress", label: "In progress" },
-    { status: "target", label: "Your target skill" },
-    { status: "required", label: "Needed prerequisite" },
-    { status: "outside", label: "Not on this path" },
+    { status: "in_progress", label: "In Trial" },
+    { status: "target", label: "Apex Quest Skill" },
+    { status: "required", label: "Needed Prerequisite" },
+    { status: "outside", label: "Alternative Realm" },
   ];
   return (
-    <div className="flex flex-wrap gap-4 text-xs text-muted">
+    <div className="flex flex-wrap gap-4 text-xs font-bold text-slate-300">
       {items.map((item) => (
-        <span key={item.status} className="flex items-center gap-1.5">
+        <span key={item.status} className="flex items-center gap-2">
           <span
-            className="h-3 w-3 rounded-sm border"
+            className="h-3.5 w-3.5 rounded-md border"
             style={{ background: STATUS_COLOR[item.status].fill, borderColor: STATUS_COLOR[item.status].stroke }}
           />
           {item.label}

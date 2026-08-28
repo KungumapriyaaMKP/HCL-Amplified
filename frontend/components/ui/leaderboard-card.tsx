@@ -73,7 +73,7 @@ const LeaderboardCard = React.forwardRef<HTMLDivElement, LeaderboardCardProps>(
     return (
       <div
         ref={ref}
-        className={cn("bg-card rounded-2xl border p-6 shadow-sm", className)}
+        className={cn("bg-card rounded-lg border p-6 shadow-sm", className)}
         {...props}
       >
         <div className="mb-6 flex items-start justify-between gap-4">

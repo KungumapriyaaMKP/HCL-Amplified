@@ -1,15 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  --background: #EAE5F0;
-  --surface: #F3F0F8;
-  --surface-2: #E8DFF5;
-  --border: #DDD5E8;
-  --foreground: #000000;
-  --muted: #8b7fa0;
-  --accent: #0052CC;
-  --accent-2: #003DA5;
+  --background: #f8f9fd;
+  --surface: #ffffff;
+  --surface-2: #f1f5f9;
+  --border: #e2e8f0;
+  --foreground: #0f172a;
+  --muted: #64748b;
+  --accent: #7c3aed;
+  --accent-2: #6d28d9;
+  --accent-light: #ede9fe;
+  --cyan: #06b6d4;
+  --gold: #f59e0b;
+  --gold-light: #fef3c7;
   --success: #10b981;
+  --success-light: #d1fae5;
   --warning: #f59e0b;
   --danger: #ef4444;
 }
@@ -23,26 +28,34 @@
   --color-muted: var(--muted);
   --color-accent: var(--accent);
   --color-accent-2: var(--accent-2);
+  --color-accent-light: var(--accent-light);
+  --color-cyan: var(--cyan);
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
   --color-success: var(--success);
+  --color-success-light: var(--success-light);
   --color-warning: var(--warning);
   --color-danger: var(--danger);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-sans), "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: var(--font-display), "Space Grotesk", sans-serif;
+  --font-mono: var(--font-mono), "JetBrains Mono", monospace;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   min-height: 100%;
-  font-family: var(--font-montserrat), -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: var(--font-sans), "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  letter-spacing: -0.01em;
 }
 
-* {
-  border-color: var(--border);
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  letter-spacing: -0.02em;
 }
 
 ::selection {
-  background: var(--accent);
+  background: #7c3aed;
   color: white;
 }
 
@@ -50,7 +63,128 @@ body {
   width: 6px;
   height: 6px;
 }
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 999px;
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Subtle Card Glow and Shadow Utilities */
+.quest-card-shadow {
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
+}
+
+.quest-card-hover {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.quest-card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px -4px rgba(124, 58, 237, 0.08), 0 4px 12px -2px rgba(15, 23, 42, 0.04);
+}
+
+/* Cyber Glow Utilities */
+.neon-glow-purple {
+  box-shadow: 0 0 25px rgba(168, 85, 247, 0.45);
+}
+.neon-glow-cyan {
+  box-shadow: 0 0 25px rgba(6, 182, 212, 0.45);
+}
+.neon-glow-gold {
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.45);
+}
+.cyber-glass {
+  background: rgba(13, 18, 38, 0.85);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(139, 92, 246, 0.25);
+}
+
+/* Float & Pulse Animations for 3D Assets */
+@keyframes soft-float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes soft-float-slow {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(1deg); }
+}
+
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.03); }
+}
+
+.animate-soft-float {
+  animation: soft-float 3.5s ease-in-out infinite;
+}
+
+.animate-soft-float-slow {
+  animation: soft-float-slow 5s ease-in-out infinite;
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 2.5s ease-in-out infinite;
+}
+
+/* Rocket Podium Thrust & Hover Animations */
+@keyframes rocket-hover-1 {
+  0%, 100% { transform: translateY(-24px) rotate(0deg); }
+  50% { transform: translateY(-38px) rotate(0.8deg); }
+}
+
+@keyframes rocket-hover-2 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-14px) rotate(-1deg); }
+}
+
+@keyframes rocket-hover-3 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(1deg); }
+}
+
+@keyframes thruster-flame-main {
+  0% { transform: scaleY(0.9) scaleX(0.95); opacity: 0.9; }
+  25% { transform: scaleY(1.4) scaleX(1.08); opacity: 1; }
+  50% { transform: scaleY(1.05) scaleX(0.9); opacity: 0.85; }
+  75% { transform: scaleY(1.45) scaleX(1.12); opacity: 1; }
+  100% { transform: scaleY(0.95) scaleX(1); opacity: 0.9; }
+}
+
+@keyframes thruster-core-pulse {
+  0%, 100% { transform: scaleY(0.85) scaleX(0.9); opacity: 1; }
+  50% { transform: scaleY(1.5) scaleX(1.2); opacity: 0.95; }
+}
+
+@keyframes flame-sparks-drift {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(34px) scale(0.2); opacity: 0; }
+}
+
+.animate-rocket-1 {
+  animation: rocket-hover-1 2.8s ease-in-out infinite;
+}
+.animate-rocket-2 {
+  animation: rocket-hover-2 3.2s ease-in-out infinite 0.4s;
+}
+.animate-rocket-3 {
+  animation: rocket-hover-3 3.0s ease-in-out infinite 0.8s;
+}
+
+.animate-flame-main {
+  animation: thruster-flame-main 0.22s ease-in-out infinite;
+  transform-origin: top center;
+}
+
+.animate-flame-core {
+  animation: thruster-core-pulse 0.16s ease-in-out infinite alternate;
+  transform-origin: top center;
+}
+
+.animate-sparks {
+  animation: flame-sparks-drift 0.6s ease-out infinite;
 }

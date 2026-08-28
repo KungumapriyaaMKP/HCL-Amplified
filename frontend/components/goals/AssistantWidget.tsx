@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ChatThread, type ChatBubble } from "@/frontend/components/chat/ChatThread";
+import { IconSparkles, IconX } from "@tabler/icons-react";
 
 export function AssistantWidget({ goalId, moduleId }: { goalId: string; moduleId?: string }) {
   const [open, setOpen] = useState(false);
@@ -37,33 +38,55 @@ export function AssistantWidget({ goalId, moduleId }: { goalId: string; moduleId
   }
 
   return (
-    <div className="fixed bottom-5 right-5 z-40">
+    <div className="fixed bottom-6 right-6 z-50">
       {open && (
-        <div className="mb-3 h-[420px] w-80 overflow-hidden rounded-2xl border border-border bg-surface shadow-2xl">
-          <div className="flex items-center justify-between border-b border-border px-4 py-3">
-            <span className="text-sm font-semibold">{moduleId ? "Ask about this module" : "Ask about your path"}</span>
-            <button onClick={() => setOpen(false)} className="text-muted hover:text-foreground">✕</button>
+        <div className="mb-3 h-[460px] w-88 overflow-hidden rounded-lg border-2 border-purple-500/40 bg-[#0c1026]/95 shadow-[0_0_40px_rgba(139,92,246,0.4)] backdrop-blur-2xl">
+          <div className="flex items-center justify-between border-b border-purple-500/20 bg-[#080b1a] px-4 py-3">
+            <div className="flex items-center gap-2">
+              <IconSparkles className="h-5 w-5 text-purple-400" />
+              <div>
+                <div className="text-xs font-black text-white">AI MENTOR ASSISTANT</div>
+                <div className="text-[10px] text-purple-300/70">{moduleId ? "Module Mentor Mode" : "Roadmap Guidance"}</div>
+              </div>
+            </div>
+            <button
+              onClick={() => setOpen(false)}
+              className="flex h-7 w-7 items-center justify-center rounded-md border border-purple-500/20 text-slate-400 hover:text-white hover:bg-purple-950"
+            >
+              <IconX className="h-4 w-4" />
+            </button>
           </div>
-          <div className="h-[calc(420px-49px)]">
+          <div className="h-[calc(460px-57px)]">
             <ChatThread
               messages={messages}
               onSend={send}
               loading={loading}
-              placeholder={moduleId ? "Stuck on something in this module?" : "Why is this recommended?"}
+              placeholder={moduleId ? "Ask mentor about this module..." : "Ask why this path was recommended..."}
               emptyHint={
                 moduleId
-                  ? "Ask about a concept you're stuck on, request an example, or ask why this module was picked."
-                  : "Ask why a module was picked, what to focus on next, or how you're doing."
+                  ? "Stuck on a concept? Ask for a code snippet, mental model, or test preparation tip."
+                  : "Ask the mentor why a module was recommended, what to tackle next, or how to level up faster."
               }
             />
           </div>
         </div>
       )}
+
+      {/* Floating Trigger Button */}
       <button
         onClick={() => setOpen((o) => !o)}
-        className="grid h-14 w-14 place-items-center rounded-full bg-gradient-to-br from-accent to-accent-2 text-xl text-white shadow-lg"
+        className="group relative flex h-14 w-14 items-center justify-center rounded-md border-2 border-cyan-400/60 bg-gradient-to-br from-purple-700 via-indigo-700 to-cyan-600 shadow-[0_0_25px_rgba(6,182,212,0.6)] transition-all duration-300 hover:scale-110 active:scale-95"
+        title="AI Companion Mentor"
       >
-        {open ? "×" : ""}
+        <span className="text-white transition-transform group-hover:scale-110">
+          {open ? <IconX className="h-6 w-6" /> : <IconSparkles className="h-6 w-6" />}
+        </span>
+        {!open && (
+          <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-75" />
+            <span className="relative inline-flex h-3.5 w-3.5 rounded-full bg-cyan-400" />
+          </span>
+        )}
       </button>
     </div>
   );
