@@ -89,7 +89,7 @@ export function QuestLearnAuth({ initialMode = "login" }: { initialMode?: "login
         <header className="flex items-center justify-between gap-4">
           {/* Logo */}
           <Link href="/" className="group flex items-center gap-3 transition-transform hover:scale-105">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-purple-600 to-indigo-700 shadow-[0_0_15px_rgba(147,51,234,0.6)] border border-purple-400/40">
+            <div className="flex h-11 w-11 items-center justify-center rounded-none bg-gradient-to-br from-purple-600 to-indigo-700 shadow-[0_0_15px_rgba(147,51,234,0.6)] border border-purple-400/40">
               <IconDeviceGamepad2 className="h-6 w-6 text-white" />
             </div>
             <div>
@@ -105,7 +105,7 @@ export function QuestLearnAuth({ initialMode = "login" }: { initialMode?: "login
           {/* Top Right Mode Switch Button */}
           <button
             onClick={() => setMode(mode === "login" ? "signup" : "login")}
-            className="group flex items-center gap-2 rounded-full border border-purple-500/50 bg-[#121128]/80 px-5 py-2 text-xs font-semibold text-purple-200 shadow-[0_0_20px_rgba(168,85,247,0.25)] backdrop-blur-md transition-all hover:border-purple-400 hover:bg-purple-950/60 hover:shadow-[0_0_25px_rgba(168,85,247,0.5)] active:scale-95"
+            className="group flex items-center gap-2 rounded-none border border-purple-500/50 bg-[#121128]/80 px-5 py-2 text-xs font-semibold text-purple-200 shadow-[0_0_20px_rgba(168,85,247,0.25)] backdrop-blur-md transition-all hover:border-purple-400 hover:bg-purple-950/60 hover:shadow-[0_0_25px_rgba(168,85,247,0.5)] active:scale-95"
           >
             <span className="text-purple-400/80 uppercase tracking-wider text-[10px]">
               {mode === "login" ? "NEW HERE?" : "HAVE AN ACCOUNT?"}
@@ -139,12 +139,12 @@ export function QuestLearnAuth({ initialMode = "login" }: { initialMode?: "login
             {/* Character Graphic / Interactive Portal Visual */}
             <div className="relative my-4 flex h-52 sm:h-64 w-full items-center justify-center lg:justify-start">
               <div className="relative flex h-52 w-52 sm:h-60 sm:w-60 items-center justify-center">
-                <div className="absolute h-48 w-48 rounded-full border border-purple-500/40 bg-purple-600/10 blur-sm shadow-[0_0_40px_rgba(147,51,234,0.4)] animate-pulse" />
-                <div className="absolute h-40 w-40 rounded-full border-2 border-dashed border-cyan-400/50 animate-spin" style={{ animationDuration: "25s" }} />
+                <div className="absolute h-48 w-48 border border-purple-500/40 bg-purple-600/10 blur-sm shadow-[0_0_40px_rgba(147,51,234,0.4)] animate-pulse" />
+                <div className="absolute h-40 w-40 border-2 border-dashed border-cyan-400/50 animate-spin" style={{ animationDuration: "25s" }} />
                 
                 <div className="relative z-10 flex flex-col items-center">
-                  <div className="relative flex h-36 w-36 sm:h-44 sm:w-44 items-center justify-center rounded-3xl bg-gradient-to-tr from-purple-900 via-indigo-900 to-fuchsia-900 p-1 shadow-[0_0_35px_rgba(168,85,247,0.7)] ring-2 ring-purple-400/50">
-                    <div className="flex h-full w-full items-center justify-center rounded-[22px] bg-[#0d0f24] overflow-hidden relative">
+                  <div className="relative flex h-36 w-36 sm:h-44 sm:w-44 items-center justify-center rounded-none bg-gradient-to-tr from-purple-900 via-indigo-900 to-fuchsia-900 p-1 shadow-[0_0_35px_rgba(168,85,247,0.7)] ring-2 ring-purple-400/50">
+                    <div className="flex h-full w-full items-center justify-center rounded-none bg-[#0d0f24] overflow-hidden relative">
                       <img 
                         src="/quest-bg.jpg" 
                         alt="Hero Portal" 
@@ -159,7 +159,7 @@ export function QuestLearnAuth({ initialMode = "login" }: { initialMode?: "login
             {/* "ENTER THE GAME" Action Button */}
             <Link
               href="/dashboard"
-              className="group relative mt-2 inline-flex items-center gap-3 overflow-hidden rounded-full border-2 border-purple-400/80 bg-gradient-to-r from-purple-700 via-indigo-600 to-fuchsia-600 px-8 py-3.5 text-sm font-black tracking-wider text-white uppercase shadow-[0_0_30px_rgba(147,51,234,0.8),inset_0_0_15px_rgba(255,255,255,0.3)] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_45px_rgba(168,85,247,1)] active:scale-95"
+              className="group relative mt-2 inline-flex items-center gap-3 overflow-hidden rounded-none border-2 border-purple-400/80 bg-gradient-to-r from-purple-700 via-indigo-600 to-fuchsia-600 px-8 py-3.5 text-sm font-black tracking-wider text-white uppercase shadow-[0_0_30px_rgba(147,51,234,0.8),inset_0_0_15px_rgba(255,255,255,0.3)] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_45px_rgba(168,85,247,1)] active:scale-95"
             >
               <span className="relative z-10">ENTER PLATFORM</span>
               <IconPlayerPlay className="relative z-10 h-4 w-4 fill-current transition-transform group-hover:translate-x-1" />
@@ -174,13 +174,13 @@ export function QuestLearnAuth({ initialMode = "login" }: { initialMode?: "login
 
           {/* RIGHT COLUMN: Glassmorphic Auth Card (6 cols) */}
           <div className="w-full max-w-md mx-auto lg:col-span-6 lg:max-w-lg">
-            <div className="relative rounded-lg border-2 border-purple-500/40 bg-[#0c1026]/90 p-6 sm:p-8 shadow-[0_0_40px_rgba(139,92,246,0.35),inset_0_0_20px_rgba(139,92,246,0.1)] backdrop-blur-2xl">
+            <div className="relative rounded-none border-2 border-purple-500/40 bg-[#0c1026]/95 p-6 sm:p-8 shadow-[0_0_40px_rgba(139,92,246,0.35),inset_0_0_20px_rgba(139,92,246,0.1)] backdrop-blur-2xl">
               
-              {/* Sharp Cyber HUD Corner Accents */}
-              <div className="pointer-events-none absolute -top-1.5 -right-1.5 h-6 w-6 border-t-2 border-r-2 border-cyan-400 shadow-[0_0_12px_#22d3ee]" />
-              <div className="pointer-events-none absolute -bottom-1.5 -left-1.5 h-6 w-6 border-b-2 border-l-2 border-purple-400 shadow-[0_0_12px_#a855f7]" />
-              <div className="pointer-events-none absolute -top-1.5 -left-1.5 h-6 w-6 border-t-2 border-l-2 border-purple-400/50 shadow-[0_0_8px_#a855f7]" />
-              <div className="pointer-events-none absolute -bottom-1.5 -right-1.5 h-6 w-6 border-b-2 border-r-2 border-cyan-400/50 shadow-[0_0_8px_#22d3ee]" />
+              {/* Precision Sharp 90-Degree Cyber HUD Corner Accents */}
+              <div className="pointer-events-none absolute -top-2 -right-2 h-7 w-7 border-t-2 border-r-2 border-cyan-400 shadow-[0_0_14px_#22d3ee]" />
+              <div className="pointer-events-none absolute -bottom-2 -left-2 h-7 w-7 border-b-2 border-l-2 border-purple-400 shadow-[0_0_14px_#a855f7]" />
+              <div className="pointer-events-none absolute -top-2 -left-2 h-7 w-7 border-t-2 border-l-2 border-purple-400/60 shadow-[0_0_10px_#a855f7]" />
+              <div className="pointer-events-none absolute -bottom-2 -right-2 h-7 w-7 border-b-2 border-r-2 border-cyan-400/60 shadow-[0_0_10px_#22d3ee]" />
 
               <div className="mb-6">
                 <div className="text-[11px] font-extrabold tracking-[0.2em] text-purple-300/80 uppercase">
@@ -213,7 +213,7 @@ export function QuestLearnAuth({ initialMode = "login" }: { initialMode?: "login
                         value={displayName}
                         onChange={(e) => setDisplayName(e.target.value)}
                         placeholder="Display Name"
-                        className="w-full rounded-md border border-purple-500/30 bg-[#080a1a]/90 py-3 pl-10 pr-4 text-xs text-white placeholder-slate-500 shadow-inner focus:border-purple-400 focus:outline-none focus:ring-1 focus:ring-purple-400"
+                        className="w-full rounded-none border border-purple-500/30 bg-[#080a1a]/90 py-3 pl-10 pr-4 text-xs text-white placeholder-slate-500 shadow-inner focus:border-purple-400 focus:outline-none focus:ring-1 focus:ring-purple-400"
                       />
                     </div>
                   </div>
@@ -233,7 +233,7 @@ export function QuestLearnAuth({ initialMode = "login" }: { initialMode?: "login
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="Email or Username"
-                      className="w-full rounded-md border border-purple-500/30 bg-[#080a1a]/90 py-3 pl-10 pr-4 text-xs text-white placeholder-slate-500 shadow-inner focus:border-purple-400 focus:outline-none focus:ring-1 focus:ring-purple-400"
+                      className="w-full rounded-none border border-purple-500/30 bg-[#080a1a]/90 py-3 pl-10 pr-4 text-xs text-white placeholder-slate-500 shadow-inner focus:border-purple-400 focus:outline-none focus:ring-1 focus:ring-purple-400"
                     />
                   </div>
                 </div>
@@ -253,7 +253,7 @@ export function QuestLearnAuth({ initialMode = "login" }: { initialMode?: "login
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="Password"
-                      className="w-full rounded-md border border-purple-500/30 bg-[#080a1a]/90 py-3 pl-10 pr-10 text-xs text-white placeholder-slate-500 shadow-inner focus:border-purple-400 focus:outline-none focus:ring-1 focus:ring-purple-400"
+                      className="w-full rounded-none border border-purple-500/30 bg-[#080a1a]/90 py-3 pl-10 pr-10 text-xs text-white placeholder-slate-500 shadow-inner focus:border-purple-400 focus:outline-none focus:ring-1 focus:ring-purple-400"
                     />
                     <button
                       type="button"
@@ -281,7 +281,7 @@ export function QuestLearnAuth({ initialMode = "login" }: { initialMode?: "login
                       type="checkbox"
                       checked={rememberMe}
                       onChange={(e) => setRememberMe(e.target.checked)}
-                      className="rounded border-purple-500/40 bg-purple-950 text-purple-600 focus:ring-0 focus:ring-offset-0"
+                      className="rounded-none border-purple-500/40 bg-purple-950 text-purple-600 focus:ring-0 focus:ring-offset-0"
                     />
                     <span>Remember me</span>
                   </label>
@@ -296,7 +296,7 @@ export function QuestLearnAuth({ initialMode = "login" }: { initialMode?: "login
 
                 {/* Error Banner */}
                 {error && (
-                  <div className="rounded-md border border-red-500/40 bg-red-950/80 p-2.5 text-center text-xs font-semibold text-red-300 shadow-[0_0_15px_rgba(239,68,68,0.3)]">
+                  <div className="rounded-none border border-red-500/40 bg-red-950/80 p-2.5 text-center text-xs font-semibold text-red-300 shadow-[0_0_15px_rgba(239,68,68,0.3)]">
                     {error}
                   </div>
                 )}
@@ -305,7 +305,7 @@ export function QuestLearnAuth({ initialMode = "login" }: { initialMode?: "login
                 <button
                   type="submit"
                   disabled={loading}
-                  className="group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-md border border-fuchsia-400/50 bg-gradient-to-r from-[#d946ef] via-[#a855f7] to-[#7c3aed] py-3.5 text-xs font-black tracking-wider text-white uppercase shadow-[0_0_25px_rgba(217,70,239,0.6)] transition-all duration-300 hover:brightness-110 hover:shadow-[0_0_35px_rgba(217,70,239,0.9)] active:scale-98 disabled:opacity-50"
+                  className="group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-none border border-fuchsia-400/50 bg-gradient-to-r from-[#d946ef] via-[#a855f7] to-[#7c3aed] py-3.5 text-xs font-black tracking-wider text-white uppercase shadow-[0_0_25px_rgba(217,70,239,0.6)] transition-all duration-300 hover:brightness-110 hover:shadow-[0_0_35px_rgba(217,70,239,0.9)] active:scale-98 disabled:opacity-50"
                 >
                   <span>{loading ? "AUTHENTICATING..." : mode === "signup" ? "CREATE ACCOUNT" : "START LEARNING"}</span>
                   <IconArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -327,7 +327,7 @@ export function QuestLearnAuth({ initialMode = "login" }: { initialMode?: "login
                   <button
                     type="button"
                     onClick={() => alert("Google OAuth integration: Please configure in Supabase dashboard settings.")}
-                    className="flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-[0_0_15px_rgba(255,255,255,0.3)] transition-transform hover:scale-110 active:scale-95"
+                    className="flex h-11 w-11 items-center justify-center rounded-none bg-white shadow-[0_0_15px_rgba(255,255,255,0.3)] transition-transform hover:scale-110 active:scale-95"
                     title="Sign in with Google"
                   >
                     <svg className="h-5 w-5" viewBox="0 0 24 24">
@@ -341,7 +341,7 @@ export function QuestLearnAuth({ initialMode = "login" }: { initialMode?: "login
                   <button
                     type="button"
                     onClick={() => alert("Discord OAuth integration: Please configure in Supabase dashboard settings.")}
-                    className="flex h-11 w-11 items-center justify-center rounded-full bg-[#5865F2] shadow-[0_0_15px_rgba(88,101,242,0.5)] transition-transform hover:scale-110 active:scale-95"
+                    className="flex h-11 w-11 items-center justify-center rounded-none bg-[#5865F2] shadow-[0_0_15px_rgba(88,101,242,0.5)] transition-transform hover:scale-110 active:scale-95"
                     title="Sign in with Discord"
                   >
                     <svg className="h-5 w-5 text-white" viewBox="0 0 24 24" fill="currentColor">
