@@ -2,17 +2,8 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import type { DashboardData } from "@/lib/dashboardData";
-import {
-  WavingRobotMascot,
-  StudentAvatarIllustration,
-  FaceHologramIllustration,
-  FolderUploadIllustration,
-  Calendar3DIllustration,
-  CuteBrainMascotIllustration,
-  FloatingSkyIsland,
-  IslandWithFlagIllustration,
-} from "@/frontend/components/dashboard/Illustrations";
 import {
   IconBolt,
   IconFlame,
@@ -96,13 +87,31 @@ export function ProfileDashboardView({
   return (
     <div className="relative min-h-screen bg-[#F8F9FD] text-slate-900 font-sans pb-16 overflow-x-hidden">
       
-      {/* Background Decorative Floating Sky Islands on far edges */}
+      {/* Background Decorative Floating Sky Islands on far outer edges */}
       <div className="pointer-events-none absolute inset-0 max-w-[1700px] mx-auto overflow-hidden">
-        <IslandWithFlagIllustration className="absolute bottom-20 left-2 w-28 h-28 hidden 2xl:block opacity-80" />
-        <FloatingSkyIsland className="absolute top-2 right-2 w-28 h-28 hidden 2xl:block opacity-80" />
+        <div className="absolute bottom-20 left-2 w-24 h-24 hidden 2xl:block opacity-80">
+          <Image
+            src="/images/profile/island_flag.png"
+            alt="Island Flag"
+            width={96}
+            height={96}
+            className="object-contain"
+            unoptimized
+          />
+        </div>
+        <div className="absolute top-2 right-2 w-24 h-24 hidden 2xl:block opacity-80">
+          <Image
+            src="/images/profile/island_top_right.png"
+            alt="Island"
+            width={96}
+            height={96}
+            className="object-contain"
+            unoptimized
+          />
+        </div>
       </div>
 
-      {/* Left-Hand Vertical Floating Quick-Action Menu with Sharp Edges */}
+      {/* Left-Hand Vertical Floating Quick-Action Menu with Razor Sharp Corners */}
       <aside className="fixed left-5 top-1/2 -translate-y-1/2 z-30 hidden 2xl:flex flex-col items-center gap-3 rounded-none border border-slate-200 bg-white p-2.5 shadow-md">
         <button className="flex h-10 w-10 items-center justify-center rounded-none bg-purple-50 text-[#7C3AED] hover:bg-purple-100 transition-colors shadow-xs cursor-pointer" title="Goals">
           <IconTarget className="h-5 w-5" />
@@ -124,8 +133,8 @@ export function ProfileDashboardView({
         {/* ================= HERO HEADER & TOP STATS HUD ================= */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           
-          {/* Left Welcome Greeting + Mascot */}
-          <div className="flex items-center gap-5">
+          {/* Left Welcome Greeting + Exact 3D Robot Mascot */}
+          <div className="flex items-center gap-4 sm:gap-6">
             <div>
               <div className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#7C3AED]">
                 LEARNER IDENTITY & ANALYTICS
@@ -138,8 +147,17 @@ export function ProfileDashboardView({
               </p>
             </div>
             
-            {/* 3D Cute Robot Mascot */}
-            <WavingRobotMascot className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 hidden sm:block drop-shadow-sm" />
+            {/* Exact 3D Waving Robot Mascot Image */}
+            <div className="shrink-0 hidden sm:block">
+              <Image
+                src="/images/profile/robot_mascot.png"
+                alt="Waving Robot Mascot"
+                width={80}
+                height={80}
+                className="object-contain drop-shadow-md select-none"
+                unoptimized
+              />
+            </div>
           </div>
 
           {/* Right Stats HUD (4 Sharp Pill Cards) */}
@@ -188,7 +206,7 @@ export function ProfileDashboardView({
         {/* ================= TOP GRID: MAIN HERO PROFILE + CREDENTIALS ================= */}
         <div className="grid gap-5 lg:grid-cols-12 items-stretch">
           
-          {/* Left: Main Identity Card (7 Cols) with Sharp Edges */}
+          {/* Left: Main Identity Card (7 Cols) with Sharp Edges & Exact 3D Student Character */}
           <div className="lg:col-span-7">
             <div className="relative h-full flex flex-col justify-between rounded-none border-2 border-purple-400 bg-white p-6 sm:p-7 shadow-xs overflow-hidden">
               
@@ -242,9 +260,16 @@ export function ProfileDashboardView({
                   </div>
                 </div>
 
-                {/* 3D Student Anime Avatar Graphic */}
-                <div className="shrink-0 self-end sm:self-center">
-                  <StudentAvatarIllustration className="w-32 h-32 sm:w-36 sm:h-36" />
+                {/* Exact 3D Student Pixar Character */}
+                <div className="shrink-0 self-end sm:self-center pr-2">
+                  <Image
+                    src="/images/profile/student_avatar.png"
+                    alt="Learner Avatar 3D"
+                    width={130}
+                    height={130}
+                    className="object-contain drop-shadow-md select-none"
+                    unoptimized
+                  />
                 </div>
 
               </div>
@@ -278,7 +303,7 @@ export function ProfileDashboardView({
           {/* Right: 2 Vertical Verification & Experience Cards with Sharp Edges (5 Cols) */}
           <div className="lg:col-span-5 flex flex-col justify-between gap-4">
             
-            {/* Biometric Calibration Card */}
+            {/* Biometric Calibration Card with Exact 3D Face Hologram */}
             <div className="relative flex items-center justify-between rounded-none border border-slate-200 bg-white p-5 shadow-xs overflow-hidden">
               <div className="pr-2 max-w-[65%]">
                 <div className="flex items-center gap-2 mb-2">
@@ -307,10 +332,19 @@ export function ProfileDashboardView({
                 </Link>
               </div>
 
-              <FaceHologramIllustration className="w-24 h-24 shrink-0" />
+              <div className="shrink-0">
+                <Image
+                  src="/images/profile/face_hologram.png"
+                  alt="Biometric Face 3D"
+                  width={80}
+                  height={80}
+                  className="object-contain drop-shadow-sm select-none"
+                  unoptimized
+                />
+              </div>
             </div>
 
-            {/* Experience Profile Card */}
+            {/* Experience Profile Card with Exact 3D Folder Upload */}
             <div className="relative flex items-center justify-between rounded-none border border-slate-200 bg-white p-5 shadow-xs overflow-hidden">
               <div className="pr-2 max-w-[65%]">
                 <div className="flex items-center gap-2 mb-2">
@@ -339,7 +373,16 @@ export function ProfileDashboardView({
                 </Link>
               </div>
 
-              <FolderUploadIllustration className="w-24 h-24 shrink-0" />
+              <div className="shrink-0">
+                <Image
+                  src="/images/profile/folder_upload.png"
+                  alt="Experience Profile Folder 3D"
+                  width={85}
+                  height={85}
+                  className="object-contain drop-shadow-sm select-none"
+                  unoptimized
+                />
+              </div>
             </div>
 
           </div>
@@ -490,12 +533,19 @@ export function ProfileDashboardView({
         {/* ================= BOTTOM ROW: ACTIVITY HEATMAP & AI PATH LOG ================= */}
         <div className="grid gap-5 lg:grid-cols-2">
           
-          {/* Left: Learning Activity Heatmap with Sharp Edges */}
+          {/* Left: Learning Activity Heatmap with Sharp Edges & Exact 3D Calendar */}
           <div className="rounded-none border border-slate-200 bg-white p-5 sm:p-6 shadow-xs flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between gap-3 mb-4">
                 <div className="flex items-center gap-3">
-                  <Calendar3DIllustration className="w-10 h-10 shrink-0" />
+                  <Image
+                    src="/images/profile/calendar_3d.png"
+                    alt="Calendar 3D"
+                    width={40}
+                    height={40}
+                    className="object-contain shrink-0"
+                    unoptimized
+                  />
                   <div>
                     <div className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#7C3AED]">
                       VELOCITY & FREQUENCY
@@ -544,7 +594,7 @@ export function ProfileDashboardView({
             </div>
           </div>
 
-          {/* Right: AI Adaptive Path Log with Sharp Edges */}
+          {/* Right: AI Adaptive Path Log with Sharp Edges & Exact 3D Brain Mascot */}
           <div className="relative rounded-none border border-slate-200 bg-white p-5 sm:p-6 shadow-xs flex flex-col justify-between overflow-hidden">
             <div>
               <div className="flex items-center justify-between gap-3 mb-4">
@@ -581,9 +631,16 @@ export function ProfileDashboardView({
               </div>
             </div>
 
-            {/* Cute 3D Purple Brain Mascot */}
+            {/* Exact 3D Purple Brain Mascot */}
             <div className="absolute right-4 bottom-3 pointer-events-none">
-              <CuteBrainMascotIllustration className="w-22 h-22" />
+              <Image
+                src="/images/profile/brain_mascot.png"
+                alt="Brain Mascot 3D"
+                width={72}
+                height={72}
+                className="object-contain drop-shadow-sm select-none"
+                unoptimized
+              />
             </div>
           </div>
 
