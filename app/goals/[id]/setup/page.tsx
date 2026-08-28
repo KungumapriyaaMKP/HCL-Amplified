@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Nav } from "@/frontend/components/layout/Nav";
+import { AppSidebar } from "@/frontend/components/layout/AppSidebar";
 import { Card } from "@/frontend/components/ui/Card";
 import { Button } from "@/frontend/components/ui/Button";
 import { ChatThread, type ChatBubble } from "@/frontend/components/chat/ChatThread";
@@ -152,22 +152,32 @@ export default function GoalSetupPage() {
 
   if (!goal) {
     return (
-      <div className="min-h-screen bg-[#070913] text-white">
-        <Nav />
-        <main className="mx-auto max-w-2xl px-4 py-20 text-center text-slate-400">
-          <div className="flex items-center justify-center gap-2 text-purple-400">
-            <span className="h-3 w-3 rounded-full bg-purple-400 animate-ping" />
-            <span>Loading Goal Setup...</span>
-          </div>
-        </main>
+      <div className="flex min-h-screen bg-[#F8F9FD] text-slate-900 font-sans">
+        <AppSidebar displayName="Yuvi" level={1} levelTitle="Newcomer" />
+        <div className="flex-1 flex flex-col min-w-0 overflow-y-auto max-h-screen bg-[#070913] text-white">
+          <main className="mx-auto max-w-2xl px-4 py-20 text-center text-slate-400">
+            <div className="flex items-center justify-center gap-2 text-purple-400">
+              <span className="h-3 w-3 rounded-full bg-purple-400 animate-ping" />
+              <span>Loading Goal Setup...</span>
+            </div>
+          </main>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#070913] text-white">
-      <Nav />
-      <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+    <div className="flex min-h-screen bg-[#F8F9FD] text-slate-900 font-sans">
+      {/* 1. Left Sidebar Navigation */}
+      <AppSidebar
+        displayName="Yuvi"
+        level={1}
+        levelTitle="Newcomer"
+      />
+
+      {/* 2. Main Scrollable Content */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto max-h-screen bg-[#070913] text-white">
+        <main className="mx-auto w-full max-w-3xl px-4 sm:px-6 py-10">
         
         {/* Header */}
         <div className="mb-6">
@@ -382,6 +392,7 @@ export default function GoalSetupPage() {
         )}
 
       </main>
+      </div>
     </div>
   );
 }

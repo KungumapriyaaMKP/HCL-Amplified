@@ -3,7 +3,7 @@ import { getCommunityOverview } from "@/lib/community";
 import { db } from "@/lib/db";
 import { profiles } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { Nav } from "@/frontend/components/layout/Nav";
+import { AppSidebar } from "@/frontend/components/layout/AppSidebar";
 import { CommunityHubView } from "@/frontend/components/community/CommunityHubView";
 
 export default async function CommunityLandingPage() {
@@ -12,27 +12,34 @@ export default async function CommunityLandingPage() {
   const domains = await getCommunityOverview();
 
   return (
-    <div className="min-h-screen bg-[#F8F9FD] text-slate-900 font-sans pb-16">
-      <Nav displayName={profile?.displayName} />
-      <main className="mx-auto w-full max-w-[1440px] px-4 sm:px-8 py-6 space-y-6">
-        
-        {/* Header */}
-        <div className="max-w-2xl">
-          <span className="text-[11px] font-extrabold uppercase tracking-[0.25em] text-[#7C3AED]">
-            PEER NETWORKS & DISCUSSION HUBS
-          </span>
-          <h1 className="mt-1 text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-            Domain Guilds & Communities
-          </h1>
-          <p className="mt-1 text-xs sm:text-sm text-slate-500 font-normal">
-            Join domain hubs to discuss concepts, share code solutions, ask questions, and collaborate with peers.
-          </p>
-        </div>
+    <div className="flex min-h-screen bg-[#F8F9FD] text-slate-900 font-sans">
+      {/* 1. Left Sidebar Navigation */}
+      <AppSidebar
+        displayName={profile?.displayName || "Yuvi"}
+        level={1}
+        levelTitle="Newcomer"
+      />
 
-        {/* Interactive Community Hub Grid */}
-        <CommunityHubView domains={domains} />
+      {/* 2. Main Scrollable Content */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto max-h-screen">
+        <main className="mx-auto w-full max-w-[1440px] px-4 sm:px-8 py-6 space-y-6">
+          {/* Header */}
+          <div className="max-w-2xl">
+            <span className="text-[11px] font-extrabold uppercase tracking-[0.25em] text-[#7C3AED]">
+              PEER NETWORKS & DISCUSSION HUBS
+            </span>
+            <h1 className="mt-1 text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+              Domain Guilds & Communities
+            </h1>
+            <p className="mt-1 text-xs sm:text-sm text-slate-500 font-normal">
+              Join domain hubs to discuss concepts, share code solutions, ask questions, and collaborate with peers.
+            </p>
+          </div>
 
-      </main>
+          {/* Interactive Community Hub Grid */}
+          <CommunityHubView domains={domains} />
+        </main>
+      </div>
     </div>
   );
 }

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Nav } from "@/frontend/components/layout/Nav";
+import { AppSidebar } from "@/frontend/components/layout/AppSidebar";
 import { TRACK_PACES } from "@/data/domains";
 import {
   WavingRobotMascot,
@@ -101,12 +101,17 @@ export default function NewGoalPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F8F9FD] text-slate-900 font-sans pb-6">
-      {/* Top Full-Width Navigation */}
-      <Nav displayName="yuvi" />
+    <div className="flex min-h-screen bg-[#F8F9FD] text-slate-900 font-sans">
+      {/* 1. Left Sidebar Navigation */}
+      <AppSidebar
+        displayName="yuvi"
+        level={1}
+        levelTitle="Newcomer"
+      />
 
-      {/* Main Content Full-Width Precision Canvas */}
-      <main className="mx-auto w-full max-w-[1440px] px-4 sm:px-8 py-3 sm:py-4 space-y-3 sm:space-y-4">
+      {/* 2. Main Scrollable Content */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto max-h-screen">
+        <main className="mx-auto w-full max-w-[1440px] px-4 sm:px-8 py-5 space-y-4">
         
         {/* ================= HEADER & STEP TRACKER ================= */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5">
@@ -352,6 +357,7 @@ export default function NewGoalPage() {
         )}
 
       </main>
+      </div>
     </div>
   );
 }

@@ -3,7 +3,7 @@ import { profiles, xpLedger } from "@/db/schema";
 import { eq, desc, sql } from "drizzle-orm";
 import { levelForXp, levelTitle } from "@/lib/gamification";
 import { createClient } from "@/lib/supabase/server";
-import { Nav } from "@/frontend/components/layout/Nav";
+import { AppSidebar } from "@/frontend/components/layout/AppSidebar";
 import { IconTrophy, IconBolt, IconFlame } from "@tabler/icons-react";
 
 export default async function LeaderboardPage() {
@@ -30,10 +30,17 @@ export default async function LeaderboardPage() {
   const top3 = leaderboard.slice(0, 3);
 
   return (
-    <div className="min-h-screen bg-[#F8F9FD] text-slate-900 font-sans pb-16">
-      <Nav displayName={viewerProfile?.displayName} />
-      
-      <main className="mx-auto w-full max-w-[1440px] px-4 sm:px-8 py-6 space-y-8">
+    <div className="flex min-h-screen bg-[#F8F9FD] text-slate-900 font-sans">
+      {/* 1. Left Sidebar Navigation */}
+      <AppSidebar
+        displayName={viewerProfile?.displayName || "Yuvi"}
+        level={1}
+        levelTitle="Newcomer"
+      />
+
+      {/* 2. Main Scrollable Content */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto max-h-screen">
+        <main className="mx-auto w-full max-w-[1440px] px-4 sm:px-8 py-6 space-y-8">
         
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto">
@@ -257,6 +264,7 @@ export default async function LeaderboardPage() {
         </div>
 
       </main>
+      </div>
     </div>
   );
 }

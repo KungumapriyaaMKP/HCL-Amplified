@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/auth";
 import { getModuleDetail } from "@/lib/moduleDetail";
-import { Nav } from "@/frontend/components/layout/Nav";
+import { AppSidebar } from "@/frontend/components/layout/AppSidebar";
 import { ProctoredWorkspace } from "@/frontend/components/goals/ProctoredWorkspace";
 
 export default async function ProctoredPage({ params }: { params: Promise<{ id: string; moduleId: string }> }) {
@@ -11,18 +11,27 @@ export default async function ProctoredPage({ params }: { params: Promise<{ id: 
   if (!detail) redirect(`/goals/${id}`);
 
   return (
-    <div className="min-h-screen bg-[#070913] text-white">
-      <Nav />
-      <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
-        <ProctoredWorkspace
-          goalId={id}
-          moduleId={moduleId}
-          skillName={detail.skill.name}
-          alreadyTaken={!!detail.proctoredAttempt?.submittedAt}
-          initialScore={detail.proctoredAttempt?.score ?? null}
-          initialReport={detail.proctoredAttempt?.reportText ?? null}
-        />
-      </main>
+    <div className="flex min-h-screen bg-[#F8F9FD] text-slate-900 font-sans">
+      {/* 1. Left Sidebar Navigation */}
+      <AppSidebar
+        displayName="Yuvi"
+        level={1}
+        levelTitle="Newcomer"
+      />
+
+      {/* 2. Main Scrollable Content */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto max-h-screen bg-[#070913] text-white">
+        <main className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6">
+          <ProctoredWorkspace
+            goalId={id}
+            moduleId={moduleId}
+            skillName={detail.skill.name}
+            alreadyTaken={!!detail.proctoredAttempt?.submittedAt}
+            initialScore={detail.proctoredAttempt?.score ?? null}
+            initialReport={detail.proctoredAttempt?.reportText ?? null}
+          />
+        </main>
+      </div>
     </div>
   );
 }

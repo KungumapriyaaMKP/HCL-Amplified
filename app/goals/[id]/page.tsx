@@ -5,7 +5,7 @@ import { getGoalDetail } from "@/lib/goalData";
 import { db } from "@/lib/db";
 import { profiles } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { Nav } from "@/frontend/components/layout/Nav";
+import { AppSidebar } from "@/frontend/components/layout/AppSidebar";
 import { Card } from "@/frontend/components/ui/Card";
 import { ProgressBar } from "@/frontend/components/ui/progress-bar";
 import { ModuleCard } from "@/frontend/components/goals/ModuleCard";
@@ -41,9 +41,17 @@ export default async function GoalPage({ params }: { params: Promise<{ id: strin
   const groupOrder = Object.keys(groups).sort((a, b) => order.indexOf(a) - order.indexOf(b));
 
   return (
-    <div className="min-h-screen bg-[#070913] text-white">
-      <Nav displayName={profile?.displayName} />
-      <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6">
+    <div className="flex min-h-screen bg-[#F8F9FD] text-slate-900 font-sans">
+      {/* 1. Left Sidebar Navigation */}
+      <AppSidebar
+        displayName={profile?.displayName || "Yuvi"}
+        level={1}
+        levelTitle="Newcomer"
+      />
+
+      {/* 2. Main Scrollable Content */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto max-h-screen">
+        <main className="mx-auto w-full max-w-4xl px-4 sm:px-6 py-8">
         
         {/* Breadcrumb / Domain Tag */}
         <div className="mb-2 flex items-center justify-between gap-3">
@@ -102,6 +110,7 @@ export default async function GoalPage({ params }: { params: Promise<{ id: strin
 
       </main>
       <AssistantWidget goalId={id} />
+      </div>
     </div>
   );
 }
