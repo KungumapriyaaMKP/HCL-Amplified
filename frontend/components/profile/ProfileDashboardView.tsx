@@ -332,15 +332,50 @@ export function ProfileDashboardView({
                 </Link>
               </div>
 
-              <div className="shrink-0">
-                <Image
-                  src="/images/profile/face_hologram.png"
-                  alt="Biometric Face 3D"
-                  width={80}
-                  height={80}
-                  className="object-contain drop-shadow-sm select-none"
-                  unoptimized
-                />
+              {/* Dynamic Animated Biometric Face Scanner */}
+              <div className="shrink-0 relative flex items-center justify-center select-none w-20 h-20">
+                {/* Pulsing Scan Reticle Corner Brackets */}
+                <svg
+                  viewBox="0 0 100 100"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="absolute inset-0 w-full h-full pointer-events-none animate-biometric-brackets z-10"
+                >
+                  {/* Top-Left Bracket */}
+                  <path d="M12 28 V12 H28" stroke="#38BDF8" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+                  {/* Top-Right Bracket */}
+                  <path d="M88 28 V12 H72" stroke="#38BDF8" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+                  {/* Bottom-Left Bracket */}
+                  <path d="M12 72 V88 H28" stroke="#38BDF8" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+                  {/* Bottom-Right Bracket */}
+                  <path d="M88 72 V88 H72" stroke="#38BDF8" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+
+                  {/* Calibration Crosshair Ticks */}
+                  <line x1="50" y1="5" x2="50" y2="10" stroke="#38BDF8" strokeWidth="2" strokeLinecap="round" opacity="0.6" />
+                  <line x1="50" y1="90" x2="50" y2="95" stroke="#38BDF8" strokeWidth="2" strokeLinecap="round" opacity="0.6" />
+                  <line x1="5" y1="50" x2="10" y2="50" stroke="#38BDF8" strokeWidth="2" strokeLinecap="round" opacity="0.6" />
+                  <line x1="90" y1="50" x2="95" y2="50" stroke="#38BDF8" strokeWidth="2" strokeLinecap="round" opacity="0.6" />
+                </svg>
+
+                {/* Radar Grid Ripple Wave */}
+                <div className="absolute inset-1.5 rounded-full border border-sky-400/40 animate-biometric-ripple pointer-events-none" />
+
+                {/* Biometric Face Image Container with Sweeping Laser Line */}
+                <div className="relative w-16 h-16 flex items-center justify-center overflow-hidden rounded-full">
+                  <Image
+                    src="/images/profile/face_hologram.png"
+                    alt="Biometric Face 3D"
+                    width={64}
+                    height={64}
+                    className="object-contain drop-shadow-sm select-none"
+                    unoptimized
+                  />
+
+                  {/* Sweeping Laser Beam with Glowing Cyan Light Curtain */}
+                  <div className="absolute left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-200 to-transparent shadow-[0_0_8px_#38BDF8] animate-biometric-laser pointer-events-none z-20">
+                    <div className="absolute -top-3 left-0 right-0 h-3 bg-gradient-to-t from-cyan-400/35 to-transparent blur-[0.5px] pointer-events-none" />
+                  </div>
+                </div>
               </div>
             </div>
 

@@ -266,5 +266,61 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 0 6px rgba(168, 85, 247, 0.55), 0 0 12px rgba(124, 58, 237, 0.2) !important;
 }
 
+/* Dynamic Biometric Face Laser Scanning Keyframes */
+@keyframes biometric-laser-sweep {
+  0% {
+    top: 8%;
+    opacity: 0.95;
+  }
+  50% {
+    top: 85%;
+    opacity: 0.95;
+  }
+  100% {
+    top: 8%;
+    opacity: 0.95;
+  }
+}
+
+@keyframes biometric-bracket-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.85;
+    filter: drop-shadow(0 0 3px rgba(56, 189, 248, 0.5));
+  }
+  50% {
+    transform: scale(1.06);
+    opacity: 1;
+    filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.95));
+  }
+}
+
+@keyframes biometric-grid-ripple {
+  0% {
+    transform: scale(0.7);
+    opacity: 0.85;
+  }
+  50% {
+    opacity: 0.35;
+  }
+  100% {
+    transform: scale(1.3);
+    opacity: 0;
+  }
+}
+
+.animate-biometric-laser {
+  animation: biometric-laser-sweep 2.2s ease-in-out infinite;
+}
+
+.animate-biometric-brackets {
+  animation: biometric-bracket-pulse 2s ease-in-out infinite;
+}
+
+.animate-biometric-ripple {
+  animation: biometric-grid-ripple 2.4s cubic-bezier(0.1, 0.6, 0.4, 1) infinite;
+}
+
+
 
 
