@@ -18,6 +18,9 @@ import {
   IconChartBar,
   IconArrowRight,
   IconChevronRight,
+  IconFlame,
+  IconSnowflake,
+  IconRotateClockwise,
 } from "@tabler/icons-react";
 
 interface QuestDashboardProps {
@@ -28,6 +31,7 @@ interface QuestDashboardProps {
   xpIntoLevel?: number;
   xpForNextLevel?: number;
   streak?: number;
+  freezes?: number;
   badgeCount?: number;
   activeGoalId?: string;
   activeAiGoalId?: string;
@@ -129,6 +133,55 @@ export function QuestDashboard({
               </Link>
             </div>
 
+          </div>
+        </div>
+
+        {/* DAILY MOMENTUM & PRODUCTIVITY BANNER */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="rounded-lg border border-purple-200/80 bg-gradient-to-br from-purple-50/90 to-white p-4 shadow-2xs flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#EDE9FE] text-[#7C3AED] shrink-0">
+                <IconFlame className="h-5 w-5" />
+              </div>
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-wider text-[#7C3AED] block">
+                  DAILY MOMENTUM
+                </span>
+                <span className="text-xs font-bold text-slate-800">
+                  2 of 3 Focus Blocks Target
+                </span>
+              </div>
+            </div>
+            <Link
+              href={activeGoalId ? `/goals/${activeGoalId}` : "/goals/new"}
+              className="inline-flex items-center gap-1 rounded-md bg-[#7C3AED] px-3 py-1.5 text-[11px] font-bold text-white shadow-2xs hover:bg-[#6D28D9] transition-colors"
+            >
+              <span>Focus 25m</span>
+              <IconArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+
+          <div className="rounded-lg border border-slate-200/80 bg-white p-4 shadow-2xs flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 shrink-0">
+                <IconRotateClockwise className="h-5 w-5" />
+              </div>
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700 block">
+                  SPACED RETENTION
+                </span>
+                <span className="text-xs font-bold text-slate-800">
+                  SM-2 Review Queue
+                </span>
+              </div>
+            </div>
+            <Link
+              href="/review"
+              className="inline-flex items-center gap-1 rounded-md bg-emerald-600 px-3 py-1.5 text-[11px] font-bold text-white shadow-2xs hover:bg-emerald-700 transition-colors"
+            >
+              <span>Review</span>
+              <IconArrowRight className="h-3.5 w-3.5" />
+            </Link>
           </div>
         </div>
 

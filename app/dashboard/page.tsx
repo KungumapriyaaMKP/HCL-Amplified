@@ -12,6 +12,7 @@ export default async function DashboardPage() {
   let xpIntoLevel = 0;
   let xpForNextLevel = 50;
   let currentStreak = 0;
+  let freezes = 0;
   let badgeCount = 0;
   let activeGoalId: string | undefined;
   let activeAiGoalId: string | undefined;
@@ -28,6 +29,7 @@ export default async function DashboardPage() {
     xpIntoLevel = data.gamification.xpIntoLevel ?? 0;
     xpForNextLevel = data.gamification.xpForNextLevel || 50;
     currentStreak = data.gamification.streak?.currentStreak ?? 0;
+    freezes = data.gamification.streak?.freezes ?? 0;
     badgeCount = data.gamification.badges?.length ?? 0;
 
     if (data.goals && data.goals.length > 0) {
@@ -72,6 +74,7 @@ export default async function DashboardPage() {
             xpIntoLevel={xpIntoLevel}
             xpForNextLevel={xpForNextLevel}
             streak={currentStreak}
+            freezes={freezes}
             badgeCount={badgeCount}
             activeGoalId={activeGoalId}
             activeAiGoalId={activeAiGoalId}

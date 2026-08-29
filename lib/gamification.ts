@@ -41,35 +41,52 @@ export function levelTitle(level: number): string {
   return LEVEL_TITLES[Math.min(level - 1, LEVEL_TITLES.length - 1)];
 }
 
-/** Updates the learner's daily activity streak. Call this once per
- * meaningful activity (progress event, quiz, proctored test). Idempotent
- * within the same day. Returns the streak row and whether it grew today. */
 export async function touchStreak(userId: string) {
   const today = new Date().toISOString().slice(0, 10);
   const existing = await db.query.streaks.findFirst({ where: eq(streaks.userId, userId) });
 
   if (!existing) {
-    await db.insert(streaks).values({ userId, currentStreak: 1, longestStreak: 1, lastActiveDate: today });
+    await db.insert(streaks).values({ userId, currentStreak: 1, longestStreak: 1, lastActiveDate: today, freezes: 0 });
     await awardXp(userId, XP.DAILY_ACTIVITY, "Daily activity");
-    return { currentStreak: 1, longestStreak: 1, grew: true };
+    return { currentStreak: 1, longestStreak: 1, freezes: 0, grew: true, freezeUsed: false };
   }
 
   if (existing.lastActiveDate === today) {
-    return { currentStreak: existing.currentStreak, longestStreak: existing.longestStreak, grew: false };
+    return { currentStreak: existing.currentStreak, longestStreak: existing.longestStreak, freezes: existing.freezes, grew: false, freezeUsed: false };
   }
 
   const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
   const continued = existing.lastActiveDate === yesterday;
-  const currentStreak = continued ? existing.currentStreak + 1 : 1;
+  let currentStreak = 1;
+  let freezes = existing.freezes || 0;
+  let freezeUsed = false;
+
+  if (continued) {
+    currentStreak = existing.currentStreak + 1;
+    // Earn a streak freeze on every 7-day milestone
+    if (currentStreak % 7 === 0) {
+      freezes += 1;
+    }
+  } else {
+    // Missed a day: auto-consume a streak freeze if available
+    if (freezes > 0) {
+      freezes -= 1;
+      currentStreak = existing.currentStreak + 1;
+      freezeUsed = true;
+    } else {
+      currentStreak = 1;
+    }
+  }
+
   const longestStreak = Math.max(existing.longestStreak, currentStreak);
 
   await db
     .update(streaks)
-    .set({ currentStreak, longestStreak, lastActiveDate: today })
+    .set({ currentStreak, longestStreak, lastActiveDate: today, freezes })
     .where(eq(streaks.userId, userId));
   await awardXp(userId, XP.DAILY_ACTIVITY, "Daily activity");
 
-  return { currentStreak, longestStreak, grew: true };
+  return { currentStreak, longestStreak, freezes, grew: true, freezeUsed };
 }
 
 /** Awards a badge if the learner doesn't already have it. Returns true if

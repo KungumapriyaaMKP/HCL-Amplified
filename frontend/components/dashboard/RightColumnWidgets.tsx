@@ -365,13 +365,36 @@ export function YourPlanForToday() {
  * 2. Achievements Widget with Exact 3D Hexagonal Badges
  */
 export function AchievementsWidget() {
+  const [profileData, setProfileData] = React.useState<any>(null);
+
+  React.useEffect(() => {
+    async function loadProfile() {
+      try {
+        const res = await fetch("/api/profile");
+        if (res.ok) {
+          const data = await res.json();
+          setProfileData(data);
+        }
+      } catch (err) {
+        console.error("Failed to load achievements data:", err);
+      }
+    }
+    loadProfile();
+  }, []);
+
+  const streak = profileData?.streak?.currentStreak ?? 1;
+  const badgesList = profileData?.badges ?? [];
+  const hasFirstSteps = badgesList.some((b: any) => b.id === "first_steps") || profileData?.xp > 0;
+  const hasDeepWork = badgesList.some((b: any) => b.id === "deep_work");
+  const streakPct = Math.min(100, Math.round((streak / 3) * 100));
+
   return (
     <div className="rounded-lg border border-slate-200/80 bg-white p-5 shadow-sm">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-bold text-slate-900">Achievements</h3>
         <Link href="/profile" className="text-xs font-bold text-[#6D28D9] hover:underline">
-          View all
+          View all ({badgesList.length || 1})
         </Link>
       </div>
 
@@ -385,9 +408,15 @@ export function AchievementsWidget() {
             Complete your first quest
           </div>
           <div className="mt-2.5 w-full">
-            <span className="inline-flex items-center justify-center gap-1 w-full rounded-sm bg-emerald-50 border border-emerald-200/60 py-0.5 text-[9px] font-bold text-emerald-700">
-              <IconCheck className="h-2.5 w-2.5 stroke-[3]" />
-              <span>Completed</span>
+            <span
+              className={`inline-flex items-center justify-center gap-1 w-full rounded-sm py-0.5 text-[9px] font-bold ${
+                hasFirstSteps
+                  ? "bg-emerald-50 border border-emerald-200/60 text-emerald-700"
+                  : "bg-slate-100 text-slate-400"
+              }`}
+            >
+              {hasFirstSteps && <IconCheck className="h-2.5 w-2.5 stroke-[3]" />}
+              <span>{hasFirstSteps ? "Completed" : "In Progress"}</span>
             </span>
           </div>
         </div>
@@ -400,25 +429,31 @@ export function AchievementsWidget() {
             Maintain a 3-day streak
           </div>
           <div className="mt-2.5 w-full">
-            <div className="text-[9px] font-bold text-slate-500 mb-1">0 / 3</div>
+            <div className="text-[9px] font-bold text-slate-500 mb-1">{Math.min(3, streak)} / 3</div>
             <div className="h-1.5 w-full rounded-sm bg-slate-200 overflow-hidden">
-              <div className="h-full rounded-sm bg-[#7C3AED]" style={{ width: "0%" }} />
+              <div className="h-full rounded-sm bg-[#7C3AED]" style={{ width: `${streakPct}%` }} />
             </div>
           </div>
         </div>
 
-        {/* Badge 3: Explorer (Compass Hexagon) */}
+        {/* Badge 3: Deep Work / Explorer (Compass Hexagon) */}
         <div className="rounded-md border border-slate-100 bg-[#FAFBFD] p-3 flex flex-col items-center text-center">
           <CompassHexagonBadge className="w-14 h-14 mb-2" />
-          <div className="text-[11px] font-bold text-slate-900 leading-tight">Explorer</div>
+          <div className="text-[11px] font-bold text-slate-900 leading-tight">Deep Work</div>
           <div className="text-[9px] text-slate-400 mt-0.5 leading-tight">
-            Complete 5 checkpoints
+            5 Pomodoro focus blocks
           </div>
           <div className="mt-2.5 w-full">
-            <div className="text-[9px] font-bold text-slate-500 mb-1">1 / 5</div>
-            <div className="h-1.5 w-full rounded-sm bg-slate-200 overflow-hidden">
-              <div className="h-full rounded-sm bg-[#0284C7]" style={{ width: "20%" }} />
-            </div>
+            {hasDeepWork ? (
+              <span className="inline-flex items-center justify-center gap-1 w-full rounded-sm bg-emerald-50 border border-emerald-200/60 py-0.5 text-[9px] font-bold text-emerald-700">
+                <IconCheck className="h-2.5 w-2.5 stroke-[3]" />
+                <span>Unlocked</span>
+              </span>
+            ) : (
+              <div className="text-[9px] font-bold text-slate-500 mb-1">
+                <span className="text-[#0284C7]">Focus</span>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -432,12 +467,12 @@ export function AchievementsWidget() {
 export function WeeklyProgressWidget() {
   const days = [
     { day: "Mon", height: 50 },
-    { day: "Tue", height: 35 },
+    { day: "Tue", height: 65 },
     { day: "Wed", height: 95, isPeak: true },
-    { day: "Thu", height: 65 },
-    { day: "Fri", height: 30 },
-    { day: "Sat", height: 20 },
-    { day: "Sun", height: 15 },
+    { day: "Thu", height: 75 },
+    { day: "Fri", height: 45 },
+    { day: "Sat", height: 30 },
+    { day: "Sun", height: 40 },
   ];
 
   return (
@@ -471,10 +506,10 @@ export function WeeklyProgressWidget() {
         {/* Right Summary Statistics */}
         <div className="shrink-0 pl-2 text-right">
           <div className="text-[10px] font-semibold text-slate-400">This Week</div>
-          <div className="text-xl font-extrabold text-slate-900 leading-tight">2.5 hrs</div>
+          <div className="text-xl font-extrabold text-slate-900 leading-tight">3.2 hrs</div>
           <div className="mt-1 flex items-center justify-end gap-1 text-[10px] font-bold text-emerald-600">
             <IconTrendingUp className="h-3 w-3" />
-            <span>+1.2 hrs vs last week</span>
+            <span>+1.5 hrs vs last week</span>
           </div>
         </div>
       </div>
