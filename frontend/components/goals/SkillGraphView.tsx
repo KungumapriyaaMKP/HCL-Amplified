@@ -1,17 +1,59 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import type { GraphNode, GraphEdge } from "@/lib/skillGraph";
 import { computePoincareLayout, type PoincareNode } from "@/lib/poincare";
+import {
+  IconCheck,
+  IconTarget,
+  IconArrowRight,
+  IconSparkles,
+  IconAward,
+  IconBook,
+} from "@tabler/icons-react";
 
 type Status = "mastered" | "target" | "required" | "in_progress" | "outside";
 
-const STATUS_COLOR: Record<Status, { fill: string; stroke: string; text: string; shadow: string }> = {
-  mastered: { fill: "#34d399", stroke: "#10b981", text: "#34d399", shadow: "rgba(16,185,129,0.5)" },
-  in_progress: { fill: "#fbbf24", stroke: "#f59e0b", text: "#fbbf24", shadow: "rgba(245,158,11,0.5)" },
-  target: { fill: "#c084fc", stroke: "#a855f7", text: "#e9d5ff", shadow: "rgba(168,85,247,0.7)" },
-  required: { fill: "#38bdf8", stroke: "#0ea5e9", text: "#7dd3fc", shadow: "rgba(6,182,212,0.5)" },
-  outside: { fill: "#64748b", stroke: "#475569", text: "#94a3b8", shadow: "transparent" },
+const STATUS_COLOR: Record<
+  Status,
+  { fill: string; stroke: string; text: string; bg: string; badge: string }
+> = {
+  mastered: {
+    fill: "#10B981",
+    stroke: "#059669",
+    text: "#065F46",
+    bg: "#ECFDF5",
+    badge: "Mastered (60%+)",
+  },
+  in_progress: {
+    fill: "#F59E0B",
+    stroke: "#D97706",
+    text: "#92400E",
+    bg: "#FFFBEB",
+    badge: "In Progress",
+  },
+  target: {
+    fill: "#7C3AED",
+    stroke: "#6D28D9",
+    text: "#5B21B6",
+    bg: "#F5F3FF",
+    badge: "Target Skill",
+  },
+  required: {
+    fill: "#0284C7",
+    stroke: "#0369A1",
+    text: "#075985",
+    bg: "#F0F9FF",
+    badge: "Prerequisite",
+  },
+  outside: {
+    fill: "#64748B",
+    stroke: "#475569",
+    text: "#334155",
+    bg: "#F8FAFC",
+    badge: "Other Skill",
+  },
 };
 
 function statusFor(mastery: number, isTarget: boolean, isRequired: boolean): Status {
@@ -22,17 +64,15 @@ function statusFor(mastery: number, isTarget: boolean, isRequired: boolean): Sta
   return "outside";
 }
 
-/**
- * Renders the domain's skill graph as a 2D Poincaré Hyperbolic Disk.
- * Foundational skills cluster near the origin; specialized/advanced skills branch outward.
- */
 export function SkillGraphView({
+  goalId,
   nodes,
   edges,
   masteryBySkill,
   targetSkillIds,
   requiredSkillIds,
 }: {
+  goalId?: string;
   nodes: GraphNode[];
   edges: GraphEdge[];
   masteryBySkill: Map<string, number>;
@@ -46,13 +86,13 @@ export function SkillGraphView({
     return computePoincareLayout(nodes, edges);
   }, [nodes, edges]);
 
-  const activeNodeId = hoveredNodeId || selectedNodeId;
+  const activeNodeId = hoveredNodeId || selectedNodeId || poincareData.nodes[0]?.id;
   const activeNode = useMemo(() => {
     return poincareData.nodes.find((n) => n.id === activeNodeId) ?? null;
   }, [poincareData.nodes, activeNodeId]);
 
-  const size = 560;
-  const radius = size / 2 - 28;
+  const size = 600;
+  const radius = size / 2 - 36;
   const center = size / 2;
 
   // Transform Poincaré disk coordinates (-1..1) to SVG canvas pixels (0..size)
@@ -61,274 +101,368 @@ export function SkillGraphView({
     y: center + v * radius,
   });
 
+  const activeMastery = activeNode ? masteryBySkill.get(activeNode.id) ?? 0 : 0;
+  const activeStatus = activeNode
+    ? statusFor(
+        activeMastery,
+        targetSkillIds.has(activeNode.id),
+        requiredSkillIds.has(activeNode.id)
+      )
+    : "outside";
+  const activeColors = STATUS_COLOR[activeStatus];
+
   return (
-    <div className="space-y-4">
-      {/* Active node detail panel */}
-      {activeNode && (
-        <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-purple-500/30 bg-[#0d1226]/90 p-3.5 backdrop-blur-md shadow-[0_0_20px_rgba(139,92,246,0.2)]">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-bold text-white">{activeNode.name}</span>
-              <span className="rounded-md border border-purple-500/30 bg-purple-950/60 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-purple-300">
-                {activeNode.category.replace(/-/g, " ")}
-              </span>
-            </div>
-            <p className="mt-0.5 text-xs text-slate-400">
-              Hyperbolic Radius: <span className="text-white font-mono">{activeNode.radius}</span> · Angle:{" "}
-              <span className="text-white font-mono">{activeNode.angle} rad</span>
-            </p>
-          </div>
+    <div className="space-y-6">
+      {/* 1. Interactive Poincaré Hyperbolic Constellation */}
+      <div className="relative flex flex-col items-center justify-center overflow-hidden rounded-md border-2 border-purple-200/80 bg-white/95 p-6 shadow-xl shadow-purple-500/5 backdrop-blur-md">
+        
+        {/* Soft Ambient Background Glow */}
+        <div className="pointer-events-none absolute inset-12 rounded-full bg-gradient-to-tr from-purple-300/20 via-amber-200/20 to-teal-200/20 blur-3xl" />
 
-          <div className="flex items-center gap-4 text-xs">
-            <div>
-              <span className="text-slate-400">Mastery: </span>
-              <span className="font-bold text-white">
-                {masteryBySkill.get(activeNode.id) ?? 0}%
-              </span>
-            </div>
-            <div>
-              <span className="text-slate-400">Level: </span>
-              <span className="font-bold text-amber-400">
-                {activeNode.depth === 0 ? "Foundation" : activeNode.depth <= 2 ? "Core" : "Advanced"}
-              </span>
-            </div>
-            <div>
-              <span className="text-slate-400">Unlocks: </span>
-              <span className="font-bold text-emerald-400">{activeNode.fanOut} skills</span>
-            </div>
-          </div>
-        </div>
-      )}
+        <svg
+          width={size}
+          height={size}
+          viewBox={`0 0 ${size} ${size}`}
+          className="max-w-full select-none overflow-visible"
+        >
+          <defs>
+            {/* Luminous Poincaré Gradient */}
+            <radialGradient id="poincare-luminous" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="1" />
+              <stop offset="65%" stopColor="#FAF5FF" stopOpacity="0.95" />
+              <stop offset="100%" stopColor="#F3E8FF" stopOpacity="0.9" />
+            </radialGradient>
 
-      {/* Poincaré Hyperbolic Constellation */}
-      <div className="relative flex flex-col items-center justify-center overflow-hidden rounded-2xl border-2 border-purple-500/30 bg-[#070a1a]/95 p-4 sm:p-6 shadow-[0_0_35px_rgba(139,92,246,0.25)] backdrop-blur-2xl">
-        <div className="relative">
-          {/* Ambient Glow */}
-          <div className="pointer-events-none absolute inset-8 rounded-full bg-purple-600/10 blur-3xl" />
+            {/* Glowing Drop Shadows */}
+            <filter id="nodeGlow" x="-30%" y="-30%" width="160%" height="160%">
+              <feDropShadow dx="0" dy="4" stdDeviation="5" floodColor="#7C3AED" floodOpacity="0.35" />
+            </filter>
+            <filter id="activeGlow" x="-40%" y="-40%" width="180%" height="180%">
+              <feDropShadow dx="0" dy="6" stdDeviation="8" floodColor="#6D28D9" floodOpacity="0.5" />
+            </filter>
 
-          <svg
-            width={size}
-            height={size}
-            viewBox={`0 0 ${size} ${size}`}
-            className="max-w-full select-none overflow-visible"
-          >
-            <defs>
-              <radialGradient id="poincare-bg" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="#131926" stopOpacity="0.8" />
-                <stop offset="85%" stopColor="#0b0f19" stopOpacity="0.95" />
-                <stop offset="100%" stopColor="#060911" stopOpacity="1" />
-              </radialGradient>
-              <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur stdDeviation="3" result="blur" />
-                <feComposite in="SourceGraphic" in2="blur" operator="over" />
-              </filter>
-              <marker
-                id="poincare-arrow"
-                viewBox="0 0 10 10"
-                refX="14"
-                refY="5"
-                markerWidth="5"
-                markerHeight="5"
-                orient="auto"
+            {/* Directional Edge Markers */}
+            <marker
+              id="edge-arrow"
+              viewBox="0 0 10 10"
+              refX="16"
+              refY="5"
+              markerWidth="5"
+              markerHeight="5"
+              orient="auto"
+            >
+              <path d="M 0 2 L 7 5 L 0 8 z" fill="#C4B5FD" />
+            </marker>
+            <marker
+              id="edge-arrow-active"
+              viewBox="0 0 10 10"
+              refX="18"
+              refY="5"
+              markerWidth="6"
+              markerHeight="6"
+              orient="auto"
+            >
+              <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#7C3AED" />
+            </marker>
+          </defs>
+
+          {/* Horizon Boundary Circle */}
+          <circle
+            cx={center}
+            cy={center}
+            r={radius}
+            fill="url(#poincare-luminous)"
+            stroke="#DDD6FE"
+            strokeWidth="3"
+          />
+
+          {/* Concentric Hyperbolic Horizon Orbit Rings */}
+          <circle
+            cx={center}
+            cy={center}
+            r={radius * 0.32}
+            fill="none"
+            stroke="#C084FC"
+            strokeOpacity="0.35"
+            strokeWidth="1.5"
+            strokeDasharray="4 4"
+          />
+          <circle
+            cx={center}
+            cy={center}
+            r={radius * 0.62}
+            fill="none"
+            stroke="#C084FC"
+            strokeOpacity="0.25"
+            strokeWidth="1.5"
+            strokeDasharray="5 5"
+          />
+          <circle
+            cx={center}
+            cy={center}
+            r={radius * 0.88}
+            fill="none"
+            stroke="#C084FC"
+            strokeOpacity="0.2"
+            strokeWidth="1.5"
+            strokeDasharray="4 4"
+          />
+
+          {/* Central Origin Crosshair */}
+          <line
+            x1={center - 10}
+            y1={center}
+            x2={center + 10}
+            y2={center}
+            stroke="#C4B5FD"
+            strokeWidth="1.5"
+          />
+          <line
+            x1={center}
+            y1={center - 10}
+            x2={center}
+            y2={center + 10}
+            stroke="#C4B5FD"
+            strokeWidth="1.5"
+          />
+
+          {/* Dependency Connection Edges */}
+          {poincareData.edges.map((edge, i) => {
+            const src = poincareData.nodes.find((n) => n.id === edge.from);
+            const tgt = poincareData.nodes.find((n) => n.id === edge.to);
+            if (!src || !tgt) return null;
+
+            const p1 = toSvgCoords(src.u, src.v);
+            const p2 = toSvgCoords(tgt.u, tgt.v);
+
+            const isHighlighted = activeNode?.id === src.id || activeNode?.id === tgt.id;
+
+            return (
+              <line
+                key={i}
+                x1={p1.x}
+                y1={p1.y}
+                x2={p2.x}
+                y2={p2.y}
+                stroke={isHighlighted ? "#7C3AED" : "#DDD6FE"}
+                strokeWidth={isHighlighted ? 2.5 : 1.25}
+                strokeDasharray={isHighlighted ? "6 3" : undefined}
+                markerEnd={isHighlighted ? "url(#edge-arrow-active)" : "url(#edge-arrow)"}
+                className="transition-all duration-200"
+              />
+            );
+          })}
+
+          {/* Skill Nodes */}
+          {poincareData.nodes.map((node) => {
+            const pt = toSvgCoords(node.u, node.v);
+            const isSelected = selectedNodeId === node.id;
+            const isHovered = hoveredNodeId === node.id;
+            const isActive = isSelected || isHovered || activeNode?.id === node.id;
+
+            const mastery = masteryBySkill.get(node.id) ?? 0;
+            const status = statusFor(
+              mastery,
+              targetSkillIds.has(node.id),
+              requiredSkillIds.has(node.id)
+            );
+            const colors = STATUS_COLOR[status];
+
+            const baseRadius = node.depth === 0 ? 11 : Math.max(8, 12 - node.depth * 0.9);
+            const r = isActive ? baseRadius + 4 : baseRadius;
+
+            return (
+              <g
+                key={node.id}
+                className="cursor-pointer group"
+                onMouseEnter={() => setHoveredNodeId(node.id)}
+                onMouseLeave={() => setHoveredNodeId(null)}
+                onClick={() =>
+                  setSelectedNodeId((prev) => (prev === node.id ? null : node.id))
+                }
               >
-                <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#64748b" />
-              </marker>
-              <marker
-                id="poincare-arrow-active"
-                viewBox="0 0 10 10"
-                refX="14"
-                refY="5"
-                markerWidth="6"
-                markerHeight="6"
-                orient="auto"
-              >
-                <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#f59e0b" />
-              </marker>
-            </defs>
-
-            {/* Boundary Circle (Poincaré Horizon) */}
-            <circle
-              cx={center}
-              cy={center}
-              r={radius}
-              fill="url(#poincare-bg)"
-              stroke="rgba(168, 85, 247, 0.4)"
-              strokeWidth="2"
-            />
-
-            {/* Hyperbolic Concentric Horizons */}
-            <circle
-              cx={center}
-              cy={center}
-              r={radius * 0.32}
-              fill="none"
-              stroke="rgba(255, 255, 255, 0.07)"
-              strokeDasharray="4 4"
-            />
-            <circle
-              cx={center}
-              cy={center}
-              r={radius * 0.62}
-              fill="none"
-              stroke="rgba(255, 255, 255, 0.07)"
-              strokeDasharray="4 4"
-            />
-            <circle
-              cx={center}
-              cy={center}
-              r={radius * 0.88}
-              fill="none"
-              stroke="rgba(255, 255, 255, 0.1)"
-              strokeDasharray="3 3"
-            />
-
-            {/* Central Origin Crosshair */}
-            <line
-              x1={center - 8}
-              y1={center}
-              x2={center + 8}
-              y2={center}
-              stroke="rgba(255, 255, 255, 0.12)"
-              strokeWidth="1"
-            />
-            <line
-              x1={center}
-              y1={center - 8}
-              x2={center}
-              y2={center + 8}
-              stroke="rgba(255, 255, 255, 0.12)"
-              strokeWidth="1"
-            />
-
-            {/* Edges with Hyperbolic Geodesic Connections */}
-            {poincareData.edges.map((edge, i) => {
-              const src = poincareData.nodes.find((n) => n.id === edge.from);
-              const tgt = poincareData.nodes.find((n) => n.id === edge.to);
-              if (!src || !tgt) return null;
-
-              const p1 = toSvgCoords(src.u, src.v);
-              const p2 = toSvgCoords(tgt.u, tgt.v);
-
-              const isHighlighted = activeNode?.id === src.id || activeNode?.id === tgt.id;
-
-              return (
-                <line
-                  key={i}
-                  x1={p1.x}
-                  y1={p1.y}
-                  x2={p2.x}
-                  y2={p2.y}
-                  stroke={isHighlighted ? "#f59e0b" : "rgba(148, 163, 184, 0.22)"}
-                  strokeWidth={isHighlighted ? 2 : 1}
-                  markerEnd={isHighlighted ? "url(#poincare-arrow-active)" : "url(#poincare-arrow)"}
-                  className="transition-colors duration-150"
-                />
-              );
-            })}
-
-            {/* Skill Nodes */}
-            {poincareData.nodes.map((node) => {
-              const pt = toSvgCoords(node.u, node.v);
-              const isSelected = selectedNodeId === node.id;
-              const isHovered = hoveredNodeId === node.id;
-              const isActive = isSelected || isHovered;
-
-              const mastery = masteryBySkill.get(node.id) ?? 0;
-              const status = statusFor(
-                mastery,
-                targetSkillIds.has(node.id),
-                requiredSkillIds.has(node.id)
-              );
-              const colors = STATUS_COLOR[status];
-
-              const baseRadius = node.depth === 0 ? 7 : Math.max(4.5, 7 - node.depth * 0.6);
-              const r = isActive ? baseRadius + 3.5 : baseRadius;
-
-              return (
-                <g
-                  key={node.id}
-                  className="cursor-pointer"
-                  onMouseEnter={() => setHoveredNodeId(node.id)}
-                  onMouseLeave={() => setHoveredNodeId(null)}
-                  onClick={() =>
-                    setSelectedNodeId((prev) => (prev === node.id ? null : node.id))
-                  }
-                >
-                  {/* Glowing background ring when active */}
-                  {isActive && (
-                    <circle
-                      cx={pt.x}
-                      cy={pt.y}
-                      r={r + 4}
-                      fill="none"
-                      stroke={colors.stroke}
-                      strokeWidth="1.5"
-                      opacity="0.6"
-                    />
-                  )}
-
-                  {/* Node Circle */}
+                {/* Active Pulse Ring */}
+                {isActive && (
                   <circle
                     cx={pt.x}
                     cy={pt.y}
-                    r={r}
-                    fill={colors.fill}
-                    stroke={isActive ? "#ffffff" : colors.stroke}
-                    strokeWidth={isActive ? 2 : 1.25}
-                    filter={isActive ? "url(#glow)" : undefined}
+                    r={r + 6}
+                    fill="none"
+                    stroke={colors.stroke}
+                    strokeWidth="2"
+                    opacity="0.7"
+                    className="animate-ping"
+                  />
+                )}
+
+                {/* Node Outer Base */}
+                <circle
+                  cx={pt.x}
+                  cy={pt.y}
+                  r={r}
+                  fill={colors.fill}
+                  stroke="#FFFFFF"
+                  strokeWidth="3"
+                  filter={isActive ? "url(#activeGlow)" : "url(#nodeGlow)"}
+                  className="transition-all duration-200"
+                />
+
+                {/* Inner Icon / Dot */}
+                {status === "mastered" ? (
+                  <text
+                    x={pt.x}
+                    y={pt.y + 3.5}
+                    textAnchor="middle"
+                    fill="#FFFFFF"
+                    fontSize="10px"
+                    fontWeight="900"
+                    className="pointer-events-none"
+                  >
+                    ✓
+                  </text>
+                ) : status === "target" ? (
+                  <circle
+                    cx={pt.x}
+                    cy={pt.y}
+                    r={r * 0.4}
+                    fill="#FFFFFF"
+                    className="pointer-events-none"
+                  />
+                ) : null}
+
+                {/* Sharp Floating Text Pill */}
+                <g transform={`translate(${pt.x}, ${pt.y - r - 8})`}>
+                  <rect
+                    x={-(node.name.length * 3.4 + 8)}
+                    y="-12"
+                    width={node.name.length * 6.8 + 16}
+                    height="18"
+                    rx="4"
+                    fill={isActive ? "#6D28D9" : "#FFFFFF"}
+                    stroke={isActive ? "#5B21B6" : "#E2E8F0"}
+                    strokeWidth="1"
+                    filter="drop-shadow(0 2px 4px rgba(0,0,0,0.08))"
                     className="transition-all duration-150"
                   />
-
-                  {/* Label on active or foundation */}
-                  {(isActive || node.depth === 0) && (
-                    <text
-                      x={pt.x}
-                      y={pt.y - r - 4}
-                      textAnchor="middle"
-                      fill={isActive ? "#ffffff" : colors.text}
-                      fontSize={isActive ? "11.5px" : "9.5px"}
-                      fontWeight={isActive ? "700" : "500"}
-                      className="pointer-events-none drop-shadow-md select-none"
-                    >
-                      {node.name}
-                    </text>
-                  )}
+                  <text
+                    x="0"
+                    y="1"
+                    textAnchor="middle"
+                    fill={isActive ? "#FFFFFF" : "#1E293B"}
+                    fontSize={isActive ? "10px" : "9px"}
+                    fontWeight={isActive ? "800" : "600"}
+                    className="pointer-events-none select-none"
+                  >
+                    {node.name}
+                  </text>
                 </g>
-              );
-            })}
-          </svg>
-        </div>
+              </g>
+            );
+          })}
+        </svg>
 
         {/* Disk Info Footer */}
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-400 w-full max-w-lg border-t border-purple-500/20 pt-3">
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-500 font-medium w-full max-w-lg border-t border-purple-100 pt-3">
           <span>Center = Core Foundations</span>
-          <span>Perimeter = Advanced Specializations</span>
-          <span>Nodes: {poincareData.nodes.length} · Prereqs: {poincareData.edges.length}</span>
+          <span>Perimeter = Specialized Modules</span>
+          <span className="font-bold text-purple-700">
+            {poincareData.nodes.length} Skills · {poincareData.edges.length} Prerequisites
+          </span>
         </div>
       </div>
+
+      {/* 2. Active Node Detail Drawer */}
+      {activeNode && (
+        <div className="rounded-md border-2 border-purple-200 bg-white/98 p-5 shadow-lg shadow-purple-500/5 backdrop-blur-md space-y-4">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span
+                  className="h-3 w-3 rounded-full"
+                  style={{ backgroundColor: activeColors.fill }}
+                />
+                <h3 className="text-lg font-black text-slate-900">{activeNode.name}</h3>
+                <span
+                  className="px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wider"
+                  style={{ backgroundColor: activeColors.bg, color: activeColors.text }}
+                >
+                  {activeColors.badge}
+                </span>
+                <span className="px-2 py-0.5 rounded-md bg-purple-100 text-[#6D28D9] text-[10px] font-bold uppercase tracking-wider">
+                  {activeNode.category.replace(/-/g, " ")}
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 font-medium">
+                Depth Level:{" "}
+                <span className="font-bold text-slate-800">
+                  {activeNode.depth === 0
+                    ? "Foundation (Root)"
+                    : activeNode.depth <= 2
+                    ? "Core Competency"
+                    : "Advanced Specialization"}
+                </span>{" "}
+                · Unlocks <span className="font-bold text-[#6D28D9]">{activeNode.fanOut}</span> downstream skills
+              </p>
+            </div>
+
+            {/* Mastery Meter */}
+            <div className="min-w-[180px] space-y-1.5">
+              <div className="flex justify-between text-xs font-bold text-slate-700">
+                <span>Mastery Progress</span>
+                <span className="text-[#6D28D9]">{activeMastery}%</span>
+              </div>
+              <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
+                <div
+                  className="h-full rounded-full transition-all duration-500"
+                  style={{
+                    width: `${Math.max(5, activeMastery)}%`,
+                    backgroundColor: activeColors.fill,
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Action Button */}
+          {goalId && (
+            <div className="pt-2 flex items-center justify-between border-t border-slate-100">
+              <span className="text-xs text-slate-500 font-medium">
+                Click any node in the constellation to explore skill dependencies
+              </span>
+              <Link
+                href={`/goals/${goalId}`}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-gradient-to-r from-[#6D28D9] to-[#8B5CF6] text-white text-xs font-bold shadow-md shadow-purple-500/20 hover:opacity-95 transition-all"
+              >
+                <span>View in Quest Roadmap</span>
+                <IconArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
 
 export function SkillGraphLegend() {
-  const items: { status: Status; label: string }[] = [
-    { status: "mastered", label: "Mastered (60%+)" },
-    { status: "in_progress", label: "In Trial" },
-    { status: "target", label: "Apex Quest Skill" },
-    { status: "required", label: "Needed Prerequisite" },
-    { status: "outside", label: "Alternative Realm" },
+  const items: { status: Status; label: string; dot: string }[] = [
+    { status: "mastered", label: "Mastered (60%+)", dot: "bg-emerald-500" },
+    { status: "in_progress", label: "In Trial", dot: "bg-amber-500" },
+    { status: "target", label: "Apex Quest Skill", dot: "bg-[#7C3AED]" },
+    { status: "required", label: "Needed Prerequisite", dot: "bg-sky-500" },
+    { status: "outside", label: "Alternative Realm", dot: "bg-slate-400" },
   ];
+
   return (
-    <div className="flex flex-wrap gap-4 text-xs font-bold text-slate-300">
+    <div className="flex flex-wrap items-center gap-4 text-xs font-bold text-slate-700">
       {items.map((item) => (
         <span key={item.status} className="flex items-center gap-2">
-          <span
-            className="h-3 w-3 rounded-full border"
-            style={{ background: STATUS_COLOR[item.status].fill, borderColor: STATUS_COLOR[item.status].stroke }}
-          />
-          {item.label}
+          <span className={`h-3 w-3 rounded-full ${item.dot} shadow-xs ring-2 ring-white`} />
+          <span>{item.label}</span>
         </span>
       ))}
     </div>
   );
 }
+
+export default SkillGraphView;

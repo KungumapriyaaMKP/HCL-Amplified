@@ -7,10 +7,10 @@ import { db } from "@/lib/db";
 import { profiles } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { AppSidebar } from "@/frontend/components/layout/AppSidebar";
-import { Card } from "@/frontend/components/ui/Card";
 import { SkillGraphView, SkillGraphLegend } from "@/frontend/components/goals/SkillGraphView";
 import { DOMAINS } from "@/data/domains";
 import Link from "next/link";
+import { IconArrowLeft, IconLayersLinked, IconSparkles } from "@tabler/icons-react";
 
 export default async function SkillGraphPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -28,7 +28,7 @@ export default async function SkillGraphPage({ params }: { params: Promise<{ id:
   const { nodes, edges } = domainSkillGraph(detail.goal.domain);
 
   return (
-    <div className="flex min-h-screen bg-[#F8F9FD] text-slate-900 font-sans">
+    <div className="flex min-h-screen bg-[#FFF9F6] text-slate-900 font-sans">
       {/* 1. Left Sidebar Navigation */}
       <AppSidebar
         displayName={profile?.displayName || "Yuvi"}
@@ -37,30 +37,45 @@ export default async function SkillGraphPage({ params }: { params: Promise<{ id:
       />
 
       {/* 2. Main Scrollable Content */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto max-h-screen bg-[#070913] text-white">
-        <main className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6">
-          <Link href={`/goals/${id}`} className="mb-3 inline-flex items-center gap-1 text-xs font-bold text-purple-400 hover:text-purple-300">
-            <span>❮</span> Back to Quest Roadmap
-          </Link>
+      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto max-h-screen custom-scrollbar">
+        <main className="mx-auto w-full max-w-5xl px-6 py-8 sm:px-10 space-y-6">
           
-          <div className="mb-2 flex items-center gap-2">
-            <span className="text-xs font-black uppercase tracking-widest text-cyan-400">
-              {domain?.icon} {domain?.name} TOPOLOGICAL SKILL TREE
-            </span>
+          {/* Back to Quest Roadmap */}
+          <div>
+            <Link
+              href={`/goals/${id}`}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white border border-purple-200 text-xs font-bold text-[#6D28D9] shadow-2xs hover:bg-purple-50 hover:border-purple-300 transition-all group"
+            >
+              <IconArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
+              <span>Back to Quest Roadmap</span>
+            </Link>
           </div>
 
-          <h1 className="mb-2 text-3xl font-black text-white drop-shadow-[0_2px_12px_rgba(255,255,255,0.2)]">
-            {detail.goal.goalText}
-          </h1>
-          <p className="mb-6 text-xs text-slate-400 max-w-2xl">
-            Visual DAG of prerequisites and skill gap dependencies, dynamically updated by proctored battle attempts and diagnostic evaluations.
-          </p>
+          {/* Header Title Section */}
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-purple-100/90 text-purple-800 text-[11px] font-black uppercase tracking-wider">
+                <IconLayersLinked className="w-3.5 h-3.5 text-[#6D28D9]" />
+                <span>{domain?.name || "Web Development"} Topological Skill Tree</span>
+              </span>
+            </div>
 
-          <div className="mb-5 rounded-none border border-purple-500/20 bg-[#0c1026]/90 p-4 backdrop-blur-xl">
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+              {detail.goal.goalText}
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-600 max-w-2xl leading-relaxed font-medium">
+              Interactive topological constellation of prerequisite skills, competencies, and dependencies dynamically updated by diagnostic and battle evaluations.
+            </p>
+          </div>
+
+          {/* Legend Card */}
+          <div className="rounded-md border border-purple-100 bg-white/95 p-4 shadow-sm backdrop-blur-md">
             <SkillGraphLegend />
           </div>
 
+          {/* Interactive Skill Graph View */}
           <SkillGraphView
+            goalId={id}
             nodes={nodes}
             edges={edges}
             masteryBySkill={mastery}
