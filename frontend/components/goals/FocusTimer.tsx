@@ -1,15 +1,14 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   IconPlayerPlay,
   IconPlayerPause,
   IconRotateClockwise,
   IconFlame,
-  IconShieldAlert,
+  IconAlertCircle,
   IconCheck,
   IconCoffee,
-  IconSparkles,
 } from "@tabler/icons-react";
 
 interface FocusTimerProps {
@@ -332,7 +331,7 @@ export function FocusTimer({
         {mode === "focus" && (
           <div className="mt-4 flex items-center gap-4 text-xs">
             <div className="flex items-center gap-1.5 text-slate-600 font-semibold">
-              <IconShieldAlert
+              <IconAlertCircle
                 className={`h-4 w-4 ${
                   interruptions > 0 ? "text-amber-500" : "text-slate-400"
                 }`}

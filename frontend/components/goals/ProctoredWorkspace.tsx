@@ -163,9 +163,8 @@ export function ProctoredWorkspace({
       if (!res.ok) throw new Error(body.error || "Could not generate questions");
 
       if (body.alreadyTaken) {
-        setScore(body.score);
-        setReportText(body.reportText);
-        setPhase("result");
+        setResult({ score: body.score ?? 0, reportText: body.reportText ?? "" });
+        setPhase("done");
         return;
       }
 

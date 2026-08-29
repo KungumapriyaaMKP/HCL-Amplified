@@ -30,7 +30,7 @@ export function CommunityFeed({ domain }: { domain: string }) {
   const [replying, setReplying] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function load() {
+  const load = useCallback(async () => {
     try {
       const res = await fetch(`/api/community/${domain}`);
       if (res.ok) {
@@ -46,11 +46,17 @@ export function CommunityFeed({ domain }: { domain: string }) {
     } catch (_err) {
       // Resilience against server reloads / momentary drops
     }
-  }
+  }, [domain]);
 
   useEffect(() => {
-    load();
-  }, [domain]);
+    let mounted = true;
+    if (mounted) {
+      load();
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [load]);
 
   async function join() {
     setJoining(true);

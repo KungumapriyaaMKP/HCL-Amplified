@@ -19,7 +19,6 @@ import {
   IconArrowRight,
   IconChevronRight,
   IconFlame,
-  IconSnowflake,
   IconRotateClockwise,
 } from "@tabler/icons-react";
 

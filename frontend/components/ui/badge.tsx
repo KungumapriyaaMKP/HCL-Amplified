@@ -49,7 +49,7 @@ export interface BadgeProps
 }
 
 function Badge({ className, variant, tone, ...props }: BadgeProps) {
-  const effectiveVariant = (tone || variant || "default") as any;
+  const effectiveVariant = (tone || variant || "default") as NonNullable<VariantProps<typeof badgeVariants>["variant"]>;
 
   return (
     <div className={cn(badgeVariants({ variant: effectiveVariant }), className)} {...props} />

@@ -86,15 +86,23 @@ export async function extractResumeText(buffer: Buffer, mimeType: string): Promi
   if (mimeType === "application/pdf" || buffer.slice(0, 5).toString() === "%PDF-") {
     // 1. Try node pdf-parse if available without worker dependencies
     try {
-      const { PDFParse } = await import("pdf-parse/node");
-      const parser = new PDFParse({ data: buffer });
-      try {
-        const res = await parser.getText();
-        if (res && res.text && res.text.trim().length > 20) {
-          text = res.text;
+      const pdfModule = (await import("pdf-parse" as string).catch(() => null)) as {
+        PDFParse?: new (opts: { data: Buffer }) => {
+          getText: () => Promise<{ text: string }>;
+          destroy: () => Promise<void>;
+        };
+      } | null;
+
+      if (pdfModule?.PDFParse) {
+        const parser = new pdfModule.PDFParse({ data: buffer });
+        try {
+          const res = await parser.getText();
+          if (res && res.text && res.text.trim().length > 20) {
+            text = res.text;
+          }
+        } finally {
+          await parser.destroy().catch(() => {});
         }
-      } finally {
-        await parser.destroy().catch(() => {});
       }
     } catch {
       // Worker issue in Next.js bundler -> proceed to pure stream decoder

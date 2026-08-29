@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { requireUser } from "@/lib/auth";
+import { requireUserOrRedirect } from "@/lib/auth";
 import { isValidDomain } from "@/lib/community";
 import { db } from "@/lib/db";
 import { profiles } from "@/db/schema";
@@ -15,14 +15,9 @@ export default async function CommunityDomainPage({ params }: { params: Promise<
   const { domain } = await params;
   if (!isValidDomain(domain)) redirect("/community");
 
-  let displayName = "yuvi";
-  try {
-    const user = await requireUser();
-    const [profile] = await db.select().from(profiles).where(eq(profiles.userId, user.id));
-    if (profile?.displayName) displayName = profile.displayName;
-  } catch (_err) {
-    // Unauthenticated guest view of domain community
-  }
+  const user = await requireUserOrRedirect(`/community/${domain}`);
+  const [profile] = await db.select().from(profiles).where(eq(profiles.userId, user.id));
+  const displayName = profile?.displayName || "yuvi";
   const domainMeta = DOMAINS.find((d) => d.id === domain)!;
 
   return (

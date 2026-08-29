@@ -10,8 +10,6 @@ import {
   IconArrowRight,
   IconCheck,
   IconX,
-  IconSparkles,
-  IconRotateClockwise,
   IconFlame,
   IconShieldCheck,
   IconAward,

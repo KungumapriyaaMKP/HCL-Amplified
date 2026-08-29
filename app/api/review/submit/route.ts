@@ -15,7 +15,9 @@ export async function POST(req: NextRequest) {
 
     const skillId = typeof body.skillId === "string" ? body.skillId : null;
     const grade = (body.grade as ReviewGrade) || "good";
-    const responses = Array.isArray(body.responses) ? body.responses : [];
+    const responses = Array.isArray(body.responses)
+      ? (body.responses as { questionId: string; correct: boolean }[])
+      : [];
 
     if (!skillId) {
       return jsonError("Skill ID is required", 400);

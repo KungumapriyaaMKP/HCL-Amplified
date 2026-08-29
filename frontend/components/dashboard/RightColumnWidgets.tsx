@@ -45,35 +45,36 @@ export function YourPlanForToday() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Load daily plan & user tasks
-  const loadPlanAndTasks = React.useCallback(async () => {
-    try {
-      // 1. Fetch user tasks
-      const tasksRes = await fetch("/api/tasks");
-      if (tasksRes.ok) {
-        const data = await tasksRes.json();
-        setTasks(data.tasks || []);
-      }
-
-      // 2. Fetch today's generated plan agenda
-      const planRes = await fetch("/api/plan/today");
-      if (planRes.ok) {
-        const planData = await planRes.json();
-        if (planData.intro) setCoachIntro(planData.intro);
-        if (Array.isArray(planData.items)) {
-          setAgendaItems(planData.items);
-        }
-      }
-    } catch (err) {
-      console.error("Failed to load today's plan/tasks:", err);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
   React.useEffect(() => {
-    loadPlanAndTasks();
-  }, [loadPlanAndTasks]);
+    let isMounted = true;
+    async function loadData() {
+      try {
+        const tasksRes = await fetch("/api/tasks");
+        if (tasksRes.ok && isMounted) {
+          const data = await tasksRes.json();
+          setTasks(data.tasks || []);
+        }
+
+        const planRes = await fetch("/api/plan/today");
+        if (planRes.ok && isMounted) {
+          const planData = await planRes.json();
+          if (planData.intro) setCoachIntro(planData.intro);
+          if (Array.isArray(planData.items)) {
+            setAgendaItems(planData.items);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load today's plan/tasks:", err);
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    }
+
+    loadData();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Add a new task (optimistic)
   const handleAddTask = async (e: React.FormEvent) => {
@@ -361,11 +362,17 @@ export function YourPlanForToday() {
   );
 }
 
+interface ProfileResponse {
+  streak?: { currentStreak: number };
+  badges?: { id: string }[];
+  xp?: number;
+}
+
 /**
  * 2. Achievements Widget with Exact 3D Hexagonal Badges
  */
 export function AchievementsWidget() {
-  const [profileData, setProfileData] = React.useState<any>(null);
+  const [profileData, setProfileData] = React.useState<ProfileResponse | null>(null);
 
   React.useEffect(() => {
     async function loadProfile() {
@@ -384,8 +391,8 @@ export function AchievementsWidget() {
 
   const streak = profileData?.streak?.currentStreak ?? 1;
   const badgesList = profileData?.badges ?? [];
-  const hasFirstSteps = badgesList.some((b: any) => b.id === "first_steps") || profileData?.xp > 0;
-  const hasDeepWork = badgesList.some((b: any) => b.id === "deep_work");
+  const hasFirstSteps = badgesList.some((b) => b.id === "first_steps") || (profileData?.xp ?? 0) > 0;
+  const hasDeepWork = badgesList.some((b) => b.id === "deep_work");
   const streakPct = Math.min(100, Math.round((streak / 3) * 100));
 
   return (
