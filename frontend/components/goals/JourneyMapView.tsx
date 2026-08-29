@@ -422,22 +422,16 @@ export function JourneyMapView({
             {/* Dynamic Glowing 3D Treasure Chest on Pedestal */}
             <div className="relative flex flex-col items-center group cursor-pointer">
               
-              {/* 1. Dynamic Pulsing Gold/Purple Aura */}
-              <div className="absolute -inset-6 rounded-full bg-gradient-to-tr from-amber-400/50 via-purple-500/40 to-yellow-300/60 blur-2xl animate-pulse" />
+              {/* 1. Dynamic Radiant Golden Breathing Aura */}
+              <div className="absolute -inset-8 rounded-full bg-gradient-to-tr from-amber-400 via-yellow-300 to-amber-500 blur-2xl opacity-75 animate-pulse" />
               
-              {/* 2. Secondary Shimmer Glow */}
-              <div className="absolute -inset-3 rounded-full bg-amber-300/30 blur-lg animate-ping opacity-40 pointer-events-none" />
+              {/* 2. Concentrated Inner Core Glow */}
+              <div className="absolute -inset-4 rounded-full bg-amber-300/60 blur-xl animate-pulse" />
 
-              {/* 3. Floating Animated Sparkles & Stars */}
-              <div className="absolute -top-6 -left-3 text-lg animate-bounce duration-1000 select-none">✨</div>
-              <div className="absolute -top-8 left-1/2 -translate-x-1/2 text-base animate-pulse duration-700 select-none">🌟</div>
-              <div className="absolute -top-5 -right-3 text-lg animate-bounce duration-1000 delay-300 select-none">💎</div>
-              <div className="absolute top-2 -right-6 text-sm animate-pulse delay-500 select-none">⭐</div>
-
-              {/* 4. 3D Pedestal Base Under Chest */}
+              {/* 3. 3D Pedestal Base & Glowing Chest */}
               <div className="relative flex flex-col items-center">
-                {/* 3D Transparent Chest with Dynamic Drop-Shadow Glow */}
-                <div className="relative h-28 w-28 sm:h-32 sm:w-32 drop-shadow-[0_12px_28px_rgba(245,158,11,0.85)] group-hover:scale-110 group-hover:drop-shadow-[0_16px_36px_rgba(234,179,8,1)] transition-all duration-300">
+                {/* 3D Transparent Chest with Dynamic Multi-Stage Glow */}
+                <div className="relative h-28 w-28 sm:h-32 sm:w-32 animate-pulse drop-shadow-[0_0_25px_rgba(245,158,11,0.95)] group-hover:scale-110 group-hover:drop-shadow-[0_0_40px_rgba(234,179,8,1)] transition-all duration-300">
                   <Image
                     src="/images/journey/treasure_transparent.png"
                     alt="Golden Treasure Chest"
