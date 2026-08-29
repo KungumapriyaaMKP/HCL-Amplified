@@ -96,19 +96,17 @@ export function JourneyMapView({
   ];
 
   return (
-    <div className="relative w-full min-h-screen bg-[#FDFBF7] text-slate-900 font-sans flex flex-col">
+    <div className="relative w-full min-h-[1100px] bg-[#FDFBF7] text-slate-900 font-sans flex flex-col">
       {/* 1. Full Clarity 3D Study Desk Background */}
-      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden min-h-[1100px]">
         <Image
           src="/images/journey/study_bg.jpg"
           alt="Study Desk Learning Background"
           fill
           unoptimized
-          className="object-cover object-center"
+          className="object-cover object-top"
           priority
         />
-        {/* Soft subtle lighting blend */}
-        <div className="absolute inset-0 bg-white/10 pointer-events-none" />
       </div>
 
       {/* 2. Top Navigation Bar */}

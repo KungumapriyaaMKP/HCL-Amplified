@@ -20,7 +20,7 @@ export default async function GoalPage({ params }: { params: Promise<{ id: strin
   const domain = DOMAINS.find((d) => d.id === detail.goal.domain);
 
   return (
-    <div className="flex min-h-screen bg-[#FDFCFE] text-slate-900 font-sans">
+    <div className="flex h-screen max-h-screen overflow-hidden bg-[#FDFBF7] text-slate-900 font-sans">
       {/* 1. Left Sidebar Navigation */}
       <AppSidebar
         displayName={profile?.displayName || "Yuvi"}
@@ -28,8 +28,8 @@ export default async function GoalPage({ params }: { params: Promise<{ id: strin
         levelTitle="Newcomer"
       />
 
-      {/* 2. Main 3D Journey Road Map Content */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto max-h-screen">
+      {/* 2. Main 3D Journey Road Map Content with seamless scrolling */}
+      <div className="flex-1 flex flex-col min-w-0 h-screen max-h-screen overflow-y-auto custom-scrollbar relative">
         <JourneyMapView
           goalId={id}
           goalTitle={detail.goal.goalText}
