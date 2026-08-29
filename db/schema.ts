@@ -291,7 +291,49 @@ export const streaks = pgTable("streaks", {
   currentStreak: integer("current_streak").notNull().default(0),
   longestStreak: integer("longest_streak").notNull().default(0),
   lastActiveDate: date("last_active_date"),
+  freezes: integer("freezes").notNull().default(0),
 });
+
+// ---------------------------------------------------------------------------
+// Engagement & Productivity (Daily Tasks, Focus Sessions, Spaced Repetition)
+// ---------------------------------------------------------------------------
+
+export const dailyTasks = pgTable("daily_tasks", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: uuid("user_id").notNull(),
+  title: text("title").notNull(),
+  completed: boolean("completed").notNull().default(false),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const focusSessions = pgTable("focus_sessions", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: uuid("user_id").notNull(),
+  moduleId: uuid("module_id").references(() => pathModules.id, { onDelete: "set null" }),
+  skillId: text("skill_id").references(() => skills.id, { onDelete: "set null" }),
+  plannedSeconds: integer("planned_seconds").notNull(),
+  actualSeconds: integer("actual_seconds").notNull().default(0),
+  completed: boolean("completed").notNull().default(false),
+  interruptions: integer("interruptions").notNull().default(0),
+  startedAt: timestamp("started_at", { withTimezone: true }).defaultNow().notNull(),
+  endedAt: timestamp("ended_at", { withTimezone: true }),
+});
+
+export const reviewSchedule = pgTable(
+  "review_schedule",
+  {
+    userId: uuid("user_id").notNull(),
+    skillId: text("skill_id")
+      .notNull()
+      .references(() => skills.id, { onDelete: "cascade" }),
+    dueAt: timestamp("due_at", { withTimezone: true }).notNull(),
+    intervalDays: real("interval_days").notNull().default(1),
+    ease: real("ease").notNull().default(2.5),
+    reps: integer("reps").notNull().default(0),
+    lastReviewedAt: timestamp("last_reviewed_at", { withTimezone: true }),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.skillId] })],
+);
 
 // ---------------------------------------------------------------------------
 // Community (per-domain discussion boards)
