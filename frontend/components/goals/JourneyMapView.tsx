@@ -243,19 +243,19 @@ export function JourneyMapView({
 
         {/* Top Right Badges & Actions */}
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/95 border border-amber-200/90 text-amber-800 text-xs font-black shadow-xs backdrop-blur-xs">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white/95 border border-amber-200/90 text-amber-800 text-xs font-black shadow-xs backdrop-blur-xs">
             <span className="text-sm">🪙</span>
             <span>320</span>
           </div>
 
-          <div className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/95 border border-purple-200/90 text-[#7C3AED] text-xs font-black shadow-xs backdrop-blur-xs">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white/95 border border-purple-200/90 text-[#7C3AED] text-xs font-black shadow-xs backdrop-blur-xs">
             <span className="text-sm">💎</span>
             <span>15</span>
           </div>
 
           <Link
             href={`/goals/${goalId}/graph`}
-            className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-purple-200 bg-white/95 px-3.5 py-1.5 text-xs font-bold text-slate-700 shadow-xs hover:bg-purple-50 hover:text-[#7C3AED] transition-all"
+            className="hidden sm:inline-flex items-center gap-1.5 rounded-md border border-purple-200 bg-white/95 px-3 py-1.5 text-xs font-bold text-slate-700 shadow-xs hover:bg-purple-50 hover:text-[#7C3AED] transition-all"
           >
             <IconLayersLinked className="h-4 w-4 text-[#7C3AED]" />
             <span>Skill Tree</span>
@@ -263,14 +263,14 @@ export function JourneyMapView({
 
           <button
             type="button"
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-purple-100 bg-white/95 text-slate-600 hover:text-[#7C3AED] transition-colors shadow-xs"
+            className="flex h-9 w-9 items-center justify-center rounded-md border border-purple-100 bg-white/95 text-slate-600 hover:text-[#7C3AED] transition-colors shadow-xs"
             title="Notifications"
           >
             <IconBell className="h-4 w-4" />
           </button>
 
           <div className="flex items-center gap-1.5 pl-1 cursor-pointer">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-tr from-[#6D28D9] to-[#8B5CF6] text-white font-bold text-xs shadow-sm ring-2 ring-white">
+            <div className="flex h-9 w-9 items-center justify-center rounded-md bg-gradient-to-tr from-[#6D28D9] to-[#8B5CF6] text-white font-bold text-xs shadow-sm ring-1 ring-white">
               {userDisplayName.charAt(0).toUpperCase()}
             </div>
             <span className="text-xs text-slate-500 font-bold">▾</span>
@@ -451,13 +451,13 @@ export function JourneyMapView({
                   }}
                 >
                   {isCurrent ? (
-                    /* Active Highlight Card with Directional Arrow */
-                    <div className="relative bg-white/98 border-2 border-purple-400 rounded-3xl p-5 shadow-xl shadow-purple-500/15 backdrop-blur-md space-y-2.5">
+                    /* Active Highlight Card with Directional Arrow (Sharper Edges) */
+                    <div className="relative bg-white/98 border-2 border-purple-400 rounded-md p-5 shadow-xl shadow-purple-500/15 backdrop-blur-md space-y-2.5">
                       {/* Left Pointing Directional Arrow */}
                       <div className="absolute -left-2.5 top-1/2 -translate-y-1/2 w-0 h-0 border-y-8 border-y-transparent border-r-[10px] border-r-purple-400" />
 
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-extrabold uppercase tracking-wider text-purple-700 bg-purple-100/80 px-2.5 py-0.5 rounded-md">
+                        <span className="text-[10px] font-extrabold uppercase tracking-wider text-purple-700 bg-purple-100/80 px-2.5 py-0.5 rounded-xs">
                           COURSE · {provider} · {duration}
                         </span>
                         <span className="text-xs font-extrabold text-[#7C3AED]">In Progress</span>
@@ -474,7 +474,7 @@ export function JourneyMapView({
                       <div className="pt-1">
                         <Link
                           href={`/goals/${goalId}/modules/${item.module.id}`}
-                          className="inline-flex items-center justify-center gap-2 w-full rounded-xl bg-gradient-to-r from-[#6D28D9] via-[#7C3AED] to-[#8B5CF6] text-white px-5 py-2.5 text-xs font-bold shadow-md shadow-purple-500/30 hover:opacity-95 hover:scale-[1.01] active:scale-[0.98] transition-all cursor-pointer group"
+                          className="inline-flex items-center justify-center gap-2 w-full rounded-md bg-gradient-to-r from-[#6D28D9] via-[#7C3AED] to-[#8B5CF6] text-white px-5 py-2.5 text-xs font-bold shadow-md shadow-purple-500/30 hover:opacity-95 hover:scale-[1.01] active:scale-[0.98] transition-all cursor-pointer group"
                         >
                           <span>Continue Course</span>
                           <IconArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -482,10 +482,10 @@ export function JourneyMapView({
                       </div>
                     </div>
                   ) : isCompleted ? (
-                    /* Completed Card */
+                    /* Completed Card (Sharper Edges) */
                     <Link
                       href={`/goals/${goalId}/modules/${item.module.id}`}
-                      className="block bg-white/95 border border-slate-200/90 rounded-2xl p-4 shadow-md backdrop-blur-xs hover:shadow-lg hover:border-emerald-300 transition-all cursor-pointer group"
+                      className="block bg-white/95 border border-slate-200/90 rounded-md p-4 shadow-md backdrop-blur-xs hover:shadow-lg hover:border-emerald-300 transition-all cursor-pointer group"
                     >
                       <div className="flex items-center justify-between mb-1">
                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
@@ -501,8 +501,8 @@ export function JourneyMapView({
                       </h3>
                     </Link>
                   ) : (
-                    /* Locked Card */
-                    <div className="bg-white/92 border border-slate-200 rounded-2xl p-4 shadow-sm backdrop-blur-xs opacity-90">
+                    /* Locked Card (Sharper Edges) */
+                    <div className="bg-white/92 border border-slate-200 rounded-md p-4 shadow-sm backdrop-blur-xs opacity-90">
                       <div className="flex items-center justify-between mb-1">
                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                           {provider} · {duration}
@@ -560,7 +560,7 @@ export function JourneyMapView({
                   </div>
                 </div>
 
-                {/* Mega Reward Card (Anchored to the right of chest) */}
+                {/* Mega Reward Card (Anchored to the right of chest - Sharper Edges) */}
                 <div
                   className="absolute z-20"
                   style={{
@@ -570,7 +570,7 @@ export function JourneyMapView({
                     width: "480px",
                   }}
                 >
-                  <div className="bg-white/95 border-2 border-amber-300/80 rounded-3xl p-5 shadow-xl shadow-amber-500/15 backdrop-blur-md space-y-1.5 hover:shadow-2xl hover:border-amber-400 transition-all">
+                  <div className="bg-white/95 border-2 border-amber-300/80 rounded-md p-5 shadow-xl shadow-amber-500/15 backdrop-blur-md space-y-1.5 hover:shadow-2xl hover:border-amber-400 transition-all">
                     <div className="flex items-center gap-1.5 text-xs font-black text-purple-700 uppercase tracking-wide">
                       <span>💎</span>
                       <span>Capstone & Certification</span>
