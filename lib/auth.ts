@@ -3,6 +3,8 @@ import { db } from "@/lib/db";
 import { profiles } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
+import { redirect } from "next/navigation";
+
 export class UnauthorizedError extends Error {
   constructor() {
     super("Not authenticated");
@@ -18,6 +20,15 @@ export async function requireUser() {
   const metaName = (data.user.user_metadata as { display_name?: string } | null)?.display_name;
   await ensureProfile(data.user.id, metaName || data.user.email || "learner");
   return data.user;
+}
+
+/** Resolves session server-side, or gracefully redirects unauthenticated visitors to login. */
+export async function requireUserOrRedirect(nextUrl?: string) {
+  try {
+    return await requireUser();
+  } catch (_err) {
+    redirect(nextUrl ? `/login?next=${encodeURIComponent(nextUrl)}` : "/login");
+  }
 }
 
 /** Creates the app-side profile row the first time we see this user. */

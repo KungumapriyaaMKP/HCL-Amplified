@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { requireUser } from "@/lib/auth";
+import { requireUserOrRedirect } from "@/lib/auth";
 import { getModuleDetail } from "@/lib/moduleDetail";
 import { AppSidebar } from "@/frontend/components/layout/AppSidebar";
 import { CompilerWorkspace } from "@/frontend/components/goals/CompilerWorkspace";
@@ -9,7 +9,7 @@ import { IconArrowLeft } from "@tabler/icons-react";
 
 export default async function CompilerPage({ params }: { params: Promise<{ id: string; moduleId: string }> }) {
   const { id, moduleId } = await params;
-  const user = await requireUser();
+  const user = await requireUserOrRedirect(`/goals/${id}/modules/${moduleId}/compiler`);
   const detail = await getModuleDetail(user.id, moduleId);
   if (!detail || !detail.module.isProgramming || !detail.module.programmingLanguage) redirect(`/goals/${id}`);
 

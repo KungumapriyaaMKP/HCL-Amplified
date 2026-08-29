@@ -1,12 +1,12 @@
 import { redirect } from "next/navigation";
-import { requireUser } from "@/lib/auth";
+import { requireUserOrRedirect } from "@/lib/auth";
 import { getModuleDetail } from "@/lib/moduleDetail";
 import { AppSidebar } from "@/frontend/components/layout/AppSidebar";
 import { ProctoredWorkspace } from "@/frontend/components/goals/ProctoredWorkspace";
 
 export default async function ProctoredPage({ params }: { params: Promise<{ id: string; moduleId: string }> }) {
   const { id, moduleId } = await params;
-  const user = await requireUser();
+  const user = await requireUserOrRedirect(`/goals/${id}/modules/${moduleId}/proctored`);
   const detail = await getModuleDetail(user.id, moduleId);
   if (!detail) redirect(`/goals/${id}`);
 
