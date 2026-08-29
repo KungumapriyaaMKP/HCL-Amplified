@@ -6,7 +6,6 @@ import { profiles } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { AppSidebar } from "@/frontend/components/layout/AppSidebar";
 import { JourneyMapView } from "@/frontend/components/goals/JourneyMapView";
-import { AssistantWidget } from "@/frontend/components/goals/AssistantWidget";
 import { DOMAINS } from "@/data/domains";
 
 export default async function GoalPage({ params }: { params: Promise<{ id: string }> }) {
@@ -37,7 +36,6 @@ export default async function GoalPage({ params }: { params: Promise<{ id: strin
           modules={detail.modules as any}
           userDisplayName={profile?.displayName || "Yuvi"}
         />
-        <AssistantWidget goalId={id} />
       </div>
     </div>
   );
