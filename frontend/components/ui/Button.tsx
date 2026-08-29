@@ -2,7 +2,7 @@ import { ButtonHTMLAttributes, forwardRef } from "react";
 import Link from "next/link";
 
 const base =
-  "inline-flex items-center justify-center gap-2 rounded-md text-sm font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap active:scale-95";
+  "inline-flex items-center justify-center gap-2 rounded-sm text-sm font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap active:scale-95";
 
 const variants = {
   primary:

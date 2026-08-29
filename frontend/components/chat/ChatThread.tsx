@@ -1,8 +1,10 @@
 "use client";
 
 import { useRef, useEffect } from "react";
-import { IconSparkles } from "@tabler/icons-react";
+import { motion } from "framer-motion";
 import { PromptBox } from "@/components/ui/chatgpt-prompt-input";
+import { MentorGirlAvatar } from "@/components/ui/mentor-girl-avatar";
+import { LoaderOne } from "@/components/ui/loader-one";
 
 export type ChatBubble = { role: "user" | "assistant"; content: string };
 
@@ -39,15 +41,13 @@ export function ChatThread({
           <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
             <div className="flex items-start gap-3 max-w-[85%]">
               {m.role === "assistant" && (
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#EDE9FE] text-[#7C3AED] shadow-2xs">
-                  <IconSparkles className="h-4 w-4" />
-                </div>
+                <MentorGirlAvatar size="sm" />
               )}
               <div
-                className={`rounded-2xl px-4 py-3 text-xs sm:text-sm leading-relaxed ${
+                className={`rounded-md px-4 py-3 text-xs sm:text-sm leading-relaxed ${
                   m.role === "user"
                     ? "bg-gradient-to-r from-[#6D28D9] to-[#7C3AED] text-white font-medium shadow-sm"
-                    : "bg-slate-50 text-slate-800 border border-slate-200/80 shadow-2xs"
+                    : "bg-slate-50 text-slate-800 border border-slate-200/90 shadow-2xs"
                 }`}
               >
                 {m.content}
@@ -57,12 +57,19 @@ export function ChatThread({
         ))}
 
         {loading && (
-          <div className="flex justify-start">
-            <div className="flex items-center gap-2.5 rounded-2xl bg-slate-50 border border-slate-200/80 px-4 py-3 text-xs text-[#7C3AED] font-semibold">
-              <span className="flex h-2 w-2 rounded-full bg-[#7C3AED] animate-ping" />
-              <span>AI is thinking & analyzing your response...</span>
+          <motion.div
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex justify-start"
+          >
+            <div className="flex items-center gap-2.5">
+              <MentorGirlAvatar size="sm" isThinking={true} />
+              <div className="flex items-center gap-2 rounded-md bg-slate-50 border border-slate-200/90 px-4 py-3 shadow-2xs">
+                <span className="text-xs text-slate-500 font-medium mr-1">Typing</span>
+                <LoaderOne dotClassName="h-2 w-2 bg-[#7C3AED]" />
+              </div>
             </div>
-          </div>
+          </motion.div>
         )}
         <div ref={bottomRef} />
       </div>
