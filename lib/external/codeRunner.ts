@@ -55,7 +55,11 @@ export async function runCode(language: string, code: string, stdin = ""): Promi
 
       const timer = setTimeout(() => {
         timedOut = true;
-        child.kill("SIGKILL");
+        try {
+          child.kill();
+        } catch {
+          // Process may have already exited
+        }
       }, TIMEOUT_MS);
 
       child.stdin.write(stdin);

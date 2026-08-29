@@ -29,9 +29,16 @@ interface QuestDashboardProps {
   xpForNextLevel?: number;
   streak?: number;
   badgeCount?: number;
+  activeGoalId?: string;
+  activeAiGoalId?: string;
+  activeDataScienceGoalId?: string;
 }
 
-export function QuestDashboard({}: QuestDashboardProps) {
+export function QuestDashboard({
+  activeGoalId,
+  activeAiGoalId,
+  activeDataScienceGoalId,
+}: QuestDashboardProps) {
   const currentStep = 3;
   const totalSteps = 5;
 
@@ -114,10 +121,10 @@ export function QuestDashboard({}: QuestDashboardProps) {
             {/* Bottom Right: Continue Learning Button */}
             <div>
               <Link
-                href="/goals/new"
+                href={activeGoalId ? `/goals/${activeGoalId}` : "/goals/new"}
                 className="inline-flex items-center gap-2 rounded-md bg-gradient-to-r from-[#6D28D9] via-[#7C3AED] to-[#8B5CF6] hover:from-[#5B21B6] hover:to-[#7C3AED] px-6 py-2.5 text-xs sm:text-sm font-bold text-white shadow-[0_6px_20px_rgba(109,40,217,0.35)] transition-all hover:scale-105"
               >
-                <span>Continue Learning</span>
+                <span>{activeGoalId ? "Continue Learning" : "Start New Quest"}</span>
                 <IconArrowRight className="h-4 w-4 stroke-[2.5]" />
               </Link>
             </div>
@@ -132,7 +139,7 @@ export function QuestDashboard({}: QuestDashboardProps) {
               Continue Your Learning
             </h3>
             <Link href="/goals/new" className="text-xs font-bold text-[#6D28D9] hover:underline">
-              View all
+              Explore all domains
             </Link>
           </div>
 
@@ -147,7 +154,7 @@ export function QuestDashboard({}: QuestDashboardProps) {
                   <h4 className="text-sm font-bold text-slate-900">
                     AI & Machine Learning
                   </h4>
-                  <p className="text-xs text-slate-400 font-medium">
+                  <p className="text-xs text-slate-500 font-medium">
                     AI Developer Journey
                   </p>
                 </div>
@@ -165,7 +172,8 @@ export function QuestDashboard({}: QuestDashboardProps) {
                 </div>
 
                 <Link
-                  href="/goals/new"
+                  href={activeAiGoalId ? `/goals/${activeAiGoalId}` : "/goals/new?domain=ai-ml"}
+                  aria-label="View AI & Machine Learning learning path"
                   className="flex h-8 w-8 items-center justify-center rounded-md bg-[#EDE9FE] text-[#6D28D9] hover:bg-[#DDD6FE] transition-colors shrink-0 shadow-sm"
                 >
                   <IconChevronRight className="h-4 w-4" />
@@ -183,7 +191,7 @@ export function QuestDashboard({}: QuestDashboardProps) {
                   <h4 className="text-sm font-bold text-slate-900">
                     Data Science
                   </h4>
-                  <p className="text-xs text-slate-400 font-medium">
+                  <p className="text-xs text-slate-500 font-medium">
                     Discover your path
                   </p>
                 </div>
@@ -200,7 +208,8 @@ export function QuestDashboard({}: QuestDashboardProps) {
                 </div>
 
                 <Link
-                  href="/goals/new"
+                  href={activeDataScienceGoalId ? `/goals/${activeDataScienceGoalId}` : "/goals/new?domain=data-science"}
+                  aria-label="Start Data Science goal assessment"
                   className="flex h-8 w-8 items-center justify-center rounded-md bg-[#D1FAE5] text-[#059669] hover:bg-[#A7F3D0] transition-colors shrink-0 shadow-sm"
                 >
                   <IconArrowRight className="h-4 w-4" />

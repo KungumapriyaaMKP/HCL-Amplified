@@ -64,7 +64,10 @@ export function AppTopNav({
           </div>
 
           {/* Notification Bell */}
-          <button className="relative flex h-10 w-10 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50 transition-colors">
+          <button
+            aria-label="Notifications"
+            className="relative flex h-10 w-10 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50 transition-colors"
+          >
             <IconBell className="h-4 w-4" />
             <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-white" />
           </button>
@@ -76,12 +79,18 @@ export function AppTopNav({
           </div>
 
           {/* Bookmark Quick Icon */}
-          <button className="flex h-10 w-10 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50 transition-colors">
+          <button
+            aria-label="Bookmarks"
+            className="flex h-10 w-10 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50 transition-colors"
+          >
             <IconBookmark className="h-4 w-4" />
           </button>
 
           {/* Layout Columns Quick Icon */}
-          <button className="flex h-10 w-10 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50 transition-colors">
+          <button
+            aria-label="Toggle Layout Columns"
+            className="flex h-10 w-10 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50 transition-colors"
+          >
             <IconLayoutColumns className="h-4 w-4" />
           </button>
         </div>
@@ -95,7 +104,7 @@ export function AppTopNav({
             <IconBolt className="h-5 w-5 fill-amber-400 text-amber-500" />
           </div>
           <div className="min-w-0 flex-1">
-            <div className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">XP</div>
+            <div className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">XP</div>
             <div className="text-xs font-bold text-slate-900">{xpIntoLevel} / {xpForNextLevel}</div>
             <div className="mt-1.5 h-1 w-full rounded-sm bg-slate-100 overflow-hidden">
               <div
@@ -112,7 +121,7 @@ export function AppTopNav({
             <IconFlame className="h-5 w-5 fill-orange-400 text-orange-500" />
           </div>
           <div>
-            <div className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Streak</div>
+            <div className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Streak</div>
             <div className="text-xs font-bold text-slate-900">{streak} days</div>
           </div>
         </div>
@@ -123,7 +132,7 @@ export function AppTopNav({
             <IconAward className="h-5 w-5 text-[#7C3AED]" />
           </div>
           <div>
-            <div className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Badges</div>
+            <div className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Badges</div>
             <div className="text-xs font-bold text-slate-900">{badgeCount}</div>
           </div>
         </div>
@@ -135,7 +144,7 @@ export function AppTopNav({
               <IconDiamond className="h-5 w-5 fill-indigo-400 text-indigo-600" />
             </div>
             <div>
-              <div className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Rank</div>
+              <div className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Rank</div>
               <div className="text-xs font-bold text-slate-900">{rankTitle}</div>
             </div>
           </div>

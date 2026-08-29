@@ -61,7 +61,8 @@ export async function POST(req: NextRequest) {
     // the weakest signal in the app (stated < resume < diagnostic <
     // practice < proctored); it must never overwrite anything stronger,
     // and shouldn't even overwrite an equally-weak self-reported value.
-    const validSkillIds = extraction.skillMastery.filter((s) => SKILLS_BY_ID.has(s.skillId)).map((s) => s.skillId);
+    const skillList = extraction.skillMastery ?? [];
+    const validSkillIds = skillList.filter((s) => SKILLS_BY_ID.has(s.skillId)).map((s) => s.skillId);
     let seededCount = 0;
     if (validSkillIds.length > 0) {
       const existing = await db
@@ -70,7 +71,7 @@ export async function POST(req: NextRequest) {
         .where(and(eq(skillMastery.userId, user.id), inArray(skillMastery.skillId, validSkillIds)));
       const existingIds = new Set(existing.map((r) => r.skillId));
 
-      for (const s of extraction.skillMastery) {
+      for (const s of skillList) {
         if (!SKILLS_BY_ID.has(s.skillId) || existingIds.has(s.skillId)) continue;
         await db.insert(skillMastery).values({
           userId: user.id,

@@ -232,7 +232,7 @@ export function QuestLearnAuth({ initialMode = "login" }: { initialMode?: "login
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="Email or Username"
+                      placeholder="Email Address"
                       className="w-full rounded-none border border-purple-500/30 bg-[#080a1a]/90 py-3 pl-10 pr-4 text-xs text-white placeholder-slate-500 shadow-inner focus:border-purple-400 focus:outline-none focus:ring-1 focus:ring-purple-400"
                     />
                   </div>
@@ -257,6 +257,7 @@ export function QuestLearnAuth({ initialMode = "login" }: { initialMode?: "login
                     />
                     <button
                       type="button"
+                      aria-label={showPassword ? "Hide password" : "Show password"}
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-3.5 text-slate-400 hover:text-purple-300 focus:outline-none"
                     >
@@ -318,7 +319,7 @@ export function QuestLearnAuth({ initialMode = "login" }: { initialMode?: "login
               <div className="mt-6">
                 <div className="relative flex items-center justify-center">
                   <div className="w-full border-t border-purple-500/20" />
-                  <span className="absolute bg-[#0c1026] px-3 text-[10px] font-extrabold tracking-widest text-slate-500 uppercase">
+                  <span className="absolute bg-[#0c1026] px-3 text-[10px] font-extrabold tracking-widest text-slate-400 uppercase">
                     OR
                   </span>
                 </div>
@@ -326,6 +327,7 @@ export function QuestLearnAuth({ initialMode = "login" }: { initialMode?: "login
                 <div className="mt-5 flex items-center justify-center gap-4">
                   <button
                     type="button"
+                    aria-label="Sign in with Google"
                     onClick={() => alert("Google OAuth integration: Please configure in Supabase dashboard settings.")}
                     className="flex h-11 w-11 items-center justify-center rounded-none bg-white shadow-[0_0_15px_rgba(255,255,255,0.3)] transition-transform hover:scale-110 active:scale-95"
                     title="Sign in with Google"
@@ -340,6 +342,7 @@ export function QuestLearnAuth({ initialMode = "login" }: { initialMode?: "login
 
                   <button
                     type="button"
+                    aria-label="Sign in with Discord"
                     onClick={() => alert("Discord OAuth integration: Please configure in Supabase dashboard settings.")}
                     className="flex h-11 w-11 items-center justify-center rounded-none bg-[#5865F2] shadow-[0_0_15px_rgba(88,101,242,0.5)] transition-transform hover:scale-110 active:scale-95"
                     title="Sign in with Discord"

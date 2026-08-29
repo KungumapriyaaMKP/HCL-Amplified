@@ -32,7 +32,7 @@ const DOMAIN_DETAILS: Record<
     tagline: string;
     tags: string[];
     category: "engineering" | "ai-data" | "cloud-sec";
-    illustration: React.ReactNode;
+    Illustration: React.ComponentType<{ className?: string }>;
     badgeBg: string;
     badgeText: string;
     accentColor: string;
@@ -42,7 +42,7 @@ const DOMAIN_DETAILS: Record<
     tagline: "Build reactive user interfaces, full-stack applications, and performant APIs.",
     tags: ["React", "TypeScript", "Next.js", "Full-Stack"],
     category: "engineering",
-    illustration: <WebDevPastelIllustration className="w-20 h-16 pointer-events-none" />,
+    Illustration: WebDevPastelIllustration,
     badgeBg: "bg-indigo-50 border-indigo-200",
     badgeText: "text-indigo-700",
     accentColor: "text-indigo-600",
@@ -51,7 +51,7 @@ const DOMAIN_DETAILS: Record<
     tagline: "Analyze complex datasets, build statistical models, and extract high-value insights.",
     tags: ["Python", "Pandas", "SQL", "EDA"],
     category: "ai-data",
-    illustration: <DataSciencePastelIllustration className="w-20 h-16 pointer-events-none" />,
+    Illustration: DataSciencePastelIllustration,
     badgeBg: "bg-sky-50 border-sky-200",
     badgeText: "text-sky-700",
     accentColor: "text-sky-600",
@@ -60,7 +60,7 @@ const DOMAIN_DETAILS: Record<
     tagline: "Train machine learning models, leverage neural architectures, and build autonomous agents.",
     tags: ["PyTorch", "LLMs", "RAG", "Agents"],
     category: "ai-data",
-    illustration: <AiMlPastelIllustration className="w-20 h-16 pointer-events-none" />,
+    Illustration: AiMlPastelIllustration,
     badgeBg: "bg-emerald-50 border-emerald-200",
     badgeText: "text-emerald-700",
     accentColor: "text-emerald-600",
@@ -69,7 +69,7 @@ const DOMAIN_DETAILS: Record<
     tagline: "Automate deployment pipelines, orchestrate containers, and architect cloud infrastructure.",
     tags: ["Docker", "Kubernetes", "AWS", "CI/CD"],
     category: "cloud-sec",
-    illustration: <CloudDevOpsPastelIllustration className="w-20 h-16 pointer-events-none" />,
+    Illustration: CloudDevOpsPastelIllustration,
     badgeBg: "bg-amber-50 border-amber-200",
     badgeText: "text-amber-700",
     accentColor: "text-amber-600",
@@ -78,7 +78,7 @@ const DOMAIN_DETAILS: Record<
     tagline: "Engineer native and cross-platform mobile experiences for iOS and Android ecosystems.",
     tags: ["React Native", "Flutter", "Swift", "iOS"],
     category: "engineering",
-    illustration: <MobileDevPastelIllustration className="w-20 h-16 pointer-events-none" />,
+    Illustration: MobileDevPastelIllustration,
     badgeBg: "bg-pink-50 border-pink-200",
     badgeText: "text-pink-700",
     accentColor: "text-pink-600",
@@ -87,7 +87,7 @@ const DOMAIN_DETAILS: Record<
     tagline: "Defend networks, analyze security postures, and implement zero-trust defense.",
     tags: ["SecOps", "Zero-Trust", "PenTesting", "Crypto"],
     category: "cloud-sec",
-    illustration: <CybersecurityPastelIllustration className="w-20 h-16 pointer-events-none" />,
+    Illustration: CybersecurityPastelIllustration,
     badgeBg: "bg-purple-50 border-purple-200",
     badgeText: "text-purple-700",
     accentColor: "text-purple-600",
@@ -177,11 +177,12 @@ export function CommunityHubView({ domains }: { domains: CommunityDomainItem[] }
             tagline: `Community dedicated to discussions and collaboration in ${d.name}.`,
             tags: ["Collaboration", "Concepts", "Code"],
             category: "engineering",
-            illustration: null,
+            Illustration: WebDevPastelIllustration,
             badgeBg: "bg-purple-50 border-purple-200",
             badgeText: "text-purple-700",
             accentColor: "text-purple-600",
           };
+          const Illustration = meta.Illustration;
 
           return (
             <Link key={d.id} href={`/community/${d.id}`} className="group block h-full select-none">
@@ -198,7 +199,7 @@ export function CommunityHubView({ domains }: { domains: CommunityDomainItem[] }
                     </div>
 
                     <div className="shrink-0">
-                      {meta.illustration}
+                      <Illustration className="w-20 h-16 pointer-events-none" />
                     </div>
                   </div>
 

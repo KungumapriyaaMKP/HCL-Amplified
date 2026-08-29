@@ -31,12 +31,20 @@ export function CommunityFeed({ domain }: { domain: string }) {
   const [error, setError] = useState<string | null>(null);
 
   async function load() {
-    const res = await fetch(`/api/community/${domain}`);
-    const body = await res.json();
-    if (res.ok) {
-      setPosts(body.posts);
-      setJoined(body.joined);
-      setMemberCount(body.memberCount);
+    try {
+      const res = await fetch(`/api/community/${domain}`);
+      if (res.ok) {
+        const body = await res.json();
+        setPosts(body.posts ?? []);
+        setJoined(Boolean(body.joined));
+        setMemberCount(body.memberCount ?? 0);
+      } else if (res.status === 401) {
+        // Unauthenticated guest browsing
+        setPosts([]);
+        setJoined(false);
+      }
+    } catch (_err) {
+      // Resilience against server reloads / momentary drops
     }
   }
 
@@ -46,9 +54,20 @@ export function CommunityFeed({ domain }: { domain: string }) {
 
   async function join() {
     setJoining(true);
+    setError(null);
     try {
-      await fetch(`/api/community/${domain}/join`, { method: "POST" });
+      const res = await fetch(`/api/community/${domain}/join`, { method: "POST" });
+      if (!res.ok) {
+        if (res.status === 401) {
+          window.location.href = `/login?next=/community/${domain}`;
+          return;
+        }
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error || "Failed to join community");
+      }
       await load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to join community");
     } finally {
       setJoining(false);
     }
@@ -136,13 +155,22 @@ export function CommunityFeed({ domain }: { domain: string }) {
           </div>
         </div>
 
-        {/* Right Side: Join Guild CTA */}
-        <div>
+        {/* Right Side: Join Guild CTA / New Discussion */}
+        <div className="flex items-center gap-2">
           {joined ? (
-            <span className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-2.5 text-xs font-bold text-emerald-700 shadow-xs">
-              <IconCheck className="h-4 w-4 text-emerald-600" />
-              <span>Community Member</span>
-            </span>
+            <>
+              <span className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-xs font-bold text-emerald-700 shadow-xs">
+                <IconCheck className="h-4 w-4 text-emerald-600" />
+                <span>Community Member</span>
+              </span>
+              <button
+                onClick={() => setShowCompose(!showCompose)}
+                className="inline-flex items-center gap-1.5 rounded-xl bg-[#7C3AED] px-4 py-2 text-xs font-bold text-white shadow-xs hover:bg-[#6D28D9] transition-all cursor-pointer"
+              >
+                <IconPencil className="h-3.5 w-3.5" />
+                <span>{showCompose ? "Close Form" : "New Discussion"}</span>
+              </button>
+            </>
           ) : (
             <button
               disabled={joining}

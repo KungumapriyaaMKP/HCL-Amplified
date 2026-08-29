@@ -15,15 +15,21 @@ export default async function CommunityDomainPage({ params }: { params: Promise<
   const { domain } = await params;
   if (!isValidDomain(domain)) redirect("/community");
 
-  const user = await requireUser();
-  const [profile] = await db.select().from(profiles).where(eq(profiles.userId, user.id));
+  let displayName = "yuvi";
+  try {
+    const user = await requireUser();
+    const [profile] = await db.select().from(profiles).where(eq(profiles.userId, user.id));
+    if (profile?.displayName) displayName = profile.displayName;
+  } catch (_err) {
+    // Unauthenticated guest view of domain community
+  }
   const domainMeta = DOMAINS.find((d) => d.id === domain)!;
 
   return (
     <div className="flex min-h-screen bg-[#F8F9FD] text-slate-900 font-sans">
       {/* 1. Left Sidebar Navigation */}
       <AppSidebar
-        displayName={profile?.displayName || "yuvi"}
+        displayName={displayName}
         level={1}
         levelTitle="Newcomer"
       />

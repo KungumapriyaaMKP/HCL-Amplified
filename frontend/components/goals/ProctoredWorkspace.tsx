@@ -155,13 +155,23 @@ export function ProctoredWorkspace({
         }
       }
 
-      const res = await fetch(`/api/modules/${moduleId}/proctored/generate`, { method: "POST" });
+      let res = await fetch(`/api/modules/${moduleId}/proctored/start`, { method: "POST" });
+      if (res.status === 404) {
+        res = await fetch(`/api/modules/${moduleId}/proctored/generate`, { method: "POST" });
+      }
       const body = await res.json();
       if (!res.ok) throw new Error(body.error || "Could not generate questions");
 
+      if (body.alreadyTaken) {
+        setScore(body.score);
+        setReportText(body.reportText);
+        setPhase("result");
+        return;
+      }
+
       setAttemptId(body.attemptId);
       setQuestions(body.questions);
-      setSecondsLeft(body.timeLimitMinutes ? body.timeLimitMinutes * 60 : 600);
+      setSecondsLeft(body.timeLimitSeconds || (body.timeLimitMinutes ? body.timeLimitMinutes * 60 : 600));
 
       try {
         if (!document.fullscreenElement) {

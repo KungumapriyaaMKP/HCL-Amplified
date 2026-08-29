@@ -13,6 +13,9 @@ export default async function DashboardPage() {
   let xpForNextLevel = 50;
   let currentStreak = 0;
   let badgeCount = 0;
+  let activeGoalId: string | undefined;
+  let activeAiGoalId: string | undefined;
+  let activeDataScienceGoalId: string | undefined;
 
   try {
     const user = await requireUser();
@@ -26,6 +29,12 @@ export default async function DashboardPage() {
     xpForNextLevel = data.gamification.xpForNextLevel || 50;
     currentStreak = data.gamification.streak?.currentStreak ?? 0;
     badgeCount = data.gamification.badges?.length ?? 0;
+
+    if (data.goals && data.goals.length > 0) {
+      activeGoalId = data.goals[0]?.id;
+      activeAiGoalId = data.goals.find((g) => g.domain === "ai-ml")?.id;
+      activeDataScienceGoalId = data.goals.find((g) => g.domain === "data-science")?.id;
+    }
   } catch (_err) {
     // Graceful fallback to default matching screenshot
   }
@@ -37,6 +46,7 @@ export default async function DashboardPage() {
         displayName={displayName}
         level={level}
         levelTitle={levelTitle}
+        activeGoalId={activeGoalId}
       />
 
       {/* 2. Main Scrollable Dashboard Content */}
@@ -63,6 +73,9 @@ export default async function DashboardPage() {
             xpForNextLevel={xpForNextLevel}
             streak={currentStreak}
             badgeCount={badgeCount}
+            activeGoalId={activeGoalId}
+            activeAiGoalId={activeAiGoalId}
+            activeDataScienceGoalId={activeDataScienceGoalId}
           />
         </main>
       </div>

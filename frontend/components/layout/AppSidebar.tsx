@@ -22,19 +22,21 @@ interface AppSidebarProps {
   displayName?: string;
   level?: number;
   levelTitle?: string;
+  activeGoalId?: string;
 }
 
 export function AppSidebar({
   displayName = "yuvi",
   level = 1,
   levelTitle = "Newcomer",
+  activeGoalId,
 }: AppSidebarProps) {
   const pathname = usePathname();
 
   const navItems = [
     { label: "Dashboard", href: "/dashboard", icon: IconSmartHome },
-    { label: "My Quests", href: "/goals/new", icon: IconTarget },
-    { label: "Skill Map", href: "/dashboard#skill-map", icon: IconGitFork },
+    { label: "My Quests", href: activeGoalId ? `/goals/${activeGoalId}` : "/goals/new", icon: IconTarget },
+    { label: "Skill Map", href: activeGoalId ? `/goals/${activeGoalId}/graph` : "/dashboard#skill-map", icon: IconGitFork },
     { label: "Explore", href: "/community", icon: IconCompass },
     { label: "Leaderboard", href: "/leaderboard", icon: IconTrophy },
     { label: "Achievements", href: "/dashboard#achievements", icon: IconAward },
@@ -43,7 +45,7 @@ export function AppSidebar({
   ];
 
   return (
-    <aside className="w-64 shrink-0 bg-white border-r border-slate-100 flex flex-col justify-between p-5 min-h-screen">
+    <aside className="hidden lg:flex w-64 shrink-0 bg-white border-r border-slate-100 flex-col justify-between p-5 min-h-screen">
       <div>
         {/* Brand Header */}
         <Link href="/dashboard" className="flex items-center gap-3 px-1 py-1 mb-6 group">
@@ -54,7 +56,7 @@ export function AppSidebar({
             <div className="text-lg font-bold tracking-tight text-slate-900 leading-tight">
               QuestLearn
             </div>
-            <div className="text-[11px] font-normal text-slate-400">
+            <div className="text-[11px] font-normal text-slate-500">
               Level up your future
             </div>
           </div>
@@ -104,7 +106,7 @@ export function AppSidebar({
                 <div className="text-xs font-bold text-slate-900 leading-tight">
                   {displayName}
                 </div>
-                <div className="text-[10px] font-medium text-slate-400">
+                <div className="text-[10px] font-medium text-slate-500">
                   Level {level} • {levelTitle}
                 </div>
               </div>
@@ -119,7 +121,7 @@ export function AppSidebar({
                 style={{ width: "20%" }}
               />
             </div>
-            <div className="text-[9px] font-semibold text-slate-400 text-right">
+            <div className="text-[9px] font-semibold text-slate-500 text-right">
               100 / 500 XP
             </div>
           </div>

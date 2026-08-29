@@ -62,24 +62,41 @@ export function computePoincareLayout(
     fanOutMap.set(edge.from, (fanOutMap.get(edge.from) ?? 0) + 1);
   }
 
+  const nodesPerCategory = new Map<string, number>();
+  for (const n of nodes) {
+    nodesPerCategory.set(n.category, (nodesPerCategory.get(n.category) ?? 0) + 1);
+  }
+
   const categoryCounts = new Map<string, number>();
   const poincareNodes: PoincareNode[] = [];
   const nodeMap = new Map<string, PoincareNode>();
+
+  const rootsCount = nodes.filter((n) => n.depth === 0).length;
 
   for (const n of nodes) {
     const depth = n.depth;
     const fanOut = fanOutMap.get(n.id) ?? 0;
 
-    // Hyperbolic radius in [0, 0.88] based on depth
-    let rHyperbolic = Math.tanh(alpha * depth);
-    rHyperbolic = Math.min(0.88, rHyperbolic);
-
-    // Angular distribution within category sector
     const idxInCat = categoryCounts.get(n.category) ?? 0;
     categoryCounts.set(n.category, idxInCat + 1);
+    const totalInCat = nodesPerCategory.get(n.category) || 1;
 
-    const sectorSpan = ((2 * Math.PI) / catCount) * 0.8;
-    const angle = (categoryAngleBase.get(n.category) ?? 0) + ((idxInCat * 0.23) % sectorSpan);
+    // Angular distribution evenly spaced across category sector
+    const sectorWidth = (2 * Math.PI) / catCount;
+    const sectorBase = categoryAngleBase.get(n.category) ?? 0;
+    const angle =
+      totalInCat > 1
+        ? sectorBase + (idxInCat / totalInCat) * (sectorWidth * 0.75) + sectorWidth * 0.125
+        : sectorBase + sectorWidth * 0.5;
+
+    // Hyperbolic radius in [0.15, 0.85] based on depth.
+    // If multiple root nodes exist, offset them from (0,0) so they don't collide at origin.
+    let rHyperbolic = 0;
+    if (depth === 0) {
+      rHyperbolic = rootsCount > 1 ? 0.16 : 0;
+    } else {
+      rHyperbolic = Math.min(0.85, 0.22 + 0.63 * Math.tanh(alpha * depth));
+    }
 
     const u = Number((rHyperbolic * Math.cos(angle)).toFixed(4));
     const v = Number((rHyperbolic * Math.sin(angle)).toFixed(4));

@@ -6,16 +6,34 @@ import { eq } from "drizzle-orm";
 import { AppSidebar } from "@/frontend/components/layout/AppSidebar";
 import { CommunityHubView } from "@/frontend/components/community/CommunityHubView";
 
+import { DOMAINS } from "@/data/domains";
+
 export default async function CommunityLandingPage() {
-  const user = await requireUser();
-  const [profile] = await db.select().from(profiles).where(eq(profiles.userId, user.id));
-  const domains = await getCommunityOverview();
+  let displayName = "Yuvi";
+  try {
+    const user = await requireUser();
+    const [profile] = await db.select().from(profiles).where(eq(profiles.userId, user.id));
+    if (profile?.displayName) displayName = profile.displayName;
+  } catch (_err) {
+    // Unauthenticated guest view
+  }
+
+  let domains: any[] = [];
+  try {
+    domains = await getCommunityOverview();
+  } catch (err) {
+    console.error("Failed to load live community overview:", err);
+  }
+
+  if (!domains || domains.length === 0) {
+    domains = DOMAINS.map((d) => ({ ...d, memberCount: 0, postCount: 0 }));
+  }
 
   return (
     <div className="flex min-h-screen bg-[#F8F9FD] text-slate-900 font-sans">
       {/* 1. Left Sidebar Navigation */}
       <AppSidebar
-        displayName={profile?.displayName || "Yuvi"}
+        displayName={displayName}
         level={1}
         levelTitle="Newcomer"
       />

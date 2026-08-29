@@ -226,76 +226,100 @@ export function SkillGraphView({
               );
             })}
 
-            {/* Skill Nodes */}
-            {poincareData.nodes.map((node) => {
-              const pt = toSvgCoords(node.u, node.v);
-              const isSelected = selectedNodeId === node.id;
-              const isHovered = hoveredNodeId === node.id;
-              const isActive = isSelected || isHovered;
+            {/* Skill Nodes (Render inactive first, active on top to prevent visual clipping/ghosting) */}
+            {[...poincareData.nodes]
+              .sort((a, b) => {
+                const aActive = a.id === selectedNodeId || a.id === hoveredNodeId;
+                const bActive = b.id === selectedNodeId || b.id === hoveredNodeId;
+                if (aActive === bActive) return 0;
+                return aActive ? 1 : -1;
+              })
+              .map((node) => {
+                const pt = toSvgCoords(node.u, node.v);
+                const isSelected = selectedNodeId === node.id;
+                const isHovered = hoveredNodeId === node.id;
+                const isActive = isSelected || isHovered;
 
-              const mastery = masteryBySkill.get(node.id) ?? 0;
-              const status = statusFor(
-                mastery,
-                targetSkillIds.has(node.id),
-                requiredSkillIds.has(node.id)
-              );
-              const colors = STATUS_COLOR[status];
+                const mastery = masteryBySkill.get(node.id) ?? 0;
+                const status = statusFor(
+                  mastery,
+                  targetSkillIds.has(node.id),
+                  requiredSkillIds.has(node.id)
+                );
+                const colors = STATUS_COLOR[status];
 
-              const baseRadius = node.depth === 0 ? 7 : Math.max(4.5, 7 - node.depth * 0.6);
-              const r = isActive ? baseRadius + 3.5 : baseRadius;
+                const baseRadius = node.depth === 0 ? 7 : Math.max(4.5, 7 - node.depth * 0.6);
+                const r = isActive ? baseRadius + 3.5 : baseRadius;
+                const labelText = node.name;
+                const approxLabelWidth = Math.min(180, labelText.length * 6.5 + 16);
 
-              return (
-                <g
-                  key={node.id}
-                  className="cursor-pointer"
-                  onMouseEnter={() => setHoveredNodeId(node.id)}
-                  onMouseLeave={() => setHoveredNodeId(null)}
-                  onClick={() =>
-                    setSelectedNodeId((prev) => (prev === node.id ? null : node.id))
-                  }
-                >
-                  {/* Glowing background ring when active */}
-                  {isActive && (
+                return (
+                  <g
+                    key={node.id}
+                    className="cursor-pointer"
+                    onMouseEnter={() => setHoveredNodeId(node.id)}
+                    onMouseLeave={() => setHoveredNodeId(null)}
+                    onClick={() =>
+                      setSelectedNodeId((prev) => (prev === node.id ? null : node.id))
+                    }
+                  >
+                    {/* Pulsing ring when active */}
+                    {isActive && (
+                      <circle
+                        cx={pt.x}
+                        cy={pt.y}
+                        r={r + 5}
+                        fill="none"
+                        stroke={colors.stroke}
+                        strokeWidth="1.5"
+                        strokeDasharray="2 2"
+                        className="animate-pulse"
+                      />
+                    )}
+
+                    {/* Node Circle */}
                     <circle
                       cx={pt.x}
                       cy={pt.y}
-                      r={r + 4}
-                      fill="none"
-                      stroke={colors.stroke}
-                      strokeWidth="1.5"
-                      opacity="0.6"
+                      r={r}
+                      fill={colors.fill}
+                      stroke={isActive ? "#ffffff" : colors.stroke}
+                      strokeWidth={isActive ? 2.5 : 1.25}
+                      className="transition-transform duration-150"
                     />
-                  )}
 
-                  {/* Node Circle */}
-                  <circle
-                    cx={pt.x}
-                    cy={pt.y}
-                    r={r}
-                    fill={colors.fill}
-                    stroke={isActive ? "#ffffff" : colors.stroke}
-                    strokeWidth={isActive ? 2 : 1.25}
-                    filter={isActive ? "url(#glow)" : undefined}
-                    className="transition-all duration-150"
-                  />
-
-                  {/* Label on active or foundation */}
-                  {(isActive || node.depth === 0) && (
-                    <text
-                      x={pt.x}
-                      y={pt.y - r - 4}
-                      textAnchor="middle"
-                      fill={isActive ? "#ffffff" : colors.text}
-                      fontSize={isActive ? "11.5px" : "9.5px"}
-                      fontWeight={isActive ? "700" : "500"}
-                      className="pointer-events-none drop-shadow-md select-none"
-                    >
-                      {node.name}
-                    </text>
-                  )}
-                </g>
-              );
-            })}
+                    {/* Clean background pill and crisp label for active or foundation nodes */}
+                    {(isActive || node.depth === 0) && (
+                      <g className="pointer-events-none select-none">
+                        {isActive && (
+                          <rect
+                            x={pt.x - approxLabelWidth / 2}
+                            y={pt.y - r - 20}
+                            width={approxLabelWidth}
+                            height={18}
+                            rx={4}
+                            fill="#0b0f19"
+                            stroke="rgba(168, 85, 247, 0.5)"
+                            strokeWidth={1}
+                            opacity={0.95}
+                          />
+                        )}
+                        <text
+                          x={pt.x}
+                          y={isActive ? pt.y - r - 7 : pt.y - r - 4}
+                          textAnchor="middle"
+                          fill={isActive ? "#ffffff" : colors.text}
+                          fontSize={isActive ? "11px" : "9px"}
+                          fontWeight={isActive ? "700" : "600"}
+                          className="drop-shadow-sm select-none"
+                        >
+                          {labelText}
+                        </text>
+                      </g>
+                    )}
+                  </g>
+                );
+              })}
           </svg>
         </div>
 
