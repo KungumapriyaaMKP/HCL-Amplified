@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { Button } from "@/frontend/components/ui/Button";
-import { Input } from "@/frontend/components/ui/Input";
-import { IconSparkles, IconArrowRight } from "@tabler/icons-react";
+import { useRef, useEffect } from "react";
+import { IconSparkles } from "@tabler/icons-react";
+import { PromptBox } from "@/components/ui/chatgpt-prompt-input";
 
 export type ChatBubble = { role: "user" | "assistant"; content: string };
 
@@ -11,7 +10,7 @@ export function ChatThread({
   messages,
   onSend,
   loading,
-  placeholder = "Ask AI mentor...",
+  placeholder = "Type your reply...",
   emptyHint,
 }: {
   messages: ChatBubble[];
@@ -20,39 +19,35 @@ export function ChatThread({
   placeholder?: string;
   emptyHint?: string;
 }) {
-  const [draft, setDraft] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
-  function submit() {
-    if (!draft.trim() || loading) return;
-    onSend(draft.trim());
-    setDraft("");
-  }
-
   return (
-    <div className="flex h-full flex-col bg-[#080b18]">
-      <div className="scrollbar-thin flex-1 space-y-4 overflow-y-auto p-5">
+    <div className="flex h-full flex-col bg-white">
+      {/* Scrollable Message List */}
+      <div className="flex-1 space-y-4 overflow-y-auto p-5 sm:p-6 custom-scrollbar">
         {messages.length === 0 && emptyHint && (
-          <p className="text-center text-xs text-slate-500 py-6">{emptyHint}</p>
+          <div className="text-center text-xs text-slate-400 py-10">
+            <p>{emptyHint}</p>
+          </div>
         )}
-        
+
         {messages.map((m, i) => (
           <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-            <div className="flex items-start gap-2.5 max-w-[85%]">
+            <div className="flex items-start gap-3 max-w-[85%]">
               {m.role === "assistant" && (
-                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-purple-950 border border-purple-500/40 text-purple-300 shadow-[0_0_10px_rgba(168,85,247,0.4)]">
-                  <IconSparkles className="h-3.5 w-3.5" />
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#EDE9FE] text-[#7C3AED] shadow-2xs">
+                  <IconSparkles className="h-4 w-4" />
                 </div>
               )}
               <div
-                className={`rounded-2xl px-4 py-3 text-xs leading-relaxed ${
+                className={`rounded-2xl px-4 py-3 text-xs sm:text-sm leading-relaxed ${
                   m.role === "user"
-                    ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-medium shadow-[0_0_15px_rgba(168,85,247,0.3)] border border-purple-400/40"
-                    : "bg-[#11162e] text-slate-200 border border-purple-500/20 shadow-sm"
+                    ? "bg-gradient-to-r from-[#6D28D9] to-[#7C3AED] text-white font-medium shadow-sm"
+                    : "bg-slate-50 text-slate-800 border border-slate-200/80 shadow-2xs"
                 }`}
               >
                 {m.content}
@@ -63,28 +58,22 @@ export function ChatThread({
 
         {loading && (
           <div className="flex justify-start">
-            <div className="flex items-center gap-2 rounded-2xl bg-[#11162e] border border-purple-500/20 px-4 py-3 text-xs text-purple-300">
-              <span className="flex h-2 w-2 rounded-full bg-purple-400 animate-ping" />
-              <span>AI is generating response...</span>
+            <div className="flex items-center gap-2.5 rounded-2xl bg-slate-50 border border-slate-200/80 px-4 py-3 text-xs text-[#7C3AED] font-semibold">
+              <span className="flex h-2 w-2 rounded-full bg-[#7C3AED] animate-ping" />
+              <span>AI is thinking & analyzing your response...</span>
             </div>
           </div>
         )}
         <div ref={bottomRef} />
       </div>
 
-      <div className="flex gap-2 border-t border-purple-500/20 bg-[#0c1026] p-3">
-        <Input
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && submit()}
+      {/* Modern ChatGPT Style Prompt Box Footer */}
+      <div className="border-t border-slate-100 bg-slate-50/70 p-3 sm:p-4">
+        <PromptBox
           placeholder={placeholder}
-          disabled={loading}
-          className="text-xs"
+          onSendMessage={onSend}
+          loading={loading}
         />
-        <Button onClick={submit} disabled={loading || !draft.trim()} size="md">
-          <span>Send</span>
-          <IconArrowRight className="h-4 w-4" />
-        </Button>
       </div>
     </div>
   );

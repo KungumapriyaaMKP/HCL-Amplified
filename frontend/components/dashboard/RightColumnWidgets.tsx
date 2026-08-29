@@ -12,12 +12,13 @@ import {
   IconArrowRight,
   IconCalendar,
   IconTrendingUp,
+  IconLock,
 } from "@tabler/icons-react";
 
 /**
  * 1. Your Plan for Today Widget
  */
-export function YourPlanForToday() {
+export function YourPlanForToday({ hasGoals = false }: { hasGoals?: boolean }) {
   const [plans, setPlans] = useState([
     { id: 1, title: "Limits and Continuity", duration: "20 min", status: "completed" },
     { id: 2, title: "Differentiation Basics", duration: "25 min", status: "active" },
@@ -42,6 +43,33 @@ export function YourPlanForToday() {
       )
     );
   };
+
+  if (!hasGoals) {
+    return (
+      <div className="rounded-lg border border-slate-200/80 bg-white p-5 shadow-sm space-y-3">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-bold text-slate-900">Your Plan for Today</h3>
+          <span className="text-[11px] font-bold text-slate-400">0 Tasks</span>
+        </div>
+        <div className="py-6 text-center space-y-2">
+          <div className="w-10 h-10 rounded-full bg-purple-50 text-[#7C3AED] flex items-center justify-center mx-auto">
+            <IconCalendar className="w-5 h-5" />
+          </div>
+          <div className="text-xs font-bold text-slate-800">No active tasks yet</div>
+          <p className="text-[11px] text-slate-500 max-w-[220px] mx-auto leading-relaxed">
+            Start a quest to generate daily practice milestones and personalized learning quizzes.
+          </p>
+          <Link
+            href="/goals/new"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md bg-[#7C3AED] text-white text-xs font-bold shadow-xs hover:bg-[#6D28D9] transition-colors mt-2"
+          >
+            <span>Start a Quest</span>
+            <IconArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="rounded-lg border border-slate-200/80 bg-white p-5 shadow-sm">
@@ -122,14 +150,16 @@ export function YourPlanForToday() {
  * 2. Achievements Widget with Exact 3D Hexagonal Badges
  */
 export function AchievementsWidget({
-  streak = 3,
-  xp = 230,
-  badgeCount = 12,
+  streak = 0,
+  xp = 0,
+  badgeCount = 0,
 }: {
   streak?: number;
   xp?: number;
   badgeCount?: number;
 }) {
+  const isNewUser = badgeCount === 0;
+
   return (
     <div className="rounded-lg border border-slate-200/80 bg-white p-5 shadow-sm">
       {/* Header */}
@@ -144,52 +174,51 @@ export function AchievementsWidget({
       <div className="grid grid-cols-3 gap-2.5">
         {/* Badge 1: First Steps (Star Hexagon) */}
         <div className="rounded-md border border-slate-100 bg-[#FAFBFD] p-3 flex flex-col items-center text-center">
-          <StarHexagonBadge className="w-14 h-14 mb-2" />
+          <StarHexagonBadge className={`w-14 h-14 mb-2 ${isNewUser ? "opacity-75 grayscale-30" : ""}`} />
           <div className="text-[11px] font-bold text-slate-900 leading-tight">First Steps</div>
           <div className="text-[9px] text-slate-400 mt-0.5 leading-tight">
             Complete your first quest
           </div>
           <div className="mt-2.5 w-full">
-            <span className="inline-flex items-center justify-center gap-1 w-full rounded-sm bg-emerald-50 border border-emerald-200/60 py-0.5 text-[9px] font-bold text-emerald-700">
-              <IconCheck className="h-2.5 w-2.5 stroke-[3]" />
-              <span>Completed</span>
-            </span>
+            {isNewUser ? (
+              <span className="inline-flex items-center justify-center gap-1 w-full rounded-sm bg-slate-100 border border-slate-200 py-0.5 text-[9px] font-bold text-slate-500">
+                <IconLock className="h-2.5 w-2.5" />
+                <span>0/1 Quest</span>
+              </span>
+            ) : (
+              <span className="inline-flex items-center justify-center gap-1 w-full rounded-sm bg-emerald-50 border border-emerald-200/60 py-0.5 text-[9px] font-bold text-emerald-700">
+                <IconCheck className="h-2.5 w-2.5 stroke-[3]" />
+                <span>Completed</span>
+              </span>
+            )}
           </div>
         </div>
 
         {/* Badge 2: Streak Starter (Flame Hexagon) */}
         <div className="rounded-md border border-slate-100 bg-[#FAFBFD] p-3 flex flex-col items-center text-center">
-          <FlameHexagonBadge className="w-14 h-14 mb-2" />
+          <FlameHexagonBadge className={`w-14 h-14 mb-2 ${streak < 3 ? "opacity-75 grayscale-30" : ""}`} />
           <div className="text-[11px] font-bold text-slate-900 leading-tight">Streak Starter</div>
           <div className="text-[9px] text-slate-400 mt-0.5 leading-tight">
             Maintain a 3-day streak
           </div>
           <div className="mt-2.5 w-full">
-            <div className="text-[9px] font-bold text-slate-500 mb-1">{Math.min(streak, 3)} / 3</div>
-            <div className="h-1.5 w-full rounded-sm bg-slate-200 overflow-hidden">
-              <div
-                className="h-full rounded-sm bg-[#7C3AED]"
-                style={{ width: `${Math.min(100, Math.round((streak / 3) * 100))}%` }}
-              />
-            </div>
+            <span className="inline-flex items-center justify-center gap-1 w-full rounded-sm bg-purple-50 border border-purple-200/60 py-0.5 text-[9px] font-bold text-[#6D28D9]">
+              <span>{streak}/3 days</span>
+            </span>
           </div>
         </div>
 
         {/* Badge 3: Explorer (Compass Hexagon) */}
         <div className="rounded-md border border-slate-100 bg-[#FAFBFD] p-3 flex flex-col items-center text-center">
-          <CompassHexagonBadge className="w-14 h-14 mb-2" />
+          <CompassHexagonBadge className="w-14 h-14 mb-2 opacity-75 grayscale-30" />
           <div className="text-[11px] font-bold text-slate-900 leading-tight">Explorer</div>
           <div className="text-[9px] text-slate-400 mt-0.5 leading-tight">
             Complete 5 checkpoints
           </div>
           <div className="mt-2.5 w-full">
-            <div className="text-[9px] font-bold text-slate-500 mb-1">{Math.min(badgeCount, 5)} / 5</div>
-            <div className="h-1.5 w-full rounded-sm bg-slate-200 overflow-hidden">
-              <div
-                className="h-full rounded-sm bg-[#0284C7]"
-                style={{ width: `${Math.min(100, Math.round((Math.min(badgeCount, 5) / 5) * 100))}%` }}
-              />
-            </div>
+            <span className="inline-flex items-center justify-center gap-1 w-full rounded-sm bg-purple-50 border border-purple-200/60 py-0.5 text-[9px] font-bold text-[#6D28D9]">
+              <span>0/5 goals</span>
+            </span>
           </div>
         </div>
       </div>
@@ -198,56 +227,48 @@ export function AchievementsWidget({
 }
 
 /**
- * 3. Weekly Progress Widget
+ * 3. Weekly Progress Widget with Bar Chart
  */
 export function WeeklyProgressWidget() {
   const days = [
-    { day: "Mon", height: 50 },
-    { day: "Tue", height: 35 },
-    { day: "Wed", height: 95, isPeak: true },
-    { day: "Thu", height: 65 },
-    { day: "Fri", height: 30 },
-    { day: "Sat", height: 20 },
-    { day: "Sun", height: 15 },
+    { label: "Mon", height: "h-8", active: false },
+    { label: "Tue", height: "h-14", active: false },
+    { label: "Wed", height: "h-20", active: false },
+    { label: "Thu", height: "h-16", active: false },
+    { label: "Fri", height: "h-24", active: false },
+    { label: "Sat", height: "h-10", active: false },
+    { label: "Sun", height: "h-6", active: false },
   ];
 
   return (
     <div className="rounded-lg border border-slate-200/80 bg-white p-5 shadow-sm">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-bold text-slate-900">Weekly Progress</h3>
-        <Link href="/profile" className="text-xs font-bold text-[#6D28D9] hover:underline">
-          View insights
-        </Link>
-      </div>
-
-      <div className="flex items-end justify-between gap-4">
-        {/* 7-Day Bar Chart */}
-        <div className="flex items-end gap-2 sm:gap-2.5 flex-1 h-20 pt-2">
-          {days.map((item) => (
-            <div key={item.day} className="flex flex-col items-center flex-1 h-full justify-end group">
-              <div className="relative w-full flex justify-center">
-                <div
-                  className={`w-3.5 sm:w-4 rounded-t-sm transition-all group-hover:opacity-80 ${
-                    item.isPeak ? "bg-[#7C3AED] shadow-sm" : "bg-[#A78BFA]"
-                  }`}
-                  style={{ height: `${(item.height / 100) * 55}px` }}
-                />
-              </div>
-              <span className="mt-1.5 text-[9px] font-semibold text-slate-400">{item.day}</span>
-            </div>
-          ))}
-        </div>
-
-        {/* Right Summary Statistics */}
-        <div className="shrink-0 pl-2 text-right">
-          <div className="text-[10px] font-semibold text-slate-400">This Week</div>
-          <div className="text-xl font-extrabold text-slate-900 leading-tight">2.5 hrs</div>
-          <div className="mt-1 flex items-center justify-end gap-1 text-[10px] font-bold text-emerald-600">
-            <IconTrendingUp className="h-3 w-3" />
-            <span>+1.2 hrs vs last week</span>
+        <div>
+          <h3 className="text-sm font-bold text-slate-900">Weekly Progress</h3>
+          <div className="flex items-center gap-1.5 mt-0.5">
+            <span className="text-xs font-bold text-[#6D28D9]">0 hrs</span>
+            <span className="text-[11px] text-slate-400 font-medium">this week</span>
           </div>
         </div>
+        <div className="flex items-center gap-1 text-[11px] font-bold text-slate-500 bg-slate-50 border border-slate-200 px-2 py-1 rounded-md">
+          <IconTrendingUp className="h-3.5 w-3.5" />
+          <span>New Week</span>
+        </div>
+      </div>
+
+      {/* Bar Chart */}
+      <div className="flex items-end justify-between gap-2 pt-3 h-28 border-b border-slate-100 pb-2">
+        {days.map((day) => (
+          <div key={day.label} className="flex flex-col items-center gap-2 flex-1">
+            <div className="w-full flex items-end justify-center h-20">
+              <div
+                className={`w-full max-w-[20px] rounded-t-sm transition-all bg-slate-100 h-2`}
+              />
+            </div>
+            <span className="text-[10px] font-semibold text-slate-400">{day.label}</span>
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -2,6 +2,8 @@
 
 import { useEffect, useRef } from 'react'
 
+import { PencilLoader } from "@/components/ui/loader-1";
+
 interface SplineSceneProps {
   scene: string
   className?: string
@@ -51,11 +53,8 @@ export function SplineScene({ scene, className = '' }: SplineSceneProps) {
       className={`relative w-full h-full ${className}`}
       style={{ minHeight: '400px' }}
     >
-      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50">
-        <div className="text-center">
-          <div className="animate-spin text-4xl mb-4">⚙️</div>
-          <p className="text-black/70">Loading interactive 3D scene...</p>
-        </div>
+      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50/50 to-purple-50/50">
+        <PencilLoader size={100} label="Loading interactive 3D scene..." />
       </div>
     </div>
   )
