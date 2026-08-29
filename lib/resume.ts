@@ -1,6 +1,6 @@
 import zlib from "zlib";
 
-const MAX_CHARS = 12_000; // keep the extraction prompt a reasonable size
+const MAX_CHARS = 4_000; // keep the extraction prompt a reasonable size and well within Groq TPM limits
 
 /**
  * Pure Node.js PDF text extractor that decompresses FlateDecode streams

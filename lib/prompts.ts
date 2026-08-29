@@ -68,7 +68,7 @@ export function resumeExtractionMessages(opts: {
   careerGoal: string | null;
   yearsExperience: number | null;
 }): ChatMessage[] {
-  const skillList = SKILLS.map((s) => `- ${s.id}: ${s.name} (${s.category}) - ${s.description}`).join("\n");
+  const skillList = SKILLS.map((s) => `- ${s.id}: ${s.name} (${s.category})`).join("\n");
 
   const system = `You extract a structured learner profile from a resume and/or a few directly-answered questions, for an AI learning path app.
 
