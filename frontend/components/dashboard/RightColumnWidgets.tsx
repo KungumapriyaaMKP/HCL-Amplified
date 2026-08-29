@@ -121,13 +121,21 @@ export function YourPlanForToday() {
 /**
  * 2. Achievements Widget with Exact 3D Hexagonal Badges
  */
-export function AchievementsWidget() {
+export function AchievementsWidget({
+  streak = 3,
+  xp = 230,
+  badgeCount = 12,
+}: {
+  streak?: number;
+  xp?: number;
+  badgeCount?: number;
+}) {
   return (
     <div className="rounded-lg border border-slate-200/80 bg-white p-5 shadow-sm">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-bold text-slate-900">Achievements</h3>
-        <Link href="/profile" className="text-xs font-bold text-[#6D28D9] hover:underline">
+        <Link href="/achievements" className="text-xs font-bold text-[#6D28D9] hover:underline">
           View all
         </Link>
       </div>
@@ -157,9 +165,12 @@ export function AchievementsWidget() {
             Maintain a 3-day streak
           </div>
           <div className="mt-2.5 w-full">
-            <div className="text-[9px] font-bold text-slate-500 mb-1">0 / 3</div>
+            <div className="text-[9px] font-bold text-slate-500 mb-1">{Math.min(streak, 3)} / 3</div>
             <div className="h-1.5 w-full rounded-sm bg-slate-200 overflow-hidden">
-              <div className="h-full rounded-sm bg-[#7C3AED]" style={{ width: "0%" }} />
+              <div
+                className="h-full rounded-sm bg-[#7C3AED]"
+                style={{ width: `${Math.min(100, Math.round((streak / 3) * 100))}%` }}
+              />
             </div>
           </div>
         </div>
@@ -172,9 +183,12 @@ export function AchievementsWidget() {
             Complete 5 checkpoints
           </div>
           <div className="mt-2.5 w-full">
-            <div className="text-[9px] font-bold text-slate-500 mb-1">1 / 5</div>
+            <div className="text-[9px] font-bold text-slate-500 mb-1">{Math.min(badgeCount, 5)} / 5</div>
             <div className="h-1.5 w-full rounded-sm bg-slate-200 overflow-hidden">
-              <div className="h-full rounded-sm bg-[#0284C7]" style={{ width: "20%" }} />
+              <div
+                className="h-full rounded-sm bg-[#0284C7]"
+                style={{ width: `${Math.min(100, Math.round((Math.min(badgeCount, 5) / 5) * 100))}%` }}
+              />
             </div>
           </div>
         </div>

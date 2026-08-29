@@ -138,18 +138,18 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Rocket Podium Thrust & Hover Animations */
 @keyframes rocket-hover-1 {
-  0%, 100% { transform: translateY(-24px) rotate(0deg); }
-  50% { transform: translateY(-38px) rotate(0.8deg); }
+  0%, 100% { transform: translateY(-16px) rotate(0deg); }
+  50% { transform: translateY(-28px) rotate(0.8deg); }
 }
 
 @keyframes rocket-hover-2 {
   0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-14px) rotate(-1deg); }
+  50% { transform: translateY(-10px) rotate(-1deg); }
 }
 
 @keyframes rocket-hover-3 {
   0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-12px) rotate(1deg); }
+  50% { transform: translateY(-10px) rotate(1deg); }
 }
 
 @keyframes thruster-flame-main {

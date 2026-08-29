@@ -30,13 +30,13 @@ export function InteractiveRocketPodium({ top3 }: InteractiveRocketPodiumProps) 
   const rank3 = top3.find((r) => r.rank === 3) || top3[2];
 
   return (
-    <div className="mb-20 pt-8 grid grid-cols-3 gap-3 sm:gap-8 items-end max-w-3xl mx-auto select-none">
+    <div className="mb-20 pt-16 sm:pt-20 pb-8 grid grid-cols-3 gap-3 sm:gap-8 items-end max-w-3xl mx-auto select-none">
       {/* ======================= RANK 2: Silver Nebula Striker ======================= */}
       {rank2 && (
         <motion.div
           className="relative flex flex-col items-center cursor-pointer group"
           animate={{
-            y: boostedRank === 2 ? -55 : hoveredRank === 2 ? -18 : 0,
+            y: boostedRank === 2 ? -45 : hoveredRank === 2 ? -14 : 0,
             scale: hoveredRank === 2 ? 1.04 : 1,
           }}
           transition={{ type: "spring", stiffness: 260, damping: 18 }}
@@ -110,9 +110,9 @@ export function InteractiveRocketPodium({ top3 }: InteractiveRocketPodiumProps) 
       {/* ======================= RANK 1: Solar Apex Cruiser (Gold Leader) ======================= */}
       {rank1 && (
         <motion.div
-          className="relative flex flex-col items-center -translate-y-6 sm:-translate-y-10 z-20 cursor-pointer group"
+          className="relative flex flex-col items-center z-20 cursor-pointer group"
           animate={{
-            y: boostedRank === 1 ? -75 : hoveredRank === 1 ? -38 : -24,
+            y: boostedRank === 1 ? -45 : hoveredRank === 1 ? -16 : 0,
             scale: hoveredRank === 1 ? 1.05 : 1,
           }}
           transition={{ type: "spring", stiffness: 260, damping: 18 }}

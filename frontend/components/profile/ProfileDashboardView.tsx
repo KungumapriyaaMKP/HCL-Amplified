@@ -13,7 +13,6 @@ import {
   IconArrowRight,
   IconTarget,
   IconSearch,
-  IconSparkles,
   IconChevronDown,
 } from "@tabler/icons-react";
 
@@ -258,7 +257,7 @@ export function ProfileDashboardView({
               <div className="mt-6 pt-4 border-t border-slate-100">
                 <div className="flex items-center justify-between text-xs font-bold text-slate-700 mb-2">
                   <span className="flex items-center gap-1.5 text-[#7C3AED]">
-                    <IconSparkles className="h-3.5 w-3.5" />
+                    <IconBolt className="h-3.5 w-3.5" />
                     Level {level} Calibration
                   </span>
                   <span className="text-slate-500">{pct}% to Level {level + 1}</span>
@@ -428,7 +427,6 @@ export function ProfileDashboardView({
                     : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
                 }`}
               >
-                <IconSparkles className="h-3.5 w-3.5" />
                 <span>PROFICIENCY RATINGS (2)</span>
               </button>
               <button
@@ -652,7 +650,7 @@ export function ProfileDashboardView({
               <div className="flex items-center justify-between gap-3 mb-4">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-none bg-purple-100 text-[#7C3AED] shadow-xs shrink-0">
-                    <IconSparkles className="h-5 w-5" />
+                    <IconBolt className="h-5 w-5" />
                   </div>
                   <div>
                     <div className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#7C3AED]">

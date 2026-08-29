@@ -31,7 +31,16 @@ interface QuestDashboardProps {
   badgeCount?: number;
 }
 
-export function QuestDashboard({}: QuestDashboardProps) {
+export function QuestDashboard({
+  displayName,
+  level,
+  levelTitle,
+  xp,
+  xpIntoLevel,
+  xpForNextLevel,
+  streak,
+  badgeCount,
+}: QuestDashboardProps) {
   const currentStep = 3;
   const totalSteps = 5;
 
@@ -221,7 +230,7 @@ export function QuestDashboard({}: QuestDashboardProps) {
         <YourPlanForToday />
 
         {/* 2. Achievements */}
-        <AchievementsWidget />
+        <AchievementsWidget streak={streak} xp={xp} badgeCount={badgeCount} />
 
         {/* 3. Weekly Progress */}
         <WeeklyProgressWidget />

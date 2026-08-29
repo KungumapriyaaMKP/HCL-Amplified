@@ -959,3 +959,740 @@ export function IslandWithFlagIllustration({ className = "w-28 h-28" }: { classN
     </div>
   );
 }
+
+/**
+ * 3D Gold Laurel Wreath Medal for Leaderboard Rank #1
+ */
+export function GoldRankMedal({ className = "w-10 h-10" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+      <defs>
+        <linearGradient id="gold-leaf-grad" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#FDE047" />
+          <stop offset="50%" stopColor="#F59E0B" />
+          <stop offset="100%" stopColor="#D97706" />
+        </linearGradient>
+        <linearGradient id="gold-coin-outer" x1="24" y1="6" x2="24" y2="38" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#FEF08A" />
+          <stop offset="40%" stopColor="#FBBF24" />
+          <stop offset="100%" stopColor="#D97706" />
+        </linearGradient>
+        <linearGradient id="gold-coin-inner" x1="24" y1="9" x2="24" y2="35" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#FFFBEB" />
+          <stop offset="50%" stopColor="#FEF08A" />
+          <stop offset="100%" stopColor="#FBBF24" />
+        </linearGradient>
+        <linearGradient id="gold-ribbon-tail" x1="24" y1="32" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#F59E0B" />
+          <stop offset="100%" stopColor="#B45309" />
+        </linearGradient>
+      </defs>
+
+      {/* Ribbon Tails */}
+      <path d="M17 32 L13 44 L20 40 L24 43 L23 35 Z" fill="url(#gold-ribbon-tail)" />
+      <path d="M31 32 L35 44 L28 40 L24 43 L25 35 Z" fill="url(#gold-ribbon-tail)" />
+
+      {/* Laurel Wreath - Left Branch */}
+      <path d="M10 17 C7.5 19 6.5 24 10 28 C9 26 9.5 22 13 20 Z" fill="url(#gold-leaf-grad)" />
+      <path d="M7 23 C5 26 5 31 10 34 C9 31 9.5 28 13 27 Z" fill="url(#gold-leaf-grad)" />
+      <path d="M13 12 C10.5 14 10 18 14 21 C13 19 14.5 16 17 15 Z" fill="url(#gold-leaf-grad)" />
+      <path d="M18 8 C15.5 10 15.5 14 20 16 C19 14 20 12 22 11 Z" fill="url(#gold-leaf-grad)" />
+
+      {/* Laurel Wreath - Right Branch */}
+      <path d="M38 17 C40.5 19 41.5 24 38 28 C39 26 38.5 22 35 20 Z" fill="url(#gold-leaf-grad)" />
+      <path d="M41 23 C43 26 43 31 38 34 C39 31 38.5 28 35 27 Z" fill="url(#gold-leaf-grad)" />
+      <path d="M35 12 C37.5 14 38 18 34 21 C35 19 33.5 16 31 15 Z" fill="url(#gold-leaf-grad)" />
+      <path d="M30 8 C32.5 10 32.5 14 28 16 C29 14 28 12 26 11 Z" fill="url(#gold-leaf-grad)" />
+
+      {/* Outer Coin Bevel */}
+      <circle cx="24" cy="22" r="14" fill="url(#gold-coin-outer)" />
+
+      {/* Inner Coin Surface */}
+      <circle cx="24" cy="22" r="11.5" fill="url(#gold-coin-inner)" stroke="#FEF08A" strokeWidth="0.75" />
+
+      {/* Subtle Inner Ring */}
+      <circle cx="24" cy="22" r="9.5" fill="none" stroke="#F59E0B" strokeWidth="0.6" strokeDasharray="1.2 0.8" opacity="0.6" />
+
+      {/* Rank Number 1 */}
+      <text
+        x="24"
+        y="27.5"
+        fill="#78350F"
+        fontSize="15"
+        fontWeight="900"
+        textAnchor="middle"
+        fontFamily="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+      >
+        1
+      </text>
+    </svg>
+  );
+}
+
+/**
+ * 3D Silver Laurel Wreath Medal for Leaderboard Rank #2
+ */
+export function SilverRankMedal({ className = "w-10 h-10" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+      <defs>
+        <linearGradient id="silver-leaf-grad" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#E0F2FE" />
+          <stop offset="50%" stopColor="#BAE6FD" />
+          <stop offset="100%" stopColor="#7DD3FC" />
+        </linearGradient>
+        <linearGradient id="silver-coin-outer" x1="24" y1="6" x2="24" y2="38" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#F8FAFC" />
+          <stop offset="40%" stopColor="#CBD5E1" />
+          <stop offset="100%" stopColor="#64748B" />
+        </linearGradient>
+        <linearGradient id="silver-coin-inner" x1="24" y1="9" x2="24" y2="35" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#FFFFFF" />
+          <stop offset="50%" stopColor="#F1F5F9" />
+          <stop offset="100%" stopColor="#CBD5E1" />
+        </linearGradient>
+        <linearGradient id="silver-ribbon-tail" x1="24" y1="32" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#94A3B8" />
+          <stop offset="100%" stopColor="#475569" />
+        </linearGradient>
+      </defs>
+
+      {/* Ribbon Tails */}
+      <path d="M17 32 L13 44 L20 40 L24 43 L23 35 Z" fill="url(#silver-ribbon-tail)" />
+      <path d="M31 32 L35 44 L28 40 L24 43 L25 35 Z" fill="url(#silver-ribbon-tail)" />
+
+      {/* Laurel Wreath - Left Branch */}
+      <path d="M10 17 C7.5 19 6.5 24 10 28 C9 26 9.5 22 13 20 Z" fill="url(#silver-leaf-grad)" />
+      <path d="M7 23 C5 26 5 31 10 34 C9 31 9.5 28 13 27 Z" fill="url(#silver-leaf-grad)" />
+      <path d="M13 12 C10.5 14 10 18 14 21 C13 19 14.5 16 17 15 Z" fill="url(#silver-leaf-grad)" />
+      <path d="M18 8 C15.5 10 15.5 14 20 16 C19 14 20 12 22 11 Z" fill="url(#silver-leaf-grad)" />
+
+      {/* Laurel Wreath - Right Branch */}
+      <path d="M38 17 C40.5 19 41.5 24 38 28 C39 26 38.5 22 35 20 Z" fill="url(#silver-leaf-grad)" />
+      <path d="M41 23 C43 26 43 31 38 34 C39 31 38.5 28 35 27 Z" fill="url(#silver-leaf-grad)" />
+      <path d="M35 12 C37.5 14 38 18 34 21 C35 19 33.5 16 31 15 Z" fill="url(#silver-leaf-grad)" />
+      <path d="M30 8 C32.5 10 32.5 14 28 16 C29 14 28 12 26 11 Z" fill="url(#silver-leaf-grad)" />
+
+      {/* Outer Coin Bevel */}
+      <circle cx="24" cy="22" r="14" fill="url(#silver-coin-outer)" />
+
+      {/* Inner Coin Surface */}
+      <circle cx="24" cy="22" r="11.5" fill="url(#silver-coin-inner)" stroke="#FFFFFF" strokeWidth="0.75" />
+
+      {/* Subtle Inner Ring */}
+      <circle cx="24" cy="22" r="9.5" fill="none" stroke="#94A3B8" strokeWidth="0.6" strokeDasharray="1.2 0.8" opacity="0.6" />
+
+      {/* Rank Number 2 */}
+      <text
+        x="24"
+        y="27.5"
+        fill="#1E293B"
+        fontSize="15"
+        fontWeight="900"
+        textAnchor="middle"
+        fontFamily="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+      >
+        2
+      </text>
+    </svg>
+  );
+}
+
+/**
+ * 3D Bronze Laurel Wreath Medal for Leaderboard Rank #3
+ */
+export function BronzeRankMedal({ className = "w-10 h-10" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+      <defs>
+        <linearGradient id="bronze-leaf-grad" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#FED7AA" />
+          <stop offset="50%" stopColor="#FDBA74" />
+          <stop offset="100%" stopColor="#FB923C" />
+        </linearGradient>
+        <linearGradient id="bronze-coin-outer" x1="24" y1="6" x2="24" y2="38" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#FFEDD5" />
+          <stop offset="40%" stopColor="#FB923C" />
+          <stop offset="100%" stopColor="#C2410C" />
+        </linearGradient>
+        <linearGradient id="bronze-coin-inner" x1="24" y1="9" x2="24" y2="35" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#FFF7ED" />
+          <stop offset="50%" stopColor="#FED7AA" />
+          <stop offset="100%" stopColor="#FDBA74" />
+        </linearGradient>
+        <linearGradient id="bronze-ribbon-tail" x1="24" y1="32" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#EA580C" />
+          <stop offset="100%" stopColor="#9A3412" />
+        </linearGradient>
+      </defs>
+
+      {/* Ribbon Tails */}
+      <path d="M17 32 L13 44 L20 40 L24 43 L23 35 Z" fill="url(#bronze-ribbon-tail)" />
+      <path d="M31 32 L35 44 L28 40 L24 43 L25 35 Z" fill="url(#bronze-ribbon-tail)" />
+
+      {/* Laurel Wreath - Left Branch */}
+      <path d="M10 17 C7.5 19 6.5 24 10 28 C9 26 9.5 22 13 20 Z" fill="url(#bronze-leaf-grad)" />
+      <path d="M7 23 C5 26 5 31 10 34 C9 31 9.5 28 13 27 Z" fill="url(#bronze-leaf-grad)" />
+      <path d="M13 12 C10.5 14 10 18 14 21 C13 19 14.5 16 17 15 Z" fill="url(#bronze-leaf-grad)" />
+      <path d="M18 8 C15.5 10 15.5 14 20 16 C19 14 20 12 22 11 Z" fill="url(#bronze-leaf-grad)" />
+
+      {/* Laurel Wreath - Right Branch */}
+      <path d="M38 17 C40.5 19 41.5 24 38 28 C39 26 38.5 22 35 20 Z" fill="url(#bronze-leaf-grad)" />
+      <path d="M41 23 C43 26 43 31 38 34 C39 31 38.5 28 35 27 Z" fill="url(#bronze-leaf-grad)" />
+      <path d="M35 12 C37.5 14 38 18 34 21 C35 19 33.5 16 31 15 Z" fill="url(#bronze-leaf-grad)" />
+      <path d="M30 8 C32.5 10 32.5 14 28 16 C29 14 28 12 26 11 Z" fill="url(#bronze-leaf-grad)" />
+
+      {/* Outer Coin Bevel */}
+      <circle cx="24" cy="22" r="14" fill="url(#bronze-coin-outer)" />
+
+      {/* Inner Coin Surface */}
+      <circle cx="24" cy="22" r="11.5" fill="url(#bronze-coin-inner)" stroke="#FFF7ED" strokeWidth="0.75" />
+
+      {/* Subtle Inner Ring */}
+      <circle cx="24" cy="22" r="9.5" fill="none" stroke="#EA580C" strokeWidth="0.6" strokeDasharray="1.2 0.8" opacity="0.6" />
+
+      {/* Rank Number 3 */}
+      <text
+        x="24"
+        y="27.5"
+        fill="#7C2D12"
+        fontSize="15"
+        fontWeight="900"
+        textAnchor="middle"
+        fontFamily="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+      >
+        3
+      </text>
+    </svg>
+  );
+}
+
+/**
+ * Professional Ultra-Sleek Explorer Shield Badge
+ */
+export function ExplorerShieldBadge({ className = "w-14 h-16" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 56 64" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+      <defs>
+        <linearGradient id="exp-border" x1="0" y1="0" x2="56" y2="64" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#C084FC" />
+          <stop offset="50%" stopColor="#7C3AED" />
+          <stop offset="100%" stopColor="#4C1D95" />
+        </linearGradient>
+        <linearGradient id="exp-bg" x1="28" y1="4" x2="28" y2="58" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#8B5CF6" />
+          <stop offset="60%" stopColor="#6D28D9" />
+          <stop offset="100%" stopColor="#4C1D95" />
+        </linearGradient>
+        <linearGradient id="exp-inner" x1="28" y1="12" x2="28" y2="48" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#FFFFFF" />
+          <stop offset="100%" stopColor="#EDE9FE" />
+        </linearGradient>
+      </defs>
+
+      {/* Outer Shield with Crisp Bevel */}
+      <path
+        d="M28 3 C44 3, 53 8, 53 18 C53 38, 41 54, 28 61 C15 54, 3 38, 3 18 C3 8, 12 3, 28 3 Z"
+        fill="url(#exp-border)"
+      />
+      {/* Inner Shield Body */}
+      <path
+        d="M28 6 C41 6, 49 10, 49 19 C49 36, 38 50, 28 56 C18 50, 7 36, 7 19 C7 10, 15 6, 28 6 Z"
+        fill="url(#exp-bg)"
+      />
+      {/* Top Specular Arc */}
+      <path d="M12 16 C20 10, 36 10, 44 16 C40 21, 16 21, 12 16 Z" fill="white" fillOpacity="0.2" />
+
+      {/* Compass Circular Bevel */}
+      <circle cx="28" cy="30" r="14.5" fill="url(#exp-inner)" stroke="#C4B5FD" strokeWidth="1" />
+      <circle cx="28" cy="30" r="12" fill="#2E1065" />
+      {/* Ring markings */}
+      <circle cx="28" cy="30" r="10" fill="none" stroke="#8B5CF6" strokeWidth="0.75" strokeDasharray="1 2.14" />
+
+      {/* Compass Rose Stars */}
+      <polygon points="28,21 30,28 37,28 31,32 33,38 28,34 23,38 25,32 19,28 26,28" fill="#FBBF24" opacity="0.3" />
+
+      {/* 3D Directional Compass Needle */}
+      <g transform="translate(28, 30) rotate(-45)">
+        <polygon points="0,-10 3.5,0 0,-1 -3.5,0" fill="#EF4444" />
+        <polygon points="0,-10 0,-1 -3.5,0" fill="#B91C1C" />
+        <polygon points="0,10 3.5,0 0,1 -3.5,0" fill="#CBD5E1" />
+        <polygon points="0,10 0,1 -3.5,0" fill="#FFFFFF" />
+        <circle cx="0" cy="0" r="2.5" fill="#FBBF24" stroke="#78350F" strokeWidth="0.8" />
+      </g>
+    </svg>
+  );
+}
+
+/**
+ * Professional Ultra-Sleek Quick Learner Shield Badge
+ */
+export function QuickLearnerShieldBadge({ className = "w-14 h-16" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 56 64" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+      <defs>
+        <linearGradient id="ql-border" x1="0" y1="0" x2="56" y2="64" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#86EFAC" />
+          <stop offset="50%" stopColor="#22C55E" />
+          <stop offset="100%" stopColor="#14532D" />
+        </linearGradient>
+        <linearGradient id="ql-bg" x1="28" y1="4" x2="28" y2="58" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#22C55E" />
+          <stop offset="60%" stopColor="#16A34A" />
+          <stop offset="100%" stopColor="#15803D" />
+        </linearGradient>
+        <linearGradient id="ql-star-facet" x1="28" y1="16" x2="28" y2="44" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#FFFBEB" />
+          <stop offset="50%" stopColor="#FBBF24" />
+          <stop offset="100%" stopColor="#D97706" />
+        </linearGradient>
+      </defs>
+
+      {/* Outer Shield Bevel */}
+      <path
+        d="M28 3 C44 3, 53 8, 53 18 C53 38, 41 54, 28 61 C15 54, 3 38, 3 18 C3 8, 12 3, 28 3 Z"
+        fill="url(#ql-border)"
+      />
+      {/* Inner Shield Body */}
+      <path
+        d="M28 6 C41 6, 49 10, 49 19 C49 36, 38 50, 28 56 C18 50, 7 36, 7 19 C7 10, 15 6, 28 6 Z"
+        fill="url(#ql-bg)"
+      />
+      {/* Specular Highlight */}
+      <path d="M12 16 C20 10, 36 10, 44 16 C40 21, 16 21, 12 16 Z" fill="white" fillOpacity="0.25" />
+
+      {/* 3D Sharp Golden Star */}
+      <g transform="translate(28, 30)">
+        {/* Glow */}
+        <circle cx="0" cy="0" r="14" fill="#FEF08A" opacity="0.15" />
+        {/* Star Main */}
+        <polygon
+          points="0,-14 4.2,-4.2 14.5,-2.8 6.8,4.5 9,14.5 0,9.2 -9,14.5 -6.8,4.5 -14.5,-2.8 -4.2,-4.2"
+          fill="url(#ql-star-facet)"
+          stroke="#FEF9C3"
+          strokeWidth="1.2"
+          strokeLinejoin="round"
+        />
+        {/* Star Shading Facets */}
+        <polygon points="0,-14 0,9.2 9,14.5" fill="#D97706" opacity="0.35" />
+        <polygon points="0,-14 0,9.2 -9,14.5" fill="white" opacity="0.3" />
+        <polygon points="0,-14 4.2,-4.2 0,0" fill="white" opacity="0.4" />
+      </g>
+    </svg>
+  );
+}
+
+/**
+ * Professional Ultra-Sleek Consistent Shield Badge
+ */
+export function ConsistentShieldBadge({ className = "w-14 h-16" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 56 64" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+      <defs>
+        <linearGradient id="con-border" x1="0" y1="0" x2="56" y2="64" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#FDE047" />
+          <stop offset="50%" stopColor="#F59E0B" />
+          <stop offset="100%" stopColor="#9A3412" />
+        </linearGradient>
+        <linearGradient id="con-bg" x1="28" y1="4" x2="28" y2="58" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#FBBF24" />
+          <stop offset="60%" stopColor="#F59E0B" />
+          <stop offset="100%" stopColor="#D97706" />
+        </linearGradient>
+        <linearGradient id="con-bolt-grad" x1="28" y1="14" x2="28" y2="46" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#FFFFFF" />
+          <stop offset="50%" stopColor="#FEF9C3" />
+          <stop offset="100%" stopColor="#FDE047" />
+        </linearGradient>
+      </defs>
+
+      {/* Outer Shield Bevel */}
+      <path
+        d="M28 3 C44 3, 53 8, 53 18 C53 38, 41 54, 28 61 C15 54, 3 38, 3 18 C3 8, 12 3, 28 3 Z"
+        fill="url(#con-border)"
+      />
+      {/* Inner Shield Body */}
+      <path
+        d="M28 6 C41 6, 49 10, 49 19 C49 36, 38 50, 28 56 C18 50, 7 36, 7 19 C7 10, 15 6, 28 6 Z"
+        fill="url(#con-bg)"
+      />
+      {/* Specular Highlight */}
+      <path d="M12 16 C20 10, 36 10, 44 16 C40 21, 16 21, 12 16 Z" fill="white" fillOpacity="0.3" />
+
+      {/* 3D Razor-Sharp Lightning Bolt */}
+      <g transform="translate(28, 30)">
+        <polygon
+          points="3,-15 -8,2 2,2 -2,15 10,-2 0,-2"
+          fill="url(#con-bolt-grad)"
+          stroke="#FFFFFF"
+          strokeWidth="1.2"
+          strokeLinejoin="round"
+        />
+        {/* Bolt Shading */}
+        <polygon points="3,-15 2,2 -2,15" fill="#F59E0B" opacity="0.35" />
+        <polygon points="3,-15 -8,2 2,2" fill="white" opacity="0.45" />
+      </g>
+    </svg>
+  );
+}
+
+/**
+ * Professional Ultra-Sleek Sharpshooter Shield Badge
+ */
+export function SharpshooterShieldBadge({ className = "w-14 h-16" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 56 64" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+      <defs>
+        <linearGradient id="sharp-border" x1="0" y1="0" x2="56" y2="64" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#FCA5A5" />
+          <stop offset="50%" stopColor="#EF4444" />
+          <stop offset="100%" stopColor="#7F1D1D" />
+        </linearGradient>
+        <linearGradient id="sharp-bg" x1="28" y1="4" x2="28" y2="58" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#EF4444" />
+          <stop offset="60%" stopColor="#DC2626" />
+          <stop offset="100%" stopColor="#B91C1C" />
+        </linearGradient>
+      </defs>
+
+      {/* Outer Shield Bevel */}
+      <path
+        d="M28 3 C44 3, 53 8, 53 18 C53 38, 41 54, 28 61 C15 54, 3 38, 3 18 C3 8, 12 3, 28 3 Z"
+        fill="url(#sharp-border)"
+      />
+      {/* Inner Shield Body */}
+      <path
+        d="M28 6 C41 6, 49 10, 49 19 C49 36, 38 50, 28 56 C18 50, 7 36, 7 19 C7 10, 15 6, 28 6 Z"
+        fill="url(#sharp-bg)"
+      />
+      {/* Specular Highlight */}
+      <path d="M12 16 C20 10, 36 10, 44 16 C40 21, 16 21, 12 16 Z" fill="white" fillOpacity="0.25" />
+
+      {/* High-Precision Target Bullseye */}
+      <circle cx="28" cy="30" r="14" fill="white" stroke="#FECACA" strokeWidth="1" />
+      <circle cx="28" cy="30" r="10.5" fill="#EF4444" />
+      <circle cx="28" cy="30" r="7" fill="white" />
+      <circle cx="28" cy="30" r="3.5" fill="#EF4444" />
+      {/* Target Crosshair Ticks */}
+      <line x1="28" y1="13" x2="28" y2="17" stroke="#DC2626" strokeWidth="1.2" strokeLinecap="round" />
+      <line x1="28" y1="43" x2="28" y2="47" stroke="#DC2626" strokeWidth="1.2" strokeLinecap="round" />
+      <line x1="11" y1="30" x2="15" y2="30" stroke="#DC2626" strokeWidth="1.2" strokeLinecap="round" />
+      <line x1="41" y1="30" x2="45" y2="30" stroke="#DC2626" strokeWidth="1.2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/**
+ * Professional Ultra-Sleek Locked Shield Badge
+ */
+export function LockedShieldBadge({ className = "w-14 h-16" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 56 64" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+      <defs>
+        <linearGradient id="lock-border" x1="0" y1="0" x2="56" y2="64" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#E2E8F0" />
+          <stop offset="50%" stopColor="#CBD5E1" />
+          <stop offset="100%" stopColor="#64748B" />
+        </linearGradient>
+        <linearGradient id="lock-bg" x1="28" y1="4" x2="28" y2="58" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#F8FAFC" />
+          <stop offset="60%" stopColor="#E2E8F0" />
+          <stop offset="100%" stopColor="#CBD5E1" />
+        </linearGradient>
+      </defs>
+
+      {/* Outer Shield Bevel */}
+      <path
+        d="M28 3 C44 3, 53 8, 53 18 C53 38, 41 54, 28 61 C15 54, 3 38, 3 18 C3 8, 12 3, 28 3 Z"
+        fill="url(#lock-border)"
+      />
+      {/* Inner Shield Body */}
+      <path
+        d="M28 6 C41 6, 49 10, 49 19 C49 36, 38 50, 28 56 C18 50, 7 36, 7 19 C7 10, 15 6, 28 6 Z"
+        fill="url(#lock-bg)"
+      />
+
+      {/* Sleek Minimalist Padlock */}
+      <path
+        d="M23 27 V23 C23 20, 33 20, 33 23 V27"
+        stroke="#64748B"
+        strokeWidth="3.5"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <rect x="18" y="27" width="20" height="15" rx="3.5" fill="#64748B" />
+      <circle cx="28" cy="33.5" r="2" fill="white" />
+      <path d="M28 35.5 V38.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/**
+ * Cute 3D Smiling Fire Flame Mascot
+ */
+export function CuteFireMascotIllustration({ className = "w-14 h-14" }: { className?: string }) {
+  return (
+    <div className={`relative flex items-center justify-center ${className}`}>
+      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full drop-shadow-sm">
+        <defs>
+          <linearGradient id="fire-outer-grad" x1="32" y1="4" x2="32" y2="58" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#FBBF24" />
+            <stop offset="40%" stopColor="#F97316" />
+            <stop offset="100%" stopColor="#EA580C" />
+          </linearGradient>
+          <linearGradient id="fire-inner-grad" x1="32" y1="20" x2="32" y2="56" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#FEF08A" />
+            <stop offset="100%" stopColor="#F59E0B" />
+          </linearGradient>
+        </defs>
+
+        {/* Outer Flame Body */}
+        <path
+          d="M32 4 C32 4, 48 18, 48 36 C48 48, 41 58, 32 58 C23 58, 16 48, 16 36 C16 22, 28 16, 28 16 C28 16, 24 24, 29 27 C34 30, 32 20, 32 4 Z"
+          fill="url(#fire-outer-grad)"
+        />
+        {/* Inner Warm Flame Core */}
+        <path
+          d="M32 20 C32 20, 42 30, 42 42 C42 50, 38 55, 32 55 C26 55, 22 50, 22 42 C22 34, 30 28, 32 20 Z"
+          fill="url(#fire-inner-grad)"
+        />
+
+        {/* Cute Sparkle Eyes */}
+        <ellipse cx="28" cy="40" rx="2.5" ry="3.5" fill="#431407" />
+        <ellipse cx="36" cy="40" rx="2.5" ry="3.5" fill="#431407" />
+        <circle cx="27.2" cy="38.5" r="1" fill="white" />
+        <circle cx="35.2" cy="38.5" r="1" fill="white" />
+
+        {/* Rosy Cheeks */}
+        <circle cx="24" cy="44" r="2.2" fill="#EF4444" opacity="0.6" />
+        <circle cx="40" cy="44" r="2.2" fill="#EF4444" opacity="0.6" />
+
+        {/* Happy Open Smile */}
+        <path d="M29 44 Q 32 48, 35 44" stroke="#431407" strokeWidth="1.6" strokeLinecap="round" fill="none" />
+      </svg>
+    </div>
+  );
+}
+
+/**
+ * Professional Championship Gold Trophy on Stage (Quest Master)
+ */
+export function TrophyPodiumIllustration({ className = "w-20 h-20" }: { className?: string }) {
+  return (
+    <div className={`relative flex items-center justify-center ${className}`}>
+      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+        <defs>
+          <linearGradient id="trophy-metal-gold" x1="40" y1="12" x2="40" y2="46" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#FFFBEB" />
+            <stop offset="30%" stopColor="#FCD34D" />
+            <stop offset="70%" stopColor="#F59E0B" />
+            <stop offset="100%" stopColor="#B45309" />
+          </linearGradient>
+          <linearGradient id="pedestal-sleek" x1="40" y1="46" x2="40" y2="74" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#3B82F6" />
+            <stop offset="60%" stopColor="#1D4ED8" />
+            <stop offset="100%" stopColor="#1E1B4B" />
+          </linearGradient>
+        </defs>
+
+        {/* Ambient Glow */}
+        <circle cx="40" cy="40" r="32" fill="#FBBF24" opacity="0.12" />
+
+        {/* Sleek Stage Pedestal */}
+        <rect x="16" y="58" width="48" height="14" rx="4" fill="url(#pedestal-sleek)" stroke="#60A5FA" strokeWidth="0.8" />
+        <rect x="24" y="50" width="32" height="10" rx="3" fill="#2563EB" />
+        <line x1="24" y1="50" x2="56" y2="50" stroke="#93C5FD" strokeWidth="1" strokeLinecap="round" />
+
+        {/* Championship Cup */}
+        <path d="M28 16 H52 V28 C52 35, 45 39, 40 39 C35 39, 28 35, 28 28 Z" fill="url(#trophy-metal-gold)" />
+        {/* Left Handle */}
+        <path d="M28 18 H22 C19.5 18, 19.5 28, 28 28" stroke="#FBBF24" strokeWidth="3" strokeLinecap="round" fill="none" />
+        {/* Right Handle */}
+        <path d="M52 18 H58 C60.5 18, 60.5 28, 52 28" stroke="#FBBF24" strokeWidth="3" strokeLinecap="round" fill="none" />
+        {/* Cup Specular Highlight */}
+        <path d="M30 18 H35 V27 C35 32, 33 34, 30 36 Z" fill="white" opacity="0.3" />
+
+        {/* Trophy Stem & Plinth */}
+        <rect x="37" y="39" width="6" height="6" fill="#D97706" />
+        <rect x="31" y="45" width="18" height="5" rx="1.5" fill="#F59E0B" />
+        <circle cx="40" cy="26" r="3.5" fill="#FFFBEB" />
+        <path d="M40 23 L41 25.5 L43.5 26 L41.5 27.5 L42 30 L40 28.5 L38 30 L38.5 27.5 L36.5 26 L39 25.5 Z" fill="#F59E0B" />
+      </svg>
+    </div>
+  );
+}
+
+/**
+ * Professional Amethyst / Crystal Trophy (Top Performer)
+ */
+export function PurpleTrophyIllustration({ className = "w-20 h-20" }: { className?: string }) {
+  return (
+    <div className={`relative flex items-center justify-center ${className}`}>
+      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+        <defs>
+          <linearGradient id="purp-cup-metal" x1="40" y1="14" x2="40" y2="48" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#F5F3FF" />
+            <stop offset="30%" stopColor="#C4B5FD" />
+            <stop offset="70%" stopColor="#8B5CF6" />
+            <stop offset="100%" stopColor="#5B21B6" />
+          </linearGradient>
+          <linearGradient id="purp-plinth" x1="40" y1="50" x2="40" y2="72" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#7C3AED" />
+            <stop offset="100%" stopColor="#2E1065" />
+          </linearGradient>
+        </defs>
+
+        {/* Ambient Violet Glow */}
+        <circle cx="40" cy="40" r="32" fill="#8B5CF6" opacity="0.12" />
+
+        {/* Purple Trophy Cup */}
+        <path d="M28 16 H52 V28 C52 35, 45 39, 40 39 C35 39, 28 35, 28 28 Z" fill="url(#purp-cup-metal)" />
+        {/* Handles */}
+        <path d="M28 18 H22 C19.5 18, 19.5 28, 28 28" stroke="#A78BFA" strokeWidth="3" strokeLinecap="round" fill="none" />
+        <path d="M52 18 H58 C60.5 18, 60.5 28, 52 28" stroke="#A78BFA" strokeWidth="3" strokeLinecap="round" fill="none" />
+        {/* Cup Specular */}
+        <path d="M30 18 H35 V27 C35 32, 33 34, 30 36 Z" fill="white" opacity="0.35" />
+
+        {/* Stem & Tiered Base */}
+        <rect x="37" y="39" width="6" height="7" fill="#6D28D9" />
+        <rect x="32" y="46" width="16" height="5" rx="1.5" fill="#8B5CF6" />
+        <rect x="22" y="51" width="36" height="15" rx="3.5" fill="url(#purp-plinth)" stroke="#A78BFA" strokeWidth="0.8" />
+        <line x1="24" y1="52" x2="56" y2="52" stroke="#DDD6FE" strokeWidth="1" strokeLinecap="round" />
+      </svg>
+    </div>
+  );
+}
+
+/**
+ * Professional Modern 30-Day Streak Calendar (Streak Legend)
+ */
+export function Calendar30Illustration({ className = "w-20 h-20" }: { className?: string }) {
+  return (
+    <div className={`relative flex items-center justify-center ${className}`}>
+      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+        <defs>
+          <linearGradient id="cal-header-grad" x1="16" y1="16" x2="64" y2="32" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#FB923C" />
+            <stop offset="100%" stopColor="#EA580C" />
+          </linearGradient>
+        </defs>
+
+        {/* Ambient Glow */}
+        <circle cx="40" cy="40" r="32" fill="#F97316" opacity="0.1" />
+
+        {/* Calendar Body */}
+        <rect x="16" y="20" width="48" height="48" rx="10" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
+        {/* Calendar Top Banner */}
+        <path d="M16 28 C16 23.5, 20.5 20, 26 20 H54 C59.5 20, 64 23.5, 64 28 V32 H16 Z" fill="url(#cal-header-grad)" />
+
+        {/* Spiral Binder Rings */}
+        <rect x="25" y="14" width="4" height="10" rx="2" fill="#94A3B8" />
+        <rect x="38" y="14" width="4" height="10" rx="2" fill="#94A3B8" />
+        <rect x="51" y="14" width="4" height="10" rx="2" fill="#94A3B8" />
+
+        {/* Bold 30 */}
+        <text
+          x="40"
+          y="56"
+          fill="#1E293B"
+          fontSize="22"
+          fontWeight="900"
+          textAnchor="middle"
+          fontFamily="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+          letterSpacing="-0.5"
+        >
+          30
+        </text>
+
+        {/* Mini Accent Dot */}
+        <circle cx="56" cy="60" r="2" fill="#F97316" />
+      </svg>
+    </div>
+  );
+}
+
+/**
+ * 3D Blasting Rocket Mascot for Sidebar Promo Card
+ */
+export function RocketBlastingIllustration({ className = "w-14 h-14" }: { className?: string }) {
+  return (
+    <div className={`relative flex items-center justify-center ${className}`}>
+      <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+        <g transform="translate(30, 30) rotate(-45) translate(-30, -30)">
+          {/* Flame */}
+          <path d="M26 40 Q 30 54, 34 40 Z" fill="#F59E0B" />
+          <path d="M28 40 Q 30 48, 32 40 Z" fill="#FEF08A" />
+
+          {/* Fins */}
+          <path d="M20 34 L25 28 V38 Z" fill="#7C3AED" />
+          <path d="M40 34 L35 28 V38 Z" fill="#7C3AED" />
+
+          {/* Fuselage */}
+          <path d="M24 24 C24 14, 30 8, 30 8 C30 8, 36 14, 36 24 V38 H24 Z" fill="#FFFFFF" stroke="#DDD6FE" strokeWidth="1" />
+          {/* Nose Cone */}
+          <path d="M24 18 C24 12, 30 8, 30 8 C30 8, 36 12, 36 18 Z" fill="#6D28D9" />
+
+          {/* Porthole */}
+          <circle cx="30" cy="24" r="3.5" fill="#38BDF8" stroke="#E0F2FE" strokeWidth="1" />
+        </g>
+        {/* Sparkles */}
+        <circle cx="12" cy="18" r="1.5" fill="#FBBF24" />
+        <circle cx="48" cy="14" r="1.2" fill="#A78BFA" />
+        <circle cx="14" cy="46" r="1" fill="#38BDF8" />
+      </svg>
+    </div>
+  );
+}
+
+/**
+ * 3D Isometric Stack of Books with Device for Resources Promo Card
+ */
+export function NeedResourcesBooksIllustration({ className = "w-14 h-14" }: { className?: string }) {
+  return (
+    <div className={`relative flex items-center justify-center ${className}`}>
+      <svg viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+        <defs>
+          <linearGradient id="book-bot-grad" x1="12" y1="46" x2="58" y2="62" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#6366F1" />
+            <stop offset="100%" stopColor="#4338CA" />
+          </linearGradient>
+          <linearGradient id="book-top-grad" x1="18" y1="36" x2="62" y2="50" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#A855F7" />
+            <stop offset="100%" stopColor="#7C3AED" />
+          </linearGradient>
+          <linearGradient id="device-screen-grad" x1="32" y1="12" x2="56" y2="44" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#EDE9FE" />
+            <stop offset="100%" stopColor="#DDD6FE" />
+          </linearGradient>
+        </defs>
+
+        {/* Ambient Glow */}
+        <circle cx="38" cy="38" r="28" fill="#C4B5FD" opacity="0.25" />
+
+        {/* Bottom Book (Blue/Indigo) */}
+        <path d="M12 50 L38 62 L60 52 L34 40 Z" fill="url(#book-bot-grad)" />
+        <path d="M12 50 L12 54 L38 66 L38 62 Z" fill="#3730A3" />
+        <path d="M38 62 L38 66 L60 56 L60 52 Z" fill="#F8FAFC" />
+        <path d="M38 63 L38 65 L58 55 L58 53 Z" fill="#E2E8F0" />
+
+        {/* Middle Book (Purple) */}
+        <path d="M16 42 L42 54 L62 44 L36 32 Z" fill="url(#book-top-grad)" />
+        <path d="M16 42 L16 46 L42 58 L42 54 Z" fill="#6B21A8" />
+        <path d="M42 54 L42 58 L62 48 L62 44 Z" fill="#F8FAFC" />
+        <path d="M42 55 L42 57 L60 47 L60 45 Z" fill="#E2E8F0" />
+
+        {/* Leaning Glowing Device */}
+        <g transform="translate(36, 10) rotate(15)">
+          <rect x="0" y="0" width="22" height="32" rx="4" fill="#FFFFFF" stroke="#C4B5FD" strokeWidth="1.2" />
+          <rect x="2" y="2" width="18" height="28" rx="2.5" fill="url(#device-screen-grad)" />
+          {/* Graduation Cap Icon on screen */}
+          <path d="M11 8 L18 12 L11 16 L4 12 Z" fill="#7C3AED" />
+          <path d="M7 14 V19 C7 21, 15 21, 15 19 V14" stroke="#7C3AED" strokeWidth="1" fill="none" />
+          <path d="M16 13 V18" stroke="#F59E0B" strokeWidth="1" strokeLinecap="round" />
+          <circle cx="16" cy="18.5" r="0.8" fill="#F59E0B" />
+        </g>
+      </svg>
+    </div>
+  );
+}
+

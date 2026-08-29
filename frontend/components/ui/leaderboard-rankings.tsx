@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { cn } from "@/lib/utils"
+import { GoldRankMedal, SilverRankMedal, BronzeRankMedal } from "@/frontend/components/dashboard/Illustrations"
 
 export interface LeaderboardRankingItem {
   userId: string
@@ -44,24 +45,38 @@ const LeaderboardRankings = React.forwardRef<
 
     return (
       <div ref={ref} className={cn("space-y-2", className)} {...props}>
-        <div className="space-y-1">
+        <div className="space-y-1.5">
           {paginatedRankings.map((ranking) => {
             const isCurrentUser = ranking.userId === currentUserId
             return (
               <div
                 key={ranking.userId}
                 className={cn(
-                  "flex items-center justify-between gap-3 rounded-lg px-4 py-3 transition-colors",
-                  isCurrentUser
-                    ? "bg-primary/10 border border-primary/20"
-                    : "hover:bg-muted"
+                  "flex items-center justify-between gap-3 rounded-lg px-4 py-3 transition-colors border",
+                  ranking.rank === 1
+                    ? "border-amber-200/80 bg-amber-50/40"
+                    : ranking.rank === 2
+                    ? "border-sky-200/80 bg-sky-50/40"
+                    : ranking.rank === 3
+                    ? "border-orange-200/80 bg-orange-50/40"
+                    : isCurrentUser
+                    ? "bg-primary/10 border-primary/20"
+                    : "border-slate-100 bg-white hover:bg-slate-50"
                 )}
               >
                 <div className="flex items-center gap-3 flex-1">
-                  <div className="w-8 text-center">
-                    <span className="font-semibold text-sm">
-                      {ranking.rank}
-                    </span>
+                  <div className="w-10 flex items-center justify-center">
+                    {ranking.rank === 1 ? (
+                      <GoldRankMedal className="w-8 h-8 sm:w-9 sm:h-9" />
+                    ) : ranking.rank === 2 ? (
+                      <SilverRankMedal className="w-8 h-8 sm:w-9 sm:h-9" />
+                    ) : ranking.rank === 3 ? (
+                      <BronzeRankMedal className="w-8 h-8 sm:w-9 sm:h-9" />
+                    ) : (
+                      <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#EEF2F8] text-[#334155] font-extrabold text-xs flex items-center justify-center">
+                        {ranking.rank}
+                      </div>
+                    )}
                   </div>
                   <div className="flex-1">
                     <p className="font-medium text-sm">
