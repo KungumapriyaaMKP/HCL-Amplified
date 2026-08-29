@@ -16,6 +16,7 @@ import {
   IconBook,
   IconUser,
   IconChevronRight,
+  IconRotateClockwise,
 } from "@tabler/icons-react";
 
 interface AppSidebarProps {
@@ -37,6 +38,7 @@ export function AppSidebar({
     { label: "Dashboard", href: "/dashboard", icon: IconSmartHome },
     { label: "My Quests", href: activeGoalId ? `/goals/${activeGoalId}` : "/goals/new", icon: IconTarget },
     { label: "Skill Map", href: activeGoalId ? `/goals/${activeGoalId}/graph` : "/dashboard#skill-map", icon: IconGitFork },
+    { label: "Spaced Review", href: "/review", icon: IconRotateClockwise },
     { label: "Explore", href: "/community", icon: IconCompass },
     { label: "Leaderboard", href: "/leaderboard", icon: IconTrophy },
     { label: "Achievements", href: "/dashboard#achievements", icon: IconAward },
