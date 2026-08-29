@@ -37,8 +37,7 @@ export function AppSidebar({
     { label: "Skill Map", href: "/dashboard#skill-map", icon: IconGitFork },
     { label: "Explore", href: "/community", icon: IconCompass },
     { label: "Leaderboard", href: "/leaderboard", icon: IconTrophy },
-    { label: "Achievements", href: "/dashboard#achievements", icon: IconAward },
-    { label: "Resources", href: "/dashboard#resources", icon: IconBook },
+    { label: "Calibration", href: "/onboarding", icon: IconBook },
     { label: "Profile", href: "/profile", icon: IconUser },
   ];
 

@@ -12,6 +12,7 @@ import { ModuleCard } from "@/frontend/components/goals/ModuleCard";
 import { AssistantWidget } from "@/frontend/components/goals/AssistantWidget";
 import { DOMAINS } from "@/data/domains";
 import { DomainIcon } from "@/frontend/components/ui/DomainIcon";
+import { WhatIfBranching } from "@/frontend/components/goals/WhatIfBranching";
 import { IconArrowRight, IconCheck, IconLayersLinked } from "@tabler/icons-react";
 
 const CHAPTER_HEADINGS: Record<string, { title: string; subtitle: string }> = {
@@ -74,7 +75,7 @@ export default async function GoalPage({ params }: { params: Promise<{ id: strin
         </h1>
 
         {/* Goal Progress Banner */}
-        <div className="mb-8 rounded-lg border-2 border-purple-500/30 bg-[#0c1026]/90 p-5 shadow-[0_0_30px_rgba(139,92,246,0.2)] backdrop-blur-2xl">
+        <div className="mb-6 rounded-lg border-2 border-purple-500/30 bg-[#0c1026]/90 p-5 shadow-[0_0_30px_rgba(139,92,246,0.2)] backdrop-blur-2xl">
           <div className="mb-2 flex items-center justify-between text-xs font-black">
             <span className="text-slate-300 flex items-center gap-1.5">
               <IconCheck className="h-4 w-4 text-emerald-400" />
@@ -83,6 +84,11 @@ export default async function GoalPage({ params }: { params: Promise<{ id: strin
             <span className="text-purple-300 font-extrabold">{Math.round(pct)}% Completed</span>
           </div>
           <ProgressBar value={pct} variant="purple" />
+        </div>
+
+        {/* Interactive What-If Branching & Simulation Tool */}
+        <div className="mb-8">
+          <WhatIfBranching goalId={id} />
         </div>
 
         {/* Milestone Chapters */}
