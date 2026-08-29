@@ -42,63 +42,70 @@ export function hyperbolicDist(u1: number, v1: number, u2: number, v2: number): 
 }
 
 /**
- * Compute 2D Poincaré disk embeddings for a skill graph DAG.
- * Depth maps to hyperbolic radius r = tanh(alpha * depth), preserving tree distances.
+ * Compute 2D Poincaré disk embeddings for a skill graph DAG without node collisions.
+ * Distributes nodes evenly along concentric depth orbits with angular separation.
  */
 export function computePoincareLayout(
   nodes: GraphNode[],
-  edges: GraphEdge[],
-  alpha = 0.32
+  edges: GraphEdge[]
 ): PoincareGraph {
-  const categories = Array.from(new Set(nodes.map((n) => n.category))).sort();
-  const catCount = Math.max(1, categories.length);
-  const categoryAngleBase = new Map<string, number>();
-  categories.forEach((cat, i) => {
-    categoryAngleBase.set(cat, (2 * Math.PI * i) / catCount);
-  });
+  // 1. Group nodes by depth levels
+  const depthGroups = new Map<number, GraphNode[]>();
+  for (const n of nodes) {
+    const group = depthGroups.get(n.depth) || [];
+    group.push(n);
+    depthGroups.set(n.depth, group);
+  }
 
+  // 2. Count fanOut for each node
   const fanOutMap = new Map<string, number>();
   for (const edge of edges) {
     fanOutMap.set(edge.from, (fanOutMap.get(edge.from) ?? 0) + 1);
   }
 
-  const categoryCounts = new Map<string, number>();
+  // 3. Define radius for each depth level (concentric horizons)
+  // depth 0: 0.22, depth 1: 0.46, depth 2: 0.68, depth 3+: 0.86
+  const depthRadii = [0.24, 0.48, 0.70, 0.86];
+
   const poincareNodes: PoincareNode[] = [];
   const nodeMap = new Map<string, PoincareNode>();
 
-  for (const n of nodes) {
-    const depth = n.depth;
-    const fanOut = fanOutMap.get(n.id) ?? 0;
+  // Sort depth levels
+  const sortedDepths = Array.from(depthGroups.keys()).sort((a, b) => a - b);
 
-    // Hyperbolic radius in [0, 0.88] based on depth
-    let rHyperbolic = Math.tanh(alpha * depth);
-    rHyperbolic = Math.min(0.88, rHyperbolic);
+  for (const depth of sortedDepths) {
+    const group = depthGroups.get(depth) || [];
+    const count = group.length;
+    const r = depthRadii[Math.min(depth, depthRadii.length - 1)];
 
-    // Angular distribution within category sector
-    const idxInCat = categoryCounts.get(n.category) ?? 0;
-    categoryCounts.set(n.category, idxInCat + 1);
+    // Stagger angle phase for each depth level to avoid vertical alignments
+    const phaseOffset = depth * 0.45;
 
-    const sectorSpan = ((2 * Math.PI) / catCount) * 0.8;
-    const angle = (categoryAngleBase.get(n.category) ?? 0) + ((idxInCat * 0.23) % sectorSpan);
+    group.forEach((n, idx) => {
+      // Calculate evenly spaced angle across 360 degrees
+      const angle = (2 * Math.PI * idx) / Math.max(1, count) + phaseOffset;
 
-    const u = Number((rHyperbolic * Math.cos(angle)).toFixed(4));
-    const v = Number((rHyperbolic * Math.sin(angle)).toFixed(4));
+      const u = Number((r * Math.cos(angle)).toFixed(4));
+      const v = Number((r * Math.sin(angle)).toFixed(4));
 
-    const pNode: PoincareNode = {
-      id: n.id,
-      name: n.name,
-      category: n.category,
-      depth,
-      fanOut,
-      u,
-      v,
-      radius: Number(rHyperbolic.toFixed(3)),
-      angle: Number(angle.toFixed(3)),
-    };
-    poincareNodes.push(pNode);
-    nodeMap.set(pNode.id, pNode);
+      const pNode: PoincareNode = {
+        id: n.id,
+        name: n.name,
+        category: n.category,
+        depth,
+        fanOut: fanOutMap.get(n.id) ?? 0,
+        u,
+        v,
+        radius: Number(r.toFixed(3)),
+        angle: Number(angle.toFixed(3)),
+      };
+
+      poincareNodes.push(pNode);
+      nodeMap.set(pNode.id, pNode);
+    });
   }
 
+  // 4. Build edge distances
   const poincareEdges: PoincareEdge[] = [];
   for (const e of edges) {
     const src = nodeMap.get(e.from);

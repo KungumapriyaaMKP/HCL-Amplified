@@ -180,7 +180,7 @@ export function SkillGraphView({
           <circle
             cx={center}
             cy={center}
-            r={radius * 0.32}
+            r={radius * 0.24}
             fill="none"
             stroke="#C084FC"
             strokeOpacity="0.35"
@@ -190,7 +190,7 @@ export function SkillGraphView({
           <circle
             cx={center}
             cy={center}
-            r={radius * 0.62}
+            r={radius * 0.48}
             fill="none"
             stroke="#C084FC"
             strokeOpacity="0.25"
@@ -200,12 +200,22 @@ export function SkillGraphView({
           <circle
             cx={center}
             cy={center}
-            r={radius * 0.88}
+            r={radius * 0.70}
             fill="none"
             stroke="#C084FC"
             strokeOpacity="0.2"
             strokeWidth="1.5"
             strokeDasharray="4 4"
+          />
+          <circle
+            cx={center}
+            cy={center}
+            r={radius * 0.86}
+            fill="none"
+            stroke="#C084FC"
+            strokeOpacity="0.15"
+            strokeWidth="1.5"
+            strokeDasharray="3 3"
           />
 
           {/* Central Origin Crosshair */}
@@ -253,7 +263,7 @@ export function SkillGraphView({
             );
           })}
 
-          {/* Skill Nodes */}
+          {/* Skill Nodes with Collision-Free Smart Labels */}
           {poincareData.nodes.map((node) => {
             const pt = toSvgCoords(node.u, node.v);
             const isSelected = selectedNodeId === node.id;
@@ -270,6 +280,9 @@ export function SkillGraphView({
 
             const baseRadius = node.depth === 0 ? 11 : Math.max(8, 12 - node.depth * 0.9);
             const r = isActive ? baseRadius + 4 : baseRadius;
+
+            // Compute outward radial offset for label so it never collides
+            const labelOffsetY = node.v >= 0 ? r + 12 : -(r + 8);
 
             return (
               <g
@@ -330,23 +343,23 @@ export function SkillGraphView({
                   />
                 ) : null}
 
-                {/* Sharp Floating Text Pill */}
-                <g transform={`translate(${pt.x}, ${pt.y - r - 8})`}>
+                {/* Non-overlapping Smart Label Badge */}
+                <g transform={`translate(${pt.x}, ${pt.y + labelOffsetY})`}>
                   <rect
-                    x={-(node.name.length * 3.4 + 8)}
-                    y="-12"
-                    width={node.name.length * 6.8 + 16}
+                    x={-(node.name.length * 3.3 + 8)}
+                    y="-9"
+                    width={node.name.length * 6.6 + 16}
                     height="18"
                     rx="4"
                     fill={isActive ? "#6D28D9" : "#FFFFFF"}
                     stroke={isActive ? "#5B21B6" : "#E2E8F0"}
                     strokeWidth="1"
-                    filter="drop-shadow(0 2px 4px rgba(0,0,0,0.08))"
+                    filter="drop-shadow(0 2px 4px rgba(0,0,0,0.06))"
                     className="transition-all duration-150"
                   />
                   <text
                     x="0"
-                    y="1"
+                    y="3.5"
                     textAnchor="middle"
                     fill={isActive ? "#FFFFFF" : "#1E293B"}
                     fontSize={isActive ? "10px" : "9px"}
