@@ -6,10 +6,8 @@ import Image from "next/image";
 import {
   IconCheck,
   IconLock,
-  IconSparkles,
   IconArrowRight,
   IconBell,
-  IconTrendingUp,
 } from "@tabler/icons-react";
 
 export type JourneyModuleItem = {
@@ -50,13 +48,12 @@ export function JourneyMapView({
     (a, b) => a.module.orderIndex - b.module.orderIndex
   );
 
-  // Default 5 steps mapping matching Image 1
+  // Default 5 steps mapping matching the exact mockup
   const stepDefinitions = [
     {
       id: "intake",
       title: "Intake",
       status: "completed",
-      description: "Prerequisites intake assessment completed.",
       badge: "Completed",
       type: "completed",
     },
@@ -64,7 +61,6 @@ export function JourneyMapView({
       id: "goals",
       title: "Goals",
       status: "completed",
-      description: "Target competencies defined and calibrated.",
       badge: "Completed",
       type: "completed",
     },
@@ -85,7 +81,7 @@ export function JourneyMapView({
       id: "roadmap",
       title: sortedModules[1]?.module.title || "Roadmap",
       status: "locked",
-      description: "Complete the previous step to unlock",
+      description: "Complete the previous step to unlock.",
       badge: "Locked",
       type: "locked",
     },
@@ -93,32 +89,32 @@ export function JourneyMapView({
       id: "action_plan",
       title: sortedModules[2]?.module.title || "Action Plan",
       status: "locked",
-      description: "Complete the previous step to unlock",
+      description: "Complete the previous step to unlock.",
       badge: "Locked",
       type: "locked",
     },
   ];
 
   return (
-    <div className="relative w-full min-h-screen bg-[#FFF9F6] text-slate-900 font-sans flex flex-col">
-      {/* 1. Full Scenic Candy Landscape Background */}
+    <div className="relative w-full min-h-screen bg-[#FDFBF7] text-slate-900 font-sans flex flex-col">
+      {/* 1. Full Clarity 3D Study Desk Background */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
         <Image
-          src="/images/journey/candy_bg.jpg"
-          alt="Candy Valley Landscape"
+          src="/images/journey/study_bg.jpg"
+          alt="Study Desk Learning Background"
           fill
-          className="object-cover object-top opacity-95"
+          unoptimized
+          className="object-cover object-center"
           priority
         />
-        {/* Soft gradient overlays for readable contrast */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-transparent to-white/40" />
-        <div className="absolute inset-0 bg-radial from-transparent via-white/10 to-white/30" />
+        {/* Soft subtle lighting blend */}
+        <div className="absolute inset-0 bg-white/10 pointer-events-none" />
       </div>
 
       {/* 2. Top Navigation Bar */}
       <header className="relative z-30 w-full px-6 sm:px-12 py-4 flex items-center justify-between">
         {/* Title and Subtitle */}
-        <div className="space-y-0.5 drop-shadow-xs">
+        <div className="space-y-0.5">
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
             Your{" "}
             <span className="text-[#6D28D9]">Learning Journey</span>
@@ -129,29 +125,29 @@ export function JourneyMapView({
           </p>
         </div>
 
-        {/* Top Right Badges & Profile */}
+        {/* Top Right Stats & Profile */}
         <div className="flex items-center gap-3">
           {/* Coins Badge */}
-          <div className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/95 border border-amber-200/80 text-amber-800 text-xs font-black shadow-sm backdrop-blur-xs">
+          <div className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/95 border border-amber-200/90 text-amber-800 text-xs font-black shadow-xs backdrop-blur-xs">
             <span className="text-sm">🪙</span>
             <span>320</span>
           </div>
 
           {/* Gems Badge */}
-          <div className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/95 border border-purple-200/80 text-[#7C3AED] text-xs font-black shadow-sm backdrop-blur-xs">
+          <div className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/95 border border-purple-200/90 text-[#7C3AED] text-xs font-black shadow-xs backdrop-blur-xs">
             <span className="text-sm">💎</span>
             <span>15</span>
           </div>
 
-          {/* Bell Icon */}
+          {/* Notification Bell */}
           <button
             type="button"
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-purple-100 bg-white/95 text-slate-600 hover:text-[#7C3AED] transition-colors shadow-sm"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-purple-100 bg-white/95 text-slate-600 hover:text-[#7C3AED] transition-colors shadow-xs"
           >
             <IconBell className="h-4 w-4" />
           </button>
 
-          {/* User Profile Avatar Pill */}
+          {/* User Profile Avatar */}
           <div className="flex items-center gap-1.5 pl-1 cursor-pointer">
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-tr from-[#6D28D9] to-[#8B5CF6] text-white font-bold text-xs shadow-sm ring-2 ring-white">
               {userDisplayName.charAt(0).toUpperCase()}
@@ -161,64 +157,40 @@ export function JourneyMapView({
         </div>
       </header>
 
-      {/* 3. Main Stage: Center Winding Road + Right Floating Progress Panel */}
+      {/* 3. Main Stage: Vertical Glowing Journey Trail + Right Floating Progress Panel */}
       <div className="relative z-10 flex-1 w-full max-w-7xl mx-auto px-4 sm:px-8 py-2 flex flex-col lg:flex-row items-start justify-between">
         
-        {/* Center Canvas with S-Curve Road and 3D Pedestal Steps */}
-        <div className="relative w-full lg:w-[68%] min-h-[1050px] pb-16">
+        {/* Center Vertical Journey Trail with 3D Pedestals */}
+        <div className="relative w-full lg:w-[68%] min-h-[1080px] pb-16">
           
-          {/* SVG S-Curve Candy Cane Ribbon Road */}
+          {/* Vertical Glowing Segmented Path */}
           <svg
             className="absolute inset-0 w-full h-full pointer-events-none z-0"
-            viewBox="0 0 700 1050"
+            viewBox="0 0 700 1080"
             fill="none"
             preserveAspectRatio="none"
           >
             <defs>
-              {/* Candy Cane Stripe Pattern */}
-              <pattern
-                id="candyCanePattern"
-                width="28"
-                height="28"
-                patternUnits="userSpaceOnUse"
-                patternTransform="rotate(45)"
-              >
-                <rect width="14" height="28" fill="#FFFFFF" />
-                <rect x="14" width="14" height="28" fill="#FB7185" />
-              </pattern>
-
-              {/* Road Drop Shadow */}
-              <filter id="roadShadow" x="-20%" y="-20%" width="140%" height="140%">
-                <feDropShadow dx="0" dy="12" stdDeviation="8" floodColor="#78350F" floodOpacity="0.18" />
+              <filter id="pathGlow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="0" stdDeviation="4" floodColor="#C084FC" floodOpacity="0.6" />
               </filter>
             </defs>
 
-            {/* Road Outer Shadow Border */}
+            {/* Glowing Segmented Path connecting Nodes 1 -> 2 -> 3 -> 4 -> 5 -> Treasure */}
             <path
-              d="M 290 80 C 210 160, 240 240, 280 320 C 320 400, 280 470, 300 550 C 330 630, 270 710, 310 790 C 340 860, 280 930, 310 980"
-              stroke="#FDE68A"
-              strokeWidth="52"
+              d="M 300 80 L 300 960"
+              stroke="#E9D5FF"
+              strokeWidth="6"
+              strokeDasharray="10 8"
               strokeLinecap="round"
-              fill="none"
-              filter="url(#roadShadow)"
+              filter="url(#pathGlow)"
             />
-
-            {/* Road Candy-Cane Border Strip */}
             <path
-              d="M 290 80 C 210 160, 240 240, 280 320 C 320 400, 280 470, 300 550 C 330 630, 270 710, 310 790 C 340 860, 280 930, 310 980"
-              stroke="url(#candyCanePattern)"
-              strokeWidth="42"
+              d="M 300 80 L 300 960"
+              stroke="#A855F7"
+              strokeWidth="4"
+              strokeDasharray="10 8"
               strokeLinecap="round"
-              fill="none"
-            />
-
-            {/* Road Inner Smooth Path */}
-            <path
-              d="M 290 80 C 210 160, 240 240, 280 320 C 320 400, 280 470, 300 550 C 330 630, 270 710, 310 790 C 340 860, 280 930, 310 980"
-              stroke="#FEF3C7"
-              strokeWidth="30"
-              strokeLinecap="round"
-              fill="none"
             />
           </svg>
 
@@ -226,18 +198,17 @@ export function JourneyMapView({
           <div className="absolute top-[30px] left-[32%] sm:left-[36%] flex items-center gap-6 z-10">
             {/* 3D Pedestal 1 */}
             <div className="relative flex flex-col items-center">
-              {/* Confetti Particles */}
+              {/* Confetti */}
               <div className="absolute -top-3 -left-3 text-sm animate-pulse">✨</div>
               <div className="absolute -bottom-2 -right-2 text-sm animate-pulse">🎉</div>
 
-              {/* 3D Cylinder Pedestal Base */}
               <div className="relative flex flex-col items-center">
                 {/* Glowing Green Orb */}
-                <div className="flex h-16 w-16 sm:h-18 sm:w-18 items-center justify-center rounded-full bg-gradient-to-tr from-emerald-400 via-emerald-500 to-teal-400 border-[3px] border-white text-white shadow-lg drop-shadow-[0_8px_16px_rgba(16,185,129,0.4)]">
+                <div className="flex h-16 w-16 sm:h-18 sm:w-18 items-center justify-center rounded-full bg-gradient-to-tr from-emerald-400 via-emerald-500 to-teal-400 border-[3px] border-white text-white shadow-lg drop-shadow-[0_8px_16px_rgba(16,185,129,0.45)] ring-4 ring-emerald-200/50">
                   <IconCheck className="h-9 w-9 stroke-[3]" />
                 </div>
-                {/* Step Number Tag on Pedestal Base */}
-                <div className="-mt-3 px-3.5 py-0.5 rounded-full bg-purple-900 border-2 border-purple-400 text-white text-[11px] font-black shadow-md">
+                {/* Pedestal Base Step 1 */}
+                <div className="-mt-3 px-3.5 py-0.5 rounded-full bg-[#3B0764] border-2 border-purple-400 text-white text-[11px] font-black shadow-md">
                   1
                 </div>
               </div>
@@ -256,16 +227,16 @@ export function JourneyMapView({
           </div>
 
           {/* STEP 2: Goals (Completed) */}
-          <div className="absolute top-[200px] left-[31%] sm:left-[35%] flex items-center gap-6 z-10">
+          <div className="absolute top-[210px] left-[32%] sm:left-[36%] flex items-center gap-6 z-10">
             {/* 3D Pedestal 2 */}
             <div className="relative flex flex-col items-center">
               <div className="relative flex flex-col items-center">
                 {/* Glowing Green Orb */}
-                <div className="flex h-16 w-16 sm:h-18 sm:w-18 items-center justify-center rounded-full bg-gradient-to-tr from-emerald-400 via-emerald-500 to-teal-400 border-[3px] border-white text-white shadow-lg drop-shadow-[0_8px_16px_rgba(16,185,129,0.4)]">
+                <div className="flex h-16 w-16 sm:h-18 sm:w-18 items-center justify-center rounded-full bg-gradient-to-tr from-emerald-400 via-emerald-500 to-teal-400 border-[3px] border-white text-white shadow-lg drop-shadow-[0_8px_16px_rgba(16,185,129,0.45)] ring-4 ring-emerald-200/50">
                   <IconCheck className="h-9 w-9 stroke-[3]" />
                 </div>
-                {/* Step Number Tag on Pedestal Base */}
-                <div className="-mt-3 px-3.5 py-0.5 rounded-full bg-purple-900 border-2 border-purple-400 text-white text-[11px] font-black shadow-md">
+                {/* Pedestal Base Step 2 */}
+                <div className="-mt-3 px-3.5 py-0.5 rounded-full bg-[#3B0764] border-2 border-purple-400 text-white text-[11px] font-black shadow-md">
                   2
                 </div>
               </div>
@@ -283,37 +254,35 @@ export function JourneyMapView({
             </div>
           </div>
 
-          {/* STEP 3: Calibration (In Progress - Highlight Target) */}
-          <div className="absolute top-[370px] left-[30%] sm:left-[33%] flex items-center gap-6 z-20">
+          {/* STEP 3: Calibration (In Progress - Active Target) */}
+          <div className="absolute top-[390px] left-[30%] sm:left-[34%] flex items-center gap-6 z-20">
             {/* 3D Active Glowing Pedestal 3 */}
             <div className="relative flex flex-col items-center">
-              {/* Radial Pulse Wave */}
-              <div className="absolute -inset-4 rounded-full bg-purple-500/25 blur-xl animate-pulse" />
+              {/* Radial Glow Wave */}
+              <div className="absolute -inset-5 rounded-full bg-purple-500/30 blur-xl animate-pulse" />
               
-              {/* Pedestal Cylinder */}
-              <div className="relative flex flex-col items-center drop-shadow-[0_14px_24px_rgba(124,58,237,0.5)]">
-                {/* 3D Glossy Bullseye Target */}
+              <div className="relative flex flex-col items-center drop-shadow-[0_16px_28px_rgba(124,58,237,0.55)]">
+                {/* 3D Target Bullseye */}
                 <div className="relative flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-full bg-gradient-to-tr from-[#6D28D9] via-[#8B5CF6] to-[#C084FC] border-4 border-white shadow-2xl ring-4 ring-purple-300">
-                  {/* Concentric Rings */}
                   <div className="flex h-14 w-14 items-center justify-center rounded-full border-[3px] border-white/90 bg-[#5B21B6]">
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-[#7C3AED]">
                       <div className="h-4 w-4 rounded-full bg-[#7C3AED]" />
                     </div>
                   </div>
-                  {/* Target Arrow */}
+                  {/* Arrow Emoji */}
                   <div className="absolute -top-2 -right-2 text-xl drop-shadow-md transform -rotate-12">
                     🎯
                   </div>
                 </div>
 
                 {/* Pedestal Base with Number 3 */}
-                <div className="-mt-3 px-4 py-1 rounded-full bg-purple-950 border-2 border-purple-300 text-amber-300 text-xs font-black shadow-lg ring-2 ring-purple-400">
+                <div className="-mt-3 px-4 py-1 rounded-full bg-[#2E1065] border-2 border-purple-300 text-amber-300 text-xs font-black shadow-lg ring-2 ring-purple-400">
                   3
                 </div>
               </div>
             </div>
 
-            {/* Step 3 Active Card with Purple Border & Continue Button */}
+            {/* Step 3 Active Card with Continue Button */}
             <div className="bg-white/98 border-2 border-purple-400 rounded-3xl p-5 shadow-xl shadow-purple-500/15 backdrop-blur-md max-w-xs sm:max-w-sm space-y-2">
               <div>
                 <h3 className="text-base font-extrabold text-slate-900">Calibration</h3>
@@ -337,9 +306,9 @@ export function JourneyMapView({
           </div>
 
           {/* STEP 4: Roadmap (Locked) */}
-          <div className="absolute top-[570px] left-[34%] sm:left-[38%] flex items-center gap-6 z-10">
-            {/* 3D Dark Stone Pedestal 4 */}
-            <div className="relative flex flex-col items-center drop-shadow-[0_8px_16px_rgba(30,41,59,0.35)]">
+          <div className="absolute top-[600px] left-[32%] sm:left-[36%] flex items-center gap-6 z-10">
+            {/* 3D Dark Pedestal 4 */}
+            <div className="relative flex flex-col items-center drop-shadow-[0_10px_18px_rgba(30,41,59,0.35)]">
               <div className="flex h-16 w-16 sm:h-18 sm:w-18 items-center justify-center rounded-full bg-gradient-to-tr from-slate-600 to-slate-800 border-[3px] border-slate-400 text-slate-300 shadow-md">
                 <IconLock className="h-8 w-8 text-slate-300" />
               </div>
@@ -349,20 +318,20 @@ export function JourneyMapView({
             </div>
 
             {/* Step 4 Card */}
-            <div className="bg-white/90 border border-slate-200 rounded-2xl p-4 shadow-sm backdrop-blur-xs max-w-xs">
+            <div className="bg-white/92 border border-slate-200 rounded-2xl p-4 shadow-sm backdrop-blur-xs max-w-xs">
               <div className="flex items-center gap-2 text-slate-700">
                 <IconLock className="h-4 w-4 text-slate-400" />
                 <span className="text-sm font-extrabold text-slate-900">{stepDefinitions[3].title}</span>
               </div>
               <div className="text-[11px] font-bold text-slate-400 pl-6 mt-0.5">Locked</div>
-              <p className="text-[11px] text-slate-500 pl-6 mt-1">Complete the previous step to unlock</p>
+              <p className="text-[11px] text-slate-500 pl-6 mt-1">Complete the previous step to unlock.</p>
             </div>
           </div>
 
           {/* STEP 5: Action Plan (Locked) */}
-          <div className="absolute top-[740px] left-[33%] sm:left-[37%] flex items-center gap-6 z-10">
-            {/* 3D Dark Stone Pedestal 5 */}
-            <div className="relative flex flex-col items-center drop-shadow-[0_8px_16px_rgba(30,41,59,0.35)]">
+          <div className="absolute top-[780px] left-[32%] sm:left-[36%] flex items-center gap-6 z-10">
+            {/* 3D Dark Pedestal 5 */}
+            <div className="relative flex flex-col items-center drop-shadow-[0_10px_18px_rgba(30,41,59,0.35)]">
               <div className="flex h-16 w-16 sm:h-18 sm:w-18 items-center justify-center rounded-full bg-gradient-to-tr from-slate-600 to-slate-800 border-[3px] border-slate-400 text-slate-300 shadow-md">
                 <IconLock className="h-8 w-8 text-slate-300" />
               </div>
@@ -372,24 +341,25 @@ export function JourneyMapView({
             </div>
 
             {/* Step 5 Card */}
-            <div className="bg-white/90 border border-slate-200 rounded-2xl p-4 shadow-sm backdrop-blur-xs max-w-xs">
+            <div className="bg-white/92 border border-slate-200 rounded-2xl p-4 shadow-sm backdrop-blur-xs max-w-xs">
               <div className="flex items-center gap-2 text-slate-700">
                 <IconLock className="h-4 w-4 text-slate-400" />
                 <span className="text-sm font-extrabold text-slate-900">{stepDefinitions[4].title}</span>
               </div>
               <div className="text-[11px] font-bold text-slate-400 pl-6 mt-0.5">Locked</div>
-              <p className="text-[11px] text-slate-500 pl-6 mt-1">Complete the previous step to unlock</p>
+              <p className="text-[11px] text-slate-500 pl-6 mt-1">Complete the previous step to unlock.</p>
             </div>
           </div>
 
-          {/* FINAL DESTINATION: 3D Golden Treasure Chest (Mega Reward) */}
-          <div className="absolute top-[910px] left-[32%] sm:left-[36%] flex items-center gap-6 z-10">
+          {/* FINAL DESTINATION: 3D Golden Treasure Chest */}
+          <div className="absolute top-[960px] left-[31%] sm:left-[35%] flex items-center gap-6 z-10">
             {/* 3D Treasure Chest */}
-            <div className="relative h-24 w-24 sm:h-28 sm:w-28 drop-shadow-[0_16px_28px_rgba(234,179,8,0.45)]">
+            <div className="relative h-24 w-24 sm:h-28 sm:w-28 drop-shadow-[0_18px_30px_rgba(234,179,8,0.5)]">
               <Image
                 src="/images/journey/treasure.jpg"
                 alt="Treasure Chest"
                 fill
+                unoptimized
                 className="object-contain rounded-2xl"
               />
             </div>
@@ -419,17 +389,19 @@ export function JourneyMapView({
               <h2 className="text-base font-extrabold text-slate-900">Your Progress</h2>
             </div>
 
-            {/* Progress Count & Bar */}
+            {/* Progress Count & Segmented Bar */}
             <div>
               <div className="flex items-center justify-between text-xs font-bold mb-1.5">
                 <span className="text-[#7C3AED]">3 of 5 milestones completed</span>
                 <span className="text-slate-800 font-black">60%</span>
               </div>
-              <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-[#6D28D9] via-[#8B5CF6] to-[#A855F7] rounded-full transition-all duration-500"
-                  style={{ width: "60%" }}
-                />
+              {/* Segmented Progress Bar */}
+              <div className="flex items-center gap-1 w-full h-2">
+                <div className="flex-1 h-full rounded-full bg-emerald-500" />
+                <div className="flex-1 h-full rounded-full bg-emerald-500" />
+                <div className="flex-1 h-full rounded-full bg-emerald-500" />
+                <div className="flex-1 h-full rounded-full bg-slate-200" />
+                <div className="flex-1 h-full rounded-full bg-slate-200" />
               </div>
             </div>
 
