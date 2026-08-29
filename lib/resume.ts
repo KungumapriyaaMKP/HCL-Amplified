@@ -65,6 +65,7 @@ function extractFromPdfStreams(buffer: Buffer): string {
 
   return textPieces
     .join(" ")
+    .replace(/[\x00\u0000]/g, "")
     .replace(/\\(\d{3})/g, (_, oct) => String.fromCharCode(parseInt(oct, 8)))
     .replace(/\\([nrtbf()\\])/g, (_, esc) => {
       const map: Record<string, string> = { n: " ", r: " ", t: " ", b: "", f: "", "(": "(", ")": ")", "\\": "\\" };
@@ -114,5 +115,9 @@ export async function extractResumeText(buffer: Buffer, mimeType: string): Promi
     text = buffer.toString("utf-8");
   }
 
-  return text.replace(/\s+/g, " ").trim().slice(0, MAX_CHARS);
+  return text
+    .replace(/[\x00\u0000]/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, MAX_CHARS);
 }

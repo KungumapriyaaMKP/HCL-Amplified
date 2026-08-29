@@ -58,9 +58,11 @@ export async function POST(req: NextRequest) {
       { temperature: 0.3, maxTokens: 1500 },
     );
 
+    const cleanResumeText = resumeText ? resumeText.replace(/[\x00\u0000]/g, "").trim() : null;
+
     await db
       .update(profiles)
-      .set({ resumeText, resumeProfile: extraction })
+      .set({ resumeText: cleanResumeText, resumeProfile: extraction })
       .where(eq(profiles.userId, user.id));
 
     // Seed skill_mastery from the resume - but only for skills this learner
