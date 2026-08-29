@@ -458,19 +458,58 @@ export function SkillGraphView({
 }
 
 export function SkillGraphLegend() {
-  const items: { status: Status; label: string; dot: string }[] = [
-    { status: "mastered", label: "Mastered (60%+)", dot: "bg-emerald-500" },
-    { status: "in_progress", label: "In Trial", dot: "bg-amber-500" },
-    { status: "target", label: "Apex Quest Skill", dot: "bg-[#7C3AED]" },
-    { status: "required", label: "Needed Prerequisite", dot: "bg-sky-500" },
-    { status: "outside", label: "Alternative Realm", dot: "bg-slate-400" },
+  const items: {
+    status: Status;
+    label: string;
+    dot: string;
+    textColor: string;
+    bgColor: string;
+  }[] = [
+    {
+      status: "mastered",
+      label: "Mastered (60%+)",
+      dot: "bg-emerald-500",
+      textColor: "text-emerald-900",
+      bgColor: "bg-emerald-50/90 border-emerald-200",
+    },
+    {
+      status: "in_progress",
+      label: "In Trial",
+      dot: "bg-amber-500",
+      textColor: "text-amber-900",
+      bgColor: "bg-amber-50/90 border-amber-200",
+    },
+    {
+      status: "target",
+      label: "Apex Quest Skill",
+      dot: "bg-[#7C3AED]",
+      textColor: "text-purple-900",
+      bgColor: "bg-purple-50/90 border-purple-200",
+    },
+    {
+      status: "required",
+      label: "Needed Prerequisite",
+      dot: "bg-sky-500",
+      textColor: "text-sky-900",
+      bgColor: "bg-sky-50/90 border-sky-200",
+    },
+    {
+      status: "outside",
+      label: "Alternative Realm",
+      dot: "bg-slate-500",
+      textColor: "text-slate-900",
+      bgColor: "bg-slate-100/90 border-slate-200",
+    },
   ];
 
   return (
-    <div className="flex flex-wrap items-center gap-4 text-xs font-bold text-slate-700">
+    <div className="flex flex-wrap items-center gap-3">
       {items.map((item) => (
-        <span key={item.status} className="flex items-center gap-2">
-          <span className={`h-3 w-3 rounded-full ${item.dot} shadow-xs ring-2 ring-white`} />
+        <span
+          key={item.status}
+          className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-md border text-xs font-black ${item.bgColor} ${item.textColor} shadow-2xs`}
+        >
+          <span className={`h-2.5 w-2.5 rounded-full ${item.dot} shadow-xs ring-1 ring-white`} />
           <span>{item.label}</span>
         </span>
       ))}
