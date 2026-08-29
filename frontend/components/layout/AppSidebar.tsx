@@ -115,45 +115,66 @@ export function AppSidebar({
         </nav>
       </div>
 
-      {/* Bottom Promo Card */}
-      <div className="pt-3">
+      {/* Bottom Explorer Status Card (Exact Match to Image 1) */}
+      <div className="pt-3 space-y-3">
+        {/* Explorer Character Box */}
+        <div className="p-3 rounded-2xl bg-purple-50/80 border border-purple-100 shadow-2xs space-y-2.5">
+          <div className="flex items-center gap-3">
+            <div className="relative h-12 w-12 shrink-0 rounded-xl overflow-hidden border border-purple-200 bg-white shadow-2xs">
+              <img
+                src="/images/journey/explorer.jpg"
+                alt="Explorer Avatar"
+                className="h-full w-full object-cover"
+              />
+            </div>
+            <div className="space-y-0.5">
+              <div className="text-xs font-extrabold text-slate-900 leading-tight">
+                Web Dev Explorer 🚀
+              </div>
+              <div className="text-[11px] font-bold text-[#7C3AED]">Level 12</div>
+            </div>
+          </div>
+
+          {/* XP Progress Bar */}
+          <div>
+            <div className="flex justify-between text-[10px] font-bold text-slate-500 mb-1">
+              <span>XP Progress</span>
+              <span>820 / 1200 XP</span>
+            </div>
+            <div className="w-full h-1.5 bg-purple-200/60 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-[#6D28D9] to-[#8B5CF6] rounded-full"
+                style={{ width: "68%" }}
+              />
+            </div>
+          </div>
+
+          {/* Stats Row */}
+          <div className="flex items-center gap-3 pt-0.5 text-xs font-black">
+            <span className="flex items-center gap-1 text-amber-600">
+              <span>🪙</span>
+              <span>320</span>
+            </span>
+            <span className="flex items-center gap-1 text-[#7C3AED]">
+              <span>💎</span>
+              <span>15</span>
+            </span>
+          </div>
+        </div>
+
         {/* Motivational Banner */}
-        {isResourcesPage ? (
-          <div className="p-3.5 rounded-none bg-gradient-to-br from-[#F5F3FF] via-[#EDE9FE] to-[#F3E8FF] border border-purple-100 flex items-center justify-between shadow-2xs">
-            <div className="space-y-1 pr-2">
-              <div className="text-xs font-black text-purple-950 leading-tight">
-                Need resources?
-              </div>
-              <div className="text-[10px] font-medium text-purple-700 leading-snug">
-                Find the right materials to learn, practice and grow.
-              </div>
-              <Link
-                href="/resources"
-                className="inline-flex items-center gap-1 mt-1 px-2.5 py-1 rounded-none bg-white border border-purple-200/80 text-[10px] font-bold text-[#6D28D9] shadow-2xs hover:bg-purple-50 transition-colors"
-              >
-                <span>Explore Now</span>
-                <IconArrowRight className="w-3 h-3 stroke-[2.5]" />
-              </Link>
+        <div className="p-3 rounded-2xl bg-purple-50/60 border border-purple-100 flex items-center justify-between shadow-2xs">
+          <div className="space-y-0.5 pr-2">
+            <div className="text-[11px] font-black text-purple-950 leading-tight flex items-center gap-1">
+              <span>Keep going!</span>
+              <span className="text-purple-600">💜</span>
             </div>
-            <div className="shrink-0">
-              <NeedResourcesBooksIllustration className="w-12 h-12" />
+            <div className="text-[9px] font-medium text-purple-700 leading-snug">
+              Complete more quests to unlock achievements and earn rewards.
             </div>
           </div>
-        ) : (
-          <div className="p-3 rounded-none bg-gradient-to-br from-[#F5F3FF] via-[#EDE9FE] to-[#F3E8FF] border border-purple-100 flex items-center justify-between shadow-2xs">
-            <div className="space-y-0.5 pr-2">
-              <div className="text-[11px] font-black text-purple-950 leading-tight">
-                Keep going!
-              </div>
-              <div className="text-[9px] font-medium text-purple-700 leading-snug">
-                Complete more quests to unlock achievements and earn rewards.
-              </div>
-            </div>
-            <div className="shrink-0">
-              <RocketBlastingIllustration className="w-9 h-9" />
-            </div>
-          </div>
-        )}
+          <div className="text-2xl shrink-0">🎁</div>
+        </div>
       </div>
     </aside>
   );
