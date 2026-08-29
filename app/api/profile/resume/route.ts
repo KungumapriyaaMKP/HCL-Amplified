@@ -38,12 +38,19 @@ export async function POST(req: NextRequest) {
       if (mimeType !== "application/pdf" && !mimeType.startsWith("text/")) {
         return jsonError("Only PDF or plain text resumes are supported");
       }
-      const buffer = Buffer.from(await file.arrayBuffer());
-      resumeText = await extractResumeText(buffer, mimeType);
+      try {
+        const buffer = Buffer.from(await file.arrayBuffer());
+        resumeText = await extractResumeText(buffer, mimeType);
+      } catch (err) {
+        console.error("Resume parsing error:", err);
+      }
     }
 
     if (!resumeText && !currentRole && !careerGoal && yearsExperience == null) {
-      return jsonError("Provide a resume file or answer at least one question");
+      return jsonError(
+        "Could not extract readable text from the uploaded document. Please fill in your Current Role or Career Goal below.",
+        400
+      );
     }
 
     const extraction = await chatJson<Extraction>(
