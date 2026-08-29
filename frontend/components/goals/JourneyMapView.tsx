@@ -414,29 +414,51 @@ export function JourneyMapView({
             );
           })}
 
-          {/* FINAL DESTINATION: 3D Golden Treasure Chest (Capstone & Reward) */}
+          {/* FINAL DESTINATION: 3D Golden Treasure Chest (Dynamic Glowing Capstone & Reward) */}
           <div
             className="absolute flex items-center gap-6 z-10"
-            style={{ top: `${courseList.length * 190 + 50}px`, left: "32%" }}
+            style={{ top: `${courseList.length * 190 + 50}px`, left: "30%" }}
           >
-            {/* 3D Treasure Chest */}
-            <div className="relative h-24 w-24 sm:h-28 sm:w-28 drop-shadow-[0_18px_30px_rgba(234,179,8,0.5)]">
-              <Image
-                src="/images/journey/treasure.jpg"
-                alt="Treasure Chest"
-                fill
-                unoptimized
-                className="object-contain rounded-2xl"
-              />
+            {/* Dynamic Glowing 3D Treasure Chest on Pedestal */}
+            <div className="relative flex flex-col items-center group cursor-pointer">
+              
+              {/* 1. Dynamic Pulsing Gold/Purple Aura */}
+              <div className="absolute -inset-6 rounded-full bg-gradient-to-tr from-amber-400/50 via-purple-500/40 to-yellow-300/60 blur-2xl animate-pulse" />
+              
+              {/* 2. Secondary Shimmer Glow */}
+              <div className="absolute -inset-3 rounded-full bg-amber-300/30 blur-lg animate-ping opacity-40 pointer-events-none" />
+
+              {/* 3. Floating Animated Sparkles & Stars */}
+              <div className="absolute -top-6 -left-3 text-lg animate-bounce duration-1000 select-none">✨</div>
+              <div className="absolute -top-8 left-1/2 -translate-x-1/2 text-base animate-pulse duration-700 select-none">🌟</div>
+              <div className="absolute -top-5 -right-3 text-lg animate-bounce duration-1000 delay-300 select-none">💎</div>
+              <div className="absolute top-2 -right-6 text-sm animate-pulse delay-500 select-none">⭐</div>
+
+              {/* 4. 3D Pedestal Base Under Chest */}
+              <div className="relative flex flex-col items-center">
+                {/* 3D Transparent Chest with Dynamic Drop-Shadow Glow */}
+                <div className="relative h-28 w-28 sm:h-32 sm:w-32 drop-shadow-[0_12px_28px_rgba(245,158,11,0.85)] group-hover:scale-110 group-hover:drop-shadow-[0_16px_36px_rgba(234,179,8,1)] transition-all duration-300">
+                  <Image
+                    src="/images/journey/treasure_transparent.png"
+                    alt="Golden Treasure Chest"
+                    fill
+                    unoptimized
+                    className="object-contain"
+                  />
+                </div>
+
+                {/* Pedestal Base Ring */}
+                <div className="-mt-4 w-24 h-4 rounded-full bg-gradient-to-r from-purple-950 via-[#4C1D95] to-purple-950 border-2 border-amber-400/80 shadow-lg" />
+              </div>
             </div>
 
             {/* Mega Reward Card */}
-            <div className="bg-white/95 border border-amber-200/90 rounded-2xl p-4 shadow-md backdrop-blur-xs max-w-xs">
-              <div className="flex items-center gap-1.5 text-xs font-extrabold text-purple-700 uppercase tracking-wide">
+            <div className="bg-white/95 border-2 border-amber-300/80 rounded-3xl p-5 shadow-xl shadow-amber-500/15 backdrop-blur-md max-w-xs space-y-1.5 hover:shadow-2xl hover:border-amber-400 transition-all">
+              <div className="flex items-center gap-1.5 text-xs font-black text-purple-700 uppercase tracking-wide">
                 <span>💎</span>
                 <span>Capstone & Certification</span>
               </div>
-              <p className="mt-1 text-xs text-slate-600 leading-snug">
+              <p className="text-xs text-slate-600 leading-snug">
                 Complete all course modules to unlock your final Capstone Project and earn your Domain Mastery Certificate! 🎁
               </p>
             </div>
