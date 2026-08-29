@@ -235,9 +235,8 @@ export function JourneyMapView({
             Your{" "}
             <span className="text-[#6D28D9]">Learning Journey</span>
           </h1>
-          <p className="text-xs sm:text-sm text-slate-600 font-medium flex items-center gap-1.5">
-            <span>Complete milestones, unlock rewards & level up your skills!</span>
-            <span className="text-amber-500">✨</span>
+          <p className="text-xs sm:text-sm text-slate-600 font-medium">
+            Complete milestones, unlock rewards & level up your skills!
           </p>
         </div>
 
@@ -373,14 +372,6 @@ export function JourneyMapView({
                   }}
                 >
                   <div className="relative flex flex-col items-center">
-                    {/* Confetti on Completed Step */}
-                    {isCompleted && (
-                      <>
-                        <div className="absolute -top-3 -left-3 text-sm animate-pulse">✨</div>
-                        <div className="absolute -bottom-2 -right-2 text-sm animate-pulse">🎉</div>
-                      </>
-                    )}
-
                     {/* Radiant Aura on Active Current Step */}
                     {isCurrent && (
                       <div className="absolute -inset-6 rounded-full bg-purple-500/35 blur-xl animate-pulse" />
@@ -572,11 +563,10 @@ export function JourneyMapView({
                 >
                   <div className="bg-white/95 border-2 border-amber-300/80 rounded-md p-5 shadow-xl shadow-amber-500/15 backdrop-blur-md space-y-1.5 hover:shadow-2xl hover:border-amber-400 transition-all">
                     <div className="flex items-center gap-1.5 text-xs font-black text-purple-700 uppercase tracking-wide">
-                      <span>💎</span>
                       <span>Capstone & Certification</span>
                     </div>
                     <p className="text-xs text-slate-600 leading-snug">
-                      Complete all course modules to unlock your final Capstone Project and earn your Domain Mastery Certificate! 🎁
+                      Complete all course modules to unlock your final Capstone Project and earn your Domain Mastery Certificate!
                     </p>
                   </div>
                 </div>
