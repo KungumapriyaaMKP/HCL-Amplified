@@ -6,6 +6,7 @@ import { Card } from "@/frontend/components/ui/Card";
 import { Badge } from "@/frontend/components/ui/badge";
 import { Button } from "@/frontend/components/ui/Button";
 import { PracticeQuiz } from "@/frontend/components/goals/PracticeQuiz";
+import { FocusTimer } from "@/frontend/components/goals/FocusTimer";
 import {
   IconArrowLeft,
   IconArrowRight,
@@ -183,6 +184,12 @@ export function ModuleWorkspace(props: Props) {
           )}
         </div>
       </Card>
+
+      {/* 25/5 Pomodoro Focus Session Timer */}
+      <FocusTimer
+        moduleId={props.moduleId}
+        skillName={props.skillName}
+      />
 
       {/* Practice Quiz */}
       {resourceMarked ? (
