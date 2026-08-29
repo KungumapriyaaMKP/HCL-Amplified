@@ -2,10 +2,20 @@
 
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Card } from "@/frontend/components/ui/Card";
-import { Button } from "@/frontend/components/ui/Button";
 import { loadFaceModels, captureFace, type FaceCapture } from "@/lib/faceMatch";
-import { IconCamera, IconRefresh, IconArrowRight, IconShieldCheck } from "@tabler/icons-react";
+import CubeLoader from "@/components/ui/cube-loader";
+import {
+  IconCamera,
+  IconRefresh,
+  IconArrowRight,
+  IconCheck,
+  IconLock,
+  IconSun,
+  IconFaceId,
+  IconEyeglass,
+  IconPencil,
+  IconLoader2,
+} from "@tabler/icons-react";
 
 function FaceOnboarding() {
   const router = useRouter();
@@ -18,13 +28,15 @@ function FaceOnboarding() {
   const [cameraError, setCameraError] = useState(false);
   const [capture, setCapture] = useState<FaceCapture>(null);
   const [capturing, setCapturing] = useState(false);
+  const [scanProgress, setScanProgress] = useState(0);
   const [saving, setSaving] = useState(false);
+  const [isCompleted, setIsCompleted] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     loadFaceModels().catch(() => {});
     navigator.mediaDevices
-      .getUserMedia({ video: true })
+      .getUserMedia({ video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: "user" } })
       .then((stream) => {
         streamRef.current = stream;
         if (videoRef.current) videoRef.current.srcObject = stream;
@@ -41,15 +53,29 @@ function FaceOnboarding() {
     if (!videoRef.current) return;
     setCapturing(true);
     setError(null);
+    setScanProgress(15);
+
+    const interval = setInterval(() => {
+      setScanProgress((p) => (p < 85 ? p + 15 : p));
+    }, 100);
+
     try {
       const result = await captureFace(videoRef.current);
+      clearInterval(interval);
       if (!result) {
-        setError("No face detected — center your face inside the scan frame and retry.");
+        setScanProgress(0);
+        setError("No face detected — please center your face inside the dashed frame and retry.");
         return;
       }
-      setCapture(result);
+      setScanProgress(100);
+      setTimeout(() => {
+        setCapture(result);
+        setScanProgress(0);
+      }, 250);
     } catch {
-      setError("Could not process frame — try again.");
+      clearInterval(interval);
+      setScanProgress(0);
+      setError("Could not process frame — please try again.");
     } finally {
       setCapturing(false);
     }
@@ -59,13 +85,19 @@ function FaceOnboarding() {
     if (!capture) return;
     setSaving(true);
     try {
-      const res = await fetch("/api/profile/face", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ descriptor: capture.descriptor, photoDataUrl: capture.photoDataUrl }),
-      });
+      const [res] = await Promise.all([
+        fetch("/api/profile/face", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ descriptor: capture.descriptor, photoDataUrl: capture.photoDataUrl }),
+        }),
+        new Promise((r) => setTimeout(r, 1200)),
+      ]);
       if (!res.ok) throw new Error();
-      router.push(next);
+      setIsCompleted(true);
+      setTimeout(() => {
+        router.push(next);
+      }, 700);
     } catch {
       setError("Could not save biometric profile — you can register later before your first proctored test.");
       setSaving(false);
@@ -73,74 +105,316 @@ function FaceOnboarding() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#070913] px-4 text-white">
-      <Card className="w-full max-w-lg p-8">
-        <div className="text-center mb-6">
-          <span className="text-[10px] font-black uppercase tracking-[0.25em] text-purple-400">
-            BIOMETRIC REGISTRATION
-          </span>
-          <h1 className="mt-1 text-2xl font-black text-white drop-shadow-[0_2px_10px_rgba(255,255,255,0.2)]">
-            Biometric Calibration
+    <div className="h-screen max-h-screen overflow-hidden bg-[#070A13] text-white flex flex-col justify-between items-center p-3 sm:p-4 font-sans selection:bg-purple-500 selection:text-white">
+      
+      {/* 1. Top Header & Centered Progress Stepper (No Overlap) */}
+      <div className="w-full max-w-2xl mx-auto space-y-2.5 pt-1 shrink-0">
+        <div className="text-center">
+          <h1 className="text-lg sm:text-xl font-bold text-white tracking-tight">
+            Biometric Registration
           </h1>
-          <p className="mt-1 text-xs text-slate-400">
-            Proctored assessments check your face against this encrypted descriptor in-browser for integrity.
-          </p>
         </div>
 
-        {/* Camera Viewport Frame */}
-        <div className="relative mb-6 aspect-video overflow-hidden rounded-3xl border-2 border-purple-500/40 bg-black shadow-[0_0_25px_rgba(168,85,247,0.3)]">
-          {capture ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={capture.photoDataUrl} alt="Captured reference" className="h-full w-full object-cover" />
-          ) : cameraError ? (
-            <div className="grid h-full place-items-center p-6 text-center text-xs text-slate-400">
-              Camera access required for instant registration.
-              <br />
-              You can proceed and register later before your first proctored assessment.
+        {/* Clean Stepper: Connecting Lines Sit Between Items */}
+        <div className="flex items-center justify-center gap-2 sm:gap-3 w-full py-1">
+          
+          {/* Step 1: Welcome */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            <div className="flex h-6 w-6 items-center justify-center rounded-none border border-purple-500 bg-[#070A13] text-[10px] font-semibold text-white shadow-[0_0_10px_rgba(168,85,247,0.3)]">
+              1
             </div>
-          ) : (
-            <video ref={videoRef} autoPlay muted playsInline className="h-full w-full object-cover" />
+            <div className="text-left">
+              <div className="text-[11px] font-semibold text-white leading-tight">Welcome</div>
+              <div className="text-[9px] font-medium text-purple-400 flex items-center gap-0.5 mt-0.5">
+                <IconCheck className="h-2.5 w-2.5 stroke-[2.5]" />
+                <span>Completed</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Line 1 -> 2 */}
+          <div className="flex-1 max-w-[30px] sm:max-w-[50px] h-0.5 bg-gradient-to-r from-purple-500 to-purple-600 shadow-[0_0_8px_rgba(168,85,247,0.6)]" />
+
+          {/* Step 2: Personal Details */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            <div className="flex h-6 w-6 items-center justify-center rounded-none border border-purple-500 bg-[#070A13] text-[10px] font-semibold text-white shadow-[0_0_10px_rgba(168,85,247,0.3)]">
+              2
+            </div>
+            <div className="text-left">
+              <div className="text-[11px] font-semibold text-white leading-tight">Personal Details</div>
+              <div className="text-[9px] font-medium text-purple-400 flex items-center gap-0.5 mt-0.5">
+                <IconCheck className="h-2.5 w-2.5 stroke-[2.5]" />
+                <span>Completed</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Line 2 -> 3 */}
+          <div className="flex-1 max-w-[30px] sm:max-w-[50px] h-0.5 bg-gradient-to-r from-purple-500 to-purple-600 shadow-[0_0_8px_rgba(168,85,247,0.6)]" />
+
+          {/* Step 3: Face Verification (Active) */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            <div
+              className={`flex h-6 w-6 items-center justify-center rounded-none text-[10px] font-bold text-white transition-all ${
+                isCompleted
+                  ? "border border-purple-500 bg-[#070A13]"
+                  : "bg-[#7C3AED] shadow-[0_0_18px_rgba(124,58,237,0.9)] ring-2 ring-purple-500/25"
+              }`}
+            >
+              3
+            </div>
+            <div className="text-left">
+              <div className="text-[11px] font-semibold text-white leading-tight">Face Verification</div>
+              <div className="text-[9px] font-semibold text-purple-400 flex items-center gap-0.5 mt-0.5">
+                <IconCheck className="h-2.5 w-2.5 stroke-[2.5]" />
+                <span>{isCompleted ? "Completed" : "In Progress"}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Line 3 -> 4 */}
+          <div
+            className={`flex-1 max-w-[30px] sm:max-w-[50px] h-0.5 transition-colors duration-500 ${
+              isCompleted
+                ? "bg-gradient-to-r from-purple-500 to-purple-600 shadow-[0_0_8px_rgba(168,85,247,0.6)]"
+                : "bg-slate-800"
+            }`}
+          />
+
+          {/* Step 4: Complete */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            <div
+              className={`flex h-6 w-6 items-center justify-center rounded-none text-[10px] font-semibold transition-all ${
+                isCompleted
+                  ? "bg-[#7C3AED] text-white shadow-[0_0_18px_rgba(124,58,237,0.9)] ring-2 ring-purple-500/25"
+                  : "border border-slate-700 bg-[#070A13] text-slate-400 opacity-60"
+              }`}
+            >
+              4
+            </div>
+            <div className="text-left">
+              <div className={`text-[11px] font-semibold leading-tight ${isCompleted ? "text-white" : "text-slate-400"}`}>
+                Complete
+              </div>
+              <div className={`text-[9px] font-medium mt-0.5 ${isCompleted ? "text-purple-400" : "text-slate-500"}`}>
+                {isCompleted ? "In Progress" : "Pending"}
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      {/* 2. Main Center Verification Card (Sharp Geometric Edges) */}
+      <div className="w-full max-w-xl mx-auto my-auto shrink-1 min-h-0">
+        <div className="relative rounded-none border border-[#1E2942] bg-[#0E1326]/90 backdrop-blur-xl p-4 sm:p-5 shadow-[0_0_40px_rgba(0,0,0,0.5)] text-center overflow-hidden flex flex-col justify-between">
+          
+          {/* Subtle Background Radial Glow */}
+          <div className="pointer-events-none absolute -top-20 left-1/2 -translate-x-1/2 w-80 h-80 bg-purple-600/10 rounded-full blur-3xl" />
+
+          {/* Title Header */}
+          <div className="shrink-0">
+            <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-purple-400">
+              BIOMETRIC REGISTRATION
+            </div>
+
+            <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight mt-0.5">
+              Face Verification
+            </h2>
+
+            <p className="text-xs text-slate-400 font-normal max-w-sm mx-auto mt-1 leading-snug">
+              We use face recognition to ensure a secure and personalized learning experience for you.
+            </p>
+          </div>
+
+          {/* 3. Camera Viewfinder (Sharp Edges) */}
+          <div className="relative h-44 sm:h-52 w-full max-w-md mx-auto rounded-none overflow-hidden bg-black border border-[#1E2942] my-2.5 shadow-inner shrink-0">
+            {saving ? (
+              <div className="relative h-full w-full bg-[#090D1C] flex items-center justify-center">
+                <CubeLoader
+                  title="Encrypting & Storing"
+                  subtitle="Writing biometric descriptor to secure profile…"
+                  className="min-h-0 p-2"
+                />
+              </div>
+            ) : capture ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <div className="relative h-full w-full">
+                <img src={capture.photoDataUrl} alt="Captured reference" className="h-full w-full object-cover" />
+                <div className="absolute inset-0 bg-purple-950/30 backdrop-blur-[1px] flex flex-col items-center justify-center text-center p-2">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-none bg-emerald-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.6)] mb-1">
+                    <IconCheck className="h-5 w-5 stroke-[3]" />
+                  </div>
+                  <div className="text-xs font-black text-white">Face Descriptor Encrypted</div>
+                  <p className="text-[10px] text-purple-200">Biometric calibration verified at 100%.</p>
+                </div>
+              </div>
+            ) : cameraError ? (
+              <div className="grid h-full place-items-center p-4 text-center text-xs text-slate-400 bg-slate-950">
+                <div>
+                  <IconCamera className="h-6 w-6 text-slate-600 mx-auto mb-1" />
+                  <span className="font-bold text-slate-300 text-xs">Camera access required for face verification.</span>
+                  <p className="text-[10px] text-slate-500 mt-0.5">
+                    Please allow camera permissions or skip to register later.
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="relative h-full w-full">
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  muted
+                  playsInline
+                  onLoadedMetadata={() => setCameraReady(true)}
+                  className="h-full w-full object-cover"
+                />
+
+                {/* 4 Corner Crosshair Reticles (Sharp 90-Degree) */}
+                <div className="pointer-events-none absolute top-3 left-3 w-5 h-5 border-t-2 border-l-2 border-white/80" />
+                <div className="pointer-events-none absolute top-3 right-3 w-5 h-5 border-t-2 border-r-2 border-white/80" />
+                <div className="pointer-events-none absolute bottom-3 left-3 w-5 h-5 border-b-2 border-l-2 border-white/80" />
+                <div className="pointer-events-none absolute bottom-3 right-3 w-5 h-5 border-b-2 border-r-2 border-white/80" />
+
+                {/* Center Oval Reticle with Dynamic Laser Scanning Beam */}
+                <div className="pointer-events-none absolute inset-0 m-auto w-32 sm:w-40 h-40 sm:h-48 rounded-[50%] border-2 border-dashed border-purple-400/80 shadow-[0_0_20px_rgba(168,85,247,0.35)] overflow-hidden flex items-center justify-center">
+                  {capturing && (
+                    <div className="w-full h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_15px_#22d3ee] animate-pulse" />
+                  )}
+                </div>
+
+                {/* Live Scanning Progress Overlay (Sharp Edges) */}
+                {capturing && (
+                  <div className="absolute inset-x-0 bottom-2 px-4">
+                    <div className="bg-black/90 backdrop-blur-md rounded-none p-2 border border-purple-500/40 shadow-lg space-y-1">
+                      <div className="flex items-center justify-between text-[10px] font-bold">
+                        <span className="text-purple-300 flex items-center gap-1">
+                          <IconLoader2 className="h-3 w-3 animate-spin text-purple-400" />
+                          Calibrating Biometrics...
+                        </span>
+                        <span className="text-cyan-400 font-extrabold">{scanProgress}%</span>
+                      </div>
+                      <div className="h-1 w-full bg-slate-800 rounded-none overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-[#6366F1] via-[#8B5CF6] to-cyan-400 rounded-none transition-all duration-200"
+                          style={{ width: `${scanProgress}%` }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Error Message */}
+          {error && (
+            <div className="mb-2 rounded-none border border-rose-500/40 bg-rose-950/60 p-2 text-[11px] font-bold text-rose-300 text-left shrink-0">
+              {error}
+            </div>
           )}
 
-          {/* Cyber reticle overlay */}
-          <div className="pointer-events-none absolute inset-4 border border-cyan-400/30 rounded-2xl flex items-center justify-center">
-            <div className="h-24 w-24 border border-dashed border-cyan-400/50 rounded-full animate-pulse" />
+          {/* 4. Instructions Row (Sharp Edges) */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 p-2 rounded-none bg-[#080C1A]/90 border border-slate-800/90 mb-2.5 text-left shrink-0">
+            
+            {/* Good lighting */}
+            <div className="flex items-center gap-2">
+              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-none bg-emerald-950/50 border border-emerald-500/30 text-emerald-400">
+                <IconSun className="h-3.5 w-3.5 stroke-[2.2]" />
+              </div>
+              <div>
+                <div className="text-[11px] font-bold text-white leading-tight">Good lighting</div>
+                <div className="text-[9px] text-slate-400 font-medium">Face is well lit</div>
+              </div>
+            </div>
+
+            {/* Face forward */}
+            <div className="flex items-center gap-2">
+              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-none bg-emerald-950/50 border border-emerald-500/30 text-emerald-400">
+                <IconFaceId className="h-3.5 w-3.5 stroke-[2.2]" />
+              </div>
+              <div>
+                <div className="text-[11px] font-bold text-white leading-tight">Face forward</div>
+                <div className="text-[9px] text-slate-400 font-medium">Look directly at camera</div>
+              </div>
+            </div>
+
+            {/* No accessories */}
+            <div className="flex items-center gap-2">
+              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-none bg-emerald-950/50 border border-emerald-500/30 text-emerald-400">
+                <IconEyeglass className="h-3.5 w-3.5 stroke-[2.2]" />
+              </div>
+              <div>
+                <div className="text-[11px] font-bold text-white leading-tight">No accessories</div>
+                <div className="text-[9px] text-slate-400 font-medium">Remove glasses/hats</div>
+              </div>
+            </div>
+
           </div>
-        </div>
 
-        {error && (
-          <div className="mb-4 rounded-xl border border-red-500/40 bg-red-950/60 p-3 text-xs font-bold text-red-300">
-            {error}
+          {/* 5. Action Buttons (Sharp Edges) */}
+          <div className="space-y-2 shrink-0">
+            {capture ? (
+              <div className="space-y-1.5">
+                <button
+                  disabled={saving || isCompleted}
+                  onClick={saveAndContinue}
+                  className="w-full py-2.5 px-4 rounded-none bg-gradient-to-r from-[#6366F1] via-[#8B5CF6] to-[#D946EF] hover:opacity-95 text-white font-bold text-xs shadow-[0_0_20px_rgba(168,85,247,0.4)] flex items-center justify-center gap-1.5 transition-all cursor-pointer disabled:opacity-50"
+                >
+                  <span>{isCompleted ? "Verified! Redirecting..." : saving ? "Registering Biometric Profile..." : "Save Biometrics & Continue"}</span>
+                  <IconArrowRight className="h-3.5 w-3.5 stroke-[2.5]" />
+                </button>
+
+                {!isCompleted && (
+                  <button
+                    disabled={saving}
+                    onClick={() => setCapture(null)}
+                    className="w-full py-1.5 px-3 rounded-none border border-slate-700 bg-slate-900/60 hover:bg-slate-800 text-slate-300 font-bold text-[11px] flex items-center justify-center gap-1 transition-colors cursor-pointer"
+                  >
+                    <IconRefresh className="h-3 w-3" />
+                    <span>Recalibrate & Retake Photo</span>
+                  </button>
+                )}
+              </div>
+            ) : (
+              <button
+                disabled={capturing}
+                onClick={takeCapture}
+                className="w-full py-2.5 px-4 rounded-none bg-gradient-to-r from-[#6366F1] via-[#8B5CF6] to-[#D946EF] hover:opacity-95 text-white font-bold text-xs shadow-[0_0_20px_rgba(168,85,247,0.4)] flex items-center justify-center gap-1.5 transition-all cursor-pointer disabled:opacity-50"
+              >
+                <IconCamera className="h-3.5 w-3.5 stroke-[2.2]" />
+                <span>{capturing ? "Scanning Face Descriptor..." : "Capture Reference Photo"}</span>
+              </button>
+            )}
+
+            {/* Divider OR */}
+            <div className="relative py-1 flex items-center justify-center">
+              <div className="w-full border-t border-slate-800/80" />
+              <span className="absolute bg-[#0E1326] px-2.5 text-[9px] font-bold uppercase tracking-wider text-slate-500">
+                OR
+              </span>
+            </div>
+
+            {/* Skip for now Link */}
+            <div>
+              <button
+                onClick={() => router.push(next)}
+                className="text-[11px] font-bold text-purple-400 hover:text-purple-300 transition-colors cursor-pointer"
+              >
+                Skip for now
+              </button>
+            </div>
           </div>
-        )}
 
-        <div className="flex flex-col gap-3">
-          {capture ? (
-            <>
-              <Button size="lg" disabled={saving} onClick={saveAndContinue}>
-                <span>{saving ? "Registering Descriptor..." : "Save Biometrics & Continue"}</span>
-                <IconArrowRight className="h-4 w-4" />
-              </Button>
-              <Button size="md" variant="secondary" disabled={saving} onClick={() => setCapture(null)}>
-                <IconRefresh className="h-4 w-4" />
-                <span>Recalibrate Frame</span>
-              </Button>
-            </>
-          ) : (
-            <Button size="lg" disabled={!cameraReady || capturing} onClick={takeCapture}>
-              <IconCamera className="h-4 w-4" />
-              <span>{capturing ? "Scanning..." : "Capture Reference Photo"}</span>
-            </Button>
-          )}
+          {/* 6. Footer Encryption Notice */}
+          <div className="flex items-center justify-center gap-1.5 text-[10px] text-slate-400 mt-2 pt-2 border-t border-slate-800/60 shrink-0">
+            <IconLock className="h-3 w-3 text-slate-500" />
+            <span>Your biometric data is encrypted and used only for verification purposes.</span>
+          </div>
 
-          <button
-            onClick={() => router.push(next)}
-            className="mt-2 text-center text-xs font-bold text-slate-500 hover:text-purple-300 transition-colors"
-          >
-            Skip for now
-          </button>
         </div>
-      </Card>
+      </div>
+
     </div>
   );
 }

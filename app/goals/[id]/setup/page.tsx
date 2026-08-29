@@ -3,10 +3,21 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { AppSidebar } from "@/frontend/components/layout/AppSidebar";
-import { Card } from "@/frontend/components/ui/Card";
 import { Button } from "@/frontend/components/ui/Button";
-import { ChatThread, type ChatBubble } from "@/frontend/components/chat/ChatThread";
-import { IconSparkles, IconArrowRight, IconShieldCheck, IconCheck, IconBolt, IconCoin, IconTarget } from "@tabler/icons-react";
+import { PencilLoader } from "@/components/ui/loader-1";
+import { AnimatedAIChat } from "@/components/ui/animated-ai-chat";
+import { SetupStepperHeader, type SetupStep } from "@/components/ui/setup-stepper-header";
+import { Target3DIllustration } from "@/components/ui/target-3d-illustration";
+import { type ChatBubble } from "@/frontend/components/chat/ChatThread";
+import {
+  IconSparkles,
+  IconArrowRight,
+  IconCompass,
+  IconActivity,
+  IconBolt,
+  IconCoin,
+  IconTarget,
+} from "@tabler/icons-react";
 
 type Goal = { id: string; status: string; domain: string; goalText: string };
 type DiagQuestion = { id: string; skillId: string; question: string; options: string[] };
@@ -25,6 +36,7 @@ export default function GoalSetupPage() {
   const [diagAnswers, setDiagAnswers] = useState<Record<string, number>>({});
   const [diagScore, setDiagScore] = useState<number | null>(null);
   const [diagLoading, setDiagLoading] = useState(false);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
   const [generating, setGenerating] = useState(false);
   const [plannerMode, setPlannerMode] = useState<"fastest" | "cheapest" | "most_rigorous">("fastest");
@@ -43,6 +55,12 @@ export default function GoalSetupPage() {
   useEffect(() => {
     loadGoal();
   }, [loadGoal]);
+
+  useEffect(() => {
+    if (goal?.status === "ready" && !generating) {
+      generatePath();
+    }
+  }, [goal?.status]);
 
   useEffect(() => {
     if (goal?.status !== "intake" || historyChecked) return;
@@ -69,11 +87,17 @@ export default function GoalSetupPage() {
         body: JSON.stringify({ message }),
       });
       const body = await res.json();
-      if (!res.ok) throw new Error(body.error);
-      setMessages((m) => [...m, { role: "assistant", content: body.reply }]);
-      if (body.done) await loadGoal();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong in intake");
+      if (!res.ok) throw new Error(body.error || "Intake step failed");
+      if (body.messages && Array.isArray(body.messages) && body.messages.length > 0) {
+        setMessages(body.messages);
+      } else if (body.reply) {
+        setMessages((prev) => [...prev, { role: "assistant", content: body.reply }]);
+      }
+      if (body.done) {
+        await loadGoal();
+      }
+    } catch (e: any) {
+      setError(e.message);
     } finally {
       setChatLoading(false);
     }
@@ -98,14 +122,17 @@ export default function GoalSetupPage() {
 
   async function startDiagnostic() {
     setDiagLoading(true);
+    setError(null);
     try {
       const res = await fetch(`/api/goals/${id}/diagnostic/generate`, { method: "POST" });
       const body = await res.json();
-      if (!res.ok) throw new Error(body.error);
-      setDiagAttemptId(body.attemptId);
+      if (!res.ok) throw new Error(body.error || "Failed to generate diagnostic");
       setDiagQuestions(body.questions);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong generating questions");
+      setDiagAttemptId(body.attemptId);
+      setDiagAnswers({});
+      setCurrentQuestionIndex(0);
+    } catch (e: any) {
+      setError(e.message);
     } finally {
       setDiagLoading(false);
     }
@@ -114,19 +141,24 @@ export default function GoalSetupPage() {
   async function submitDiagnostic() {
     if (!diagAttemptId || !diagQuestions) return;
     setDiagLoading(true);
+    setError(null);
     try {
-      const answers = diagQuestions.map((q) => ({ id: q.id, selectedIndex: diagAnswers[q.id] ?? -1 }));
+      const answers = diagQuestions.map((q) => ({
+        id: q.id,
+        selectedIndex: diagAnswers[q.id] ?? 0,
+      }));
       const res = await fetch(`/api/goals/${id}/diagnostic/submit`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ attemptId: diagAttemptId, answers }),
       });
       const body = await res.json();
-      if (!res.ok) throw new Error(body.error);
-      setDiagScore(body.score);
+      if (!res.ok) throw new Error(body.error || "Failed to score diagnostic");
+      setDiagScore(body.score ?? body.overallScore);
+      setGoal((g) => (g ? { ...g, status: "ready" } : g));
       await loadGoal();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong submitting answers");
+    } catch (e: any) {
+      setError(e.message);
     } finally {
       setDiagLoading(false);
     }
@@ -142,32 +174,27 @@ export default function GoalSetupPage() {
         body: JSON.stringify({ plannerMode }),
       });
       const body = await res.json();
-      if (!res.ok) throw new Error(body.error);
-      router.push(`/goals/${id}`);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong generating path");
+      if (!res.ok) throw new Error(body.error || "Failed to generate path");
+      router.replace(`/goals/${id}`);
+    } catch (e: any) {
+      setError(e.message);
       setGenerating(false);
     }
   }
 
   if (!goal) {
     return (
-      <div className="flex min-h-screen bg-[#F8F9FD] text-slate-900 font-sans">
+      <div className="flex min-h-screen bg-[#FAFBFD] text-slate-900 font-sans">
         <AppSidebar displayName="Yuvi" level={1} levelTitle="Newcomer" />
-        <div className="flex-1 flex flex-col min-w-0 overflow-y-auto max-h-screen bg-[#070913] text-white">
-          <main className="mx-auto max-w-2xl px-4 py-20 text-center text-slate-400">
-            <div className="flex items-center justify-center gap-2 text-purple-400">
-              <span className="h-3 w-3 rounded-full bg-purple-400 animate-ping" />
-              <span>Loading Goal Setup...</span>
-            </div>
-          </main>
+        <div className="flex-1 flex flex-col min-w-0 items-center justify-center min-h-screen bg-[#FAFBFD]">
+          <PencilLoader size={140} label="Loading Goal Setup..." />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen bg-[#F8F9FD] text-slate-900 font-sans">
+    <div className="flex h-screen max-h-screen overflow-hidden bg-[#FAFBFD] text-slate-900 font-sans">
       {/* 1. Left Sidebar Navigation */}
       <AppSidebar
         displayName="Yuvi"
@@ -175,223 +202,311 @@ export default function GoalSetupPage() {
         levelTitle="Newcomer"
       />
 
-      {/* 2. Main Scrollable Content */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto max-h-screen bg-[#070913] text-white">
-        <main className="mx-auto w-full max-w-3xl px-4 sm:px-6 py-10">
+      {/* 2. Main Still Pane */}
+      <div className="flex-1 flex flex-col min-w-0 h-screen max-h-screen overflow-hidden">
+        <main className="w-full h-full px-6 sm:px-10 py-3 sm:py-4 flex flex-col justify-start min-h-0 space-y-3 overflow-y-auto custom-scrollbar">
         
-        {/* Header */}
-        <div className="mb-6">
-          <span className="text-[10px] font-black uppercase tracking-[0.25em] text-purple-400">
-            INTAKE & CALIBRATION
-          </span>
-          <h1 className="mt-1 text-2xl font-black text-white drop-shadow-[0_2px_10px_rgba(255,255,255,0.2)]">
-            {goal.goalText}
-          </h1>
-          <p className="mt-1 text-xs text-slate-400">
-            Complete calibration so the recommendation engine can calculate your exact skill gap roadmap.
-          </p>
+        {/* Top Stepper Progress Header */}
+        <div className="shrink-0">
+          <SetupStepperHeader currentStatus={goal.status as SetupStep} />
+        </div>
+
+        {/* Hero Header Section with 3D Illustration Overlay */}
+        <div className="shrink-0 flex items-center justify-between gap-6 pt-0 pb-0 relative z-10">
+          <div className="space-y-0.5 max-w-xl">
+            {/* Pill Eyebrow Badge */}
+            <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-purple-100/70 text-[#7C3AED]">
+              INTAKE & CALIBRATION
+            </div>
+            
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">
+              {goal.goalText.toLowerCase().includes("web") ? (
+                <>
+                  <span>I want to master </span>
+                  <span className="font-black bg-gradient-to-r from-[#6D28D9] via-[#7C3AED] to-[#8B5CF6] bg-clip-text text-transparent">
+                    Web Dev
+                  </span>
+                </>
+              ) : (
+                goal.goalText
+              )}
+            </h1>
+
+            <p className="text-xs text-slate-500 font-normal max-w-md">
+              Complete calibration so the recommendation engine can calculate your exact skill gap roadmap.
+            </p>
+          </div>
+
+          {/* 3D Target Illustration with Layered Overlay */}
+          <div className="hidden sm:block shrink-0 relative -mb-6 z-20 pointer-events-none scale-90">
+            <Target3DIllustration />
+          </div>
         </div>
 
         {error && (
-          <div className="mb-6 rounded-md border border-red-500/40 bg-red-950/60 p-4 text-xs font-bold text-red-300">
+          <div className="shrink-0 rounded-md border border-red-200 bg-red-50 p-2.5 text-xs font-bold text-red-700 shadow-2xs">
             {error}
           </div>
         )}
 
-        {/* STEP A: Intake Chat */}
+        {/* STEP A: Intake Chat (Animated AI Chat) */}
         {goal.status === "intake" && (
-          <div className="overflow-hidden rounded-lg border-2 border-purple-500/30 shadow-[0_0_35px_rgba(139,92,246,0.25)] backdrop-blur-2xl">
-            <div className="border-b border-purple-500/20 bg-[#0c1026] px-5 py-3.5 flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <IconSparkles className="h-5 w-5 text-purple-400" />
-                <div>
-                  <div className="text-xs font-black text-white">AI INTAKE DIALOGUE</div>
-                  <div className="text-[10px] text-purple-300/70">Answering these prompts identifies your target skills</div>
-                </div>
-              </div>
-            </div>
-            <div className="h-[480px]">
-              <ChatThread
-                messages={messages}
-                onSend={(t) => sendIntake(t)}
-                loading={chatLoading}
-                placeholder="Type your reply..."
-              />
-            </div>
+          <div className="flex-1 flex flex-col overflow-hidden rounded-md border border-slate-200/90 bg-white shadow-sm min-h-0">
+            <AnimatedAIChat
+              title="How can I help with your learning goal?"
+              subtitle="Our AI mentor is calibrating your skill vector. Type your reply below."
+              messages={messages}
+              onSendMessage={(t) => sendIntake(t)}
+              loading={chatLoading}
+              className="flex-1 min-h-0"
+            />
           </div>
         )}
 
         {/* STEP B: Beginner Check */}
         {goal.status === "beginner_check" && (
-          <Card className="p-8 text-center">
-            <IconShieldCheck className="h-12 w-12 text-purple-400 mx-auto mb-3" />
-            <h2 className="text-xl font-black text-white">Declare Your Starting Proficiency</h2>
-            <p className="mt-1 text-xs text-slate-400 max-w-md mx-auto">
-              Are you starting from absolute scratch in this domain, or would you like to take a diagnostic assessment to test out of foundational prerequisites?
-            </p>
-            <div className="mt-8 flex flex-col sm:flex-row justify-center gap-3">
-              <Button
-                variant="secondary"
+          <div className="rounded-md border border-slate-200 bg-white p-6 sm:p-8 text-center shadow-sm space-y-4 max-w-3xl mx-auto w-full my-auto">
+            <div>
+              <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
+                Declare Your Starting Proficiency
+              </h2>
+              <p className="mt-1.5 text-xs sm:text-sm text-slate-500 max-w-xl mx-auto leading-relaxed">
+                Are you starting from absolute scratch in this domain, or would you like to take a diagnostic assessment to test out of foundational prerequisites?
+              </p>
+            </div>
+
+            {/* Interactive Action Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 max-w-2xl mx-auto pt-2">
+              {/* Card 1: Starting from Scratch */}
+              <button
+                type="button"
                 disabled={beginnerLoading}
                 onClick={() => submitBeginner(true)}
-                size="lg"
+                className="flex items-center justify-between p-4 rounded-md border border-slate-200 bg-white hover:border-purple-300 hover:shadow-xs transition-all group cursor-pointer text-left"
               >
-                I am starting from scratch
-              </Button>
-              <Button
+                <div className="flex items-center gap-3">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-md bg-purple-50 text-[#7C3AED] group-hover:bg-purple-100 transition-colors">
+                    <IconCompass className="h-5 w-5" />
+                  </div>
+                  <span className="font-bold text-xs sm:text-sm text-slate-800">
+                    I am starting from scratch
+                  </span>
+                </div>
+                <IconArrowRight className="h-4 w-4 text-slate-400 group-hover:text-[#7C3AED] group-hover:translate-x-1 transition-all shrink-0" />
+              </button>
+
+              {/* Card 2: Diagnostic Assessment (Primary Highlight) */}
+              <button
+                type="button"
                 disabled={beginnerLoading}
                 onClick={() => submitBeginner(false)}
-                size="lg"
+                className="flex items-center justify-between p-4 rounded-md bg-gradient-to-r from-[#6D28D9] to-[#8B5CF6] text-white shadow-md shadow-purple-500/20 hover:opacity-95 transition-all group cursor-pointer text-left"
               >
-                Test my current level (Diagnostic)
-              </Button>
+                <div className="flex items-center gap-3">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-md bg-white/20 text-white backdrop-blur-xs">
+                    <IconActivity className="h-5 w-5" />
+                  </div>
+                  <span className="font-bold text-xs sm:text-sm text-white">
+                    Test my current level (Diagnostic)
+                  </span>
+                </div>
+                <IconArrowRight className="h-4 w-4 text-white group-hover:translate-x-1 transition-all shrink-0" />
+              </button>
             </div>
-          </Card>
+          </div>
         )}
 
-        {/* STEP C: Diagnostic Quiz */}
+        {/* STEP C: Diagnostic Assessment */}
         {goal.status === "diagnostic" && (
-          <Card className="p-6 sm:p-8">
+          <div className="rounded-md border border-slate-200 bg-white p-5 sm:p-7 text-center shadow-sm relative overflow-hidden max-w-3xl mx-auto w-full my-auto">
+            {/* Ambient Background Wave SVG */}
+            <svg
+              className="absolute inset-0 w-full h-full pointer-events-none opacity-30"
+              viewBox="0 0 800 300"
+              fill="none"
+              preserveAspectRatio="none"
+            >
+              <path
+                d="M-50 240 C150 160 250 280 450 200 C650 140 750 260 850 180"
+                stroke="#DDD6FE"
+                strokeWidth="1.5"
+                fill="none"
+              />
+              <path
+                d="M-50 270 C150 190 250 310 450 230 C650 160 750 290 850 210"
+                stroke="#EDE9FE"
+                strokeWidth="1.5"
+                fill="none"
+              />
+            </svg>
+
             {!diagQuestions ? (
-              <div className="text-center py-6">
-                <IconSparkles className="h-10 w-10 text-cyan-400 mx-auto mb-3" />
-                <h2 className="text-xl font-black text-white">Diagnostic Assessment</h2>
-                <p className="mt-1 text-xs text-slate-400 max-w-md mx-auto mb-6">
-                  A dynamic assessment targeting domain prerequisites with 2PL-IRT ability estimation to pinpoint your skill baseline.
-                </p>
-                <Button disabled={diagLoading} onClick={startDiagnostic} size="lg">
-                  {diagLoading ? "Generating Questions..." : "Begin Diagnostic Assessment"}
-                </Button>
+              <div className="relative z-10 text-center py-4 space-y-3">
+                <div>
+                  <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
+                    Diagnostic Assessment
+                  </h2>
+                  <p className="mt-1.5 text-xs sm:text-sm text-slate-500 max-w-md mx-auto leading-relaxed">
+                    A dynamic assessment targeting domain prerequisites with 2PL-IRT ability estimation to pinpoint your skill baseline.
+                  </p>
+                </div>
+
+                {/* Start Button */}
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    disabled={diagLoading}
+                    onClick={startDiagnostic}
+                    className="inline-flex items-center gap-2 rounded-md bg-gradient-to-r from-[#6D28D9] via-[#7C3AED] to-[#8B5CF6] text-white px-7 py-3 text-xs sm:text-sm font-bold shadow-md shadow-purple-500/20 hover:opacity-95 transition-all cursor-pointer"
+                  >
+                    <span>{diagLoading ? "Generating Questions..." : "Begin Diagnostic Assessment"}</span>
+                    <IconArrowRight className="h-4 w-4" />
+                  </button>
+                </div>
               </div>
             ) : diagScore !== null ? (
-              <div className="text-center py-6">
-                <div className="inline-flex h-20 w-20 items-center justify-center rounded-lg bg-gradient-to-tr from-purple-700 to-cyan-500 shadow-[0_0_25px_rgba(6,182,212,0.5)] mb-3">
-                  <span className="text-3xl font-black text-white">{diagScore}%</span>
+              <div className="relative z-10 text-center py-4 space-y-3">
+                <div className="inline-flex h-16 w-16 items-center justify-center rounded-md bg-gradient-to-tr from-[#6D28D9] to-[#06B6D4] text-white shadow-md">
+                  <span className="text-2xl font-extrabold">{diagScore}%</span>
                 </div>
-                <h2 className="text-xl font-black text-white">Starting Mastery Recorded</h2>
-                <p className="mt-1 text-xs text-slate-400 mb-6">
-                  Your baseline proficiency has been calibrated. Ready to generate your path.
-                </p>
-                <Button onClick={loadGoal} size="lg">
+                <div>
+                  <h2 className="text-xl font-extrabold text-slate-900">Starting Mastery Recorded</h2>
+                  <p className="mt-1 text-xs text-slate-500">
+                    Your baseline proficiency has been calibrated. Ready to generate your path.
+                  </p>
+                </div>
+                <Button onClick={loadGoal} size="lg" className="rounded-md px-6">
                   <span>Continue to Roadmap</span>
                   <IconArrowRight className="h-4 w-4" />
                 </Button>
               </div>
             ) : (
-              <div className="space-y-6">
-                <div className="border-b border-purple-500/20 pb-3 flex items-center justify-between">
-                  <div>
-                    <h3 className="text-sm font-black text-white uppercase tracking-wider">Diagnostic Assessment</h3>
-                    <p className="text-[11px] text-slate-400">Answer all questions to calibrate starting skill vector</p>
+              <div className="relative z-10 space-y-4 text-left">
+                {/* Header with Title and Progress */}
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <div>
+                      <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">
+                        Diagnostic Assessment
+                      </h3>
+                      <p className="text-[11px] text-slate-500">
+                        Question {currentQuestionIndex + 1} of {diagQuestions.length}
+                      </p>
+                    </div>
+                    <span className="rounded-md bg-purple-50 border border-purple-200 px-2.5 py-0.5 text-xs font-bold text-[#7C3AED]">
+                      {Object.keys(diagAnswers).length} / {diagQuestions.length} Answered
+                    </span>
                   </div>
-                  <span className="rounded-sm bg-purple-950 border border-purple-500/40 px-3 py-1 text-xs font-bold text-purple-300">
-                    {Object.keys(diagAnswers).length} / {diagQuestions.length} Answered
-                  </span>
+
+                  {/* Top Progress Bar */}
+                  <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-[#6D28D9] to-[#7C3AED] transition-all duration-300 rounded-full"
+                      style={{
+                        width: `${((currentQuestionIndex + 1) / diagQuestions.length) * 100}%`,
+                      }}
+                    />
+                  </div>
                 </div>
 
-                {diagQuestions.map((q, qi) => (
-                  <div key={q.id} className="rounded-md border border-purple-500/20 bg-[#080b1a]/90 p-4">
-                    <p className="mb-3 text-xs font-bold text-slate-200">
-                      <span className="text-purple-400 mr-1.5">{qi + 1}.</span> {q.question}
-                    </p>
-                    <div className="space-y-2">
-                      {q.options.map((opt, oi) => {
-                        const selected = diagAnswers[q.id] === oi;
-                        return (
-                          <label
-                            key={oi}
-                            className={`flex cursor-pointer items-center gap-3 rounded-md border p-3 text-xs font-medium transition-all ${
-                              selected
-                                ? "border-cyan-400 bg-cyan-950/60 text-cyan-200 shadow-[0_0_12px_rgba(6,182,212,0.3)] ring-1 ring-cyan-400/40"
-                                : "border-purple-500/20 bg-[#0c1026] text-slate-300 hover:border-purple-500/40 hover:bg-[#121838]"
-                            }`}
-                          >
-                            <input
-                              type="radio"
-                              name={q.id}
-                              checked={selected}
-                              onChange={() => setDiagAnswers((a) => ({ ...a, [q.id]: oi }))}
-                              className="accent-purple-500"
-                            />
-                            <span>{opt}</span>
-                          </label>
-                        );
-                      })}
+                {/* Active Question Box */}
+                {(() => {
+                  const q = diagQuestions[currentQuestionIndex];
+                  if (!q) return null;
+                  return (
+                    <div key={q.id} className="rounded-md border border-slate-200 bg-slate-50/50 p-4 space-y-3">
+                      <p className="text-xs sm:text-sm font-bold text-slate-900 leading-snug">
+                        <span className="text-[#7C3AED] mr-1.5">{currentQuestionIndex + 1}.</span> {q.question}
+                      </p>
+                      <div className="space-y-2">
+                        {q.options.map((opt, oi) => {
+                          const selected = diagAnswers[q.id] === oi;
+                          return (
+                            <label
+                              key={oi}
+                              onClick={() => setDiagAnswers((a) => ({ ...a, [q.id]: oi }))}
+                              className={`flex cursor-pointer items-center gap-2.5 rounded-md border p-2.5 text-xs sm:text-sm font-medium transition-all ${
+                                selected
+                                  ? "border-[#7C3AED] bg-purple-50 text-[#7C3AED] shadow-2xs ring-1 ring-purple-300"
+                                  : "border-slate-200 bg-white text-slate-700 hover:border-purple-200 hover:bg-purple-50/30"
+                              }`}
+                            >
+                              <input
+                                type="radio"
+                                name={q.id}
+                                checked={selected}
+                                onChange={() => setDiagAnswers((a) => ({ ...a, [q.id]: oi }))}
+                                className="accent-[#7C3AED] h-3.5 w-3.5"
+                              />
+                              <span className="flex-1">{opt}</span>
+                            </label>
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })()}
 
-                <div className="pt-4 flex justify-end">
-                  <Button
-                    disabled={diagLoading || Object.keys(diagAnswers).length < diagQuestions.length}
-                    onClick={submitDiagnostic}
-                    size="lg"
+                {/* Navigation Controls: Previous / Next Question / Submit */}
+                <div className="flex items-center justify-between pt-1 border-t border-slate-100">
+                  <button
+                    type="button"
+                    disabled={currentQuestionIndex === 0}
+                    onClick={() => setCurrentQuestionIndex((i) => Math.max(0, i - 1))}
+                    className="inline-flex items-center gap-1 px-4 py-2 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-md disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors"
                   >
-                    <span>{diagLoading ? "Evaluating..." : "Submit Answers"}</span>
-                    <IconArrowRight className="h-4 w-4" />
-                  </Button>
+                    Previous
+                  </button>
+
+                  {currentQuestionIndex < diagQuestions.length - 1 ? (
+                    <button
+                      type="button"
+                      disabled={diagAnswers[diagQuestions[currentQuestionIndex]?.id] === undefined}
+                      onClick={() =>
+                        setCurrentQuestionIndex((i) => Math.min(diagQuestions.length - 1, i + 1))
+                      }
+                      className="inline-flex items-center gap-1.5 px-5 py-2 text-xs font-bold text-white bg-gradient-to-r from-[#6D28D9] to-[#7C3AED] rounded-md shadow-sm hover:opacity-95 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all"
+                    >
+                      <span>Next Question</span>
+                      <IconArrowRight className="h-3.5 w-3.5" />
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      disabled={diagLoading || Object.keys(diagAnswers).length < diagQuestions.length}
+                      onClick={submitDiagnostic}
+                      className="inline-flex items-center gap-1.5 px-5 py-2 text-xs font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-600 rounded-md shadow-sm hover:opacity-95 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all"
+                    >
+                      {diagLoading ? "Scoring..." : "Submit Assessment"}
+                    </button>
+                  )}
                 </div>
               </div>
             )}
-          </Card>
+          </div>
         )}
 
-        {/* STEP D: Ready to Forge Path */}
-        {goal.status === "ready" && (
-          <Card className="p-6 sm:p-8 space-y-6">
-            <div className="text-center">
-              <IconSparkles className="h-10 w-10 text-purple-400 mx-auto mb-3" />
-              <h2 className="text-xl font-black text-white">Choose Planning Priority</h2>
-              <p className="mt-1 text-xs text-slate-400 max-w-md mx-auto">
-                Our A* path search will optimize the sequencing of modules and resources based on your chosen focus.
+        {/* STEP D: Generating Roadmap Automatically */}
+        {(goal.status === "ready" || generating) && (
+          <div className="rounded-md border border-slate-200 bg-white p-8 sm:p-12 text-center shadow-sm space-y-4 max-w-xl mx-auto w-full my-auto">
+            <div>
+              <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
+                Synthesizing Your AI Learning Path
+              </h2>
+              <p className="mt-1.5 text-xs sm:text-sm text-slate-500 max-w-md mx-auto leading-relaxed">
+                Assembling your personalized skill graph roadmap and optimizing prerequisite order...
               </p>
             </div>
 
-            {/* 3-Way Segmented Planner Priority */}
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-              {[
-                {
-                  id: "fastest" as const,
-                  title: "⚡ Fastest",
-                  desc: "Minimizes time to reach your goal milestone",
-                },
-                {
-                  id: "cheapest" as const,
-                  title: "💡 Cheapest",
-                  desc: "Prioritizes free & high-value open resources",
-                },
-                {
-                  id: "most_rigorous" as const,
-                  title: "🎯 Rigorous",
-                  desc: "Gradual difficulty jumps & deep prerequisites",
-                },
-              ].map((opt) => (
-                <button
-                  key={opt.id}
-                  type="button"
-                  onClick={() => setPlannerMode(opt.id)}
-                  className={`rounded-xl border p-4 text-left transition-all ${
-                    plannerMode === opt.id
-                      ? "border-purple-400 bg-purple-950/60 shadow-[0_0_15px_rgba(168,85,247,0.4)] ring-1 ring-purple-400"
-                      : "border-purple-500/20 bg-[#0c1026] hover:border-purple-500/40 hover:bg-[#121838]"
-                  }`}
-                >
-                  <div className="text-sm font-bold text-white">{opt.title}</div>
-                  <div className="mt-1 text-[11px] text-slate-400 leading-tight">{opt.desc}</div>
-                </button>
-              ))}
+            <div className="pt-3 max-w-xs mx-auto">
+              <div className="w-full h-2 bg-purple-100 rounded-full overflow-hidden">
+                <div className="h-full bg-gradient-to-r from-[#6D28D9] to-[#7C3AED] rounded-full animate-pulse w-full" />
+              </div>
             </div>
-
-            <div className="text-center pt-2">
-              <Button disabled={generating} onClick={generatePath} size="lg" className="w-full sm:w-auto px-8">
-                <span>{generating ? "Generating Roadmap..." : "Generate Learning Path"}</span>
-                <IconArrowRight className="h-4 w-4" />
-              </Button>
-            </div>
-          </Card>
+          </div>
         )}
 
-      </main>
+        </main>
       </div>
     </div>
   );

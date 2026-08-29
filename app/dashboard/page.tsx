@@ -13,6 +13,7 @@ export default async function DashboardPage() {
   let xpForNextLevel = 50;
   let currentStreak = 0;
   let badgeCount = 0;
+  let goals: any[] = [];
 
   try {
     const user = await requireUser();
@@ -26,6 +27,7 @@ export default async function DashboardPage() {
     xpForNextLevel = data.gamification.xpForNextLevel || 50;
     currentStreak = data.gamification.streak?.currentStreak ?? 0;
     badgeCount = data.gamification.badges?.length ?? 0;
+    goals = data.goals || [];
   } catch (_err) {
     // Graceful fallback to default matching screenshot
   }
@@ -63,6 +65,7 @@ export default async function DashboardPage() {
             xpForNextLevel={xpForNextLevel}
             streak={currentStreak}
             badgeCount={badgeCount}
+            goals={goals}
           />
         </main>
       </div>

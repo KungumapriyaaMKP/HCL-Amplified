@@ -87,6 +87,16 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         .where(eq(goals.id, id));
     }
 
-    return NextResponse.json({ reply: result.reply, done: result.done });
+    const updatedRows = await db
+      .select()
+      .from(chatMessages)
+      .where(and(eq(chatMessages.goalId, id), eq(chatMessages.thread, "goal_intake")))
+      .orderBy(asc(chatMessages.createdAt));
+
+    return NextResponse.json({
+      reply: result.reply,
+      done: result.done,
+      messages: updatedRows.map((r) => ({ role: r.role, content: r.content })),
+    });
   });
 }

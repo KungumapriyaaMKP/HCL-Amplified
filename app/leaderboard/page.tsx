@@ -5,21 +5,24 @@ import { levelForXp, levelTitle } from "@/lib/gamification";
 import { createClient } from "@/lib/supabase/server";
 import { AppSidebar } from "@/frontend/components/layout/AppSidebar";
 import { IconTrophy, IconBolt, IconFlame } from "@tabler/icons-react";
+import { GoldRankMedal, SilverRankMedal, BronzeRankMedal } from "@/frontend/components/dashboard/Illustrations";
 
 export default async function LeaderboardPage() {
   const supabase = await createClient();
-  const { data } = await supabase.auth.getUser();
-  const [viewerProfile] = data.user
-    ? await db.select().from(profiles).where(eq(profiles.userId, data.user.id))
-    : [];
+  const [authData, rows] = await Promise.all([
+    supabase.auth.getUser(),
+    db
+      .select({ displayName: profiles.displayName, xp: sql<number>`coalesce(sum(${xpLedger.amount}), 0)` })
+      .from(profiles)
+      .leftJoin(xpLedger, eq(xpLedger.userId, profiles.userId))
+      .groupBy(profiles.userId, profiles.displayName)
+      .orderBy(desc(sql`coalesce(sum(${xpLedger.amount}), 0)`))
+      .limit(50),
+  ]);
 
-  const rows = await db
-    .select({ displayName: profiles.displayName, xp: sql<number>`coalesce(sum(${xpLedger.amount}), 0)` })
-    .from(profiles)
-    .leftJoin(xpLedger, eq(xpLedger.userId, profiles.userId))
-    .groupBy(profiles.userId, profiles.displayName)
-    .orderBy(desc(sql`coalesce(sum(${xpLedger.amount}), 0)`))
-    .limit(50);
+  const [viewerProfile] = authData.data.user
+    ? await db.select().from(profiles).where(eq(profiles.userId, authData.data.user.id))
+    : [];
 
   const leaderboard = rows.map((r, i) => {
     const xp = Number(r.xp);
@@ -57,7 +60,7 @@ export default async function LeaderboardPage() {
 
         {/* Top 3 Champions Rocket Podium */}
         {top3.length > 0 && (
-          <div className="pt-6 pb-4 grid grid-cols-3 gap-3 sm:gap-8 items-end max-w-3xl mx-auto">
+          <div className="pt-16 sm:pt-20 pb-8 sm:pb-12 grid grid-cols-3 gap-3 sm:gap-8 items-end max-w-3xl mx-auto">
             
             {/* Rank 2 (Silver / Cyan Nebula Striker Rocket) */}
             {top3[1] && (
@@ -108,7 +111,7 @@ export default async function LeaderboardPage() {
 
             {/* Rank 1 (Gold Solar Champion - Center, Flying Highest) */}
             {top3[0] && (
-              <div className="animate-rocket-1 relative flex flex-col items-center -translate-y-6 sm:-translate-y-10 z-20">
+              <div className="animate-rocket-1 relative flex flex-col items-center z-20">
                 
                 {/* Nose Cone */}
                 <div className="relative flex flex-col items-center z-10">
@@ -206,11 +209,11 @@ export default async function LeaderboardPage() {
           </div>
         )}
 
-        {/* Global Rankings Table - Pure Razor-Sharp 90-Degree Geometry */}
-        <div className="rounded-none border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs max-w-4xl mx-auto">
-          <div className="border-b border-slate-200 pb-3 mb-3 px-3 flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-slate-400">
+        {/* Global Rankings Table */}
+        <div className="rounded-xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs max-w-4xl mx-auto">
+          <div className="border-b border-slate-200 pb-3 mb-3 px-3 flex items-center justify-between text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
             <div className="flex items-center gap-6">
-              <span className="w-8 text-center">RANK</span>
+              <span className="w-10 text-center">RANK</span>
               <span>LEARNER PROFILE</span>
             </div>
             <span>TOTAL XP</span>
@@ -222,26 +225,36 @@ export default async function LeaderboardPage() {
             )}
 
             {leaderboard.map((row) => {
-              const isTop3 = row.rank <= 3;
               return (
                 <div
                   key={row.rank}
-                  className={`flex items-center justify-between rounded-none border p-3.5 transition-all ${
+                  className={`flex items-center justify-between rounded-lg border p-3 sm:p-3.5 transition-all ${
                     row.rank === 1
-                      ? "border-amber-400 bg-amber-50/70 shadow-xs"
+                      ? "border-amber-300/80 bg-gradient-to-r from-amber-50/80 via-amber-50/30 to-white shadow-xs"
                       : row.rank === 2
-                      ? "border-sky-400 bg-sky-50/70 shadow-xs"
+                      ? "border-sky-300/80 bg-gradient-to-r from-sky-50/80 via-sky-50/30 to-white shadow-xs"
                       : row.rank === 3
-                      ? "border-orange-400 bg-orange-50/70 shadow-xs"
-                      : "border-slate-200 bg-slate-50/40 hover:bg-white hover:border-slate-300 hover:shadow-xs"
+                      ? "border-orange-300/80 bg-gradient-to-r from-orange-50/80 via-orange-50/30 to-white shadow-xs"
+                      : "border-slate-100 bg-white hover:bg-slate-50/80 hover:border-slate-200 shadow-2xs"
                   }`}
                 >
                   <div className="flex items-center gap-4">
-                    <span className={`w-8 text-center font-extrabold text-sm ${isTop3 ? "text-amber-600" : "text-slate-400"}`}>
-                      #{row.rank}
-                    </span>
+                    <div className="w-10 flex items-center justify-center">
+                      {row.rank === 1 ? (
+                        <GoldRankMedal className="w-9 h-9 sm:w-10 sm:h-10" />
+                      ) : row.rank === 2 ? (
+                        <SilverRankMedal className="w-9 h-9 sm:w-10 sm:h-10" />
+                      ) : row.rank === 3 ? (
+                        <BronzeRankMedal className="w-9 h-9 sm:w-10 sm:h-10" />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-[#EEF2F8] text-[#334155] font-extrabold text-xs sm:text-sm flex items-center justify-center">
+                          {row.rank}
+                        </div>
+                      )}
+                    </div>
+                    
                     <div className="flex items-center gap-3">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-none bg-purple-100 border border-purple-200 text-xs font-bold text-purple-700 shadow-xs">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-100 border border-purple-200 text-xs font-bold text-purple-700 shadow-xs">
                         {row.displayName[0]?.toUpperCase() || "P"}
                       </div>
                       <div>

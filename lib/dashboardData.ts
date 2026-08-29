@@ -21,22 +21,53 @@ import { getCandidatePool } from "@/lib/catalog";
 import { bestResourceForSkill } from "@/lib/recommend";
 
 export async function getDashboardData(userId: string) {
-  const [profile] = await db.select().from(profiles).where(eq(profiles.userId, userId));
+  const [
+    profileResult,
+    xp,
+    streakResult,
+    disengagement,
+    earnedBadges,
+    goalRows,
+    masteryRows,
+    activity,
+    adaptations,
+  ] = await Promise.all([
+    db.select().from(profiles).where(eq(profiles.userId, userId)),
+    getTotalXp(userId),
+    db.select().from(streaks).where(eq(streaks.userId, userId)),
+    checkDisengagement(userId),
+    db
+      .select({ id: badges.id, name: badges.name, icon: badges.icon, description: badges.description, earnedAt: userBadges.earnedAt })
+      .from(userBadges)
+      .innerJoin(badges, eq(badges.id, userBadges.badgeId))
+      .where(eq(userBadges.userId, userId))
+      .orderBy(desc(userBadges.earnedAt)),
+    db.select().from(goals).where(eq(goals.userId, userId)).orderBy(desc(goals.createdAt)),
+    db
+      .select({
+        skillId: skillMastery.skillId,
+        score: skillMastery.score,
+        name: skills.name,
+        category: skills.category,
+        source: skillMastery.source,
+        updatedAt: skillMastery.updatedAt,
+      })
+      .from(skillMastery)
+      .innerJoin(skills, eq(skills.id, skillMastery.skillId))
+      .where(eq(skillMastery.userId, userId))
+      .orderBy(desc(skillMastery.score)),
+    getActivityHeatmap(userId),
+    db
+      .select()
+      .from(adaptationLog)
+      .where(eq(adaptationLog.userId, userId))
+      .orderBy(desc(adaptationLog.createdAt))
+      .limit(15),
+  ]);
 
-  const xp = await getTotalXp(userId);
+  const [profile] = profileResult;
   const level = levelForXp(xp);
-
-  const [streak] = await db.select().from(streaks).where(eq(streaks.userId, userId));
-  const disengagement = await checkDisengagement(userId);
-
-  const earnedBadges = await db
-    .select({ id: badges.id, name: badges.name, icon: badges.icon, description: badges.description, earnedAt: userBadges.earnedAt })
-    .from(userBadges)
-    .innerJoin(badges, eq(badges.id, userBadges.badgeId))
-    .where(eq(userBadges.userId, userId))
-    .orderBy(desc(userBadges.earnedAt));
-
-  const goalRows = await db.select().from(goals).where(eq(goals.userId, userId)).orderBy(desc(goals.createdAt));
+  const [streak] = streakResult;
 
   const goalSummaries = await Promise.all(
     goalRows.map(async (goal) => {
@@ -66,25 +97,7 @@ export async function getDashboardData(userId: string) {
     }),
   );
 
-  const masteryRows = await db
-    .select({
-      skillId: skillMastery.skillId,
-      score: skillMastery.score,
-      name: skills.name,
-      category: skills.category,
-      source: skillMastery.source,
-      updatedAt: skillMastery.updatedAt,
-    })
-    .from(skillMastery)
-    .innerJoin(skills, eq(skills.id, skillMastery.skillId))
-    .where(eq(skillMastery.userId, userId))
-    .orderBy(desc(skillMastery.score));
-
   const decay = computeSkillDecay(masteryRows);
-  // Only the foundational skills that are actually fading/decayed get a
-  // suggested review resource - that's the "quick review before it fades"
-  // moment, not every mastered skill on every dashboard load. Capped so a
-  // learner with a large mastery history doesn't trigger a wall of lookups.
   const needsReview = decay.filter((d) => d.foundational && d.tier !== "fresh").slice(0, 5);
   const reviewSuggestions: Record<string, { title: string; url: string }> = {};
   if (needsReview.length > 0) {
@@ -99,15 +112,6 @@ export async function getDashboardData(userId: string) {
       if (best) reviewSuggestions[d.skillId] = { title: best.title, url: best.url };
     }
   }
-
-  const activity = await getActivityHeatmap(userId);
-
-  const adaptations = await db
-    .select()
-    .from(adaptationLog)
-    .where(eq(adaptationLog.userId, userId))
-    .orderBy(desc(adaptationLog.createdAt))
-    .limit(15);
 
   return {
     profile,
