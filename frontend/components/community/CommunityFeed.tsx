@@ -152,20 +152,30 @@ export function CommunityFeed({ domain }: { domain: string }) {
           {/* Divider */}
           <div className="hidden sm:block h-9 w-px bg-slate-200" />
 
-          {/* Purple Sparkline Curve Wave Graph */}
-          <div className="hidden sm:flex flex-col justify-center">
-            <svg viewBox="0 0 100 24" className="w-28 h-8 overflow-visible">
+          {/* Exact Purple Sparkline Curve Wave Graph */}
+          <div className="hidden sm:flex flex-col justify-center pl-1">
+            <svg viewBox="0 0 120 32" className="w-32 h-9 overflow-visible">
               <defs>
                 <linearGradient id="purpleCurveGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#7C3AED" stopOpacity="0.2" />
+                  <stop offset="0%" stopColor="#7C3AED" stopOpacity="0.22" />
                   <stop offset="100%" stopColor="#7C3AED" stopOpacity="0" />
                 </linearGradient>
               </defs>
-              <path d="M0 18 Q 20 22, 40 14 T 75 12 T 100 2 L 100 24 L 0 24 Z" fill="url(#purpleCurveGrad)" />
-              <path d="M0 18 Q 20 22, 40 14 T 75 12 T 100 2" fill="none" stroke="#7C3AED" strokeWidth="2.5" strokeLinecap="round" />
-              <circle cx="100" cy="2" r="3" fill="#7C3AED" />
+              <path
+                d="M 4 24 C 22 24, 46 16, 68 15 C 82 14.5, 90 20.5, 98 19 C 105 17.5, 111 11, 114 6 L 114 30 L 4 30 Z"
+                fill="url(#purpleCurveGrad)"
+              />
+              <path
+                d="M 4 24 C 22 24, 46 16, 68 15 C 82 14.5, 90 20.5, 98 19 C 105 17.5, 111 11, 114 6"
+                fill="none"
+                stroke="#7C3AED"
+                strokeWidth="2.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <circle cx="114" cy="6" r="3.2" fill="#7C3AED" />
             </svg>
-            <div className="text-[11px] font-bold text-emerald-600 mt-1 flex items-center gap-0.5">
+            <div className="text-[11px] font-bold text-emerald-600 mt-0.5 flex items-center gap-0.5">
               <span>+1 this week</span>
             </div>
           </div>
