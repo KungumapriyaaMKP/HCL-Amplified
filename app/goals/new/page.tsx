@@ -256,7 +256,7 @@ function NewGoalForm() {
 
       {/* 2. Main Scrollable Content */}
       <div className="flex-1 flex flex-col min-w-0 overflow-y-auto max-h-screen">
-        <main className="mx-auto w-full max-w-[1440px] px-4 sm:px-8 py-6 space-y-6">
+        <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 py-8 space-y-6">
         
         {/* ================= HEADER & STEP TRACKER EXACT MATCH TO IMAGE 1 ================= */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

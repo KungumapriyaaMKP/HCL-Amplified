@@ -127,20 +127,6 @@ export function AppSidebar({
           </div>
           <IconChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
         </Link>
-
-        {/* Motivational Micro Badge */}
-        <div className="p-2.5 rounded-xs bg-purple-50/70 border border-purple-100 flex items-center justify-between">
-          <div className="space-y-0.5 pr-2">
-            <div className="text-[11px] font-black text-purple-950 leading-tight flex items-center gap-1">
-              <span>Keep momentum!</span>
-              <span className="text-purple-600">⚡</span>
-            </div>
-            <div className="text-[9px] font-medium text-purple-700 leading-snug">
-              Complete your daily objectives to earn XP.
-            </div>
-          </div>
-          <div className="text-lg shrink-0">🎁</div>
-        </div>
       </div>
     </aside>
   );
