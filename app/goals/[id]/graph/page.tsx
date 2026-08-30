@@ -8,9 +8,10 @@ import { profiles } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { AppSidebar } from "@/frontend/components/layout/AppSidebar";
 import { SkillGraphView, SkillGraphLegend } from "@/frontend/components/goals/SkillGraphView";
+import { AssistantWidget } from "@/frontend/components/goals/AssistantWidget";
 import { DOMAINS } from "@/data/domains";
 import Link from "next/link";
-import { IconArrowLeft, IconLayersLinked, IconSparkles } from "@tabler/icons-react";
+import { IconArrowLeft, IconLayersLinked } from "@tabler/icons-react";
 
 export default async function SkillGraphPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -84,6 +85,9 @@ export default async function SkillGraphPage({ params }: { params: Promise<{ id:
           />
         </main>
       </div>
+
+      {/* Floating Ghost Companion */}
+      <AssistantWidget goalId={id} />
     </div>
   );
 }
