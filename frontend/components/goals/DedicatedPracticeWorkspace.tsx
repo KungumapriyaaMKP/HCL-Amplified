@@ -195,109 +195,116 @@ export function DedicatedPracticeWorkspace({
               <div className="absolute -bottom-16 -left-16 w-36 h-36 rounded-full border border-purple-200/50 pointer-events-none" />
               <div className="absolute -top-16 -right-16 w-36 h-36 rounded-full border border-purple-200/50 pointer-events-none" />
 
-              {/* Laurel Wreath & Circular Score Gauge HUD */}
+              {/* Laurel Wreath & Circular Score Gauge HUD (Exact Match to Image 1) */}
               <div className="relative flex items-center justify-center pt-2">
-                <svg width="240" height="150" viewBox="0 0 240 150" fill="none" className="overflow-visible select-none">
-                  <defs>
-                    <linearGradient id="scoreGaugeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#818CF8" />
-                      <stop offset="50%" stopColor="#6366F1" />
-                      <stop offset="100%" stopColor="#06B6D4" />
-                    </linearGradient>
+                {(() => {
+                  const angleDeg = -90 + (result.score / 100) * 360;
+                  const angleRad = (angleDeg * Math.PI) / 180;
+                  const dotX = 120 + 48 * Math.cos(angleRad);
+                  const dotY = 75 + 48 * Math.sin(angleRad);
+                  return (
+                    <svg width="250" height="155" viewBox="0 0 250 155" fill="none" className="overflow-visible select-none">
+                      <defs>
+                        <linearGradient id="scoreGaugeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor="#4F46E5" />
+                          <stop offset="60%" stopColor="#2563EB" />
+                          <stop offset="100%" stopColor="#06B6D4" />
+                        </linearGradient>
 
-                    <filter id="gaugeShadow" x="-20%" y="-20%" width="140%" height="140%">
-                      <feDropShadow dx="0" dy="4" stdDeviation="6" floodColor="#6366F1" floodOpacity="0.18" />
-                    </filter>
-                  </defs>
+                        <filter id="gaugeShadow" x="-20%" y="-20%" width="140%" height="140%">
+                          <feDropShadow dx="0" dy="6" stdDeviation="8" floodColor="#6366F1" floodOpacity="0.12" />
+                        </filter>
+                      </defs>
 
-                  {/* Floating Confetti Accents around the Laurel */}
-                  <rect x="36" y="24" width="7" height="4" rx="1" fill="#3B82F6" transform="rotate(25 36 24)" />
-                  <rect x="30" y="50" width="5" height="5" rx="1" fill="#8B5CF6" transform="rotate(-15 30 50)" />
-                  <circle cx="50" cy="32" r="2" fill="#06B6D4" />
-                  <path d="M 58 42 L 60 45 L 63 46 L 60 47 L 58 50 L 57 47 L 54 46 L 57 45 Z" fill="#F59E0B" />
-                  <rect x="68" y="28" width="6" height="3" rx="0.8" fill="#EC4899" transform="rotate(45 68 28)" />
-                  
-                  <rect x="200" y="24" width="7" height="4" rx="1" fill="#06B6D4" transform="rotate(-20 200 24)" />
-                  <rect x="186" y="32" width="6" height="4" rx="1" fill="#F59E0B" transform="rotate(35 186 32)" />
-                  <circle cx="210" cy="48" r="2" fill="#3B82F6" />
-                  <path d="M 180 44 L 181.5 46.5 L 184 47 L 181.5 48 L 180 50.5 L 179 48 L 176.5 47 L 179 46.5 Z" fill="#A855F7" />
-                  <rect x="194" y="58" width="6" height="6" rx="1" fill="#8B5CF6" transform="rotate(15 194 58)" />
+                      {/* Minimal Design Accents from Target Image */}
+                      <rect x="24" y="36" width="8" height="4" rx="1.5" fill="#F59E0B" transform="rotate(20 24 36)" opacity="0.9" />
+                      <path d="M 226 36 L 230 38 L 227 41 L 223 39 Z" fill="#A855F7" opacity="0.9" />
 
-                  {/* Symmetrical Laurel Wreath Branches */}
-                  {/* Left Branch */}
-                  <g opacity="0.85">
-                    <path d="M 72 108 C 62 88 65 58 84 42" stroke="#DDD6FE" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-                    <ellipse cx="64" cy="98" rx="7" ry="3.5" fill="#E0E7FF" transform="rotate(-35 64 98)" />
-                    <ellipse cx="72" cy="92" rx="7" ry="3.5" fill="#C7D2FE" transform="rotate(-15 72 92)" />
-                    <ellipse cx="60" cy="80" rx="7" ry="3.5" fill="#E0E7FF" transform="rotate(-40 60 80)" />
-                    <ellipse cx="69" cy="74" rx="7" ry="3.5" fill="#C7D2FE" transform="rotate(-20 69 74)" />
-                    <ellipse cx="64" cy="60" rx="7" ry="3.5" fill="#E0E7FF" transform="rotate(-45 64 60)" />
-                    <ellipse cx="74" cy="54" rx="7" ry="3.5" fill="#C7D2FE" transform="rotate(-25 74 54)" />
-                    <ellipse cx="76" cy="42" rx="6.5" ry="3" fill="#A5B4FC" transform="rotate(-50 76 42)" />
-                    <ellipse cx="85" cy="38" rx="6.5" ry="3" fill="#C7D2FE" transform="rotate(-30 85 38)" />
-                  </g>
+                      {/* Soft Lilac Laurel Wreath on Left and Right (Exact match to target) */}
+                      {/* Left Laurel Branch */}
+                      <g opacity="0.75">
+                        <ellipse cx="44" cy="112" rx="7.5" ry="3.5" fill="#EDE9FE" transform="rotate(-30 44 112)" />
+                        <ellipse cx="50" cy="104" rx="7.5" ry="3.5" fill="#DDD6FE" transform="rotate(-15 50 104)" />
+                        <ellipse cx="40" cy="94" rx="7.5" ry="3.5" fill="#EDE9FE" transform="rotate(-35 40 94)" />
+                        <ellipse cx="48" cy="86" rx="7.5" ry="3.5" fill="#DDD6FE" transform="rotate(-20 48 86)" />
+                        <ellipse cx="42" cy="74" rx="7.5" ry="3.5" fill="#EDE9FE" transform="rotate(-40 42 74)" />
+                        <ellipse cx="52" cy="66" rx="7.5" ry="3.5" fill="#DDD6FE" transform="rotate(-25 52 66)" />
+                        <ellipse cx="48" cy="54" rx="7.5" ry="3.5" fill="#EDE9FE" transform="rotate(-45 48 54)" />
+                        <ellipse cx="60" cy="48" rx="7" ry="3.2" fill="#DDD6FE" transform="rotate(-30 60 48)" />
+                        <ellipse cx="60" cy="38" rx="6.5" ry="3" fill="#EDE9FE" transform="rotate(-50 60 38)" />
+                        <ellipse cx="72" cy="34" rx="6.5" ry="3" fill="#DDD6FE" transform="rotate(-35 72 34)" />
+                      </g>
 
-                  {/* Right Branch */}
-                  <g opacity="0.85">
-                    <path d="M 168 108 C 178 88 175 58 156 42" stroke="#DDD6FE" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-                    <ellipse cx="176" cy="98" rx="7" ry="3.5" fill="#E0E7FF" transform="rotate(35 176 98)" />
-                    <ellipse cx="168" cy="92" rx="7" ry="3.5" fill="#C7D2FE" transform="rotate(15 168 92)" />
-                    <ellipse cx="180" cy="80" rx="7" ry="3.5" fill="#E0E7FF" transform="rotate(40 180 80)" />
-                    <ellipse cx="171" cy="74" rx="7" ry="3.5" fill="#C7D2FE" transform="rotate(20 171 74)" />
-                    <ellipse cx="176" cy="60" rx="7" ry="3.5" fill="#E0E7FF" transform="rotate(45 176 60)" />
-                    <ellipse cx="166" cy="54" rx="7" ry="3.5" fill="#C7D2FE" transform="rotate(25 166 54)" />
-                    <ellipse cx="164" cy="42" rx="6.5" ry="3" fill="#A5B4FC" transform="rotate(50 164 42)" />
-                    <ellipse cx="155" cy="38" rx="6.5" ry="3" fill="#C7D2FE" transform="rotate(30 155 38)" />
-                  </g>
+                      {/* Right Laurel Branch */}
+                      <g opacity="0.75">
+                        <ellipse cx="206" cy="112" rx="7.5" ry="3.5" fill="#EDE9FE" transform="rotate(30 206 112)" />
+                        <ellipse cx="200" cy="104" rx="7.5" ry="3.5" fill="#DDD6FE" transform="rotate(15 200 104)" />
+                        <ellipse cx="210" cy="94" rx="7.5" ry="3.5" fill="#EDE9FE" transform="rotate(35 210 94)" />
+                        <ellipse cx="202" cy="86" rx="7.5" ry="3.5" fill="#DDD6FE" transform="rotate(20 202 86)" />
+                        <ellipse cx="208" cy="74" rx="7.5" ry="3.5" fill="#EDE9FE" transform="rotate(40 208 74)" />
+                        <ellipse cx="198" cy="66" rx="7.5" ry="3.5" fill="#DDD6FE" transform="rotate(25 198 66)" />
+                        <ellipse cx="202" cy="54" rx="7.5" ry="3.5" fill="#EDE9FE" transform="rotate(45 202 54)" />
+                        <ellipse cx="190" cy="48" rx="7" ry="3.2" fill="#DDD6FE" transform="rotate(30 190 48)" />
+                        <ellipse cx="190" cy="38" rx="6.5" ry="3" fill="#EDE9FE" transform="rotate(50 190 38)" />
+                        <ellipse cx="178" cy="34" rx="6.5" ry="3" fill="#DDD6FE" transform="rotate(35 178 34)" />
+                      </g>
 
-                  {/* Circular Progress Gauge */}
-                  <g filter="url(#gaugeShadow)">
-                    <circle
-                      cx="120"
-                      cy="75"
-                      r="44"
-                      fill="#FFFFFF"
-                      stroke="#F1F5F9"
-                      strokeWidth="8.5"
-                    />
+                      {/* Circular Progress Gauge */}
+                      <g filter="url(#gaugeShadow)">
+                        {/* Background Light Ring */}
+                        <circle
+                          cx="120"
+                          cy="75"
+                          r="48"
+                          fill="#FFFFFF"
+                          stroke="#F1F5F9"
+                          strokeWidth="8"
+                        />
 
-                    <circle
-                      cx="120"
-                      cy="75"
-                      r="44"
-                      fill="none"
-                      stroke="url(#scoreGaugeGrad)"
-                      strokeWidth="8.5"
-                      strokeLinecap="round"
-                      strokeDasharray={`${(result.score / 100) * 276.46} 276.46`}
-                      transform="rotate(-90 120 75)"
-                    />
-                  </g>
+                        {/* Progress Arc */}
+                        <circle
+                          cx="120"
+                          cy="75"
+                          r="48"
+                          fill="none"
+                          stroke="url(#scoreGaugeGrad)"
+                          strokeWidth="8"
+                          strokeLinecap="round"
+                          strokeDasharray={`${(result.score / 100) * 301.59} 301.59`}
+                          transform="rotate(-90 120 75)"
+                        />
 
-                  {/* Center Score Text & Label */}
-                  <text
-                    x="120"
-                    y="72"
-                    textAnchor="middle"
-                    dominantBaseline="central"
-                    fill="#1E1B4B"
-                    fontSize="30"
-                    fontWeight="900"
-                    letterSpacing="-0.5"
-                  >
-                    {result.score}%
-                  </text>
-                  <text
-                    x="120"
-                    y="93"
-                    textAnchor="middle"
-                    fill="#64748B"
-                    fontSize="11"
-                    fontWeight="600"
-                  >
-                    Score
-                  </text>
-                </svg>
+                        {/* Progress Tip Glowing Dot Indicator */}
+                        <circle cx={dotX} cy={dotY} r="5" fill="#06B6D4" />
+                        <circle cx={dotX} cy={dotY} r="2" fill="#FFFFFF" />
+                      </g>
+
+                      {/* Center Score Text & Subtitle Label */}
+                      <text
+                        x="120"
+                        y="71"
+                        textAnchor="middle"
+                        dominantBaseline="central"
+                        fill="#1E1B4B"
+                        fontSize="32"
+                        fontWeight="900"
+                        letterSpacing="-0.5"
+                      >
+                        {result.score}%
+                      </text>
+                      <text
+                        x="120"
+                        y="94"
+                        textAnchor="middle"
+                        fill="#64748B"
+                        fontSize="12"
+                        fontWeight="600"
+                      >
+                        Score
+                      </text>
+                    </svg>
+                  );
+                })()}
               </div>
 
               {/* Assessment Completed Pill Label with Divider Lines */}

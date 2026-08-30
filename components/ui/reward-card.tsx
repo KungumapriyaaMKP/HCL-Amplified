@@ -42,57 +42,6 @@ export const SlideToUnlock = ({
   const onDragEnd = (_event: any, info: any) => {
     if (dragConstraint > 0 && info.offset.x > dragConstraint * 0.75) {
       setUnlocked(true);
-      try {
-        // 1. Center grand blast
-        confetti({
-          particleCount: 140,
-          spread: 110,
-          origin: { y: 0.55 },
-          colors: ['#8B5CF6', '#A855F7', '#EC4899', '#3B82F6', '#10B981', '#F59E0B', '#6366F1', '#06B6D4'],
-          scalar: 1.25,
-          ticks: 300,
-          startVelocity: 45,
-        });
-
-        // 2. Left screen cannon
-        confetti({
-          particleCount: 90,
-          angle: 60,
-          spread: 75,
-          origin: { x: 0.05, y: 0.65 },
-          colors: ['#A855F7', '#EC4899', '#F59E0B', '#10B981', '#38BDF8'],
-          scalar: 1.15,
-          ticks: 260,
-          startVelocity: 55,
-        });
-
-        // 3. Right screen cannon
-        confetti({
-          particleCount: 90,
-          angle: 120,
-          spread: 75,
-          origin: { x: 0.95, y: 0.65 },
-          colors: ['#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EC4899'],
-          scalar: 1.15,
-          ticks: 260,
-          startVelocity: 55,
-        });
-
-        // 4. Sparkling star shower after 180ms
-        setTimeout(() => {
-          confetti({
-            particleCount: 80,
-            spread: 130,
-            origin: { y: 0.4 },
-            colors: ['#FBBF24', '#F472B6', '#60A5FA', '#34D399', '#C084FC', '#FDE047'],
-            shapes: ['star', 'circle'],
-            scalar: 1.35,
-            ticks: 280,
-          });
-        }, 180);
-      } catch {
-        // Safe fallback
-      }
       onUnlock?.();
     } else {
       // Snap back to the start
