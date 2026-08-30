@@ -11,7 +11,7 @@ import { DOMAINS } from "@/data/domains";
 
 type QuestionSet = { questions: { id: string; skillId: string; question: string; options: string[]; correctIndex: number; explanation: string }[] };
 
-const TIME_LIMIT_SECONDS = 600;
+const TIME_LIMIT_SECONDS = 900;
 
 export async function POST(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   return withErrorHandling(async () => {
@@ -44,9 +44,9 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
         purpose: "proctored",
         domain: domainName,
         skills: [{ id: row.skill.id, name: row.skill.name, description: row.skill.description }],
-        count: 6,
+        count: 15,
       }),
-      { temperature: 0.4, maxTokens: 2200 },
+      { temperature: 0.4, maxTokens: 4500 },
     );
 
     const [attempt] = await db

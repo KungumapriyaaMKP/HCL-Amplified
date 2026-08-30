@@ -687,7 +687,7 @@ export function ProctoredWorkspace({
                 <IconClock className="h-3.5 w-3.5 text-purple-600" />
               </div>
               <p className="text-xs text-slate-600 font-medium leading-relaxed">
-                Single attempt trial, timed countdown (10 minutes).
+                Single attempt trial, timed countdown (15 minutes • 15 questions).
               </p>
             </div>
 
@@ -757,7 +757,7 @@ export function ProctoredWorkspace({
                 Estimated Time
               </span>
               <span className="text-xs sm:text-sm font-black text-[#6366F1] block leading-tight">
-                10 Minutes
+                15 Minutes
               </span>
             </div>
           </div>
