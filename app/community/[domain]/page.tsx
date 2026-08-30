@@ -7,6 +7,7 @@ import { eq } from "drizzle-orm";
 import { AppSidebar } from "@/frontend/components/layout/AppSidebar";
 import { CommunityFeed } from "@/frontend/components/community/CommunityFeed";
 import { DOMAINS } from "@/data/domains";
+import { WebDev3DHeaderIllustration } from "@/frontend/components/community/WebDev3DHeaderIllustration";
 import { IconArrowLeft } from "@tabler/icons-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -69,16 +70,9 @@ export default async function CommunityDomainPage({ params }: { params: Promise<
               </div>
             </div>
 
-            {/* Right Column: Exact 3D Code Editor Window with Chat & Heart Bubbles */}
+            {/* Right Column: Crystal Clear Vector 3D Code Editor Window with Chat & Heart Bubbles */}
             <div className="shrink-0 hidden md:block">
-              <Image
-                src="/images/community/webdev_header_3d.png"
-                alt="Web Development 3D Code Hub"
-                width={280}
-                height={160}
-                className="object-contain select-none drop-shadow-sm"
-                unoptimized
-              />
+              <WebDev3DHeaderIllustration className="w-[280px] h-[155px]" />
             </div>
 
           </div>
