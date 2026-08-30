@@ -458,61 +458,51 @@ export function SkillGraphView({
 }
 
 export function SkillGraphLegend() {
-  const items: {
-    status: Status;
-    label: string;
-    dot: string;
-    textColor: string;
-    bgColor: string;
-  }[] = [
+  const items = [
     {
-      status: "mastered",
       label: "Mastered (60%+)",
-      dot: "bg-emerald-500",
-      textColor: "text-emerald-900",
-      bgColor: "bg-emerald-50/90 border-emerald-200",
+      dotClass: "bg-emerald-500 ring-4 ring-emerald-100",
+      textClass: "text-slate-700",
     },
     {
-      status: "in_progress",
-      label: "In Trial",
-      dot: "bg-amber-500",
-      textColor: "text-amber-900",
-      bgColor: "bg-amber-50/90 border-amber-200",
+      label: "In Progress",
+      dotClass: "bg-amber-500 ring-4 ring-amber-100",
+      textClass: "text-slate-700",
     },
     {
-      status: "target",
       label: "Apex Quest Skill",
-      dot: "bg-[#7C3AED]",
-      textColor: "text-purple-900",
-      bgColor: "bg-purple-50/90 border-purple-200",
+      dotClass: "bg-[#7C3AED] ring-4 ring-purple-100",
+      textClass: "text-slate-700",
     },
     {
-      status: "required",
       label: "Needed Prerequisite",
-      dot: "bg-sky-500",
-      textColor: "text-sky-900",
-      bgColor: "bg-sky-50/90 border-sky-200",
+      dotClass: "bg-sky-500 ring-4 ring-sky-100",
+      textClass: "text-slate-700",
     },
     {
-      status: "outside",
       label: "Alternative Realm",
-      dot: "bg-slate-500",
-      textColor: "text-slate-900",
-      bgColor: "bg-slate-100/90 border-slate-200",
+      dotClass: "bg-slate-400 ring-4 ring-slate-100",
+      textClass: "text-slate-500",
     },
   ];
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
-      {items.map((item) => (
-        <span
-          key={item.status}
-          className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-md border text-xs font-black ${item.bgColor} ${item.textColor} shadow-2xs`}
-        >
-          <span className={`h-2.5 w-2.5 rounded-full ${item.dot} shadow-xs ring-1 ring-white`} />
-          <span>{item.label}</span>
-        </span>
-      ))}
+    <div className="flex flex-wrap items-center justify-between gap-4 px-2 py-1 select-none">
+      <div className="flex flex-wrap items-center gap-6 text-xs font-semibold">
+        {items.map((item) => (
+          <div
+            key={item.label}
+            className="inline-flex items-center gap-2.5 transition-colors cursor-default"
+          >
+            <span className={`h-2.5 w-2.5 rounded-full ${item.dotClass}`} />
+            <span className={item.textClass}>{item.label}</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="hidden sm:flex items-center gap-1.5 text-[11px] font-medium text-slate-400">
+        <span>Click nodes to inspect prerequisite DAG</span>
+      </div>
     </div>
   );
 }
