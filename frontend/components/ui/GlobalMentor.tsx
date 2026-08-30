@@ -271,16 +271,6 @@ export function GlobalMentor() {
         {/* Mascot Avatar */}
         <div className="relative">
           <GhostMentor size={68} state={state} bubble={isOpen ? null : bubble} />
-
-          {/* Notification / Active Badge */}
-          {!isOpen && (
-            <span className="absolute top-0 right-0 flex h-3.5 w-3.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-purple-400 opacity-75" />
-              <span className="relative inline-flex h-3.5 w-3.5 rounded-full bg-[#7C3AED] ring-2 ring-white items-center justify-center text-[8px] text-white font-black">
-                ✨
-              </span>
-            </span>
-          )}
         </div>
       </button>
 
