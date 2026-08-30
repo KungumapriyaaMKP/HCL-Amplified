@@ -2,10 +2,15 @@
 
 import { Suspense, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Card } from "@/frontend/components/ui/Card";
-import { Button } from "@/frontend/components/ui/Button";
-import { Input, Label } from "@/frontend/components/ui/Input";
-import { IconFileText, IconArrowRight, IconCheck, IconUpload } from "@tabler/icons-react";
+import {
+  IconFileText,
+  IconArrowRight,
+  IconCheck,
+  IconCloudUpload,
+  IconBriefcase,
+  IconTarget,
+  IconCalendar,
+} from "@tabler/icons-react";
 
 type Extraction = {
   currentRole: string | null;
@@ -52,46 +57,84 @@ function ResumeOnboarding() {
 
   if (result) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#070913] px-4 text-white">
-        <Card className="w-full max-w-lg p-8 text-center">
-          <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-purple-950 border border-purple-500/40 text-purple-400 mb-3 shadow-[0_0_20px_rgba(168,85,247,0.4)]">
+      <div className="relative min-h-screen flex items-center justify-center bg-[#F8F9FD] p-4 sm:p-8 font-sans overflow-hidden">
+        {/* Background Ambient Glows */}
+        <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-purple-200/50 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-indigo-100/60 blur-3xl pointer-events-none" />
+
+        <div className="w-full max-w-[560px] bg-white rounded-3xl p-8 sm:p-10 shadow-[0_20px_50px_rgba(79,70,229,0.06)] border border-slate-100 text-center relative z-10">
+          <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-purple-50 text-[#7C3AED] mb-4 shadow-xs">
             <IconCheck className="h-8 w-8" />
           </div>
-          <h1 className="text-2xl font-black text-white">Experience Profile Calibrated</h1>
-          <p className="mt-2 text-xs text-slate-300 leading-relaxed max-w-md mx-auto">{result.extraction.summary}</p>
+          <h1 className="text-2xl font-black text-slate-900 tracking-tight">Experience Profile Calibrated</h1>
+          <p className="mt-2 text-xs text-slate-500 leading-relaxed max-w-md mx-auto">{result.extraction.summary}</p>
           
           {result.seededCount > 0 && (
-            <div className="my-5 rounded-2xl border border-emerald-500/30 bg-emerald-950/40 p-4 text-xs font-bold text-emerald-300">
+            <div className="my-5 rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4 text-xs font-bold text-emerald-700">
               {result.seededCount} Skill{result.seededCount === 1 ? "" : "s"} already credited toward your profile.
             </div>
           )}
 
-          <Button size="lg" className="w-full mt-4" onClick={() => router.push(next)}>
+          <button
+            onClick={() => router.push(next)}
+            className="w-full mt-4 py-3.5 rounded-xl bg-gradient-to-r from-[#6366F1] via-[#7C3AED] to-[#A855F7] text-white text-xs font-bold shadow-md shadow-purple-500/20 hover:opacity-95 hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
+          >
             <span>Enter Dashboard</span>
             <IconArrowRight className="h-4 w-4" />
-          </Button>
-        </Card>
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#070913] px-4 text-white">
-      <Card className="w-full max-w-lg p-8">
-        <div className="text-center mb-6">
-          <span className="text-[10px] font-black uppercase tracking-[0.25em] text-cyan-400">
+    <div className="relative min-h-screen flex items-center justify-center bg-[#F8F9FD] p-4 sm:p-8 font-sans overflow-hidden">
+      {/* Background Decorative Ambient Radial Glows */}
+      <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-purple-200/50 blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-indigo-100/60 blur-3xl pointer-events-none" />
+
+      {/* Decorative Orbit Concentric Rings (Bottom Left) */}
+      <div className="absolute -bottom-20 -left-20 w-80 h-80 rounded-full border border-purple-200/50 pointer-events-none hidden sm:block" />
+      <div className="absolute -bottom-10 -left-10 w-60 h-60 rounded-full border border-purple-200/40 pointer-events-none hidden sm:block" />
+      <div className="absolute bottom-0 left-0 w-40 h-40 rounded-full border border-purple-200/30 pointer-events-none hidden sm:block" />
+
+      {/* Decorative Dot Matrix Grids */}
+      <div className="absolute top-10 left-10 grid grid-cols-6 gap-2 opacity-30 pointer-events-none hidden sm:grid">
+        {Array.from({ length: 24 }).map((_, i) => (
+          <div key={i} className="w-1.5 h-1.5 rounded-full bg-[#6366F1]" />
+        ))}
+      </div>
+      <div className="absolute bottom-10 right-10 grid grid-cols-6 gap-2 opacity-30 pointer-events-none hidden sm:grid">
+        {Array.from({ length: 24 }).map((_, i) => (
+          <div key={i} className="w-1.5 h-1.5 rounded-full bg-[#6366F1]" />
+        ))}
+      </div>
+
+      {/* Main Calibration Card */}
+      <div className="w-full max-w-[560px] bg-white rounded-3xl p-8 sm:p-10 shadow-[0_20px_50px_rgba(79,70,229,0.06)] border border-slate-100 relative z-10 space-y-6">
+        
+        {/* Top Header Section */}
+        <div className="text-center">
+          {/* Badge Icon */}
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#F4EFFF] text-[#7C3AED] mx-auto shadow-xs">
+            <IconFileText className="h-7 w-7" />
+          </div>
+
+          <div className="text-[11px] font-extrabold uppercase tracking-[0.2em] text-[#6366F1] mt-3.5">
             BACKGROUND & CREDENTIAL INTAKE
-          </span>
-          <h1 className="mt-1 text-2xl font-black text-white drop-shadow-[0_2px_10px_rgba(255,255,255,0.2)]">
+          </div>
+
+          <h1 className="text-2xl sm:text-[28px] font-black text-slate-900 tracking-tight mt-1">
             Prior Experience Calibration
           </h1>
-          <p className="mt-1 text-xs text-slate-400">
+
+          <p className="text-xs text-slate-400 font-normal leading-relaxed max-w-md mx-auto mt-2">
             Upload your resume or specify your background so AI credits existing masteries instead of starting from scratch.
           </p>
         </div>
 
-        {/* Upload Box */}
-        <div className="mb-5 rounded-2xl border-2 border-dashed border-purple-500/30 bg-[#080b1a] p-5 text-center">
+        {/* Upload Resume Box */}
+        <div>
           <input
             ref={fileRef}
             type="file"
@@ -100,55 +143,119 @@ function ResumeOnboarding() {
             className="hidden"
             id="resume-file"
           />
-          <label htmlFor="resume-file" className="cursor-pointer flex flex-col items-center">
-            <IconUpload className="h-8 w-8 text-purple-400 mb-2" />
-            <span className="text-xs font-bold text-purple-300 hover:text-purple-200">
-              {fileName ? fileName : "Upload Resume (PDF / TXT)"}
-            </span>
-            <span className="block text-[10px] text-slate-500 mt-0.5">Click to browse file</span>
+          <label
+            htmlFor="resume-file"
+            className="block rounded-2xl border-2 border-dashed border-[#DDD6FE] bg-[#FAF8FF] hover:bg-[#F5F0FF] p-6 text-center transition-all cursor-pointer group"
+          >
+            <IconCloudUpload className="h-9 w-9 text-[#7C3AED] mx-auto mb-1.5 group-hover:scale-105 transition-transform" />
+            <div className="text-xs font-bold text-slate-800">
+              {fileName ? (
+                <span className="text-[#7C3AED] flex items-center justify-center gap-1">
+                  <IconCheck className="h-3.5 w-3.5 text-emerald-500" />
+                  {fileName}
+                </span>
+              ) : (
+                "Upload Resume (PDF / TXT)"
+              )}
+            </div>
+            <div className="text-[11px] text-slate-400 mt-0.5">
+              Click to browse or drag & drop
+            </div>
           </label>
         </div>
 
-        <div className="space-y-3.5 mb-6">
-          <div>
-            <Label>Current Role / Specialization</Label>
-            <Input value={currentRole} onChange={(e) => setCurrentRole(e.target.value)} placeholder="e.g. Frontend Engineer" />
+        {/* Structured Form Fields */}
+        <div className="space-y-4">
+          
+          {/* Field 1: Current Role */}
+          <div className="space-y-1.5">
+            <label className="block text-[10px] font-extrabold uppercase tracking-wider text-slate-700">
+              CURRENT ROLE / SPECIALIZATION
+            </label>
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#F5F3FF] text-[#7C3AED] shrink-0">
+                <IconBriefcase className="h-5 w-5" />
+              </div>
+              <input
+                type="text"
+                value={currentRole}
+                onChange={(e) => setCurrentRole(e.target.value)}
+                placeholder="e.g. Frontend Engineer"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] focus:outline-none transition-all shadow-2xs"
+              />
+            </div>
           </div>
-          <div>
-            <Label>Career Objective</Label>
-            <Input value={careerGoal} onChange={(e) => setCareerGoal(e.target.value)} placeholder="e.g. Senior Distributed AI Architect" />
+
+          {/* Field 2: Career Objective */}
+          <div className="space-y-1.5">
+            <label className="block text-[10px] font-extrabold uppercase tracking-wider text-slate-700">
+              CAREER OBJECTIVE
+            </label>
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#F5F3FF] text-[#7C3AED] shrink-0">
+                <IconTarget className="h-5 w-5" />
+              </div>
+              <input
+                type="text"
+                value={careerGoal}
+                onChange={(e) => setCareerGoal(e.target.value)}
+                placeholder="e.g. Senior Distributed AI Architect"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] focus:outline-none transition-all shadow-2xs"
+              />
+            </div>
           </div>
-          <div>
-            <Label>Years of Experience</Label>
-            <Input
-              type="number"
-              min={0}
-              value={yearsExperience}
-              onChange={(e) => setYearsExperience(e.target.value)}
-              placeholder="e.g. 3"
-            />
+
+          {/* Field 3: Years of Experience */}
+          <div className="space-y-1.5">
+            <label className="block text-[10px] font-extrabold uppercase tracking-wider text-slate-700">
+              YEARS OF EXPERIENCE
+            </label>
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#F5F3FF] text-[#7C3AED] shrink-0">
+                <IconCalendar className="h-5 w-5" />
+              </div>
+              <input
+                type="number"
+                min={0}
+                value={yearsExperience}
+                onChange={(e) => setYearsExperience(e.target.value)}
+                placeholder="e.g. 3"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] focus:outline-none transition-all shadow-2xs"
+              />
+            </div>
           </div>
+
         </div>
 
+        {/* Error Notification */}
         {error && (
-          <div className="mb-4 rounded-xl border border-red-500/40 bg-red-950/60 p-3 text-xs font-bold text-red-300">
+          <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs font-bold text-rose-700">
             {error}
           </div>
         )}
 
-        <div className="flex flex-col gap-2.5">
-          <Button size="lg" disabled={submitting} onClick={submit}>
+        {/* Action Buttons */}
+        <div className="space-y-3 pt-2">
+          <button
+            type="button"
+            disabled={submitting}
+            onClick={submit}
+            className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#6366F1] via-[#7C3AED] to-[#A855F7] text-white text-xs font-bold shadow-md shadow-purple-500/20 hover:opacity-95 hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+          >
             <span>{submitting ? "Analyzing Profile..." : "Analyze & Ingest Profile"}</span>
             <IconArrowRight className="h-4 w-4" />
-          </Button>
+          </button>
+
           <button
+            type="button"
             onClick={() => router.push(next)}
-            className="mt-2 text-center text-xs font-bold text-slate-500 hover:text-purple-300 transition-colors"
+            className="text-xs font-medium text-slate-400 hover:text-slate-600 transition-colors text-center block mx-auto cursor-pointer"
           >
             Skip for now
           </button>
         </div>
-      </Card>
+
+      </div>
     </div>
   );
 }
