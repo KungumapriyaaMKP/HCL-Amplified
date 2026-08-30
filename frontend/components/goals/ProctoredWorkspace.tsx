@@ -21,6 +21,8 @@ import {
   IconCamera,
   IconRefresh,
   IconScan,
+  IconTarget,
+  IconFileText,
 } from "@tabler/icons-react";
 import CubeLoader from "@/components/ui/cube-loader";
 
@@ -370,46 +372,181 @@ export function ProctoredWorkspace({
   }, [phase]);
 
   if (phase === "done" && result) {
+    const score = result.score;
+    const totalQuestions = questions.length || 6;
+    const correctCount = Math.round((score / 100) * totalQuestions);
+
     return (
-      <div className="relative rounded-2xl border border-purple-100/90 bg-white p-8 sm:p-10 shadow-xl shadow-purple-500/5 text-slate-900 text-center space-y-5">
-        {/* Score Badge */}
-        <div className="inline-flex h-24 w-24 items-center justify-center rounded-2xl bg-gradient-to-tr from-purple-700 via-indigo-600 to-cyan-500 shadow-lg shadow-purple-500/25 mx-auto">
-          <span className="text-3xl font-black text-white">{result.score}/100</span>
-        </div>
-        
-        <div>
-          <span className="text-[10px] font-black uppercase tracking-widest text-purple-600 block mb-1">
-            OFFICIAL EVALUATION RESULT
-          </span>
-          <h2 className="text-2xl font-black text-[#1E1B4B]">Proctored Assessment Complete</h2>
-        </div>
-        
-        <div className="max-w-lg mx-auto rounded-xl border border-purple-100/90 bg-[#FAF9FF] p-5 text-xs font-medium text-slate-700 leading-relaxed text-left space-y-1.5 shadow-xs">
-          <span className="text-[10px] font-black uppercase tracking-widest text-[#7C3AED] block">
-            EVALUATION REPORT & SKILL MASTERY
-          </span>
-          <p>{result.reportText}</p>
+      <div className="relative rounded-3xl border border-purple-100/90 bg-white p-6 sm:p-10 shadow-2xl shadow-purple-500/5 text-slate-900 overflow-hidden space-y-6">
+        {/* Decorative Corner Dot Matrices */}
+        <div className="absolute top-6 right-6 pointer-events-none opacity-30 select-none hidden sm:block">
+          <svg width="44" height="44" viewBox="0 0 44 44" fill="#818CF8">
+            <circle cx="4" cy="4" r="1.5" /><circle cx="16" cy="4" r="1.5" /><circle cx="28" cy="4" r="1.5" /><circle cx="40" cy="4" r="1.5" />
+            <circle cx="4" cy="16" r="1.5" /><circle cx="16" cy="16" r="1.5" /><circle cx="28" cy="16" r="1.5" /><circle cx="40" cy="16" r="1.5" />
+            <circle cx="4" cy="28" r="1.5" /><circle cx="16" cy="28" r="1.5" /><circle cx="28" cy="28" r="1.5" /><circle cx="40" cy="28" r="1.5" />
+            <circle cx="4" cy="40" r="1.5" /><circle cx="16" cy="40" r="1.5" /><circle cx="28" cy="40" r="1.5" /><circle cx="40" cy="40" r="1.5" />
+          </svg>
         </div>
 
-        {!!result.badgesAwarded?.length && (
-          <div className="flex flex-wrap justify-center gap-2 pt-1">
-            {result.badgesAwarded.map((b) => (
-              <Badge key={b} tone="success" className="flex items-center gap-1 text-xs py-1 px-3">
-                <IconAward className="h-3.5 w-3.5" />
-                <span>{b} Earned</span>
-              </Badge>
-            ))}
+        {/* Decorative Ambient Right Edge Geometry */}
+        <div className="absolute -top-12 -right-12 w-56 h-56 rounded-full border border-purple-100/60 pointer-events-none" />
+        <div className="absolute -top-20 -right-20 w-72 h-72 rounded-full border border-purple-100/40 pointer-events-none" />
+
+        {/* 1. Top Section: Score Circle Gauge & Mentor Encouragement Card */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          {/* Left Column: Score Gauge & Title */}
+          <div className="lg:col-span-5 flex flex-col items-center text-center">
+            <div className="relative flex items-center justify-center">
+              {/* Floating Sparkle Stars */}
+              <span className="absolute -top-3 -left-3 text-purple-400 select-none text-xs">✦</span>
+              <span className="absolute top-1 -right-2 text-purple-400 select-none text-xs">✦</span>
+              <span className="absolute -bottom-2 -left-2 text-purple-400 select-none text-xs">✦</span>
+              <span className="absolute -bottom-1 -right-4 text-purple-400 select-none text-xs">✦</span>
+              <span className="absolute top-1/2 -right-6 text-amber-300 select-none text-sm">✦</span>
+
+              {/* Circular Gauge Ring */}
+              <div className="h-36 w-36 sm:h-40 sm:w-40 rounded-full border-4 border-indigo-400/80 bg-gradient-to-b from-purple-100/60 via-white to-indigo-100/50 flex flex-col items-center justify-center shadow-[0_0_25px_rgba(99,102,241,0.25)]">
+                <span className="text-4xl sm:text-5xl font-black text-[#6366F1] tracking-tight">
+                  {score}
+                  <span className="text-2xl sm:text-3xl font-black text-slate-800">/100</span>
+                </span>
+              </div>
+            </div>
+
+            <h2 className="text-2xl font-black text-[#1E1B4B] mt-4 tracking-tight">
+              Proctored Assessment Complete
+            </h2>
+            <p className="text-xs text-slate-500 max-w-xs mt-1.5 leading-relaxed">
+              Good attempt! Let&apos;s review your performance and sharpen your skills.
+            </p>
           </div>
-        )}
 
-        <div className="pt-2">
+          {/* Right Column: Teacher Mentor Banner */}
+          <div className="lg:col-span-7">
+            <div className="relative rounded-3xl bg-gradient-to-r from-[#F5F3FF] via-[#F3E8FF]/60 to-[#EDE9FE] border border-purple-100 p-6 flex items-center justify-between min-h-[220px] overflow-hidden shadow-xs">
+              {/* Background ambient icons */}
+              <div className="absolute top-6 right-28 text-purple-200/50 pointer-events-none select-none">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+                  <circle cx="12" cy="12" r="5" />
+                </svg>
+              </div>
+
+              {/* Speech Bubble */}
+              <div className="relative bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-purple-100/90 max-w-[210px] sm:max-w-[240px] text-left z-10">
+                <h4 className="text-xs font-bold text-[#1E1B4B] mb-1">
+                  Great effort!
+                </h4>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Let&apos;s <span className="text-[#7C3AED] font-bold">correct these mistakes</span> together for a better understanding.
+                </p>
+
+                {/* Speech Bubble Pointer Arrow */}
+                <div className="absolute top-1/2 -right-2 -translate-y-1/2 w-0 h-0 border-t-8 border-t-transparent border-b-8 border-b-transparent border-l-8 border-l-white" />
+              </div>
+
+              {/* 3D Teacher Mentor Avatar */}
+              <div className="relative w-44 h-48 sm:h-52 shrink-0 flex items-end justify-center z-10">
+                <img
+                  src="/mentor-girl.png"
+                  alt="AI Mentor"
+                  className="h-full w-auto object-contain drop-shadow-md select-none pointer-events-none"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 2. Middle Section: Evaluation Report & Skill Mastery Card */}
+        <div className="rounded-2xl border border-purple-100/90 bg-[#FAF9FF] p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-2xs">
+          <div className="flex items-start gap-3.5">
+            <div className="h-10 w-10 rounded-xl bg-purple-100/80 border border-purple-200 flex items-center justify-center text-purple-600 shrink-0 mt-0.5">
+              <IconFileText className="h-5 w-5 text-purple-600" />
+            </div>
+            <div>
+              <h3 className="text-sm font-black text-[#1E1B4B]">
+                Evaluation Report &amp; Skill Mastery
+              </h3>
+              <p className="text-xs text-slate-500 max-w-2xl leading-relaxed mt-1">
+                You scored <strong className="text-slate-800 font-black">{score}/100 ({correctCount}/{totalQuestions} correct)</strong> on this assessment. This report highlights key {skillName} concepts where you can improve. Review the explanations to strengthen your understanding.
+              </p>
+            </div>
+          </div>
+
           <button
             type="button"
             onClick={() => router.push(`/goals/${goalId}`)}
-            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-gradient-to-r from-[#6366F1] to-[#7C3AED] text-white text-sm font-bold shadow-md shadow-purple-500/25 hover:opacity-95 cursor-pointer"
+            className="text-xs font-bold text-[#6366F1] hover:text-[#4F46E5] flex items-center gap-1 shrink-0 cursor-pointer self-end md:self-center"
+          >
+            <span>View Detailed Report</span>
+            <IconArrowRight className="h-3.5 w-3.5" />
+          </button>
+        </div>
+
+        {/* 3. Stats Row (4 Columns) */}
+        <div className="rounded-2xl border border-purple-100/90 bg-[#FAF9FF] p-4 sm:p-5 grid grid-cols-2 md:grid-cols-4 gap-4 divide-y sm:divide-y-0 sm:divide-x divide-purple-100/80 shadow-2xs">
+          {/* Stat 1: Score */}
+          <div className="flex items-center gap-3 px-2 sm:px-4">
+            <div className="h-9 w-9 rounded-full bg-purple-100/80 flex items-center justify-center text-purple-600 shrink-0">
+              <IconTarget className="h-4 w-4 text-purple-600" />
+            </div>
+            <div>
+              <span className="text-[11px] font-semibold text-slate-400 block leading-tight">Score</span>
+              <span className="text-base font-black text-[#1E1B4B] block leading-tight">{score}/100</span>
+            </div>
+          </div>
+
+          {/* Stat 2: Correct Answers */}
+          <div className="flex items-center gap-3 px-2 sm:px-4 pt-3 sm:pt-0">
+            <div className="h-9 w-9 rounded-full bg-purple-100/80 flex items-center justify-center text-purple-600 shrink-0">
+              <IconCheck className="h-4 w-4 text-purple-600" />
+            </div>
+            <div>
+              <span className="text-[11px] font-semibold text-slate-400 block leading-tight">Correct Answers</span>
+              <span className="text-base font-black text-[#1E1B4B] block leading-tight">{correctCount}/{totalQuestions}</span>
+            </div>
+          </div>
+
+          {/* Stat 3: Time Taken */}
+          <div className="flex items-center gap-3 px-2 sm:px-4 pt-3 sm:pt-0">
+            <div className="h-9 w-9 rounded-full bg-purple-100/80 flex items-center justify-center text-purple-600 shrink-0">
+              <IconClock className="h-4 w-4 text-purple-600" />
+            </div>
+            <div>
+              <span className="text-[11px] font-semibold text-slate-400 block leading-tight">Time Taken</span>
+              <span className="text-base font-black text-[#1E1B4B] block leading-tight">09:48</span>
+            </div>
+          </div>
+
+          {/* Stat 4: Status */}
+          <div className="flex items-center gap-3 px-2 sm:px-4 pt-3 sm:pt-0">
+            <div className="h-9 w-9 rounded-full bg-purple-100/80 flex items-center justify-center text-purple-600 shrink-0">
+              <IconShieldCheck className="h-4 w-4 text-purple-600" />
+            </div>
+            <div>
+              <span className="text-[11px] font-semibold text-slate-400 block leading-tight">Status</span>
+              <span className="text-base font-black text-emerald-600 block leading-tight">Completed</span>
+            </div>
+          </div>
+        </div>
+
+        {/* 4. Action Buttons Stack (Centered) */}
+        <div className="flex flex-col items-center justify-center gap-3 pt-2">
+          <button
+            type="button"
+            onClick={() => router.push(`/goals/${goalId}`)}
+            className="w-full max-w-sm py-3.5 rounded-xl bg-gradient-to-r from-[#6366F1] to-[#7C3AED] text-white text-xs sm:text-sm font-bold shadow-md shadow-purple-500/25 hover:opacity-95 cursor-pointer flex items-center justify-center gap-2"
           >
             <span>Return to Roadmap</span>
             <IconArrowRight className="h-4 w-4" />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => router.push(`/goals/${goalId}`)}
+            className="w-full max-w-sm py-3 rounded-xl border border-purple-200 bg-white text-[#7C3AED] text-xs sm:text-sm font-bold shadow-xs hover:bg-purple-50 cursor-pointer flex items-center justify-center gap-2"
+          >
+            <span>Review Answers &amp; Explanations</span>
           </button>
         </div>
       </div>

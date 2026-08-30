@@ -19,9 +19,9 @@ export default async function ProctoredPage({ params }: { params: Promise<{ id: 
         levelTitle="Newcomer"
       />
 
-      {/* 2. Main Screen-Fitted Content */}
-      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden bg-[#F8F9FD] text-slate-900 justify-center items-center">
-        <main className="w-full max-w-4xl px-4 py-2 sm:px-6">
+      {/* 2. Main Content Container */}
+      <div className="flex-1 flex flex-col min-w-0 min-h-screen overflow-y-auto bg-[#F8F9FD] text-slate-900 justify-center items-center py-6">
+        <main className="w-full max-w-5xl px-4 sm:px-6">
           <ProctoredWorkspace
             goalId={id}
             moduleId={moduleId}
