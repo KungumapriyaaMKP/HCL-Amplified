@@ -223,37 +223,7 @@ export function CommunityFeed({ domain }: { domain: string }) {
 
       </div>
 
-      {/* ================= CARD 2: "JOIN THE CONVERSATION" BANNER WITH 3D AVATARS ================= */}
-      <div className="rounded-2xl border border-slate-100 bg-white px-6 py-4 shadow-xs flex items-center justify-between gap-4 overflow-hidden select-none">
-        
-        {/* Left Side: Purple Rounded Icon + Message */}
-        <div className="flex items-center gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-purple-50 text-purple-600 shrink-0">
-            <IconUsers className="h-6 w-6 stroke-[2]" />
-          </div>
-          <div>
-            <h3 className="text-sm font-bold text-slate-900 leading-snug">
-              Join the conversation
-            </h3>
-            <p className="text-xs text-slate-500 font-normal mt-0.5 leading-relaxed">
-              Publish discussions, ask questions, and reply to your peers.
-            </p>
-          </div>
-        </div>
 
-        {/* Right Side: Exact 3D Character Trio Graphics */}
-        <div className="shrink-0 hidden md:block">
-          <Image
-            src="/images/community/avatars_trio_3d.png"
-            alt="Community Members"
-            width={180}
-            height={60}
-            className="object-contain select-none"
-            unoptimized
-          />
-        </div>
-
-      </div>
 
       {error && (
         <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-xs font-bold text-red-600">
