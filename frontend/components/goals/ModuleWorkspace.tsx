@@ -14,6 +14,7 @@ import {
   IconAward,
   IconTarget,
 } from "@tabler/icons-react";
+import { SlideToUnlock } from "@/components/ui/reward-card";
 
 type Props = {
   goalId: string;
@@ -618,6 +619,37 @@ export function ModuleWorkspace(props: Props) {
                       </div>
                     )}
                   </div>
+
+                  {/* Step 01 SlideToUnlock Reward Card */}
+                  {resourceMarked && (
+                    <div className="pt-4 max-w-md">
+                      <SlideToUnlock
+                        sliderText="Swipe to claim Resource XP"
+                        className="max-w-none border-purple-400/30 bg-[#0F0C24] text-white shadow-lg"
+                        unlockedContent={
+                          <div className="flex items-center justify-between p-3.5 bg-gradient-to-r from-[#8B5CF6] to-[#6D28D9] text-white rounded-none shadow-md">
+                            <div className="space-y-0.5">
+                              <p className="text-xs font-black">Step 01 Mastery Credited! +25 XP</p>
+                              <p className="text-[10px] text-purple-200">Prerequisite Knowledge Unlocked</p>
+                            </div>
+                            <div className="h-8 w-8 rounded-full bg-white text-purple-700 flex items-center justify-center font-black text-xs shadow-xs">
+                              ✦
+                            </div>
+                          </div>
+                        }
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="h-8 w-8 rounded-none bg-purple-900/60 border border-purple-400/40 flex items-center justify-center text-purple-300">
+                            <IconCheck className="h-4 w-4 stroke-[3]" />
+                          </div>
+                          <div>
+                            <h4 className="text-xs font-black text-white">Step 01 Cleared • Resource Done</h4>
+                            <p className="text-[10px] text-slate-300">Swipe below to claim your study bonus XP</p>
+                          </div>
+                        </div>
+                      </SlideToUnlock>
+                    </div>
+                  )}
                 </div>
 
                 {/* 3D Desktop Monitor Illustration with Code Lines & {} Badge */}
@@ -714,6 +746,37 @@ export function ModuleWorkspace(props: Props) {
                     <IconArrowRight className="h-4 w-4" />
                   </Link>
                 </div>
+
+                {/* Step 02 SlideToUnlock Reward Card */}
+                {practiceAttempted && (
+                  <div className="pt-2">
+                    <SlideToUnlock
+                      sliderText="Swipe to claim Practice Badge"
+                      className="max-w-none border-emerald-200 bg-emerald-50/40 text-slate-900 shadow-sm"
+                      unlockedContent={
+                        <div className="flex items-center justify-between p-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-none shadow-md">
+                          <div className="space-y-0.5">
+                            <p className="text-xs font-black">Step 02 Practice Cleared! +50 XP</p>
+                            <p className="text-[10px] text-emerald-100">Step 03 Proctored Exam Unlocked</p>
+                          </div>
+                          <div className="h-8 w-8 rounded-full bg-white text-emerald-600 flex items-center justify-center font-black text-xs shadow-xs">
+                            🛡️
+                          </div>
+                        </div>
+                      }
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="h-8 w-8 rounded-none bg-emerald-100 border border-emerald-300 flex items-center justify-center text-emerald-700">
+                          <IconTarget className="h-4 w-4" />
+                        </div>
+                        <div>
+                          <h4 className="text-xs font-black text-slate-900">Step 02 Cleared • Practice Finished</h4>
+                          <p className="text-[10px] text-slate-500">Swipe below to claim your practice bonus reward</p>
+                        </div>
+                      </div>
+                    </SlideToUnlock>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="relative overflow-hidden rounded-none bg-white/95 border border-slate-200/90 p-6 sm:p-7 shadow-md backdrop-blur-md grid grid-cols-1 sm:grid-cols-[1fr_120px] gap-6 items-center">
@@ -758,7 +821,7 @@ export function ModuleWorkspace(props: Props) {
             {/* CARD 3: Step 03 (Official Proctored Assessment - Light Glass Card)    */}
             {/* --------------------------------------------------------------------- */}
             {props.proctoredAlreadyTaken ? (
-              <div className="relative overflow-hidden rounded-sm bg-white/98 border-2 border-emerald-200 p-6 shadow-xl backdrop-blur-md space-y-3">
+              <div className="relative overflow-hidden rounded-sm bg-white/98 border-2 border-emerald-200 p-6 shadow-xl backdrop-blur-md space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
                     <IconAward className="h-5 w-5 text-emerald-600" />
@@ -770,6 +833,35 @@ export function ModuleWorkspace(props: Props) {
                 </div>
                 <div className="text-3xl font-black text-emerald-600">
                   {props.proctoredScore}/100
+                </div>
+
+                {/* Step 03 SlideToUnlock Reward Card */}
+                <div className="pt-2">
+                  <SlideToUnlock
+                    sliderText="Swipe to claim Official Certificate"
+                    className="max-w-none border-amber-200 bg-amber-50/40 text-slate-900 shadow-sm"
+                    unlockedContent={
+                      <div className="flex items-center justify-between p-3.5 bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white rounded-none shadow-md">
+                        <div className="space-y-0.5">
+                          <p className="text-xs font-black">Official Skill Certification! +100 XP</p>
+                          <p className="text-[10px] text-amber-100">Permanent Mastery Recorded on Profile</p>
+                        </div>
+                        <div className="h-8 w-8 rounded-full bg-white text-amber-600 flex items-center justify-center font-black text-xs shadow-xs">
+                          🏆
+                        </div>
+                      </div>
+                    }
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="h-8 w-8 rounded-none bg-amber-100 border border-amber-300 flex items-center justify-center text-amber-700">
+                        <IconAward className="h-4 w-4" />
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-black text-slate-900">Step 03 Cleared • Exam Passed</h4>
+                        <p className="text-[10px] text-slate-500">Swipe below to claim your verified proctored certificate</p>
+                      </div>
+                    </div>
+                  </SlideToUnlock>
                 </div>
               </div>
             ) : practiceAttempted ? (
@@ -826,14 +918,44 @@ export function ModuleWorkspace(props: Props) {
             )}
 
             {/* --------------------------------------------------------------------- */}
-            {/* BOTTOM REWARD CARD (Beside the Treasure Chest)                        */}
+            {/* BOTTOM REWARD CARD (Milestone Completion Chest Loot)                  */}
             {/* --------------------------------------------------------------------- */}
-            <div className="rounded-sm bg-white/95 border border-purple-100 p-4 shadow-sm backdrop-blur-md flex items-center justify-center gap-2.5 text-xs font-bold text-slate-700">
-              <IconLock className="h-4 w-4 text-purple-600" />
-              <span>
-                Complete all steps above to unlock <span className="text-[#6D28D9] font-black">amazing rewards!</span> 🎁
-              </span>
-            </div>
+            {props.proctoredAlreadyTaken ? (
+              <div className="rounded-none bg-white border-2 border-purple-300 p-6 shadow-xl backdrop-blur-md flex flex-col items-center justify-center space-y-3">
+                <SlideToUnlock
+                  sliderText="Swipe to unlock Milestone Chest"
+                  className="max-w-md border-purple-200 bg-purple-50/30 shadow-md"
+                  unlockedContent={
+                    <div className="flex items-center justify-between p-4 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 text-white rounded-none shadow-xl">
+                      <div className="space-y-0.5">
+                        <p className="text-sm font-black">Milestone Mastery Cleared! 🎁</p>
+                        <p className="text-xs text-emerald-100">+250 Bonus XP & Milestone Trophy Credited</p>
+                      </div>
+                      <div className="h-10 w-10 rounded-full bg-white text-emerald-600 flex items-center justify-center font-black text-base shadow-md">
+                        👑
+                      </div>
+                    </div>
+                  }
+                >
+                  <div className="text-center space-y-1.5 py-1">
+                    <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-purple-100 text-[#7C3AED] mb-1">
+                      🎁
+                    </div>
+                    <h4 className="text-base font-extrabold text-slate-900">Milestone Treasure Ready!</h4>
+                    <p className="text-xs text-slate-500 max-w-xs mx-auto">
+                      You completed all stages for <span className="font-bold text-slate-800">{props.skillName}</span>. Swipe below to claim your milestone reward!
+                    </p>
+                  </div>
+                </SlideToUnlock>
+              </div>
+            ) : (
+              <div className="rounded-none bg-white/95 border border-purple-100 p-4 shadow-xs backdrop-blur-md flex items-center justify-center gap-2.5 text-xs font-bold text-slate-700">
+                <IconLock className="h-4 w-4 text-purple-600" />
+                <span>
+                  Complete all steps above ({resourceMarked ? 1 : 0} + {practiceAttempted ? 1 : 0} + {props.proctoredAlreadyTaken ? 1 : 0}/3) to unlock <span className="text-[#6D28D9] font-black">Milestone Loot!</span> 🎁
+                </span>
+              </div>
+            )}
 
           </div>
 

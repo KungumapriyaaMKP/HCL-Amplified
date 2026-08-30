@@ -16,6 +16,7 @@ import {
   IconShieldCheck,
   IconBook,
 } from "@tabler/icons-react";
+import { SlideToUnlock } from "@/components/ui/reward-card";
 import { emitNudge } from "@/lib/mentorBus";
 
 type Question = { id: string; question: string; options: string[] };
@@ -187,8 +188,37 @@ export function DedicatedPracticeWorkspace({
                 </p>
               </div>
 
+              {/* SlideToUnlock Practice Reward Card */}
+              <div className="pt-2 flex justify-center">
+                <SlideToUnlock
+                  sliderText="Swipe to claim Practice Loot"
+                  className="max-w-md border-purple-200 bg-purple-50/40 text-slate-900 shadow-sm"
+                  unlockedContent={
+                    <div className="flex items-center justify-between p-3.5 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 text-white rounded-none shadow-md">
+                      <div className="space-y-0.5">
+                        <p className="text-xs font-black">Practice Score Credited! +50 XP Claimed</p>
+                        <p className="text-[10px] text-emerald-100">Step 03 Proctored Exam Unlocked</p>
+                      </div>
+                      <div className="h-8 w-8 rounded-full bg-white text-emerald-700 flex items-center justify-center font-black text-xs shadow-xs">
+                        🛡️
+                      </div>
+                    </div>
+                  }
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-none bg-purple-100 border border-purple-300 flex items-center justify-center text-[#7C3AED]">
+                      <IconSparkles className="h-4 w-4" />
+                    </div>
+                    <div className="text-left">
+                      <h4 className="text-xs font-black text-slate-900">Step 02 Practice Completed</h4>
+                      <p className="text-[10px] text-slate-500">Swipe the slider below to claim your practice milestone bonus</p>
+                    </div>
+                  </div>
+                </SlideToUnlock>
+              </div>
+
               {/* Redirect Action Buttons */}
-              <div className="pt-3 flex flex-wrap items-center justify-center gap-3">
+              <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
                 {/* Primary Button: Return to Roadmap */}
                 <Link
                   href={`/goals/${goalId}`}
