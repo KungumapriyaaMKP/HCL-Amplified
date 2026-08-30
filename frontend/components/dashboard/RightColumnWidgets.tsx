@@ -214,8 +214,8 @@ export function YourPlanForToday({ hasGoals = true }: { hasGoals?: boolean }) {
             key={task.id}
             className={`flex items-center justify-between p-2.5 rounded-xs border transition-all shadow-2xs ${
               task.completed
-                ? "bg-slate-50 border-slate-200 text-slate-400 line-through"
-                : "bg-white border-slate-300/90 hover:border-purple-300 text-slate-900 font-bold"
+                ? "bg-slate-50/90 border-slate-200"
+                : "bg-white border-slate-300/90 hover:border-purple-300"
             }`}
           >
             <div
@@ -231,7 +231,15 @@ export function YourPlanForToday({ hasGoals = true }: { hasGoals?: boolean }) {
               >
                 {task.completed && <IconCheck className="w-3.5 h-3.5 stroke-[3.5]" />}
               </div>
-              <span className="text-xs font-bold text-slate-900 truncate">{task.title}</span>
+              <span
+                className={`text-xs truncate transition-all ${
+                  task.completed
+                    ? "text-slate-400 line-through decoration-2 decoration-slate-500 font-medium"
+                    : "text-slate-900 font-bold"
+                }`}
+              >
+                {task.title}
+              </span>
             </div>
             <button
               type="button"
