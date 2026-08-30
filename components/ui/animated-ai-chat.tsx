@@ -267,16 +267,16 @@ export function AnimatedAIChat({
   };
 
   return (
-    <div className={cn("w-full h-full flex flex-col justify-between relative min-h-0 bg-white rounded-md", className)}>
-      {/* 1. Single Box Header */}
-      <div className="p-4 sm:p-5 border-b border-slate-100 bg-slate-50/40 shrink-0 text-center">
+    <div className={cn("w-full h-full flex flex-col justify-between relative min-h-0 bg-white rounded-none", className)}>
+      {/* 1. Integrated Header inside the single box */}
+      <div className="p-4 sm:p-5 border-b border-slate-100 bg-white shrink-0 text-center">
         <h2 className="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900">
           {title}
         </h2>
-        <p className="text-xs text-slate-500 font-medium mt-1">{subtitle}</p>
+        <p className="text-xs text-slate-400 font-medium mt-1">{subtitle}</p>
       </div>
 
-      {/* 2. Single Box Message Thread (No Nested Inner Border) */}
+      {/* 2. Message Thread inside the single box */}
       <div className="flex-1 min-h-0 overflow-y-auto space-y-3.5 p-4 sm:p-6 custom-scrollbar bg-white">
         {messages.length === 0 && (
           <div className="h-full flex items-center justify-center text-xs text-slate-400 py-10">
@@ -295,10 +295,10 @@ export function AnimatedAIChat({
                 <MentorGirlAvatar size="sm" />
               )}
               <div
-                className={`rounded-md px-4 py-2.5 text-xs sm:text-sm leading-relaxed ${
+                className={`rounded-none px-4 py-2.5 text-xs sm:text-sm leading-relaxed ${
                   m.role === "user"
                     ? "bg-gradient-to-r from-[#6D28D9] to-[#7C3AED] text-white font-medium shadow-xs"
-                    : "bg-slate-50 text-slate-800 border border-slate-200/80 shadow-2xs"
+                    : "bg-[#F8F9FD] text-slate-800 border border-slate-200/80 shadow-2xs"
                 }`}
               >
                 {m.content}
@@ -315,7 +315,7 @@ export function AnimatedAIChat({
           >
             <div className="flex items-center gap-2.5">
               <MentorGirlAvatar size="sm" isThinking={true} />
-              <div className="flex items-center gap-2 rounded-md bg-slate-50 border border-slate-200/80 px-4 py-2.5 shadow-2xs">
+              <div className="flex items-center gap-2 rounded-none bg-[#F8F9FD] border border-slate-200/80 px-4 py-2.5 shadow-2xs">
                 <span className="text-xs text-slate-500 font-medium mr-1">Typing</span>
                 <LoaderOne dotClassName="h-2 w-2 bg-[#7C3AED]" />
               </div>
@@ -325,14 +325,14 @@ export function AnimatedAIChat({
         <div ref={messagesEndRef} />
       </div>
 
-      {/* 3. Integrated Input Footer (Directly attached inside the single box) */}
-      <div className="shrink-0 border-t border-slate-200 bg-slate-50/60 p-3 sm:p-4 rounded-b-md">
-        <div className="relative rounded-md border border-slate-300 bg-white shadow-2xs focus-within:border-[#7C3AED] focus-within:ring-1 focus-within:ring-[#7C3AED]">
+      {/* 3. Integrated Input inside the same box */}
+      <div className="shrink-0 p-3 sm:p-4 bg-white border-t border-slate-100">
+        <div className="relative rounded-none border border-slate-200 bg-[#F8F9FD]/50 focus-within:bg-white focus-within:border-[#7C3AED] focus-within:ring-1 focus-within:ring-[#7C3AED] transition-all shadow-2xs">
           <AnimatePresence>
             {showCommandPalette && (
               <motion.div
                 ref={commandPaletteRef}
-                className="absolute left-2 right-2 bottom-full mb-2 bg-white rounded-md z-50 shadow-xl border border-slate-200 overflow-hidden"
+                className="absolute left-0 right-0 bottom-full mb-2 bg-white rounded-none z-50 shadow-xl border border-slate-200 overflow-hidden"
                 initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 5 }}
@@ -364,7 +364,7 @@ export function AnimatedAIChat({
             )}
           </AnimatePresence>
 
-          <div className="p-2">
+          <div className="p-2.5">
             <Textarea
               ref={textareaRef}
               value={value}
@@ -375,7 +375,7 @@ export function AnimatedAIChat({
               onKeyDown={handleKeyDown}
               placeholder="Ask AI mentor or type /..."
               containerClassName="w-full"
-              className="w-full px-2 py-1 resize-none bg-transparent border-none text-slate-900 text-xs sm:text-sm focus:outline-none placeholder:text-slate-400 min-h-[44px]"
+              className="w-full px-1.5 py-1 resize-none bg-transparent border-none text-slate-900 text-xs sm:text-sm focus:outline-none placeholder:text-slate-400 min-h-[44px]"
             />
           </div>
 
@@ -390,7 +390,7 @@ export function AnimatedAIChat({
                 {attachments.map((file, index) => (
                   <motion.div
                     key={index}
-                    className="flex items-center gap-1.5 text-xs bg-purple-50 text-[#7C3AED] border border-purple-200/70 py-1 px-2.5 rounded-sm font-medium"
+                    className="flex items-center gap-1.5 text-xs bg-purple-50 text-[#7C3AED] border border-purple-200/70 py-1 px-2.5 rounded-none font-medium"
                   >
                     <span>{file}</span>
                     <button
@@ -406,7 +406,10 @@ export function AnimatedAIChat({
             )}
           </AnimatePresence>
 
-          <div className="p-2 border-t border-slate-100 flex items-center justify-end bg-slate-50/40 rounded-b-md">
+          <div className="px-3 py-2 border-t border-slate-100/80 flex items-center justify-between bg-transparent">
+            <span className="text-[10px] text-slate-400 font-mono hidden sm:inline">
+              Press Enter ↵ to send • Type / for commands
+            </span>
             <motion.button
               type="button"
               onClick={handleSendMessage}
@@ -414,9 +417,9 @@ export function AnimatedAIChat({
               whileTap={{ scale: 0.97 }}
               disabled={loading || !value.trim()}
               className={cn(
-                "px-4 py-1.5 rounded-sm text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs",
+                "ml-auto px-4 py-1.5 rounded-none text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs",
                 value.trim() && !loading
-                  ? "bg-gradient-to-r from-[#6D28D9] to-[#7C3AED] text-white hover:opacity-95"
+                  ? "bg-gradient-to-r from-[#6D28D9] via-[#7C3AED] to-[#8B5CF6] text-white hover:opacity-95"
                   : "bg-slate-100 text-slate-400 cursor-not-allowed"
               )}
             >

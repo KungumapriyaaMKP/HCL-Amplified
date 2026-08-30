@@ -251,7 +251,7 @@ export default function GoalSetupPage() {
 
         {/* STEP A: Intake Chat (Animated AI Chat) */}
         {goal.status === "intake" && (
-          <div className="flex-1 flex flex-col overflow-hidden rounded-md border border-slate-200/90 bg-white shadow-sm min-h-0">
+          <div className="flex-1 flex flex-col overflow-hidden rounded-none border border-slate-200 bg-white shadow-xs min-h-[460px]">
             <AnimatedAIChat
               title="How can I help with your learning goal?"
               subtitle="Our AI mentor is calibrating your skill vector. Type your reply below."
