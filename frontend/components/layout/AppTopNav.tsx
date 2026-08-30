@@ -13,6 +13,7 @@ import {
   IconChevronDown,
   IconChevronRight,
 } from "@tabler/icons-react";
+import { NotificationDropdown } from "@/frontend/components/notifications/NotificationDropdown";
 
 interface AppTopNavProps {
   displayName?: string;
@@ -63,14 +64,8 @@ export function AppTopNav({
             </kbd>
           </div>
 
-          {/* Notification Bell */}
-          <button
-            aria-label="Notifications"
-            className="relative flex h-10 w-10 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50 transition-colors"
-          >
-            <IconBell className="h-4 w-4" />
-            <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-white" />
-          </button>
+          {/* Notification Bell Dropdown */}
+          <NotificationDropdown />
 
           {/* Flame Quick Pill */}
           <div className="flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-2 shadow-sm">
