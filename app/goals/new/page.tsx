@@ -10,6 +10,9 @@ import {
   IconArrowLeft,
   IconLayoutGrid,
   IconClock,
+  IconSchool,
+  IconBuildingSkyscraper,
+  IconSparkles,
 } from "@tabler/icons-react";
 
 /* -------------------------------------------------------------------------
@@ -125,6 +128,8 @@ function CybersecurityBadge() {
     </div>
   );
 }
+
+/* ---------------- Corporate & HCLTech Enterprise Badges ---------------- */
 
 function GenAiBadge() {
   return (
@@ -253,7 +258,6 @@ function MainframeBadge() {
         <circle cx="14" cy="18" r="1.5" fill="#34D399" />
         <line x1="18" y1="14" x2="21" y2="14" stroke="#94A3B8" strokeWidth="1.5" />
         <line x1="18" y1="18" x2="21" y2="18" stroke="#94A3B8" strokeWidth="1.5" />
-        {/* Migration arrow to cloud */}
         <path d="M24 24 L29 24 M29 24 L27 21 M29 24 L27 27" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         <path d="M32 20 C32 17.8, 33.8 16, 36 16 C37.8 16, 39.3 17.2, 39.8 18.8 C41 19, 42 20, 42 21.5 C42 23 41 24, 39.5 24 L32 24 Z" fill="#60A5FA" />
       </svg>
@@ -281,9 +285,7 @@ function GameDevBadge() {
     <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#FCE7F3] flex items-center justify-center shrink-0">
       <svg viewBox="0 0 48 48" fill="none" className="w-9 h-9" xmlns="http://www.w3.org/2000/svg">
         <rect x="10" y="16" width="28" height="16" rx="8" fill="#BE185D" />
-        {/* D-pad */}
         <path d="M16 21 V27 M13 24 H19" stroke="#FBCFE8" strokeWidth="2" strokeLinecap="round" />
-        {/* Action buttons */}
         <circle cx="30" cy="22" r="1.5" fill="#FBCFE8" />
         <circle cx="34" cy="25" r="1.5" fill="#FBCFE8" />
       </svg>
@@ -310,176 +312,234 @@ interface DomainOption {
   id: string;
   name: string;
   description: string;
+  category: "student" | "corporate";
   badge: React.ReactNode;
   arrowBorderColor: string;
   arrowTextColor: string;
   arrowHoverBg: string;
+  pillText: string;
+  pillColor: string;
 }
 
 const DOMAIN_OPTIONS: DomainOption[] = [
+  /* ================= 1. STUDENT & FOUNDATIONAL TRACKS ================= */
   {
     id: "web-dev",
     name: "Web Development",
-    description: "Build websites and full-stack web applications from scratch.",
+    description: "Build reactive user interfaces, Next.js apps, and full-stack web architectures.",
+    category: "student",
     badge: <WebDevBadge />,
     arrowBorderColor: "border-purple-300",
     arrowTextColor: "text-purple-600",
     arrowHoverBg: "group-hover:bg-purple-50",
+    pillText: "Student Track",
+    pillColor: "bg-purple-50 text-purple-700 border-purple-200",
   },
   {
     id: "data-science",
     name: "Data Science",
-    description: "Analyze data, build models, and extract valuable business insights.",
+    description: "Analyze datasets, build predictive models, and extract high-value insights.",
+    category: "student",
     badge: <DataScienceBadge />,
     arrowBorderColor: "border-sky-300",
     arrowTextColor: "text-sky-600",
     arrowHoverBg: "group-hover:bg-sky-50",
+    pillText: "Student Track",
+    pillColor: "bg-sky-50 text-sky-700 border-sky-200",
   },
   {
     id: "ai-ml",
     name: "AI & Machine Learning",
-    description: "Train neural networks, deep learning models, and smart systems.",
+    description: "Train neural networks, deep learning models, and smart autonomous systems.",
+    category: "student",
     badge: <AiMlBadge />,
     arrowBorderColor: "border-emerald-300",
     arrowTextColor: "text-emerald-600",
     arrowHoverBg: "group-hover:bg-emerald-50",
-  },
-  {
-    id: "cloud-devops",
-    name: "Cloud & DevOps",
-    description: "Deploy, automate and scale infrastructure across AWS, Azure & GCP.",
-    badge: <CloudDevOpsBadge />,
-    arrowBorderColor: "border-amber-300",
-    arrowTextColor: "text-amber-600",
-    arrowHoverBg: "group-hover:bg-amber-50",
+    pillText: "Student Track",
+    pillColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
   },
   {
     id: "mobile-dev",
     name: "Mobile Development",
     description: "Create modern iOS and Android apps with Flutter, React Native & Swift.",
+    category: "student",
     badge: <MobileDevBadge />,
     arrowBorderColor: "border-pink-300",
     arrowTextColor: "text-pink-600",
     arrowHoverBg: "group-hover:bg-pink-50",
+    pillText: "Student Track",
+    pillColor: "bg-pink-50 text-pink-700 border-pink-200",
+  },
+  {
+    id: "cloud-devops",
+    name: "Cloud & DevOps",
+    description: "Deploy, automate and scale infrastructure across AWS, Azure & Docker.",
+    category: "student",
+    badge: <CloudDevOpsBadge />,
+    arrowBorderColor: "border-amber-300",
+    arrowTextColor: "text-amber-600",
+    arrowHoverBg: "group-hover:bg-amber-50",
+    pillText: "Student Track",
+    pillColor: "bg-amber-50 text-amber-700 border-amber-200",
   },
   {
     id: "cybersecurity",
-    name: "Cybersecurity",
-    description: "Defend systems, audit security postures, and implement zero-trust.",
+    name: "Cybersecurity Fundamentals",
+    description: "Defend systems, audit security postures, and implement zero-trust defense.",
+    category: "student",
     badge: <CybersecurityBadge />,
     arrowBorderColor: "border-indigo-300",
     arrowTextColor: "text-indigo-600",
     arrowHoverBg: "group-hover:bg-indigo-50",
-  },
-  // Corporate & HCLTech Enterprise Engineering Domains
-  {
-    id: "gen-ai",
-    name: "Generative AI & Enterprise LLMs",
-    description: "Build enterprise RAG pipelines, fine-tune models, and deploy AI agents.",
-    badge: <GenAiBadge />,
-    arrowBorderColor: "border-fuchsia-300",
-    arrowTextColor: "text-fuchsia-600",
-    arrowHoverBg: "group-hover:bg-fuchsia-50",
-  },
-  {
-    id: "data-engineering",
-    name: "Data Engineering & Big Data",
-    description: "Design scalable pipelines with Spark, Databricks, Snowflake & Kafka.",
-    badge: <DataEngineeringBadge />,
-    arrowBorderColor: "border-teal-300",
-    arrowTextColor: "text-teal-600",
-    arrowHoverBg: "group-hover:bg-teal-50",
-  },
-  {
-    id: "enterprise-fullstack",
-    name: "Enterprise Java & Microservices",
-    description: "Scale high-throughput backends with Spring Boot, Docker & distributed systems.",
-    badge: <EnterpriseFullStackBadge />,
-    arrowBorderColor: "border-indigo-300",
-    arrowTextColor: "text-indigo-600",
-    arrowHoverBg: "group-hover:bg-indigo-50",
-  },
-  {
-    id: "embedded-iot",
-    name: "IoT & Embedded Engineering",
-    description: "Smart device firmware, automotive sensors, RTOS & edge computing (ERS).",
-    badge: <EmbeddedIotBadge />,
-    arrowBorderColor: "border-yellow-300",
-    arrowTextColor: "text-yellow-600",
-    arrowHoverBg: "group-hover:bg-yellow-50",
-  },
-  {
-    id: "sre-observability",
-    name: "SRE & Cloud Observability",
-    description: "Zero-downtime reliability, Prometheus telemetry, CI/CD & incident mitigation.",
-    badge: <SreBadge />,
-    arrowBorderColor: "border-rose-300",
-    arrowTextColor: "text-rose-600",
-    arrowHoverBg: "group-hover:bg-rose-50",
-  },
-  {
-    id: "product-management",
-    name: "Digital Product Management",
-    description: "Agile product roadmapping, sprint delivery, corporate KPIs & analytics.",
-    badge: <ProductManagementBadge />,
-    arrowBorderColor: "border-orange-300",
-    arrowTextColor: "text-orange-600",
-    arrowHoverBg: "group-hover:bg-orange-50",
-  },
-  // Specialized & Modern Tech Domains
-  {
-    id: "qa-test-automation",
-    name: "QA & Test Automation",
-    description: "Selenium, Playwright, automated regression testing & performance suites.",
-    badge: <QaAutomationBadge />,
-    arrowBorderColor: "border-emerald-300",
-    arrowTextColor: "text-emerald-600",
-    arrowHoverBg: "group-hover:bg-emerald-50",
+    pillText: "Student Track",
+    pillColor: "bg-indigo-50 text-indigo-700 border-indigo-200",
   },
   {
     id: "blockchain-web3",
     name: "Blockchain & Web3",
     description: "Smart contracts, Solidity, cryptographic protocols, and dApps.",
+    category: "student",
     badge: <BlockchainBadge />,
     arrowBorderColor: "border-purple-300",
     arrowTextColor: "text-purple-600",
     arrowHoverBg: "group-hover:bg-purple-50",
-  },
-  {
-    id: "mainframe-modernization",
-    name: "Mainframe & Cloud Migration",
-    description: "COBOL modernization, IBM z/OS integration, and enterprise cloud bridging.",
-    badge: <MainframeBadge />,
-    arrowBorderColor: "border-slate-400",
-    arrowTextColor: "text-slate-700",
-    arrowHoverBg: "group-hover:bg-slate-100",
-  },
-  {
-    id: "sap-enterprise-erp",
-    name: "SAP & Enterprise ERP",
-    description: "SAP S/4HANA implementation, ABAP programming, and supply chain ERP.",
-    badge: <SapErpBadge />,
-    arrowBorderColor: "border-blue-300",
-    arrowTextColor: "text-blue-600",
-    arrowHoverBg: "group-hover:bg-blue-50",
+    pillText: "Student Track",
+    pillColor: "bg-purple-50 text-purple-700 border-purple-200",
   },
   {
     id: "game-dev",
     name: "Game Engine & 3D Simulation",
     description: "Unity, Unreal Engine 5, C# scripts, 3D physics pipelines & rendering.",
+    category: "student",
     badge: <GameDevBadge />,
     arrowBorderColor: "border-pink-300",
     arrowTextColor: "text-pink-600",
     arrowHoverBg: "group-hover:bg-pink-50",
+    pillText: "Student Track",
+    pillColor: "bg-pink-50 text-pink-700 border-pink-200",
   },
   {
     id: "ui-ux-design",
     name: "UI/UX & Design Systems",
-    description: "Figma master components, design tokens, usability testing & micro-interactions.",
+    description: "Figma master components, design tokens, usability testing & prototyping.",
+    category: "student",
     badge: <UiUxDesignBadge />,
     arrowBorderColor: "border-fuchsia-300",
     arrowTextColor: "text-fuchsia-600",
     arrowHoverBg: "group-hover:bg-fuchsia-50",
+    pillText: "Student Track",
+    pillColor: "bg-fuchsia-50 text-fuchsia-700 border-fuchsia-200",
+  },
+
+  /* ================= 2. CORPORATE & HCL ENTERPRISE TRACKS ================= */
+  {
+    id: "gen-ai",
+    name: "Generative AI & Enterprise LLMs",
+    description: "Build enterprise RAG pipelines, fine-tune models, and deploy AI agents (HCLTech AI Force).",
+    category: "corporate",
+    badge: <GenAiBadge />,
+    arrowBorderColor: "border-fuchsia-300",
+    arrowTextColor: "text-fuchsia-600",
+    arrowHoverBg: "group-hover:bg-fuchsia-50",
+    pillText: "HCL / Corporate",
+    pillColor: "bg-fuchsia-50 text-fuchsia-800 border-fuchsia-300 font-bold",
+  },
+  {
+    id: "data-engineering",
+    name: "Data Engineering & Big Data",
+    description: "Design scalable pipelines with Spark, Databricks, Snowflake & real-time Kafka streaming.",
+    category: "corporate",
+    badge: <DataEngineeringBadge />,
+    arrowBorderColor: "border-teal-300",
+    arrowTextColor: "text-teal-600",
+    arrowHoverBg: "group-hover:bg-teal-50",
+    pillText: "HCL / Corporate",
+    pillColor: "bg-teal-50 text-teal-800 border-teal-300 font-bold",
+  },
+  {
+    id: "enterprise-fullstack",
+    name: "Enterprise Java & Microservices",
+    description: "Scale high-throughput backends with Spring Boot, Docker & distributed enterprise systems.",
+    category: "corporate",
+    badge: <EnterpriseFullStackBadge />,
+    arrowBorderColor: "border-indigo-300",
+    arrowTextColor: "text-indigo-600",
+    arrowHoverBg: "group-hover:bg-indigo-50",
+    pillText: "HCL / Corporate",
+    pillColor: "bg-indigo-50 text-indigo-800 border-indigo-300 font-bold",
+  },
+  {
+    id: "embedded-iot",
+    name: "IoT & Embedded Engineering",
+    description: "Smart device firmware, automotive sensors, RTOS & edge computing (HCLTech ERS).",
+    category: "corporate",
+    badge: <EmbeddedIotBadge />,
+    arrowBorderColor: "border-yellow-300",
+    arrowTextColor: "text-yellow-600",
+    arrowHoverBg: "group-hover:bg-yellow-50",
+    pillText: "HCL / Corporate",
+    pillColor: "bg-yellow-50 text-yellow-800 border-yellow-300 font-bold",
+  },
+  {
+    id: "sre-observability",
+    name: "SRE & Cloud Observability",
+    description: "Zero-downtime reliability, Prometheus telemetry, CI/CD & enterprise incident mitigation.",
+    category: "corporate",
+    badge: <SreBadge />,
+    arrowBorderColor: "border-rose-300",
+    arrowTextColor: "text-rose-600",
+    arrowHoverBg: "group-hover:bg-rose-50",
+    pillText: "HCL / Corporate",
+    pillColor: "bg-rose-50 text-rose-800 border-rose-300 font-bold",
+  },
+  {
+    id: "qa-test-automation",
+    name: "QA & Test Automation",
+    description: "Selenium, Playwright, automated regression testing & performance test suites.",
+    category: "corporate",
+    badge: <QaAutomationBadge />,
+    arrowBorderColor: "border-emerald-300",
+    arrowTextColor: "text-emerald-600",
+    arrowHoverBg: "group-hover:bg-emerald-50",
+    pillText: "HCL / Corporate",
+    pillColor: "bg-emerald-50 text-emerald-800 border-emerald-300 font-bold",
+  },
+  {
+    id: "mainframe-modernization",
+    name: "Mainframe & Cloud Migration",
+    description: "COBOL modernization, IBM z/OS integration, and enterprise hybrid cloud bridging.",
+    category: "corporate",
+    badge: <MainframeBadge />,
+    arrowBorderColor: "border-slate-400",
+    arrowTextColor: "text-slate-700",
+    arrowHoverBg: "group-hover:bg-slate-100",
+    pillText: "HCL / Corporate",
+    pillColor: "bg-slate-100 text-slate-800 border-slate-300 font-bold",
+  },
+  {
+    id: "sap-enterprise-erp",
+    name: "SAP & Enterprise ERP",
+    description: "SAP S/4HANA implementation, ABAP programming, and supply chain enterprise ERP.",
+    category: "corporate",
+    badge: <SapErpBadge />,
+    arrowBorderColor: "border-blue-300",
+    arrowTextColor: "text-blue-600",
+    arrowHoverBg: "group-hover:bg-blue-50",
+    pillText: "HCL / Corporate",
+    pillColor: "bg-blue-50 text-blue-800 border-blue-300 font-bold",
+  },
+  {
+    id: "product-management",
+    name: "Digital Product Management",
+    description: "Agile product roadmapping, sprint delivery, corporate KPIs & business analytics.",
+    category: "corporate",
+    badge: <ProductManagementBadge />,
+    arrowBorderColor: "border-orange-300",
+    arrowTextColor: "text-orange-600",
+    arrowHoverBg: "group-hover:bg-orange-50",
+    pillText: "HCL / Corporate",
+    pillColor: "bg-orange-50 text-orange-800 border-orange-300 font-bold",
   },
 ];
 
@@ -489,6 +549,7 @@ function NewGoalForm() {
   const domainQuery = searchParams?.get("domain");
 
   const [step, setStep] = useState(0);
+  const [activeTab, setActiveTab] = useState<"all" | "student" | "corporate">("all");
   const [domain, setDomain] = useState<string>("web-dev");
   const [trackPace, setTrackPace] = useState<string>("balanced");
   const [goalText, setGoalText] = useState("");
@@ -524,6 +585,9 @@ function NewGoalForm() {
     { num: 2, label: "Details" },
     { num: 3, label: "Confirm" },
   ];
+
+  const studentDomains = DOMAIN_OPTIONS.filter((d) => d.category === "student");
+  const corporateDomains = DOMAIN_OPTIONS.filter((d) => d.category === "corporate");
 
   return (
     <div className="flex min-h-screen bg-[#F8F9FD] text-slate-900 font-sans">
@@ -612,60 +676,181 @@ function NewGoalForm() {
 
         </div>
 
-        {/* ================= STEP 0: 18 DOMAIN SELECTION CARDS ================= */}
+        {/* ================= STEP 0: 2 SECTIONS (STUDENT & CORPORATE) ================= */}
         {step === 0 && (
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-xs">
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-xs space-y-7">
             
-            {/* Header inside Card */}
-            <div className="flex items-center gap-3.5 mb-6 pb-4 border-b border-slate-100/80">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 text-[#6D28D9] border border-purple-100 shadow-2xs shrink-0">
-                <IconLayoutGrid className="h-5 w-5 stroke-[2.2]" />
+            {/* Top Bar inside Card: Heading + Interactive Track Switcher */}
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-5 border-b border-slate-100/90">
+              <div className="flex items-center gap-3.5">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 text-[#6D28D9] border border-purple-100 shadow-2xs shrink-0">
+                  <IconLayoutGrid className="h-5 w-5 stroke-[2.2]" />
+                </div>
+                <div>
+                  <h2 className="text-base sm:text-lg font-black text-slate-900 leading-tight">
+                    Select Discipline & Career Track
+                  </h2>
+                  <p className="text-xs text-slate-500 font-medium mt-0.5">
+                    Explore student foundations or specialized enterprise corporate tracks
+                  </p>
+                </div>
               </div>
-              <div>
-                <h2 className="text-base sm:text-lg font-black text-slate-900 leading-tight">
-                  Select Domain
-                </h2>
-                <p className="text-xs text-slate-500 font-medium mt-0.5">
-                  Choose a discipline to master or select an enterprise corporate engineering track
-                </p>
+
+              {/* Interactive Section Switcher Tabs */}
+              <div className="inline-flex items-center p-1 bg-slate-100/90 rounded-xl border border-slate-200/80 shrink-0 self-start md:self-auto">
+                <button
+                  onClick={() => setActiveTab("all")}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    activeTab === "all"
+                      ? "bg-white text-slate-900 shadow-xs"
+                      : "text-slate-500 hover:text-slate-800"
+                  }`}
+                >
+                  <IconSparkles className="w-3.5 h-3.5 text-purple-600" />
+                  <span>All Tracks ({DOMAIN_OPTIONS.length})</span>
+                </button>
+                <button
+                  onClick={() => setActiveTab("student")}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    activeTab === "student"
+                      ? "bg-white text-[#6D28D9] shadow-xs"
+                      : "text-slate-500 hover:text-slate-800"
+                  }`}
+                >
+                  <IconSchool className="w-3.5 h-3.5 text-purple-600" />
+                  <span>Student Focus ({studentDomains.length})</span>
+                </button>
+                <button
+                  onClick={() => setActiveTab("corporate")}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    activeTab === "corporate"
+                      ? "bg-white text-indigo-700 shadow-xs"
+                      : "text-slate-500 hover:text-slate-800"
+                  }`}
+                >
+                  <IconBuildingSkyscraper className="w-3.5 h-3.5 text-indigo-600" />
+                  <span>Corporate Focus ({corporateDomains.length})</span>
+                </button>
               </div>
             </div>
 
-            {/* 18 Domain Cards Grid - 3 Columns Layout */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {DOMAIN_OPTIONS.map((d) => {
-                return (
-                  <div
-                    key={d.id}
-                    onClick={() => {
-                      setDomain(d.id);
-                      setStep(1);
-                    }}
-                    className="group relative flex items-center justify-between gap-4 rounded-xl border border-slate-200/90 bg-white p-4.5 sm:p-5 hover:border-purple-300 hover:shadow-md transition-all duration-200 cursor-pointer min-h-[110px]"
-                  >
-                    {/* Left: Circular Icon Avatar */}
-                    {d.badge}
-
-                    {/* Middle: Title & Description */}
-                    <div className="flex-1 min-w-0 pr-1">
-                      <div className="text-sm sm:text-[15px] font-extrabold text-slate-900 group-hover:text-[#6D28D9] transition-colors leading-snug">
-                        {d.name}
-                      </div>
-                      <div className="mt-1 text-xs text-slate-500 font-normal leading-relaxed line-clamp-2">
-                        {d.description}
-                      </div>
+            {/* ---------------- SECTION 1: STUDENT FOCUS COURSES ---------------- */}
+            {(activeTab === "all" || activeTab === "student") && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-purple-100/70 text-[#6D28D9] font-bold text-xs">
+                      🎓
                     </div>
-
-                    {/* Right: Outline Circular Arrow Button */}
-                    <div
-                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border ${d.arrowBorderColor} ${d.arrowTextColor} ${d.arrowHoverBg} bg-white transition-transform duration-200 group-hover:translate-x-1 shadow-2xs`}
-                    >
-                      <IconArrowRight className="h-4 w-4 stroke-[2.5]" />
+                    <div>
+                      <h3 className="text-sm sm:text-[15px] font-black text-slate-900 flex items-center gap-2">
+                        <span>Student & Core Foundations</span>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-50 text-[#6D28D9] border border-purple-200">
+                          {studentDomains.length} Programs
+                        </span>
+                      </h3>
+                      <p className="text-[11px] text-slate-500 font-medium">
+                        Career-starting curricula, software fundamentals, and practical project tracks
+                      </p>
                     </div>
                   </div>
-                );
-              })}
-            </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                  {studentDomains.map((d) => (
+                    <div
+                      key={d.id}
+                      onClick={() => {
+                        setDomain(d.id);
+                        setStep(1);
+                      }}
+                      className="group relative flex items-center justify-between gap-4 rounded-xl border border-slate-200/90 bg-white p-4.5 sm:p-5 hover:border-purple-300 hover:shadow-md transition-all duration-200 cursor-pointer min-h-[110px]"
+                    >
+                      {/* Left: Circular Icon Avatar */}
+                      {d.badge}
+
+                      {/* Middle: Title & Description */}
+                      <div className="flex-1 min-w-0 pr-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm sm:text-[15px] font-extrabold text-slate-900 group-hover:text-[#6D28D9] transition-colors leading-snug">
+                            {d.name}
+                          </span>
+                        </div>
+                        <div className="mt-1 text-xs text-slate-500 font-normal leading-relaxed line-clamp-2">
+                          {d.description}
+                        </div>
+                      </div>
+
+                      {/* Right: Outline Circular Arrow Button */}
+                      <div
+                        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border ${d.arrowBorderColor} ${d.arrowTextColor} ${d.arrowHoverBg} bg-white transition-transform duration-200 group-hover:translate-x-1 shadow-2xs`}
+                      >
+                        <IconArrowRight className="h-4 w-4 stroke-[2.5]" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* ---------------- SECTION 2: CORPORATE & HCLTECH FOCUS COURSES ---------------- */}
+            {(activeTab === "all" || activeTab === "corporate") && (
+              <div className="space-y-4 pt-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-100/70 text-indigo-700 font-bold text-xs">
+                      🏢
+                    </div>
+                    <div>
+                      <h3 className="text-sm sm:text-[15px] font-black text-slate-900 flex items-center gap-2">
+                        <span>Corporate & Enterprise Engineering</span>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">
+                          HCLTech & Enterprise Focus
+                        </span>
+                      </h3>
+                      <p className="text-[11px] text-slate-500 font-medium">
+                        Production microservices, GenAI force, ERP, SRE reliability & industrial embedded systems
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                  {corporateDomains.map((d) => (
+                    <div
+                      key={d.id}
+                      onClick={() => {
+                        setDomain(d.id);
+                        setStep(1);
+                      }}
+                      className="group relative flex items-center justify-between gap-4 rounded-xl border border-slate-200/90 bg-white p-4.5 sm:p-5 hover:border-indigo-300 hover:shadow-md transition-all duration-200 cursor-pointer min-h-[110px]"
+                    >
+                      {/* Left: Circular Icon Avatar */}
+                      {d.badge}
+
+                      {/* Middle: Title & Description */}
+                      <div className="flex-1 min-w-0 pr-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm sm:text-[15px] font-extrabold text-slate-900 group-hover:text-indigo-700 transition-colors leading-snug">
+                            {d.name}
+                          </span>
+                        </div>
+                        <div className="mt-1 text-xs text-slate-500 font-normal leading-relaxed line-clamp-2">
+                          {d.description}
+                        </div>
+                      </div>
+
+                      {/* Right: Outline Circular Arrow Button */}
+                      <div
+                        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border ${d.arrowBorderColor} ${d.arrowTextColor} ${d.arrowHoverBg} bg-white transition-transform duration-200 group-hover:translate-x-1 shadow-2xs`}
+                      >
+                        <IconArrowRight className="h-4 w-4 stroke-[2.5]" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
           </div>
         )}
