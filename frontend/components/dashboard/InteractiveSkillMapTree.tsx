@@ -172,7 +172,7 @@ export function InteractiveSkillMapTree({
       {/* SVG Topology Graph with Dynamic Course Skills */}
       <div className="relative w-full overflow-x-auto my-2">
         <svg
-          viewBox="0 0 680 180"
+          viewBox="-20 0 710 180"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           className="w-full h-auto min-w-[640px] select-none"
@@ -189,7 +189,7 @@ export function InteractiveSkillMapTree({
           </defs>
 
           {/* Connected Pathways */}
-          <line x1="70" y1="85" x2="160" y2="85" stroke={line1Color} strokeWidth="3" strokeLinecap="round" />
+          <line x1="85" y1="85" x2="160" y2="85" stroke={line1Color} strokeWidth="3" strokeLinecap="round" />
           <line x1="200" y1="85" x2="275" y2="85" stroke={line2Color} strokeWidth="3" strokeLinecap="round" />
 
           {/* Upper Branch */}
@@ -214,7 +214,7 @@ export function InteractiveSkillMapTree({
           <line x1="480" y1="125" x2="580" y2="125" stroke={line5Color} strokeWidth="2.5" strokeLinecap="round" />
 
           {/* NODE 1 */}
-          {renderNodeVisual(n1, 50, 85)}
+          {renderNodeVisual(n1, 65, 85)}
 
           {/* NODE 2 */}
           {renderNodeVisual(n2, 180, 85)}
