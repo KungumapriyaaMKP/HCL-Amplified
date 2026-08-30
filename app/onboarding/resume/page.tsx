@@ -62,22 +62,22 @@ function ResumeOnboarding() {
         <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-purple-200/50 blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-indigo-100/60 blur-3xl pointer-events-none" />
 
-        <div className="w-full max-w-[560px] bg-white rounded-3xl p-8 sm:p-10 shadow-[0_20px_50px_rgba(79,70,229,0.06)] border border-slate-100 text-center relative z-10">
-          <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-purple-50 text-[#7C3AED] mb-4 shadow-xs">
+        <div className="w-full max-w-[560px] bg-white rounded-none p-8 sm:p-10 shadow-[0_20px_50px_rgba(79,70,229,0.06)] border border-slate-200 text-center relative z-10">
+          <div className="inline-flex h-16 w-16 items-center justify-center rounded-none bg-purple-50 text-[#7C3AED] mb-4 shadow-xs">
             <IconCheck className="h-8 w-8" />
           </div>
           <h1 className="text-2xl font-black text-slate-900 tracking-tight">Experience Profile Calibrated</h1>
           <p className="mt-2 text-xs text-slate-500 leading-relaxed max-w-md mx-auto">{result.extraction.summary}</p>
           
           {result.seededCount > 0 && (
-            <div className="my-5 rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4 text-xs font-bold text-emerald-700">
+            <div className="my-5 rounded-none border border-emerald-200 bg-emerald-50/70 p-4 text-xs font-bold text-emerald-700">
               {result.seededCount} Skill{result.seededCount === 1 ? "" : "s"} already credited toward your profile.
             </div>
           )}
 
           <button
             onClick={() => router.push(next)}
-            className="w-full mt-4 py-3.5 rounded-xl bg-gradient-to-r from-[#6366F1] via-[#7C3AED] to-[#A855F7] text-white text-xs font-bold shadow-md shadow-purple-500/20 hover:opacity-95 hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full mt-4 py-3.5 rounded-none bg-gradient-to-r from-[#6366F1] via-[#7C3AED] to-[#A855F7] text-white text-xs font-bold shadow-md shadow-purple-500/20 hover:opacity-95 hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
             <span>Enter Dashboard</span>
             <IconArrowRight className="h-4 w-4" />
@@ -111,12 +111,12 @@ function ResumeOnboarding() {
       </div>
 
       {/* Main Calibration Card */}
-      <div className="w-full max-w-[560px] bg-white rounded-3xl p-8 sm:p-10 shadow-[0_20px_50px_rgba(79,70,229,0.06)] border border-slate-100 relative z-10 space-y-6">
+      <div className="w-full max-w-[560px] bg-white rounded-none p-8 sm:p-10 shadow-[0_20px_50px_rgba(79,70,229,0.06)] border border-slate-200 relative z-10 space-y-6">
         
         {/* Top Header Section */}
         <div className="text-center">
           {/* Badge Icon */}
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#F4EFFF] text-[#7C3AED] mx-auto shadow-xs">
+          <div className="flex h-14 w-14 items-center justify-center rounded-none bg-[#F4EFFF] text-[#7C3AED] mx-auto shadow-xs border border-purple-100">
             <IconFileText className="h-7 w-7" />
           </div>
 
@@ -145,7 +145,7 @@ function ResumeOnboarding() {
           />
           <label
             htmlFor="resume-file"
-            className="block rounded-2xl border-2 border-dashed border-[#DDD6FE] bg-[#FAF8FF] hover:bg-[#F5F0FF] p-6 text-center transition-all cursor-pointer group"
+            className="block rounded-none border-2 border-dashed border-[#DDD6FE] bg-[#FAF8FF] hover:bg-[#F5F0FF] p-6 text-center transition-all cursor-pointer group"
           >
             <IconCloudUpload className="h-9 w-9 text-[#7C3AED] mx-auto mb-1.5 group-hover:scale-105 transition-transform" />
             <div className="text-xs font-bold text-slate-800">
@@ -173,7 +173,7 @@ function ResumeOnboarding() {
               CURRENT ROLE / SPECIALIZATION
             </label>
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#F5F3FF] text-[#7C3AED] shrink-0">
+              <div className="flex h-10 w-10 items-center justify-center rounded-none bg-[#F5F3FF] text-[#7C3AED] shrink-0 border border-purple-100">
                 <IconBriefcase className="h-5 w-5" />
               </div>
               <input
@@ -181,7 +181,7 @@ function ResumeOnboarding() {
                 value={currentRole}
                 onChange={(e) => setCurrentRole(e.target.value)}
                 placeholder="e.g. Frontend Engineer"
-                className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] focus:outline-none transition-all shadow-2xs"
+                className="w-full rounded-none border border-slate-200 bg-white px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] focus:outline-none transition-all shadow-2xs"
               />
             </div>
           </div>
@@ -192,7 +192,7 @@ function ResumeOnboarding() {
               CAREER OBJECTIVE
             </label>
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#F5F3FF] text-[#7C3AED] shrink-0">
+              <div className="flex h-10 w-10 items-center justify-center rounded-none bg-[#F5F3FF] text-[#7C3AED] shrink-0 border border-purple-100">
                 <IconTarget className="h-5 w-5" />
               </div>
               <input
@@ -200,7 +200,7 @@ function ResumeOnboarding() {
                 value={careerGoal}
                 onChange={(e) => setCareerGoal(e.target.value)}
                 placeholder="e.g. Senior Distributed AI Architect"
-                className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] focus:outline-none transition-all shadow-2xs"
+                className="w-full rounded-none border border-slate-200 bg-white px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] focus:outline-none transition-all shadow-2xs"
               />
             </div>
           </div>
@@ -211,7 +211,7 @@ function ResumeOnboarding() {
               YEARS OF EXPERIENCE
             </label>
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#F5F3FF] text-[#7C3AED] shrink-0">
+              <div className="flex h-10 w-10 items-center justify-center rounded-none bg-[#F5F3FF] text-[#7C3AED] shrink-0 border border-purple-100">
                 <IconCalendar className="h-5 w-5" />
               </div>
               <input
@@ -220,7 +220,7 @@ function ResumeOnboarding() {
                 value={yearsExperience}
                 onChange={(e) => setYearsExperience(e.target.value)}
                 placeholder="e.g. 3"
-                className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] focus:outline-none transition-all shadow-2xs"
+                className="w-full rounded-none border border-slate-200 bg-white px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] focus:outline-none transition-all shadow-2xs"
               />
             </div>
           </div>
@@ -229,7 +229,7 @@ function ResumeOnboarding() {
 
         {/* Error Notification */}
         {error && (
-          <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs font-bold text-rose-700">
+          <div className="rounded-none border border-rose-200 bg-rose-50 p-3 text-xs font-bold text-rose-700">
             {error}
           </div>
         )}
@@ -240,7 +240,7 @@ function ResumeOnboarding() {
             type="button"
             disabled={submitting}
             onClick={submit}
-            className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#6366F1] via-[#7C3AED] to-[#A855F7] text-white text-xs font-bold shadow-md shadow-purple-500/20 hover:opacity-95 hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+            className="w-full py-3.5 rounded-none bg-gradient-to-r from-[#6366F1] via-[#7C3AED] to-[#A855F7] text-white text-xs font-bold shadow-md shadow-purple-500/20 hover:opacity-95 hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
           >
             <span>{submitting ? "Analyzing Profile..." : "Analyze & Ingest Profile"}</span>
             <IconArrowRight className="h-4 w-4" />
