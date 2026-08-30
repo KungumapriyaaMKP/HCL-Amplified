@@ -12,6 +12,7 @@ import {
   IconExternalLink,
   IconLock,
   IconAward,
+  IconTarget,
 } from "@tabler/icons-react";
 
 type Props = {
@@ -525,14 +526,36 @@ export function ModuleWorkspace(props: Props) {
             </div>
 
             {/* --------------------------------------------------------------------- */}
-            {/* CARD 2: Step 02 (Practice Assessment - Light Glass Card)              */}
+            {/* CARD 2: Step 02 (Practice Assessment - Dedicated Arena Link)          */}
             {/* --------------------------------------------------------------------- */}
             {resourceMarked ? (
-              <div className="relative overflow-hidden rounded-sm bg-white/98 border-2 border-purple-200 p-6 shadow-xl backdrop-blur-md">
-                <PracticeQuiz moduleId={props.moduleId} onSubmitted={() => setPracticeAttempted(true)} />
+              <div className="relative overflow-hidden rounded-none bg-white border-2 border-purple-200 p-6 sm:p-7 shadow-lg backdrop-blur-md space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
+                    <IconTarget className="h-5 w-5 text-[#7C3AED]" />
+                    <span>Practice Assessment</span>
+                  </h3>
+                  <span className="px-2.5 py-0.5 rounded-none bg-cyan-50 border border-cyan-200 text-cyan-800 text-xs font-black">
+                    UNLIMITED RETAKES
+                  </span>
+                </div>
+
+                <p className="text-xs text-slate-600 font-medium leading-relaxed">
+                  Test your comprehension with low-stakes adaptive multiple-choice questions in the dedicated practice arena before attempting the official proctored exam.
+                </p>
+
+                <div className="pt-1">
+                  <Link
+                    href={`/goals/${props.goalId}/modules/${props.moduleId}/practice`}
+                    className="inline-flex items-center justify-center gap-2 w-full px-5 py-3.5 rounded-none bg-gradient-to-r from-[#6D28D9] via-[#7C3AED] to-[#8B5CF6] text-white text-xs font-black shadow-md shadow-purple-500/20 hover:opacity-95 hover:shadow-lg transition-all cursor-pointer"
+                  >
+                    <span>{practiceAttempted ? "Retake Practice Assessment Arena" : "Launch Practice Assessment Arena"}</span>
+                    <IconArrowRight className="h-4 w-4" />
+                  </Link>
+                </div>
               </div>
             ) : (
-              <div className="relative overflow-hidden rounded-sm bg-white/95 border border-slate-200/90 p-6 sm:p-7 shadow-md backdrop-blur-md grid grid-cols-1 sm:grid-cols-[1fr_120px] gap-6 items-center">
+              <div className="relative overflow-hidden rounded-none bg-white/95 border border-slate-200/90 p-6 sm:p-7 shadow-md backdrop-blur-md grid grid-cols-1 sm:grid-cols-[1fr_120px] gap-6 items-center">
                 <div className="space-y-1.5">
                   <h3 className="text-lg font-black text-slate-800 flex items-center gap-2">
                     <IconLock className="h-5 w-5 text-slate-500" />
