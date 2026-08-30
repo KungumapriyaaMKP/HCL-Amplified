@@ -62,7 +62,7 @@ const INITIAL_NOTIFICATIONS: AppNotification[] = [
     read: false,
     actionUrl: "/review",
     actionLabel: "Review Now",
-    tag: "Spaced Review",
+    tag: "Spaced Revision",
   },
   {
     id: "notif-4",

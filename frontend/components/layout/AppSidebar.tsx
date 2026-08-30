@@ -45,7 +45,7 @@ export function AppSidebar({
     { label: "Dashboard", href: "/dashboard", icon: IconSmartHome },
     { label: "My Quests", href: activeGoalId ? `/goals/${activeGoalId}` : "/goals/new", icon: IconTarget },
     { label: "To-Do List", href: "/todo", icon: IconListCheck },
-    { label: "Spaced Review", href: "/review", icon: IconRotateClockwise },
+    { label: "Spaced Revision", href: "/review", icon: IconRotateClockwise },
     { label: "Skill Map", href: activeGoalId ? `/goals/${activeGoalId}/graph` : "/dashboard#skill-map", icon: IconGitFork },
     { label: "Explore", href: "/community", icon: IconCompass },
     { label: "Leaderboard", href: "/leaderboard", icon: IconTrophy },

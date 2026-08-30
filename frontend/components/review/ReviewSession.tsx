@@ -115,7 +115,7 @@ export function ReviewSession() {
       <div className="flex min-h-[400px] items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <div className="h-8 w-8 animate-spin rounded-full border-3 border-[#7C3AED] border-t-transparent" />
-          <span className="text-xs font-bold text-slate-500">Loading today&apos;s spaced review queue...</span>
+          <span className="text-xs font-bold text-slate-500">Loading today&apos;s spaced revision queue...</span>
         </div>
       </div>
     );
@@ -152,7 +152,7 @@ export function ReviewSession() {
 
           {/* Heading */}
           <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center justify-center gap-2">
-            <span>{isFinished ? "Spaced Review Complete!" : "All Caught Up For Today!"}</span>
+            <span>{isFinished ? "Spaced Revision Complete!" : "All Caught Up For Today!"}</span>
             <span className="text-2xl">🎉</span>
           </h2>
 
