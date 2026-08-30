@@ -205,14 +205,9 @@ export function DedicatedPracticeWorkspace({
                     </div>
                   }
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-none bg-purple-100 border border-purple-300 flex items-center justify-center text-[#7C3AED]">
-                      <IconSparkles className="h-4 w-4" />
-                    </div>
-                    <div className="text-left">
-                      <h4 className="text-xs font-black text-slate-900">Step 02 Practice Completed</h4>
-                      <p className="text-[10px] text-slate-500">Swipe the slider below to claim your practice milestone bonus</p>
-                    </div>
+                  <div className="text-left">
+                    <h4 className="text-xs font-black text-slate-900">Step 02 Practice Completed</h4>
+                    <p className="text-[10px] text-slate-500">Swipe the slider below to claim your practice milestone bonus</p>
                   </div>
                 </SlideToUnlock>
               </div>
