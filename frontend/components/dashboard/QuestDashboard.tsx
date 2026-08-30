@@ -25,11 +25,22 @@ import {
 
 export interface QuestDashboardGoal {
   id: string;
+  goalText?: string;
+  domain?: string;
   targetRole?: string | null;
   targetSkillIds?: string[] | null;
   targetTimelineWeeks?: number | null;
   totalModules: number;
   completedModules: number;
+  modules?: {
+    id: string;
+    skillId?: string;
+    skillName: string;
+    resourceTitle?: string;
+    status: string;
+    milestoneType?: string;
+    order?: number;
+  }[];
   nextAction?: {
     moduleId: string;
     skillName: string;
@@ -318,7 +329,10 @@ export function QuestDashboard({
         {/* 3. INTERACTIVE SKILL MAP TREE */}
         <InteractiveSkillMapTree
           hasGoals={hasGoals}
-          goalTitle={activeGoal?.targetRole || "Learning Quest"}
+          goalId={activeGoal?.id}
+          goalTitle={activeGoal?.goalText || activeGoal?.targetRole || "Web Development"}
+          domain={activeGoal?.domain}
+          modules={activeGoal?.modules}
         />
 
       </div>

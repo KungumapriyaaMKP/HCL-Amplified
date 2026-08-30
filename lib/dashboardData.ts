@@ -90,6 +90,15 @@ export async function getDashboardData(userId: string) {
         pathId: path.id,
         totalModules: modules.length,
         completedModules,
+        modules: modules.map((m) => ({
+          id: m.module.id,
+          skillId: m.skill.id,
+          skillName: m.skill.name,
+          resourceTitle: m.resource.title,
+          status: m.module.status,
+          milestoneType: m.module.milestoneType,
+          order: m.module.order,
+        })),
         nextAction: next
           ? { moduleId: next.module.id, skillName: next.skill.name, resourceTitle: next.resource.title, status: next.module.status }
           : null,
