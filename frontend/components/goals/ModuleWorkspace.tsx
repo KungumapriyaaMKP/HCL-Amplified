@@ -320,35 +320,47 @@ export function ModuleWorkspace(props: Props) {
             </div>
 
             {/* Curving Light Trail 3 -> Chest */}
-            <div className="w-24 h-20 -my-2 relative z-10">
-              <svg width="100%" height="100%" viewBox="0 0 100 80" fill="none">
-                <path d="M 50 0 C 50 40, 50 50, 50 80" stroke="#64748B" strokeWidth="8" strokeLinecap="round" />
-                <path d="M 50 0 C 50 40, 50 50, 50 80" stroke="#FFFFFF" strokeWidth="3" strokeDasharray="6 6" strokeLinecap="round" />
+            <div className="w-28 h-24 -my-2 relative z-10">
+              <svg width="100%" height="100%" viewBox="0 0 100 90" fill="none">
+                <path d="M 50 0 C 50 45, 50 55, 50 90" stroke="#64748B" strokeWidth="8" strokeLinecap="round" />
+                <path d="M 50 0 C 50 45, 50 55, 50 90" stroke="#FFFFFF" strokeWidth="3" strokeDasharray="6 6" strokeLinecap="round" />
               </svg>
             </div>
 
-            {/* FINAL DESTINATION: 3D Locked Treasure Chest on Circular Stone Pedestal */}
-            <div className="relative flex flex-col items-center z-20 group cursor-pointer">
+            {/* FINAL DESTINATION: 3D Locked Treasure Chest on Circular Stone Pedestal (Significantly Enlarged) */}
+            <div className="relative flex flex-col items-center z-20 group cursor-pointer mt-1">
               <div className="relative flex flex-col items-center">
-                {/* 3D Chest Model with Padlock */}
-                <div className="relative h-22 w-22 drop-shadow-[0_10px_20px_rgba(30,41,59,0.4)] group-hover:scale-105 transition-transform">
+                
+                {/* Ambient Floor Shadow / Light Ring */}
+                <div className="absolute -bottom-4 w-44 h-12 rounded-full bg-slate-900/30 blur-lg" />
+                
+                {/* 3D Chest Model with Large Steel Padlock */}
+                <div className="relative h-34 w-34 drop-shadow-[0_16px_32px_rgba(30,41,59,0.5)] group-hover:scale-105 transition-transform">
                   <Image
                     src="/images/journey/treasure_transparent.png"
                     alt="Locked Chest"
                     fill
                     unoptimized
-                    className="object-contain grayscale contrast-125"
+                    className="object-contain grayscale contrast-125 brightness-105"
                   />
-                  {/* Padlock on chest */}
+                  {/* Padlock on center of chest */}
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="h-7 w-7 rounded-full bg-slate-900/90 border border-slate-400 flex items-center justify-center shadow-lg">
-                      <IconLock className="h-4 w-4 text-white" />
+                    <div className="h-10 w-10 rounded-full bg-gradient-to-b from-slate-800 to-slate-950 border-2 border-slate-300 flex items-center justify-center shadow-2xl ring-2 ring-black/20">
+                      <IconLock className="h-5 w-5 text-white stroke-[2.5]" />
                     </div>
                   </div>
                 </div>
 
-                {/* Circular Stone Tiered Base */}
-                <div className="-mt-3.5 w-26 h-6 rounded-full bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 border-2 border-slate-500 shadow-md" />
+                {/* Multi-Tiered Circular Stone Pedestal Base */}
+                <div className="-mt-6 relative flex flex-col items-center">
+                  {/* Top Stone Ring Surface */}
+                  <div className="w-40 h-8 rounded-full bg-gradient-to-r from-slate-700 via-slate-600 to-slate-700 border-2 border-slate-400 shadow-md flex items-center justify-center">
+                    <div className="w-32 h-4 rounded-full bg-slate-800/60 blur-2xs" />
+                  </div>
+                  {/* Bottom Tiered Base Ring */}
+                  <div className="-mt-4 w-46 h-9 rounded-full bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border-2 border-slate-600 shadow-xl" />
+                </div>
+
               </div>
             </div>
 
