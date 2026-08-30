@@ -448,7 +448,7 @@ export function ProctoredWorkspace({
               {/* 3D Teacher Mentor Avatar */}
               <div className="relative w-44 h-48 sm:h-52 shrink-0 flex items-end justify-center z-10">
                 <img
-                  src="/mentor-girl.png"
+                  src="/mentor-girl-clean.png"
                   alt="AI Mentor"
                   className="h-full w-auto object-contain drop-shadow-md select-none pointer-events-none"
                 />
