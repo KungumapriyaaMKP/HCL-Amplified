@@ -12,6 +12,13 @@ export const DOMAINS = [
   { id: "embedded-iot", name: "IoT & Embedded Engineering", icon: "" },
   { id: "sre-observability", name: "SRE & Cloud Observability", icon: "" },
   { id: "product-management", name: "Digital Product Management", icon: "" },
+  // Additional Enterprise, Specialized & Creative Domains
+  { id: "qa-test-automation", name: "QA & Test Automation", icon: "" },
+  { id: "blockchain-web3", name: "Blockchain & Web3", icon: "" },
+  { id: "mainframe-modernization", name: "Mainframe & Cloud Migration", icon: "" },
+  { id: "sap-enterprise-erp", name: "SAP & Enterprise ERP", icon: "" },
+  { id: "game-dev", name: "Game Engine & 3D Simulation", icon: "" },
+  { id: "ui-ux-design", name: "UI/UX & Design Systems", icon: "" },
 ] as const;
 
 export type DomainId = (typeof DOMAINS)[number]["id"];

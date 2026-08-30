@@ -11,6 +11,12 @@ import {
   IconCpu,
   IconActivity,
   IconBriefcase,
+  IconChecklist,
+  IconLink,
+  IconServerBolt,
+  IconBuildingStore,
+  IconDeviceGamepad2,
+  IconPalette,
   IconCompass,
 } from "@tabler/icons-react";
 
@@ -40,6 +46,18 @@ export function DomainIcon({ id, className = "h-5 w-5" }: { id?: string; classNa
       return <IconActivity className={className} />;
     case "product-management":
       return <IconBriefcase className={className} />;
+    case "qa-test-automation":
+      return <IconChecklist className={className} />;
+    case "blockchain-web3":
+      return <IconLink className={className} />;
+    case "mainframe-modernization":
+      return <IconServerBolt className={className} />;
+    case "sap-enterprise-erp":
+      return <IconBuildingStore className={className} />;
+    case "game-dev":
+      return <IconDeviceGamepad2 className={className} />;
+    case "ui-ux-design":
+      return <IconPalette className={className} />;
     default:
       return <IconCompass className={className} />;
   }

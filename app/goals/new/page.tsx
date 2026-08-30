@@ -13,7 +13,7 @@ import {
 } from "@tabler/icons-react";
 
 /* -------------------------------------------------------------------------
- * EXACT DOMAIN CIRCULAR ICON BADGES MATCHING IMAGE 1
+ * EXACT DOMAIN CIRCULAR ICON BADGES MATCHING DESIGN SYSTEM
  * ------------------------------------------------------------------------- */
 
 function WebDevBadge() {
@@ -126,8 +126,6 @@ function CybersecurityBadge() {
   );
 }
 
-/* ---------------- Corporate & HCLTech Enterprise Badges ---------------- */
-
 function GenAiBadge() {
   return (
     <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#FAE8FF] flex items-center justify-center shrink-0">
@@ -215,6 +213,99 @@ function ProductManagementBadge() {
   );
 }
 
+/* ---------------- Additional Specialized Enterprise Badges ---------------- */
+
+function QaAutomationBadge() {
+  return (
+    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#D1FAE5] flex items-center justify-center shrink-0">
+      <svg viewBox="0 0 48 48" fill="none" className="w-9 h-9" xmlns="http://www.w3.org/2000/svg">
+        <rect x="12" y="10" width="24" height="28" rx="3" fill="#047857" />
+        <rect x="18" y="7" width="12" height="5" rx="1.5" fill="#065F46" stroke="#A7F3D0" strokeWidth="1" />
+        <path d="M17 19 L20 22 L26 16" stroke="#A7F3D0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M17 27 L20 30 L26 24" stroke="#A7F3D0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <line x1="28" y1="20" x2="32" y2="20" stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round" />
+        <line x1="28" y1="28" x2="32" y2="28" stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round" />
+      </svg>
+    </div>
+  );
+}
+
+function BlockchainBadge() {
+  return (
+    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#EDE9FE] flex items-center justify-center shrink-0">
+      <svg viewBox="0 0 48 48" fill="none" className="w-9 h-9" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="12" width="12" height="12" rx="2" fill="#7C3AED" />
+        <rect x="26" y="24" width="12" height="12" rx="2" fill="#5B21B6" />
+        <path d="M22 18 L26 18 L26 30 L22 30" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+        <circle cx="16" cy="18" r="2" fill="#FFFFFF" />
+        <circle cx="32" cy="30" r="2" fill="#FFFFFF" />
+      </svg>
+    </div>
+  );
+}
+
+function MainframeBadge() {
+  return (
+    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#E2E8F0] flex items-center justify-center shrink-0">
+      <svg viewBox="0 0 48 48" fill="none" className="w-9 h-9" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="10" width="14" height="28" rx="2" fill="#334155" />
+        <circle cx="14" cy="14" r="1.5" fill="#38BDF8" />
+        <circle cx="14" cy="18" r="1.5" fill="#34D399" />
+        <line x1="18" y1="14" x2="21" y2="14" stroke="#94A3B8" strokeWidth="1.5" />
+        <line x1="18" y1="18" x2="21" y2="18" stroke="#94A3B8" strokeWidth="1.5" />
+        {/* Migration arrow to cloud */}
+        <path d="M24 24 L29 24 M29 24 L27 21 M29 24 L27 27" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M32 20 C32 17.8, 33.8 16, 36 16 C37.8 16, 39.3 17.2, 39.8 18.8 C41 19, 42 20, 42 21.5 C42 23 41 24, 39.5 24 L32 24 Z" fill="#60A5FA" />
+      </svg>
+    </div>
+  );
+}
+
+function SapErpBadge() {
+  return (
+    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#DBEAFE] flex items-center justify-center shrink-0">
+      <svg viewBox="0 0 48 48" fill="none" className="w-9 h-9" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="16" width="28" height="20" rx="3" fill="#1D4ED8" />
+        <path d="M10 22 L24 12 L38 22" fill="#1E40AF" />
+        <rect x="15" y="24" width="4" height="6" fill="#93C5FD" />
+        <rect x="22" y="24" width="4" height="6" fill="#93C5FD" />
+        <rect x="29" y="24" width="4" height="6" fill="#93C5FD" />
+        <line x1="10" y1="31" x2="38" y2="31" stroke="#3B82F6" strokeWidth="1.5" />
+      </svg>
+    </div>
+  );
+}
+
+function GameDevBadge() {
+  return (
+    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#FCE7F3] flex items-center justify-center shrink-0">
+      <svg viewBox="0 0 48 48" fill="none" className="w-9 h-9" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="16" width="28" height="16" rx="8" fill="#BE185D" />
+        {/* D-pad */}
+        <path d="M16 21 V27 M13 24 H19" stroke="#FBCFE8" strokeWidth="2" strokeLinecap="round" />
+        {/* Action buttons */}
+        <circle cx="30" cy="22" r="1.5" fill="#FBCFE8" />
+        <circle cx="34" cy="25" r="1.5" fill="#FBCFE8" />
+      </svg>
+    </div>
+  );
+}
+
+function UiUxDesignBadge() {
+  return (
+    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#FDF2F8] flex items-center justify-center shrink-0">
+      <svg viewBox="0 0 48 48" fill="none" className="w-9 h-9" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="24" cy="24" r="13" fill="#EC4899" />
+        <circle cx="18" cy="20" r="2" fill="#FFFFFF" />
+        <circle cx="24" cy="16" r="2" fill="#FDE047" />
+        <circle cx="30" cy="20" r="2" fill="#38BDF8" />
+        <circle cx="28" cy="28" r="2.5" fill="#A855F7" />
+        <circle cx="20" cy="28" r="3" fill="#FDF2F8" />
+      </svg>
+    </div>
+  );
+}
+
 interface DomainOption {
   id: string;
   name: string;
@@ -229,7 +320,7 @@ const DOMAIN_OPTIONS: DomainOption[] = [
   {
     id: "web-dev",
     name: "Web Development",
-    description: "Build websites and web applications from scratch.",
+    description: "Build websites and full-stack web applications from scratch.",
     badge: <WebDevBadge />,
     arrowBorderColor: "border-purple-300",
     arrowTextColor: "text-purple-600",
@@ -238,7 +329,7 @@ const DOMAIN_OPTIONS: DomainOption[] = [
   {
     id: "data-science",
     name: "Data Science",
-    description: "Analyze data and extract valuable insights.",
+    description: "Analyze data, build models, and extract valuable business insights.",
     badge: <DataScienceBadge />,
     arrowBorderColor: "border-sky-300",
     arrowTextColor: "text-sky-600",
@@ -247,7 +338,7 @@ const DOMAIN_OPTIONS: DomainOption[] = [
   {
     id: "ai-ml",
     name: "AI & Machine Learning",
-    description: "Build intelligent models and smart systems.",
+    description: "Train neural networks, deep learning models, and smart systems.",
     badge: <AiMlBadge />,
     arrowBorderColor: "border-emerald-300",
     arrowTextColor: "text-emerald-600",
@@ -256,7 +347,7 @@ const DOMAIN_OPTIONS: DomainOption[] = [
   {
     id: "cloud-devops",
     name: "Cloud & DevOps",
-    description: "Deploy, automate and scale applications in the cloud.",
+    description: "Deploy, automate and scale infrastructure across AWS, Azure & GCP.",
     badge: <CloudDevOpsBadge />,
     arrowBorderColor: "border-amber-300",
     arrowTextColor: "text-amber-600",
@@ -265,7 +356,7 @@ const DOMAIN_OPTIONS: DomainOption[] = [
   {
     id: "mobile-dev",
     name: "Mobile Development",
-    description: "Create modern mobile apps for Android and iOS.",
+    description: "Create modern iOS and Android apps with Flutter, React Native & Swift.",
     badge: <MobileDevBadge />,
     arrowBorderColor: "border-pink-300",
     arrowTextColor: "text-pink-600",
@@ -274,7 +365,7 @@ const DOMAIN_OPTIONS: DomainOption[] = [
   {
     id: "cybersecurity",
     name: "Cybersecurity",
-    description: "Learn to protect systems and secure data.",
+    description: "Defend systems, audit security postures, and implement zero-trust.",
     badge: <CybersecurityBadge />,
     arrowBorderColor: "border-indigo-300",
     arrowTextColor: "text-indigo-600",
@@ -334,6 +425,61 @@ const DOMAIN_OPTIONS: DomainOption[] = [
     arrowBorderColor: "border-orange-300",
     arrowTextColor: "text-orange-600",
     arrowHoverBg: "group-hover:bg-orange-50",
+  },
+  // Specialized & Modern Tech Domains
+  {
+    id: "qa-test-automation",
+    name: "QA & Test Automation",
+    description: "Selenium, Playwright, automated regression testing & performance suites.",
+    badge: <QaAutomationBadge />,
+    arrowBorderColor: "border-emerald-300",
+    arrowTextColor: "text-emerald-600",
+    arrowHoverBg: "group-hover:bg-emerald-50",
+  },
+  {
+    id: "blockchain-web3",
+    name: "Blockchain & Web3",
+    description: "Smart contracts, Solidity, cryptographic protocols, and dApps.",
+    badge: <BlockchainBadge />,
+    arrowBorderColor: "border-purple-300",
+    arrowTextColor: "text-purple-600",
+    arrowHoverBg: "group-hover:bg-purple-50",
+  },
+  {
+    id: "mainframe-modernization",
+    name: "Mainframe & Cloud Migration",
+    description: "COBOL modernization, IBM z/OS integration, and enterprise cloud bridging.",
+    badge: <MainframeBadge />,
+    arrowBorderColor: "border-slate-400",
+    arrowTextColor: "text-slate-700",
+    arrowHoverBg: "group-hover:bg-slate-100",
+  },
+  {
+    id: "sap-enterprise-erp",
+    name: "SAP & Enterprise ERP",
+    description: "SAP S/4HANA implementation, ABAP programming, and supply chain ERP.",
+    badge: <SapErpBadge />,
+    arrowBorderColor: "border-blue-300",
+    arrowTextColor: "text-blue-600",
+    arrowHoverBg: "group-hover:bg-blue-50",
+  },
+  {
+    id: "game-dev",
+    name: "Game Engine & 3D Simulation",
+    description: "Unity, Unreal Engine 5, C# scripts, 3D physics pipelines & rendering.",
+    badge: <GameDevBadge />,
+    arrowBorderColor: "border-pink-300",
+    arrowTextColor: "text-pink-600",
+    arrowHoverBg: "group-hover:bg-pink-50",
+  },
+  {
+    id: "ui-ux-design",
+    name: "UI/UX & Design Systems",
+    description: "Figma master components, design tokens, usability testing & micro-interactions.",
+    badge: <UiUxDesignBadge />,
+    arrowBorderColor: "border-fuchsia-300",
+    arrowTextColor: "text-fuchsia-600",
+    arrowHoverBg: "group-hover:bg-fuchsia-50",
   },
 ];
 
@@ -466,7 +612,7 @@ function NewGoalForm() {
 
         </div>
 
-        {/* ================= STEP 0: 12 DOMAIN SELECTION CARDS ================= */}
+        {/* ================= STEP 0: 18 DOMAIN SELECTION CARDS ================= */}
         {step === 0 && (
           <div className="rounded-2xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-xs">
             
@@ -480,12 +626,12 @@ function NewGoalForm() {
                   Select Domain
                 </h2>
                 <p className="text-xs text-slate-500 font-medium mt-0.5">
-                  Choose a discipline to master or select a corporate engineering path
+                  Choose a discipline to master or select an enterprise corporate engineering track
                 </p>
               </div>
             </div>
 
-            {/* 12 Domain Cards Grid - 3 Columns Layout */}
+            {/* 18 Domain Cards Grid - 3 Columns Layout */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {DOMAIN_OPTIONS.map((d) => {
                 return (
