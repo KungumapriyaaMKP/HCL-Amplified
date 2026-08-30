@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { PracticeQuiz } from "@/frontend/components/goals/PracticeQuiz";
@@ -10,10 +10,7 @@ import {
   IconCheck,
   IconExternalLink,
   IconLock,
-  IconCode,
   IconAward,
-  IconFileText,
-  IconDeviceLaptop,
 } from "@tabler/icons-react";
 
 type Props = {
@@ -69,10 +66,10 @@ export function ModuleWorkspace(props: Props) {
   const hoursEst = Math.max(1, Math.round(props.estimatedMinutes / 60));
 
   return (
-    <div className="relative w-full min-h-screen py-8 px-4 sm:px-8 flex flex-col items-center">
+    <div className="relative w-full min-h-screen py-6 px-4 sm:px-6 flex flex-col items-center select-none font-sans">
       
       {/* Background Soft Studio Ambient Image Overlay */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-30">
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-35">
         <Image
           src="/images/journey/study_desk_bg.jpg"
           alt="Study Desk Studio"
@@ -81,10 +78,10 @@ export function ModuleWorkspace(props: Props) {
           className="object-cover object-top"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#FFF9F6]/80 via-[#FFF9F6]/60 to-[#FFF9F6]/90" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#FAF8FC]/70 via-[#FAF8FC]/50 to-[#FAF8FC]/80" />
       </div>
 
-      <div className="relative z-10 w-full max-w-5xl space-y-6">
+      <div className="relative z-10 w-full max-w-5xl space-y-5">
         
         {/* Top Back Navigation Link */}
         <div>
@@ -98,117 +95,243 @@ export function ModuleWorkspace(props: Props) {
         </div>
 
         {/* Main 2-Column Stage (Left 3D Stepper Trail + Right Cards) */}
-        <div className="relative grid grid-cols-1 md:grid-cols-[140px_1fr] gap-8 items-start">
+        <div className="relative grid grid-cols-1 md:grid-cols-[130px_1fr] gap-8 items-start">
           
           {/* ========================================================================= */}
-          {/* 1. LEFT 3D STEPPER TRAIL (Exact Match to Image 1)                         */}
+          {/* 1. LEFT 3D STEPPER TRAIL (Exact 3D Vector Geometry matching Image 1)       */}
           {/* ========================================================================= */}
-          <div className="relative flex flex-col items-center pt-2 select-none">
+          <div className="relative flex flex-col items-center pt-1">
             
-            {/* Step 01: Active 3D Hexagonal Purple Pedestal with Flag */}
-            <div className="relative flex flex-col items-center z-20 group">
-              {/* Flag on top right */}
-              <div className="absolute -top-4 right-2 text-sm drop-shadow-md animate-bounce duration-1000">
-                🚩
-              </div>
+            {/* SVG Defs for 3D Gradients & Filters */}
+            <svg className="absolute w-0 h-0 pointer-events-none">
+              <defs>
+                <linearGradient id="purpleShieldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#8B5CF6" />
+                  <stop offset="50%" stopColor="#6D28D9" />
+                  <stop offset="100%" stopColor="#4C1D95" />
+                </linearGradient>
 
-              {/* Radiant Purple Pulse Aura */}
-              <div className="absolute -inset-4 rounded-full bg-purple-500/30 blur-xl animate-pulse" />
+                <linearGradient id="silverShieldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#CBD5E1" />
+                  <stop offset="50%" stopColor="#64748B" />
+                  <stop offset="100%" stopColor="#334155" />
+                </linearGradient>
 
-              {/* 3D Hexagonal Badge 01 */}
-              <div className="relative flex flex-col items-center drop-shadow-[0_12px_24px_rgba(109,40,217,0.55)]">
-                <div className="relative flex flex-col items-center justify-center w-20 h-22 rounded-2xl bg-gradient-to-b from-[#8B5CF6] via-[#6D28D9] to-[#4C1D95] border-3 border-purple-200 text-white shadow-xl">
-                  <span className="text-[10px] font-black tracking-widest text-purple-200 uppercase">01</span>
-                  <div className="text-xl font-mono font-black text-white">&lt;/&gt;</div>
-                </div>
+                <linearGradient id="purplePedestalGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#7C3AED" />
+                  <stop offset="100%" stopColor="#2E1065" />
+                </linearGradient>
 
-                {/* 3D Base Tier */}
-                <div className="-mt-3 w-22 h-6 rounded-full bg-gradient-to-r from-purple-950 via-[#5B21B6] to-purple-950 border-2 border-purple-300 shadow-lg flex items-center justify-center">
-                  <div className="w-16 h-2 rounded-full bg-purple-400/40 blur-xs" />
-                </div>
-              </div>
-            </div>
+                <linearGradient id="silverPedestalGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#64748B" />
+                  <stop offset="100%" stopColor="#1E293B" />
+                </linearGradient>
 
-            {/* Vertical Dashed Light-Trail Connector 1 -> 2 */}
-            <div className="w-1.5 h-36 bg-gradient-to-b from-purple-400 to-slate-400 border-x border-dashed border-white/80 my-1 relative z-10">
-              <div className="absolute inset-0 bg-purple-400/50 blur-xs" />
-            </div>
+                <filter id="auraGlow" x="-30%" y="-30%" width="160%" height="160%">
+                  <feGaussianBlur stdDeviation="8" result="blur" />
+                  <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                </filter>
 
-            {/* Step 02: Steel Pedestal Badge (Practice Assessment) */}
-            <div className="relative flex flex-col items-center z-20">
-              <div className="relative flex flex-col items-center drop-shadow-[0_10px_20px_rgba(30,41,59,0.3)]">
-                <div
-                  className={`relative flex flex-col items-center justify-center w-18 h-20 rounded-2xl border-2 text-white shadow-lg transition-all ${
-                    resourceMarked
-                      ? "bg-gradient-to-b from-purple-600 via-indigo-700 to-purple-900 border-purple-300"
-                      : "bg-gradient-to-b from-slate-600 via-slate-700 to-slate-800 border-slate-400 opacity-90"
-                  }`}
-                >
-                  <span className="text-[9px] font-black tracking-widest text-slate-300">02</span>
-                  <IconFileText className="h-6 w-6 text-slate-200 mt-0.5" />
-                </div>
-
-                {/* Pedestal Base Ring with Lock Badge */}
-                <div className="-mt-2.5 w-20 h-5 rounded-full bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border border-slate-500 shadow-md flex items-center justify-center">
-                  <div className="h-4 w-4 rounded-full bg-slate-700 border border-slate-500 flex items-center justify-center">
-                    {resourceMarked ? (
-                      <IconCheck className="h-2.5 w-2.5 text-emerald-400 stroke-[3]" />
-                    ) : (
-                      <IconLock className="h-2.5 w-2.5 text-slate-300" />
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Vertical Dashed Light-Trail Connector 2 -> 3 */}
-            <div className="w-1.5 h-36 bg-gradient-to-b from-slate-400 to-slate-500 border-x border-dashed border-white/80 my-1 relative z-10">
-              <div className="absolute inset-0 bg-slate-400/40 blur-xs" />
-            </div>
-
-            {/* Step 03: Steel Pedestal Badge (Official Proctored Assessment) */}
-            <div className="relative flex flex-col items-center z-20">
-              <div className="relative flex flex-col items-center drop-shadow-[0_10px_20px_rgba(30,41,59,0.3)]">
-                <div
-                  className={`relative flex flex-col items-center justify-center w-18 h-20 rounded-2xl border-2 text-white shadow-lg transition-all ${
-                    practiceAttempted
-                      ? "bg-gradient-to-b from-purple-600 via-indigo-700 to-purple-900 border-purple-300"
-                      : "bg-gradient-to-b from-slate-600 via-slate-700 to-slate-800 border-slate-400 opacity-90"
-                  }`}
-                >
-                  <span className="text-[9px] font-black tracking-widest text-slate-300">03</span>
-                  <IconAward className="h-6 w-6 text-slate-200 mt-0.5" />
-                </div>
-
-                {/* Pedestal Base Ring with Lock Badge */}
-                <div className="-mt-2.5 w-20 h-5 rounded-full bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border border-slate-500 shadow-md flex items-center justify-center">
-                  <div className="h-4 w-4 rounded-full bg-slate-700 border border-slate-500 flex items-center justify-center">
-                    {practiceAttempted ? (
-                      <IconCheck className="h-2.5 w-2.5 text-emerald-400 stroke-[3]" />
-                    ) : (
-                      <IconLock className="h-2.5 w-2.5 text-slate-300" />
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Curving Connector 3 -> Chest */}
-            <svg className="w-24 h-24 pointer-events-none -my-2 z-10" viewBox="0 0 100 100" fill="none">
-              <path
-                d="M 50 0 C 50 50, 50 60, 50 100"
-                stroke="#94A3B8"
-                strokeWidth="6"
-                strokeDasharray="6 6"
-                strokeLinecap="round"
-              />
+                <filter id="stepperShadow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="6" stdDeviation="6" floodColor="#4C1D95" floodOpacity="0.35" />
+                </filter>
+              </defs>
             </svg>
 
-            {/* Locked Treasure Chest on Circular Stone Pedestal */}
+            {/* STEP 01: 3D Hexagonal Purple Pedestal with Flag */}
+            <div className="relative flex flex-col items-center z-20 group">
+              <svg width="110" height="135" viewBox="0 0 110 135" fill="none" className="overflow-visible">
+                {/* Waving Flag Behind Pedestal on Top-Right */}
+                <g transform="translate(68, 6)">
+                  {/* Flagpole */}
+                  <line x1="0" y1="2" x2="16" y2="-14" stroke="#4C1D95" strokeWidth="2.5" strokeLinecap="round" />
+                  {/* Purple Ribbon Flag */}
+                  <path d="M 14 -13 L 34 -11 C 28 -7 28 -7 34 -3 L 14 -1 Z" fill="#6D28D9" stroke="#5B21B6" strokeWidth="1" />
+                </g>
+
+                {/* Pedestal Ambient Light Aura */}
+                <ellipse cx="55" cy="108" rx="46" ry="16" fill="#A855F7" opacity="0.35" filter="url(#auraGlow)" />
+
+                {/* 3D Tiered Base Cylinder */}
+                <g filter="url(#stepperShadow)">
+                  {/* Bottom Cylinder Wall */}
+                  <path d="M 12 104 C 12 118 98 118 98 104 L 98 116 C 98 128 12 128 12 116 Z" fill="url(#purplePedestalGrad)" />
+                  {/* Base Ring Top Surface */}
+                  <ellipse cx="55" cy="104" rx="43" ry="12" fill="#5B21B6" stroke="#C084FC" strokeWidth="1.5" />
+                  {/* Glowing Neon Light Ring */}
+                  <ellipse cx="55" cy="102" rx="36" ry="9" fill="none" stroke="#E9D5FF" strokeWidth="2.5" opacity="0.9" />
+                </g>
+
+                {/* 3D Hexagonal Shield 01 */}
+                <g transform="translate(55, 52) scale(0.92)" filter="url(#stepperShadow)">
+                  {/* Outer Beveled Hexagon */}
+                  <path
+                    d="M 0 -48 L 38 -26 L 38 26 L 0 48 L -38 26 L -38 -26 Z"
+                    fill="url(#purpleShieldGrad)"
+                    stroke="#DDD6FE"
+                    strokeWidth="3.5"
+                    strokeLinejoin="round"
+                  />
+                  {/* Inner White Shield Plate */}
+                  <path
+                    d="M 0 -38 L 29 -20 L 29 20 L 0 38 L -29 20 L -29 -20 Z"
+                    fill="#FFFFFF"
+                    stroke="#DDD6FE"
+                    strokeWidth="1.5"
+                    strokeLinejoin="round"
+                  />
+                  {/* Text 01 */}
+                  <text x="0" y="-12" textAnchor="middle" fill="#5B21B6" fontSize="11" fontWeight="900" letterSpacing="1">
+                    01
+                  </text>
+                  {/* Code Symbol </> */}
+                  <text x="0" y="16" textAnchor="middle" fill="#4C1D95" fontSize="22" fontWeight="900" fontFamily="monospace">
+                    &lt;/&gt;
+                  </text>
+                </g>
+              </svg>
+            </div>
+
+            {/* Neon Dashed Light Trail 1 -> 2 */}
+            <div className="w-10 h-28 flex justify-center -my-2 relative z-10">
+              <svg width="24" height="100%" viewBox="0 0 24 112" fill="none" preserveAspectRatio="none">
+                <rect x="7" y="0" width="10" height="112" fill="#7C3AED" opacity="0.25" filter="url(#auraGlow)" />
+                <line x1="12" y1="0" x2="12" y2="112" stroke="#7C3AED" strokeWidth="8" strokeLinecap="round" />
+                <line x1="12" y1="0" x2="12" y2="112" stroke="#FFFFFF" strokeWidth="3" strokeDasharray="6 6" strokeLinecap="round" />
+              </svg>
+            </div>
+
+            {/* STEP 02: 3D Steel Hexagonal Pedestal (Practice Assessment) */}
+            <div className="relative flex flex-col items-center z-20">
+              <svg width="110" height="135" viewBox="0 0 110 135" fill="none" className="overflow-visible">
+                {/* 3D Tiered Base Cylinder */}
+                <g filter="url(#stepperShadow)">
+                  {/* Bottom Cylinder Wall */}
+                  <path d="M 16 104 C 16 118 94 118 94 104 L 94 114 C 94 126 16 126 16 114 Z" fill="url(#silverPedestalGrad)" />
+                  {/* Base Ring Top Surface */}
+                  <ellipse cx="55" cy="104" rx="39" ry="11" fill="#475569" stroke="#94A3B8" strokeWidth="1.5" />
+                  
+                  {/* Metallic Lock Badge on Right Rim */}
+                  <g transform="translate(74, 96)">
+                    <circle cx="9" cy="9" r="9" fill="#1E293B" stroke="#94A3B8" strokeWidth="1.5" />
+                    {resourceMarked ? (
+                      <path d="M 5 9 L 8 12 L 13 6" stroke="#10B981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    ) : (
+                      <g transform="translate(4.5, 4)">
+                        <path d="M 2 4.5 L 2 3 C 2 1.3 3.3 0 5 0 C 6.7 0 8 1.3 8 3 L 8 4.5" stroke="#CBD5E1" strokeWidth="1.5" fill="none" />
+                        <rect x="0" y="4" width="10" height="7" rx="1.5" fill="#CBD5E1" />
+                        <circle cx="5" cy="7.5" r="1" fill="#1E293B" />
+                      </g>
+                    )}
+                  </g>
+                </g>
+
+                {/* 3D Hexagonal Shield 02 */}
+                <g transform="translate(55, 52) scale(0.92)" filter="url(#stepperShadow)">
+                  <path
+                    d="M 0 -48 L 38 -26 L 38 26 L 0 48 L -38 26 L -38 -26 Z"
+                    fill="url(#silverShieldGrad)"
+                    stroke="#E2E8F0"
+                    strokeWidth="3.5"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M 0 -38 L 29 -20 L 29 20 L 0 38 L -29 20 L -29 -20 Z"
+                    fill="#F8FAFC"
+                    stroke="#CBD5E1"
+                    strokeWidth="1.5"
+                    strokeLinejoin="round"
+                  />
+                  {/* Text 02 */}
+                  <text x="0" y="-12" textAnchor="middle" fill="#475569" fontSize="11" fontWeight="900" letterSpacing="1">
+                    02
+                  </text>
+                  {/* Checklist Clipboard Icon */}
+                  <g transform="translate(-10, -2)">
+                    <rect x="0" y="0" width="20" height="24" rx="2" fill="#E2E8F0" stroke="#64748B" strokeWidth="1.5" />
+                    <rect x="5" y="-2" width="10" height="4" rx="1" fill="#475569" />
+                    <line x1="4" y1="7" x2="16" y2="7" stroke="#64748B" strokeWidth="1.5" strokeLinecap="round" />
+                    <line x1="4" y1="12" x2="14" y2="12" stroke="#64748B" strokeWidth="1.5" strokeLinecap="round" />
+                    <line x1="4" y1="17" x2="11" y2="17" stroke="#64748B" strokeWidth="1.5" strokeLinecap="round" />
+                  </g>
+                </g>
+              </svg>
+            </div>
+
+            {/* Neon Dashed Light Trail 2 -> 3 */}
+            <div className="w-10 h-28 flex justify-center -my-2 relative z-10">
+              <svg width="24" height="100%" viewBox="0 0 24 112" fill="none" preserveAspectRatio="none">
+                <line x1="12" y1="0" x2="12" y2="112" stroke="#64748B" strokeWidth="8" strokeLinecap="round" />
+                <line x1="12" y1="0" x2="12" y2="112" stroke="#FFFFFF" strokeWidth="3" strokeDasharray="6 6" strokeLinecap="round" />
+              </svg>
+            </div>
+
+            {/* STEP 03: 3D Steel Hexagonal Pedestal (Official Proctored Assessment) */}
+            <div className="relative flex flex-col items-center z-20">
+              <svg width="110" height="135" viewBox="0 0 110 135" fill="none" className="overflow-visible">
+                {/* 3D Tiered Base Cylinder */}
+                <g filter="url(#stepperShadow)">
+                  <path d="M 16 104 C 16 118 94 118 94 104 L 94 114 C 94 126 16 126 16 114 Z" fill="url(#silverPedestalGrad)" />
+                  <ellipse cx="55" cy="104" rx="39" ry="11" fill="#475569" stroke="#94A3B8" strokeWidth="1.5" />
+                  
+                  {/* Metallic Lock Badge on Right Rim */}
+                  <g transform="translate(74, 96)">
+                    <circle cx="9" cy="9" r="9" fill="#1E293B" stroke="#94A3B8" strokeWidth="1.5" />
+                    {practiceAttempted ? (
+                      <path d="M 5 9 L 8 12 L 13 6" stroke="#10B981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    ) : (
+                      <g transform="translate(4.5, 4)">
+                        <path d="M 2 4.5 L 2 3 C 2 1.3 3.3 0 5 0 C 6.7 0 8 1.3 8 3 L 8 4.5" stroke="#CBD5E1" strokeWidth="1.5" fill="none" />
+                        <rect x="0" y="4" width="10" height="7" rx="1.5" fill="#CBD5E1" />
+                        <circle cx="5" cy="7.5" r="1" fill="#1E293B" />
+                      </g>
+                    )}
+                  </g>
+                </g>
+
+                {/* 3D Hexagonal Shield 03 */}
+                <g transform="translate(55, 52) scale(0.92)" filter="url(#stepperShadow)">
+                  <path
+                    d="M 0 -48 L 38 -26 L 38 26 L 0 48 L -38 26 L -38 -26 Z"
+                    fill="url(#silverShieldGrad)"
+                    stroke="#E2E8F0"
+                    strokeWidth="3.5"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M 0 -38 L 29 -20 L 29 20 L 0 38 L -29 20 L -29 -20 Z"
+                    fill="#F8FAFC"
+                    stroke="#CBD5E1"
+                    strokeWidth="1.5"
+                    strokeLinejoin="round"
+                  />
+                  {/* Text 03 */}
+                  <text x="0" y="-12" textAnchor="middle" fill="#475569" fontSize="11" fontWeight="900" letterSpacing="1">
+                    03
+                  </text>
+                  {/* Graduation Cap Icon */}
+                  <g transform="translate(-13, 0)">
+                    <path d="M 13 0 L 26 6 L 13 12 L 0 6 Z" fill="#475569" stroke="#334155" strokeWidth="1" />
+                    <path d="M 4 8.5 L 4 15 C 4 18 22 18 22 15 L 22 8.5" fill="#64748B" />
+                    <path d="M 23 8 L 25 15" stroke="#475569" strokeWidth="1.5" strokeLinecap="round" />
+                  </g>
+                </g>
+              </svg>
+            </div>
+
+            {/* Curving Light Trail 3 -> Chest */}
+            <div className="w-24 h-20 -my-2 relative z-10">
+              <svg width="100%" height="100%" viewBox="0 0 100 80" fill="none">
+                <path d="M 50 0 C 50 40, 50 50, 50 80" stroke="#64748B" strokeWidth="8" strokeLinecap="round" />
+                <path d="M 50 0 C 50 40, 50 50, 50 80" stroke="#FFFFFF" strokeWidth="3" strokeDasharray="6 6" strokeLinecap="round" />
+              </svg>
+            </div>
+
+            {/* FINAL DESTINATION: 3D Locked Treasure Chest on Circular Stone Pedestal */}
             <div className="relative flex flex-col items-center z-20 group cursor-pointer">
               <div className="relative flex flex-col items-center">
-                {/* 3D Chest Container */}
-                <div className="relative h-20 w-20 drop-shadow-[0_10px_20px_rgba(30,41,59,0.4)] group-hover:scale-105 transition-transform">
+                {/* 3D Chest Model with Padlock */}
+                <div className="relative h-22 w-22 drop-shadow-[0_10px_20px_rgba(30,41,59,0.4)] group-hover:scale-105 transition-transform">
                   <Image
                     src="/images/journey/treasure_transparent.png"
                     alt="Locked Chest"
@@ -218,14 +341,14 @@ export function ModuleWorkspace(props: Props) {
                   />
                   {/* Padlock on chest */}
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="h-6 w-6 rounded-full bg-slate-900/90 border border-slate-400 flex items-center justify-center shadow-lg">
-                      <IconLock className="h-3.5 w-3.5 text-white" />
+                    <div className="h-7 w-7 rounded-full bg-slate-900/90 border border-slate-400 flex items-center justify-center shadow-lg">
+                      <IconLock className="h-4 w-4 text-white" />
                     </div>
                   </div>
                 </div>
 
                 {/* Circular Stone Tiered Base */}
-                <div className="-mt-3 w-24 h-5 rounded-full bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 border-2 border-slate-500 shadow-md" />
+                <div className="-mt-3.5 w-26 h-6 rounded-full bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 border-2 border-slate-500 shadow-md" />
               </div>
             </div>
 
@@ -252,7 +375,7 @@ export function ModuleWorkspace(props: Props) {
                 </span>
               </div>
 
-              {/* Title & Subtitle */}
+              {/* Title & Subtitle + 3D Monitor Illustration */}
               <div className="grid grid-cols-1 lg:grid-cols-[1fr_160px] gap-6 items-center">
                 <div className="space-y-1">
                   <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
@@ -486,8 +609,13 @@ export function ModuleWorkspace(props: Props) {
 
                 {/* 3D Laptop with Shield Illustration & Lock Badge */}
                 <div className="flex items-center justify-center relative select-none">
-                  <div className="relative w-24 h-20 rounded-lg bg-slate-100 border border-slate-300 shadow-md flex items-center justify-center">
-                    <IconDeviceLaptop className="h-10 w-10 text-slate-400" />
+                  <div className="relative w-24 h-20 rounded-lg bg-slate-100 border border-slate-300 shadow-md flex flex-col items-center justify-center">
+                    <div className="w-16 h-10 rounded-xs bg-slate-800 flex items-center justify-center">
+                      <div className="w-6 h-6 rounded-full bg-slate-700 flex items-center justify-center">
+                        <path d="M 3 6 L 6 9 L 10 3" stroke="#94A3B8" strokeWidth="1.5" fill="none" />
+                      </div>
+                    </div>
+                    <div className="w-20 h-2 bg-slate-300 rounded-b-xs mt-1" />
                   </div>
 
                   {/* Circular Lock Badge */}
