@@ -20,8 +20,8 @@ export default async function ProctoredPage({ params }: { params: Promise<{ id: 
       />
 
       {/* 2. Main Scrollable Content */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto max-h-screen bg-[#070913] text-white">
-        <main className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6">
+      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto max-h-screen bg-[#F8F9FD] text-slate-900">
+        <main className="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6">
           <ProctoredWorkspace
             goalId={id}
             moduleId={moduleId}
