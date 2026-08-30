@@ -75,7 +75,7 @@ export function AppSidebar({
         </Link>
 
         {/* Navigation Items */}
-        <nav className="space-y-1">
+        <nav className="space-y-1.5">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive =
@@ -92,13 +92,13 @@ export function AppSidebar({
               <Link
                 key={item.label}
                 href={item.href}
-                className={`flex items-center gap-3 px-3 py-2 rounded-xs text-xs font-bold transition-all ${
+                className={`flex items-center gap-3.5 px-3.5 py-2.5 rounded-xs text-sm font-bold tracking-tight transition-all ${
                   isActive
-                    ? "bg-[#6D28D9] text-white shadow-sm shadow-purple-500/20"
+                    ? "bg-[#6D28D9] text-white shadow-sm shadow-purple-500/20 font-extrabold"
                     : "text-slate-900 hover:bg-purple-50 hover:text-[#6D28D9]"
                 }`}
               >
-                <Icon className={`w-4 h-4 stroke-[2] ${isActive ? "text-white" : "text-slate-800 group-hover:text-[#6D28D9]"}`} />
+                <Icon className={`w-5 h-5 stroke-[2.2] shrink-0 ${isActive ? "text-white" : "text-slate-800 group-hover:text-[#6D28D9]"}`} />
                 <span>{item.label}</span>
               </Link>
             );
