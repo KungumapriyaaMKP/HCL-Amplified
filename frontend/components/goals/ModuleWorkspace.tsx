@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { PracticeQuiz } from "@/frontend/components/goals/PracticeQuiz";
@@ -15,6 +15,7 @@ import {
   IconTarget,
   IconCode,
   IconTerminal2,
+  IconBook,
 } from "@tabler/icons-react";
 import { SlideToUnlock } from "@/components/ui/reward-card";
 
@@ -39,9 +40,17 @@ type Props = {
 
 export function ModuleWorkspace(props: Props) {
   const [resourceMarked, setResourceMarked] = useState(props.hasResourceDone);
+  const [codingMarked, setCodingMarked] = useState(false);
   const [practiceAttempted, setPracticeAttempted] = useState(props.hasPracticeAttempt);
   const [feedbackSent, setFeedbackSent] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(`questlearn_coding_${props.moduleId}`);
+      if (saved === "true") setCodingMarked(true);
+    } catch {}
+  }, [props.moduleId]);
 
   async function postProgress(body: Record<string, unknown>) {
     setBusy(true);
@@ -155,12 +164,11 @@ export function ModuleWorkspace(props: Props) {
               </defs>
             </svg>
 
-            {/* STEP 01: 3D Hexagonal Purple Pedestal with Flag */}
+            {/* STEP 01: 3D Hexagonal Purple Pedestal with Flag (Course Material) */}
             <div className="relative flex flex-col items-center z-20 group">
               <svg width="110" height="135" viewBox="0 0 110 135" fill="none" className="overflow-visible">
                 {/* Authentic 3D Planted Flagpole & Waving Purple Pennant Flag */}
                 <g filter="url(#stepperShadow)">
-                  {/* Flagpole planted into pedestal base */}
                   <line x1="78" y1="98" x2="86" y2="-16" stroke="#4C1D95" strokeWidth="3" strokeLinecap="round" />
                   <line x1="77.5" y1="98" x2="85.5" y2="-16" stroke="#DDD6FE" strokeWidth="1" opacity="0.6" strokeLinecap="round" />
                   
@@ -187,56 +195,142 @@ export function ModuleWorkspace(props: Props) {
                 </g>
 
                 {/* Pedestal Ambient Light Aura */}
-                <ellipse cx="55" cy="108" rx="46" ry="16" fill="#A855F7" opacity="0.35" filter="url(#auraGlow)" />
+                <ellipse cx="55" cy="108" rx="46" ry="16" fill={resourceMarked ? "#10B981" : "#A855F7"} opacity="0.35" filter="url(#auraGlow)" />
 
                 {/* 3D Tiered Base Cylinder */}
                 <g filter="url(#stepperShadow)">
-                  {/* Bottom Cylinder Wall */}
-                  <path d="M 12 104 C 12 118 98 118 98 104 L 98 116 C 98 128 12 128 12 116 Z" fill="url(#purplePedestalGrad)" />
-                  {/* Base Ring Top Surface */}
-                  <ellipse cx="55" cy="104" rx="43" ry="12" fill="#5B21B6" stroke="#C084FC" strokeWidth="1.5" />
-                  {/* Glowing Neon Light Ring */}
-                  <ellipse cx="55" cy="102" rx="36" ry="9" fill="none" stroke="#E9D5FF" strokeWidth="2.5" opacity="0.9" />
+                  <path d="M 12 104 C 12 118 98 118 98 104 L 98 116 C 98 128 12 128 12 116 Z" fill={resourceMarked ? "url(#emeraldPedestalGrad)" : "url(#purplePedestalGrad)"} />
+                  <ellipse cx="55" cy="104" rx="43" ry="12" fill={resourceMarked ? "#065F46" : "#5B21B6"} stroke={resourceMarked ? "#34D399" : "#C084FC"} strokeWidth="1.5" />
+                  <ellipse cx="55" cy="102" rx="36" ry="9" fill="none" stroke={resourceMarked ? "#A7F3D0" : "#E9D5FF"} strokeWidth="2.5" opacity="0.9" />
                 </g>
 
                 {/* 3D Hexagonal Shield 01 */}
                 <g transform="translate(55, 52) scale(0.92)" filter="url(#stepperShadow)">
-                  {/* Outer Beveled Hexagon */}
                   <path
                     d="M 0 -48 L 38 -26 L 38 26 L 0 48 L -38 26 L -38 -26 Z"
-                    fill="url(#purpleShieldGrad)"
-                    stroke="#DDD6FE"
+                    fill={resourceMarked ? "url(#emeraldShieldGrad)" : "url(#purpleShieldGrad)"}
+                    stroke={resourceMarked ? "#A7F3D0" : "#DDD6FE"}
                     strokeWidth="3.5"
                     strokeLinejoin="round"
                   />
-                  {/* Inner White Shield Plate */}
                   <path
                     d="M 0 -38 L 29 -20 L 29 20 L 0 38 L -29 20 L -29 -20 Z"
-                    fill="#FFFFFF"
-                    stroke="#DDD6FE"
+                    fill={resourceMarked ? "#ECFDF5" : "#FFFFFF"}
+                    stroke={resourceMarked ? "#6EE7B7" : "#DDD6FE"}
                     strokeWidth="1.5"
                     strokeLinejoin="round"
                   />
-                  {/* Text 01 */}
-                  <text x="0" y="-12" textAnchor="middle" fill="#5B21B6" fontSize="11" fontWeight="900" letterSpacing="1">
+                  <text x="0" y="-12" textAnchor="middle" fill={resourceMarked ? "#047857" : "#5B21B6"} fontSize="11" fontWeight="900" letterSpacing="1">
                     01
                   </text>
-                  {/* Code Symbol </> */}
-                  <text x="0" y="16" textAnchor="middle" fill="#4C1D95" fontSize="22" fontWeight="900" fontFamily="monospace">
-                    &lt;/&gt;
+                  <text x="0" y="16" textAnchor="middle" fill={resourceMarked ? "#065F46" : "#4C1D95"} fontSize="18" fontWeight="900" fontFamily="sans-serif">
+                    📖
                   </text>
                 </g>
               </svg>
             </div>
 
             {/* Neon Dashed Light Trail 1 -> 2 */}
-            <div className="w-10 h-28 flex justify-center -my-2 relative z-10">
-              <svg width="24" height="100%" viewBox="0 0 24 112" fill="none" preserveAspectRatio="none">
+            <div className="w-10 h-24 flex justify-center -my-2 relative z-10">
+              <svg width="24" height="100%" viewBox="0 0 24 96" fill="none" preserveAspectRatio="none">
                 <rect
                   x="7"
                   y="0"
                   width="10"
-                  height="112"
+                  height="96"
+                  fill={resourceMarked ? "#10B981" : "#7C3AED"}
+                  opacity={resourceMarked ? 0.35 : 0.25}
+                  filter="url(#auraGlow)"
+                />
+                <line
+                  x1="12"
+                  y1="0"
+                  x2="12"
+                  y2="96"
+                  stroke={resourceMarked ? "#10B981" : "#64748B"}
+                  strokeWidth="8"
+                  strokeLinecap="round"
+                />
+                <line x1="12" y1="0" x2="12" y2="96" stroke="#FFFFFF" strokeWidth="3" strokeDasharray="6 6" strokeLinecap="round" />
+              </svg>
+            </div>
+
+            {/* STEP 02: 3D Hexagonal Pedestal (Coding Lab) */}
+            <div className="relative flex flex-col items-center z-20">
+              <svg width="110" height="135" viewBox="0 0 110 135" fill="none" className="overflow-visible">
+                {codingMarked && (
+                  <ellipse cx="55" cy="108" rx="46" ry="16" fill="#10B981" opacity="0.45" filter="url(#auraGlow)" />
+                )}
+
+                <g filter="url(#stepperShadow)">
+                  <path
+                    d="M 16 104 C 16 118 94 118 94 104 L 94 114 C 94 126 16 126 16 114 Z"
+                    fill={codingMarked ? "url(#emeraldPedestalGrad)" : resourceMarked ? "url(#purplePedestalGrad)" : "url(#silverPedestalGrad)"}
+                  />
+                  <ellipse
+                    cx="55"
+                    cy="104"
+                    rx="39"
+                    ry="11"
+                    fill={codingMarked ? "#065F46" : resourceMarked ? "#5B21B6" : "#475569"}
+                    stroke={codingMarked ? "#34D399" : resourceMarked ? "#C084FC" : "#94A3B8"}
+                    strokeWidth="1.5"
+                  />
+                  {codingMarked && (
+                    <ellipse cx="55" cy="102" rx="34" ry="8" fill="none" stroke="#A7F3D0" strokeWidth="2.5" opacity="0.9" />
+                  )}
+                </g>
+
+                {/* 3D Hexagonal Shield 02 */}
+                <g transform="translate(55, 52) scale(0.92)" filter="url(#stepperShadow)">
+                  <path
+                    d="M 0 -48 L 38 -26 L 38 26 L 0 48 L -38 26 L -38 -26 Z"
+                    fill={codingMarked ? "url(#emeraldShieldGrad)" : resourceMarked ? "url(#purpleShieldGrad)" : "url(#silverShieldGrad)"}
+                    stroke={codingMarked ? "#A7F3D0" : resourceMarked ? "#DDD6FE" : "#E2E8F0"}
+                    strokeWidth="3.5"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M 0 -38 L 29 -20 L 29 20 L 0 38 L -29 20 L -29 -20 Z"
+                    fill={codingMarked ? "#ECFDF5" : resourceMarked ? "#FBF8FF" : "#F8FAFC"}
+                    stroke={codingMarked ? "#6EE7B7" : resourceMarked ? "#DDD6FE" : "#CBD5E1"}
+                    strokeWidth="1.5"
+                    strokeLinejoin="round"
+                  />
+                  <text
+                    x="0"
+                    y="-12"
+                    textAnchor="middle"
+                    fill={codingMarked ? "#047857" : resourceMarked ? "#5B21B6" : "#475569"}
+                    fontSize="11"
+                    fontWeight="900"
+                    letterSpacing="1"
+                  >
+                    02
+                  </text>
+                  <text
+                    x="0"
+                    y="16"
+                    textAnchor="middle"
+                    fill={codingMarked ? "#065F46" : resourceMarked ? "#4C1D95" : "#475569"}
+                    fontSize="18"
+                    fontWeight="900"
+                    fontFamily="monospace"
+                  >
+                    &lt;/&gt;
+                  </text>
+                </g>
+              </svg>
+            </div>
+
+            {/* Neon Dashed Light Trail 2 -> 3 */}
+            <div className="w-10 h-24 flex justify-center -my-2 relative z-10">
+              <svg width="24" height="100%" viewBox="0 0 24 96" fill="none" preserveAspectRatio="none">
+                <rect
+                  x="7"
+                  y="0"
+                  width="10"
+                  height="96"
                   fill={practiceAttempted ? "#10B981" : "#7C3AED"}
                   opacity={practiceAttempted ? 0.35 : 0.25}
                   filter="url(#auraGlow)"
@@ -245,336 +339,234 @@ export function ModuleWorkspace(props: Props) {
                   x1="12"
                   y1="0"
                   x2="12"
-                  y2="112"
-                  stroke={practiceAttempted ? "#10B981" : "#7C3AED"}
+                  y2="96"
+                  stroke={practiceAttempted ? "#10B981" : codingMarked ? "#7C3AED" : "#64748B"}
                   strokeWidth="8"
                   strokeLinecap="round"
                 />
-                <line x1="12" y1="0" x2="12" y2="112" stroke="#FFFFFF" strokeWidth="3" strokeDasharray="6 6" strokeLinecap="round" />
+                <line x1="12" y1="0" x2="12" y2="96" stroke="#FFFFFF" strokeWidth="3" strokeDasharray="6 6" strokeLinecap="round" />
               </svg>
             </div>
 
-            {/* STEP 02: 3D Hexagonal Pedestal (Practice Assessment - Turns Green When Completed) */}
+            {/* STEP 03: 3D Hexagonal Pedestal (Practice Quiz) */}
             <div className="relative flex flex-col items-center z-20">
               <svg width="110" height="135" viewBox="0 0 110 135" fill="none" className="overflow-visible">
-                {/* Pedestal Ambient Light Aura when completed */}
                 {practiceAttempted && (
                   <ellipse cx="55" cy="108" rx="46" ry="16" fill="#10B981" opacity="0.45" filter="url(#auraGlow)" />
                 )}
 
-                {/* 3D Tiered Base Cylinder */}
                 <g filter="url(#stepperShadow)">
-                  {/* Bottom Cylinder Wall */}
                   <path
                     d="M 16 104 C 16 118 94 118 94 104 L 94 114 C 94 126 16 126 16 114 Z"
-                    fill={practiceAttempted ? "url(#emeraldPedestalGrad)" : "url(#silverPedestalGrad)"}
+                    fill={practiceAttempted ? "url(#emeraldPedestalGrad)" : codingMarked ? "url(#purplePedestalGrad)" : "url(#silverPedestalGrad)"}
                   />
-                  {/* Base Ring Top Surface */}
                   <ellipse
                     cx="55"
                     cy="104"
                     rx="39"
                     ry="11"
-                    fill={practiceAttempted ? "#065F46" : "#475569"}
-                    stroke={practiceAttempted ? "#34D399" : "#94A3B8"}
+                    fill={practiceAttempted ? "#065F46" : codingMarked ? "#5B21B6" : "#475569"}
+                    stroke={practiceAttempted ? "#34D399" : codingMarked ? "#C084FC" : "#94A3B8"}
                     strokeWidth="1.5"
                   />
-
                   {practiceAttempted && (
                     <ellipse cx="55" cy="102" rx="34" ry="8" fill="none" stroke="#A7F3D0" strokeWidth="2.5" opacity="0.9" />
                   )}
-                  
-                  {/* Metallic Lock / Checked Badge on Right Rim */}
-                  <g transform="translate(74, 96)">
-                    <circle
-                      cx="9"
-                      cy="9"
-                      r="9"
-                      fill={practiceAttempted ? "#064E3B" : "#1E293B"}
-                      stroke={practiceAttempted ? "#34D399" : "#94A3B8"}
-                      strokeWidth="1.5"
-                    />
-                    {practiceAttempted || resourceMarked ? (
-                      <path d="M 5 9 L 8 12 L 13 6" stroke="#10B981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                    ) : (
-                      <g transform="translate(4.5, 4)">
-                        <path d="M 2 4.5 L 2 3 C 2 1.3 3.3 0 5 0 C 6.7 0 8 1.3 8 3 L 8 4.5" stroke="#CBD5E1" strokeWidth="1.5" fill="none" />
-                        <rect x="0" y="4" width="10" height="7" rx="1.5" fill="#CBD5E1" />
-                        <circle cx="5" cy="7.5" r="1" fill="#1E293B" />
-                      </g>
-                    )}
-                  </g>
-                </g>
-
-                {/* 3D Hexagonal Shield 02 - Emerald Green when completed */}
-                <g transform="translate(55, 52) scale(0.92)" filter="url(#stepperShadow)">
-                  <path
-                    d="M 0 -48 L 38 -26 L 38 26 L 0 48 L -38 26 L -38 -26 Z"
-                    fill={practiceAttempted ? "url(#emeraldShieldGrad)" : "url(#silverShieldGrad)"}
-                    stroke={practiceAttempted ? "#A7F3D0" : "#E2E8F0"}
-                    strokeWidth="3.5"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M 0 -38 L 29 -20 L 29 20 L 0 38 L -29 20 L -29 -20 Z"
-                    fill={practiceAttempted ? "#ECFDF5" : "#F8FAFC"}
-                    stroke={practiceAttempted ? "#6EE7B7" : "#CBD5E1"}
-                    strokeWidth="1.5"
-                    strokeLinejoin="round"
-                  />
-                  {/* Text 02 */}
-                  <text
-                    x="0"
-                    y="-12"
-                    textAnchor="middle"
-                    fill={practiceAttempted ? "#047857" : "#475569"}
-                    fontSize="11"
-                    fontWeight="900"
-                    letterSpacing="1"
-                  >
-                    02
-                  </text>
-                  {/* Checklist Clipboard Icon */}
-                  <g transform="translate(-10, -2)">
-                    <rect
-                      x="0"
-                      y="0"
-                      width="20"
-                      height="24"
-                      rx="2"
-                      fill={practiceAttempted ? "#D1FAE5" : "#E2E8F0"}
-                      stroke={practiceAttempted ? "#059669" : "#64748B"}
-                      strokeWidth="1.5"
-                    />
-                    <rect
-                      x="5"
-                      y="-2"
-                      width="10"
-                      height="4"
-                      rx="1"
-                      fill={practiceAttempted ? "#047857" : "#475569"}
-                    />
-                    <line
-                      x1="4"
-                      y1="7"
-                      x2="16"
-                      y2="7"
-                      stroke={practiceAttempted ? "#059669" : "#64748B"}
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                    />
-                    <line
-                      x1="4"
-                      y1="12"
-                      x2="14"
-                      y2="12"
-                      stroke={practiceAttempted ? "#059669" : "#64748B"}
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                    />
-                    <line
-                      x1="4"
-                      y1="17"
-                      x2="11"
-                      y2="17"
-                      stroke={practiceAttempted ? "#059669" : "#64748B"}
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                    />
-                  </g>
-                </g>
-              </svg>
-            </div>
-
-            {/* Neon Dashed Light Trail 2 -> 3 */}
-            <div className="w-10 h-28 flex justify-center -my-2 relative z-10">
-              <svg width="24" height="100%" viewBox="0 0 24 112" fill="none" preserveAspectRatio="none">
-                {props.proctoredAlreadyTaken && (
-                  <rect x="7" y="0" width="10" height="112" fill="#10B981" opacity="0.35" filter="url(#auraGlow)" />
-                )}
-                <line
-                  x1="12"
-                  y1="0"
-                  x2="12"
-                  y2="112"
-                  stroke={props.proctoredAlreadyTaken ? "#10B981" : "#64748B"}
-                  strokeWidth="8"
-                  strokeLinecap="round"
-                />
-                <line x1="12" y1="0" x2="12" y2="112" stroke="#FFFFFF" strokeWidth="3" strokeDasharray="6 6" strokeLinecap="round" />
-              </svg>
-            </div>
-
-            {/* STEP 03: 3D Hexagonal Pedestal (Official Proctored Assessment) */}
-            <div className="relative flex flex-col items-center z-20">
-              <svg width="110" height="135" viewBox="0 0 110 135" fill="none" className="overflow-visible">
-                {/* Pedestal Ambient Light Aura when completed */}
-                {props.proctoredAlreadyTaken && (
-                  <ellipse cx="55" cy="108" rx="46" ry="16" fill="#10B981" opacity="0.45" filter="url(#auraGlow)" />
-                )}
-
-                {/* 3D Tiered Base Cylinder */}
-                <g filter="url(#stepperShadow)">
-                  <path
-                    d="M 16 104 C 16 118 94 118 94 104 L 94 114 C 94 126 16 126 16 114 Z"
-                    fill={props.proctoredAlreadyTaken ? "url(#emeraldPedestalGrad)" : "url(#silverPedestalGrad)"}
-                  />
-                  <ellipse
-                    cx="55"
-                    cy="104"
-                    rx="39"
-                    ry="11"
-                    fill={props.proctoredAlreadyTaken ? "#065F46" : "#475569"}
-                    stroke={props.proctoredAlreadyTaken ? "#34D399" : "#94A3B8"}
-                    strokeWidth="1.5"
-                  />
-
-                  {props.proctoredAlreadyTaken && (
-                    <ellipse cx="55" cy="102" rx="34" ry="8" fill="none" stroke="#A7F3D0" strokeWidth="2.5" opacity="0.9" />
-                  )}
-                  
-                  {/* Metallic Lock Badge on Right Rim */}
-                  <g transform="translate(74, 96)">
-                    <circle
-                      cx="9"
-                      cy="9"
-                      r="9"
-                      fill={props.proctoredAlreadyTaken ? "#064E3B" : "#1E293B"}
-                      stroke={props.proctoredAlreadyTaken ? "#34D399" : "#94A3B8"}
-                      strokeWidth="1.5"
-                    />
-                    {props.proctoredAlreadyTaken || practiceAttempted ? (
-                      <path d="M 5 9 L 8 12 L 13 6" stroke="#10B981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                    ) : (
-                      <g transform="translate(4.5, 4)">
-                        <path d="M 2 4.5 L 2 3 C 2 1.3 3.3 0 5 0 C 6.7 0 8 1.3 8 3 L 8 4.5" stroke="#CBD5E1" strokeWidth="1.5" fill="none" />
-                        <rect x="0" y="4" width="10" height="7" rx="1.5" fill="#CBD5E1" />
-                        <circle cx="5" cy="7.5" r="1" fill="#1E293B" />
-                      </g>
-                    )}
-                  </g>
                 </g>
 
                 {/* 3D Hexagonal Shield 03 */}
                 <g transform="translate(55, 52) scale(0.92)" filter="url(#stepperShadow)">
                   <path
                     d="M 0 -48 L 38 -26 L 38 26 L 0 48 L -38 26 L -38 -26 Z"
-                    fill={props.proctoredAlreadyTaken ? "url(#emeraldShieldGrad)" : "url(#silverShieldGrad)"}
-                    stroke={props.proctoredAlreadyTaken ? "#A7F3D0" : "#E2E8F0"}
+                    fill={practiceAttempted ? "url(#emeraldShieldGrad)" : codingMarked ? "url(#purpleShieldGrad)" : "url(#silverShieldGrad)"}
+                    stroke={practiceAttempted ? "#A7F3D0" : codingMarked ? "#DDD6FE" : "#E2E8F0"}
                     strokeWidth="3.5"
                     strokeLinejoin="round"
                   />
                   <path
                     d="M 0 -38 L 29 -20 L 29 20 L 0 38 L -29 20 L -29 -20 Z"
-                    fill={props.proctoredAlreadyTaken ? "#ECFDF5" : "#F8FAFC"}
-                    stroke={props.proctoredAlreadyTaken ? "#6EE7B7" : "#CBD5E1"}
+                    fill={practiceAttempted ? "#ECFDF5" : codingMarked ? "#FBF8FF" : "#F8FAFC"}
+                    stroke={practiceAttempted ? "#6EE7B7" : codingMarked ? "#DDD6FE" : "#CBD5E1"}
                     strokeWidth="1.5"
                     strokeLinejoin="round"
                   />
-                  {/* Text 03 */}
                   <text
                     x="0"
                     y="-12"
                     textAnchor="middle"
-                    fill={props.proctoredAlreadyTaken ? "#047857" : "#475569"}
+                    fill={practiceAttempted ? "#047857" : codingMarked ? "#5B21B6" : "#475569"}
                     fontSize="11"
                     fontWeight="900"
                     letterSpacing="1"
                   >
                     03
                   </text>
-                  {/* Graduation Cap Icon */}
-                  <g transform="translate(-13, 0)">
-                    <path
-                      d="M 13 0 L 26 6 L 13 12 L 0 6 Z"
-                      fill={props.proctoredAlreadyTaken ? "#047857" : "#475569"}
-                      stroke={props.proctoredAlreadyTaken ? "#064E3B" : "#334155"}
-                      strokeWidth="1"
-                    />
-                    <path
-                      d="M 4 8.5 L 4 15 C 4 18 22 18 22 15 L 22 8.5"
-                      fill={props.proctoredAlreadyTaken ? "#10B981" : "#64748B"}
-                    />
-                    <path
-                      d="M 23 8 L 25 15"
-                      stroke={props.proctoredAlreadyTaken ? "#047857" : "#475569"}
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                    />
-                  </g>
+                  <text
+                    x="0"
+                    y="16"
+                    textAnchor="middle"
+                    fill={practiceAttempted ? "#065F46" : codingMarked ? "#4C1D95" : "#475569"}
+                    fontSize="18"
+                    fontWeight="900"
+                  >
+                    📝
+                  </text>
                 </g>
               </svg>
             </div>
 
-            {/* Curving Light Trail 3 -> Chest */}
-            <div className="w-28 h-24 -my-2 relative z-10">
-              <svg width="100%" height="100%" viewBox="0 0 100 90" fill="none">
-                <path d="M 50 0 C 50 45, 50 55, 50 90" stroke="#64748B" strokeWidth="8" strokeLinecap="round" />
-                <path d="M 50 0 C 50 45, 50 55, 50 90" stroke="#FFFFFF" strokeWidth="3" strokeDasharray="6 6" strokeLinecap="round" />
+            {/* Neon Dashed Light Trail 3 -> 4 */}
+            <div className="w-10 h-24 flex justify-center -my-2 relative z-10">
+              <svg width="24" height="100%" viewBox="0 0 24 96" fill="none" preserveAspectRatio="none">
+                <rect
+                  x="7"
+                  y="0"
+                  width="10"
+                  height="96"
+                  fill={props.proctoredAlreadyTaken ? "#10B981" : "#7C3AED"}
+                  opacity={props.proctoredAlreadyTaken ? 0.35 : 0.25}
+                  filter="url(#auraGlow)"
+                />
+                <line
+                  x1="12"
+                  y1="0"
+                  x2="12"
+                  y2="96"
+                  stroke={props.proctoredAlreadyTaken ? "#10B981" : practiceAttempted ? "#7C3AED" : "#64748B"}
+                  strokeWidth="8"
+                  strokeLinecap="round"
+                />
+                <line x1="12" y1="0" x2="12" y2="96" stroke="#FFFFFF" strokeWidth="3" strokeDasharray="6 6" strokeLinecap="round" />
               </svg>
             </div>
 
-            {/* FINAL DESTINATION: 3D Locked Treasure Chest on Circular Stone Pedestal (Significantly Enlarged) */}
+            {/* STEP 04: 3D Hexagonal Pedestal (Official Proctored Exam) */}
+            <div className="relative flex flex-col items-center z-20">
+              <svg width="110" height="135" viewBox="0 0 110 135" fill="none" className="overflow-visible">
+                {props.proctoredAlreadyTaken && (
+                  <ellipse cx="55" cy="108" rx="46" ry="16" fill="#10B981" opacity="0.45" filter="url(#auraGlow)" />
+                )}
+
+                <g filter="url(#stepperShadow)">
+                  <path
+                    d="M 16 104 C 16 118 94 118 94 104 L 94 114 C 94 126 16 126 16 114 Z"
+                    fill={props.proctoredAlreadyTaken ? "url(#emeraldPedestalGrad)" : practiceAttempted ? "url(#purplePedestalGrad)" : "url(#silverPedestalGrad)"}
+                  />
+                  <ellipse
+                    cx="55"
+                    cy="104"
+                    rx="39"
+                    ry="11"
+                    fill={props.proctoredAlreadyTaken ? "#065F46" : practiceAttempted ? "#5B21B6" : "#475569"}
+                    stroke={props.proctoredAlreadyTaken ? "#34D399" : practiceAttempted ? "#C084FC" : "#94A3B8"}
+                    strokeWidth="1.5"
+                  />
+                  {props.proctoredAlreadyTaken && (
+                    <ellipse cx="55" cy="102" rx="34" ry="8" fill="none" stroke="#A7F3D0" strokeWidth="2.5" opacity="0.9" />
+                  )}
+                </g>
+
+                {/* 3D Hexagonal Shield 04 */}
+                <g transform="translate(55, 52) scale(0.92)" filter="url(#stepperShadow)">
+                  <path
+                    d="M 0 -48 L 38 -26 L 38 26 L 0 48 L -38 26 L -38 -26 Z"
+                    fill={props.proctoredAlreadyTaken ? "url(#emeraldShieldGrad)" : practiceAttempted ? "url(#purpleShieldGrad)" : "url(#silverShieldGrad)"}
+                    stroke={props.proctoredAlreadyTaken ? "#A7F3D0" : practiceAttempted ? "#DDD6FE" : "#E2E8F0"}
+                    strokeWidth="3.5"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M 0 -38 L 29 -20 L 29 20 L 0 38 L -29 20 L -29 -20 Z"
+                    fill={props.proctoredAlreadyTaken ? "#ECFDF5" : practiceAttempted ? "#FBF8FF" : "#F8FAFC"}
+                    stroke={props.proctoredAlreadyTaken ? "#6EE7B7" : practiceAttempted ? "#DDD6FE" : "#CBD5E1"}
+                    strokeWidth="1.5"
+                    strokeLinejoin="round"
+                  />
+                  <text
+                    x="0"
+                    y="-12"
+                    textAnchor="middle"
+                    fill={props.proctoredAlreadyTaken ? "#047857" : practiceAttempted ? "#5B21B6" : "#475569"}
+                    fontSize="11"
+                    fontWeight="900"
+                    letterSpacing="1"
+                  >
+                    04
+                  </text>
+                  <text
+                    x="0"
+                    y="16"
+                    textAnchor="middle"
+                    fill={props.proctoredAlreadyTaken ? "#065F46" : practiceAttempted ? "#4C1D95" : "#475569"}
+                    fontSize="18"
+                    fontWeight="900"
+                  >
+                    🎓
+                  </text>
+                </g>
+              </svg>
+            </div>
+
+            {/* Curving Light Trail 4 -> Chest */}
+            <div className="w-28 h-20 -my-2 relative z-10">
+              <svg width="100%" height="100%" viewBox="0 0 100 80" fill="none">
+                <path d="M 50 0 C 50 40, 50 50, 50 80" stroke={props.proctoredAlreadyTaken ? "#10B981" : "#64748B"} strokeWidth="8" strokeLinecap="round" />
+                <path d="M 50 0 C 50 40, 50 50, 50 80" stroke="#FFFFFF" strokeWidth="3" strokeDasharray="6 6" strokeLinecap="round" />
+              </svg>
+            </div>
+
+            {/* FINAL DESTINATION: 3D Locked Treasure Chest */}
             <div className="relative flex flex-col items-center z-20 group cursor-pointer mt-1">
               <div className="relative flex flex-col items-center">
-                
-                {/* Ambient Floor Shadow / Light Ring */}
                 <div className="absolute -bottom-4 w-44 h-12 rounded-full bg-slate-900/30 blur-lg" />
                 
-                {/* 3D Chest Model with Large Steel Padlock */}
-                <div className="relative h-34 w-34 drop-shadow-[0_16px_32px_rgba(30,41,59,0.5)] group-hover:scale-105 transition-transform">
+                <div className="relative h-32 w-32 drop-shadow-[0_16px_32px_rgba(30,41,59,0.5)] group-hover:scale-105 transition-transform">
                   <Image
                     src="/images/journey/treasure_transparent.png"
                     alt="Locked Chest"
                     fill
                     unoptimized
-                    className="object-contain grayscale contrast-125 brightness-105"
+                    className={`object-contain ${props.proctoredAlreadyTaken ? "brightness-110 contrast-125" : "grayscale contrast-125 brightness-105"}`}
                   />
-                  {/* Padlock on center of chest */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="h-10 w-10 rounded-full bg-gradient-to-b from-slate-800 to-slate-950 border-2 border-slate-300 flex items-center justify-center shadow-2xl ring-2 ring-black/20">
-                      <IconLock className="h-5 w-5 text-white stroke-[2.5]" />
+                  {!props.proctoredAlreadyTaken && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="h-10 w-10 rounded-full bg-gradient-to-b from-slate-800 to-slate-950 border-2 border-slate-300 flex items-center justify-center shadow-2xl ring-2 ring-black/20">
+                        <IconLock className="h-5 w-5 text-white stroke-[2.5]" />
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
 
-                {/* Multi-Tiered Circular Stone Pedestal Base */}
                 <div className="-mt-6 relative flex flex-col items-center">
-                  {/* Top Stone Ring Surface */}
                   <div className="w-40 h-8 rounded-full bg-gradient-to-r from-slate-700 via-slate-600 to-slate-700 border-2 border-slate-400 shadow-md flex items-center justify-center">
                     <div className="w-32 h-4 rounded-full bg-slate-800/60 blur-2xs" />
                   </div>
-                  {/* Bottom Tiered Base Ring */}
                   <div className="-mt-4 w-46 h-9 rounded-full bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border-2 border-slate-600 shadow-xl" />
                 </div>
-
               </div>
             </div>
 
           </div>
 
           {/* ========================================================================= */}
-          {/* 2. RIGHT CARDS COLUMN (Exact Match to Image 1)                            */}
+          {/* 2. RIGHT CARDS COLUMN (4-Step Progression)                                */}
           {/* ========================================================================= */}
           <div className="space-y-6">
             
             {/* --------------------------------------------------------------------- */}
-            {/* CARD 1: Step 01 Hero Card (Dark Purple/Navy Developer Card)           */}
+            {/* CARD 1: Step 01 Course Material & Theory Card                         */}
             {/* --------------------------------------------------------------------- */}
-            <div className="relative overflow-hidden rounded-sm bg-gradient-to-br from-[#1C1736] via-[#140F2D] to-[#0E0A22] border border-purple-500/30 p-6 sm:p-7 shadow-xl text-white">
-              
-              {/* Top Row Badges */}
+            <div className="relative overflow-hidden rounded-none bg-gradient-to-br from-[#1C1736] via-[#140F2D] to-[#0E0A22] border border-purple-500/30 p-6 sm:p-7 shadow-xl text-white">
               <div className="flex items-center justify-between gap-3 mb-4">
-                <span className="px-3 py-1 rounded-xs bg-purple-900/80 border border-purple-400/40 text-purple-200 text-[11px] font-black uppercase tracking-wider shadow-xs">
-                  {props.skillName}
+                <span className="px-3 py-1 rounded-none bg-purple-900/80 border border-purple-400/40 text-purple-200 text-[11px] font-black uppercase tracking-wider shadow-xs">
+                  01 · COURSE THEORY &amp; LESSON
                 </span>
 
-                <span className="px-3 py-1 rounded-xs bg-[#251E49] border border-purple-500/30 text-purple-300 text-[11px] font-extrabold tracking-wide">
+                <span className="px-3 py-1 rounded-none bg-[#251E49] border border-purple-500/30 text-purple-300 text-[11px] font-extrabold tracking-wide">
                   ~{hoursEst}h ESTIMATED
                 </span>
               </div>
 
-              {/* Title & Subtitle + 3D Monitor Illustration */}
               <div className="grid grid-cols-1 lg:grid-cols-[1fr_160px] gap-6 items-center">
                 <div className="space-y-1">
                   <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
@@ -584,7 +576,6 @@ export function ModuleWorkspace(props: Props) {
                     Source: <span className="text-slate-300">{props.resourceProvider}</span> · Modality: <span className="text-purple-300">{props.resourceType.toUpperCase()}</span>
                   </p>
 
-                  {/* Action Buttons */}
                   <div className="pt-4 flex flex-wrap items-center gap-3">
                     <a
                       href={props.resourceUrl}
@@ -594,19 +585,11 @@ export function ModuleWorkspace(props: Props) {
                         trackEvent({ eventType: "open", modality: props.resourceType });
                         if (!resourceMarked) postProgress({ type: "started" });
                       }}
-                      className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-sm bg-gradient-to-r from-[#A855F7] via-[#8B5CF6] to-[#7C3AED] text-white text-xs font-black shadow-lg shadow-purple-500/30 hover:opacity-95 hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer"
+                      className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-none bg-gradient-to-r from-[#A855F7] via-[#8B5CF6] to-[#7C3AED] text-white text-xs font-black shadow-lg shadow-purple-500/30 hover:opacity-95 hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer"
                     >
-                      <span>Launch Resource</span>
+                      <span>Launch Course Resource</span>
                       <IconExternalLink className="h-4 w-4" />
                     </a>
-
-                    <Link
-                      href={`/goals/${props.goalId}/modules/${props.moduleId}/compiler`}
-                      className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-sm bg-[#1A1538] border border-cyan-500/50 text-cyan-300 text-xs font-bold hover:bg-[#251F4E] hover:text-cyan-200 transition-all cursor-pointer shadow-md"
-                    >
-                      <IconTerminal2 className="h-4 w-4 text-cyan-400" />
-                      <span>Code Lab / Compiler</span>
-                    </Link>
 
                     {!resourceMarked ? (
                       <button
@@ -617,44 +600,39 @@ export function ModuleWorkspace(props: Props) {
                           await trackEvent({ eventType: "complete", modality: props.resourceType });
                           setResourceMarked(true);
                         }}
-                        className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-sm bg-[#28214A] border border-purple-400/30 text-slate-200 text-xs font-bold hover:bg-[#342B60] hover:text-white transition-all cursor-pointer disabled:opacity-50"
+                        className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-none bg-[#28214A] border border-purple-400/30 text-slate-200 text-xs font-bold hover:bg-[#342B60] hover:text-white transition-all cursor-pointer disabled:opacity-50"
                       >
-                        <span>Mark Step Complete</span>
+                        <span>Mark Course Complete</span>
                         <IconCheck className="h-4 w-4" />
                       </button>
                     ) : (
-                      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-sm bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 text-xs font-bold">
+                      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-none bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 text-xs font-bold">
                         <IconCheck className="h-4 w-4 stroke-[3]" />
-                        <span>Step Completed</span>
+                        <span>Course Step Completed</span>
                       </div>
                     )}
                   </div>
                 </div>
 
-                {/* 3D Desktop Monitor Illustration with Code Lines & {} Badge */}
                 <div className="hidden lg:flex flex-col items-center justify-center relative select-none">
-                  <div className="relative w-36 h-28 rounded-xs bg-[#0F0C24] border-2 border-purple-500/40 shadow-xl p-2.5 flex flex-col justify-between">
-                    {/* Monitor Code Lines */}
+                  <div className="relative w-36 h-28 rounded-none bg-[#0F0C24] border-2 border-purple-500/40 shadow-xl p-2.5 flex flex-col justify-between">
                     <div className="space-y-1.5">
-                      <div className="h-1.5 w-16 bg-purple-400/80 rounded-xs" />
-                      <div className="h-1.5 w-24 bg-cyan-400/70 rounded-xs" />
-                      <div className="h-1.5 w-20 bg-emerald-400/70 rounded-xs" />
-                      <div className="h-1.5 w-14 bg-amber-400/70 rounded-xs" />
-                      <div className="h-1.5 w-22 bg-purple-300/60 rounded-xs" />
+                      <div className="h-1.5 w-16 bg-purple-400/80 rounded-none" />
+                      <div className="h-1.5 w-24 bg-cyan-400/70 rounded-none" />
+                      <div className="h-1.5 w-20 bg-emerald-400/70 rounded-none" />
+                      <div className="h-1.5 w-14 bg-amber-400/70 rounded-none" />
+                      <div className="h-1.5 w-22 bg-purple-300/60 rounded-none" />
                     </div>
-
-                    {/* Monitor Stand */}
-                    <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-8 h-3 bg-purple-900 rounded-b-xs" />
+                    <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-8 h-3 bg-purple-900" />
                   </div>
 
-                  {/* Floating Hexagonal Code Symbol Badge */}
-                  <div className="absolute -right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-9 h-9 rounded-xs bg-gradient-to-tr from-[#6D28D9] to-[#8B5CF6] border border-purple-200 text-white font-mono font-black text-sm shadow-lg drop-shadow-md">
-                    &#123;&#125;
+                  <div className="absolute -right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-9 h-9 rounded-none bg-gradient-to-tr from-[#6D28D9] to-[#8B5CF6] border border-purple-200 text-white font-mono font-black text-sm shadow-lg drop-shadow-md">
+                    📖
                   </div>
                 </div>
               </div>
 
-              {/* Module Difficulty Calibration - Interactive Tactile Button Segment */}
+              {/* Module Difficulty Calibration */}
               <div className="mt-6 pt-4 border-t border-purple-500/25 flex flex-wrap items-center justify-between gap-4">
                 <div className="space-y-0.5">
                   <p className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
@@ -704,22 +682,113 @@ export function ModuleWorkspace(props: Props) {
             </div>
 
             {/* --------------------------------------------------------------------- */}
-            {/* CARD 2: Step 02 (Practice Assessment - Unlocked after Step 01 Coding) */}
+            {/* CARD 2: Step 02 Hands-On Coding Lab & Compiler Card                   */}
             {/* --------------------------------------------------------------------- */}
             {resourceMarked ? (
+              <div className="relative overflow-hidden rounded-none bg-gradient-to-br from-[#0F172A] via-[#1E1B4B] to-[#0A0F1D] border-2 border-cyan-500/40 p-6 sm:p-7 shadow-xl text-white space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="px-2.5 py-0.5 rounded-none bg-cyan-950 border border-cyan-400 text-cyan-300 text-xs font-black">
+                      02 · CODING LAB
+                    </span>
+                    <h3 className="text-lg font-black text-white flex items-center gap-2">
+                      <IconCode className="h-5 w-5 text-cyan-400" />
+                      <span>Hands-On Code Lab &amp; Compiler</span>
+                    </h3>
+                  </div>
+                  <span className="px-2.5 py-0.5 rounded-none bg-emerald-950/80 border border-emerald-400 text-emerald-300 text-[11px] font-black">
+                    INTERACTIVE RUNNER
+                  </span>
+                </div>
+
+                <p className="text-xs text-slate-300 font-medium leading-relaxed max-w-2xl">
+                  Put theory into action! Write, test, and execute live code challenges in our in-browser coding sandbox before unlocking the practice assessment.
+                </p>
+
+                <div className="pt-2 flex flex-wrap items-center gap-3">
+                  <Link
+                    href={`/goals/${props.goalId}/modules/${props.moduleId}/compiler`}
+                    className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-none bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-xs font-black shadow-lg shadow-cyan-500/25 hover:opacity-95 hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer"
+                  >
+                    <IconTerminal2 className="h-4 w-4" />
+                    <span>Launch Code Lab &amp; Compiler</span>
+                    <IconArrowRight className="h-4 w-4" />
+                  </Link>
+
+                  {!codingMarked ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCodingMarked(true);
+                        try { localStorage.setItem(`questlearn_coding_${props.moduleId}`, "true"); } catch {}
+                      }}
+                      className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-none bg-[#241E47] border border-purple-400/40 text-purple-200 text-xs font-bold hover:bg-[#342C64] hover:text-white transition-all cursor-pointer shadow-md"
+                    >
+                      <span>Mark Coding Complete</span>
+                      <IconCheck className="h-4 w-4" />
+                    </button>
+                  ) : (
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-none bg-emerald-950/90 border border-emerald-400 text-emerald-300 text-xs font-bold">
+                      <IconCheck className="h-4 w-4 stroke-[3]" />
+                      <span>Coding Lab Completed</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="relative overflow-hidden rounded-none bg-white/95 border border-slate-200/90 p-6 sm:p-7 shadow-md backdrop-blur-md grid grid-cols-1 sm:grid-cols-[1fr_120px] gap-6 items-center">
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-2">
+                    <span className="px-2 py-0.5 rounded-none bg-slate-100 text-slate-500 text-[10px] font-black">
+                      02 · CODING LAB
+                    </span>
+                    <h3 className="text-base font-black text-slate-700 flex items-center gap-2">
+                      <IconLock className="h-4 w-4 text-slate-400" />
+                      <span>Hands-On Code Lab &amp; Compiler</span>
+                    </h3>
+                  </div>
+                  <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                    Complete the Course Material in Step 01 above to unlock this interactive coding lab.
+                  </p>
+                </div>
+
+                <div className="flex items-center justify-center relative select-none">
+                  <div className="relative w-20 h-16 rounded-none bg-slate-900 border border-slate-700 p-2 flex flex-col justify-between">
+                    <div className="space-y-1">
+                      <div className="h-1 w-8 bg-cyan-400/70" />
+                      <div className="h-1 w-12 bg-purple-400/70" />
+                      <div className="h-1 w-10 bg-emerald-400/70" />
+                    </div>
+                  </div>
+                  <div className="absolute -top-1 -right-1 h-6 w-6 rounded-none bg-slate-800 border border-slate-300 flex items-center justify-center shadow-md">
+                    <IconLock className="h-3 w-3 text-white" />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* --------------------------------------------------------------------- */}
+            {/* CARD 3: Step 03 Practice Assessment Card                              */}
+            {/* --------------------------------------------------------------------- */}
+            {codingMarked || practiceAttempted ? (
               <div className="relative overflow-hidden rounded-none bg-white border-2 border-purple-200 p-6 sm:p-7 shadow-lg backdrop-blur-md space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
-                    <IconTarget className="h-5 w-5 text-[#7C3AED]" />
-                    <span>Practice Assessment</span>
-                  </h3>
+                  <div className="flex items-center gap-2">
+                    <span className="px-2.5 py-0.5 rounded-none bg-purple-100 text-purple-900 text-xs font-black">
+                      03 · PRACTICE
+                    </span>
+                    <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
+                      <IconTarget className="h-5 w-5 text-[#7C3AED]" />
+                      <span>Practice Assessment</span>
+                    </h3>
+                  </div>
                   <span className="px-2.5 py-0.5 rounded-none bg-cyan-50 border border-cyan-200 text-cyan-800 text-xs font-black">
                     UNLIMITED RETAKES
                   </span>
                 </div>
 
                 <p className="text-xs text-slate-600 font-medium leading-relaxed">
-                  Test your comprehension with adaptive multiple-choice questions in the dedicated practice arena before attempting the official proctored exam.
+                  Test your comprehension with adaptive multiple-choice questions in the dedicated practice arena before attempting the official proctored test.
                 </p>
 
                 <div className="pt-1">
@@ -735,53 +804,49 @@ export function ModuleWorkspace(props: Props) {
             ) : (
               <div className="relative overflow-hidden rounded-none bg-white/95 border border-slate-200/90 p-6 sm:p-7 shadow-md backdrop-blur-md grid grid-cols-1 sm:grid-cols-[1fr_120px] gap-6 items-center">
                 <div className="space-y-1.5">
-                  <h3 className="text-lg font-black text-slate-800 flex items-center gap-2">
-                    <IconLock className="h-5 w-5 text-slate-500" />
-                    <span>Practice Assessment</span>
-                  </h3>
+                  <div className="flex items-center gap-2">
+                    <span className="px-2 py-0.5 rounded-none bg-slate-100 text-slate-500 text-[10px] font-black">
+                      03 · PRACTICE
+                    </span>
+                    <h3 className="text-base font-black text-slate-700 flex items-center gap-2">
+                      <IconLock className="h-4 w-4 text-slate-400" />
+                      <span>Practice Assessment</span>
+                    </h3>
+                  </div>
                   <p className="text-xs text-slate-500 font-medium leading-relaxed">
-                    Complete the coding lab and resource review in Step 01 above to unlock this practice assessment.
+                    Complete the hands-on coding lab in Step 02 above to unlock this practice assessment.
                   </p>
                 </div>
 
-                {/* 3D Paper Checklist Illustration with Lock Badge */}
                 <div className="flex items-center justify-center relative select-none">
-                  <div className="relative w-22 h-26 rounded-xs bg-slate-50 border border-slate-200 shadow-md p-2 space-y-1.5">
-                    <div className="flex items-center gap-1">
-                      <div className="h-2 w-2 rounded-xs bg-slate-300" />
-                      <div className="h-1.5 w-12 bg-slate-200 rounded-xs" />
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <div className="h-2 w-2 rounded-xs bg-slate-300" />
-                      <div className="h-1.5 w-10 bg-slate-200 rounded-xs" />
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <div className="h-2 w-2 rounded-xs bg-slate-300" />
-                      <div className="h-1.5 w-14 bg-slate-200 rounded-xs" />
-                    </div>
-                    {/* Pencil */}
-                    <div className="absolute -bottom-1 -right-2 w-10 h-2 bg-amber-400 rotate-45 rounded-xs shadow-xs border border-amber-600" />
+                  <div className="relative w-20 h-22 rounded-none bg-slate-50 border border-slate-200 shadow-md p-2 space-y-1.5">
+                    <div className="h-2 w-2 bg-slate-300" />
+                    <div className="h-1.5 w-10 bg-slate-200" />
+                    <div className="h-1.5 w-12 bg-slate-200" />
                   </div>
-
-                  {/* Circular Lock Badge */}
-                  <div className="absolute -top-1 -right-1 h-7 w-7 rounded-full bg-slate-800 border-2 border-slate-300 flex items-center justify-center shadow-md">
-                    <IconLock className="h-3.5 w-3.5 text-white" />
+                  <div className="absolute -top-1 -right-1 h-6 w-6 rounded-none bg-slate-800 border border-slate-300 flex items-center justify-center shadow-md">
+                    <IconLock className="h-3 w-3 text-white" />
                   </div>
                 </div>
               </div>
             )}
 
             {/* --------------------------------------------------------------------- */}
-            {/* CARD 3: Step 03 (Official Proctored Assessment - Light Glass Card)    */}
+            {/* CARD 4: Step 04 Official Proctored Assessment Card                    */}
             {/* --------------------------------------------------------------------- */}
             {props.proctoredAlreadyTaken ? (
-              <div className="relative overflow-hidden rounded-sm bg-white/98 border-2 border-emerald-200 p-6 shadow-xl backdrop-blur-md space-y-4">
+              <div className="relative overflow-hidden rounded-none bg-white/98 border-2 border-emerald-200 p-6 shadow-xl backdrop-blur-md space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
-                    <IconAward className="h-5 w-5 text-emerald-600" />
-                    <span>Official Proctored Assessment Cleared</span>
-                  </h3>
-                  <span className="px-3 py-1 rounded-xs bg-emerald-100 text-emerald-800 text-xs font-black">
+                  <div className="flex items-center gap-2">
+                    <span className="px-2.5 py-0.5 rounded-none bg-emerald-100 text-emerald-900 text-xs font-black">
+                      04 · PROCTORED TEST
+                    </span>
+                    <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
+                      <IconAward className="h-5 w-5 text-emerald-600" />
+                      <span>Official Proctored Assessment Cleared</span>
+                    </h3>
+                  </div>
+                  <span className="px-3 py-1 rounded-none bg-emerald-100 text-emerald-800 text-xs font-black">
                     MASTERY RECORDED
                   </span>
                 </div>
@@ -790,18 +855,23 @@ export function ModuleWorkspace(props: Props) {
                 </div>
               </div>
             ) : practiceAttempted ? (
-              <div className="relative overflow-hidden rounded-sm bg-white/98 border-2 border-purple-300 p-6 shadow-xl backdrop-blur-md space-y-4">
+              <div className="relative overflow-hidden rounded-none bg-white/98 border-2 border-purple-300 p-6 shadow-xl backdrop-blur-md space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
-                    <IconAward className="h-5 w-5 text-[#6D28D9]" />
-                    <span>Official Proctored Assessment</span>
-                  </h3>
-                  <span className="px-2.5 py-0.5 rounded-xs bg-purple-100 text-purple-800 text-xs font-black">
+                  <div className="flex items-center gap-2">
+                    <span className="px-2.5 py-0.5 rounded-none bg-purple-100 text-purple-900 text-xs font-black">
+                      04 · PROCTORED TEST
+                    </span>
+                    <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
+                      <IconAward className="h-5 w-5 text-[#6D28D9]" />
+                      <span>Official Proctored Assessment</span>
+                    </h3>
+                  </div>
+                  <span className="px-2.5 py-0.5 rounded-none bg-purple-100 text-purple-800 text-xs font-black">
                     UNLOCKED
                   </span>
                 </div>
                 <p className="text-xs text-slate-600 font-medium leading-relaxed">
-                  Single-attempt, timed, webcam presence-monitored trial. Successfully completing this assessment records official skill mastery.
+                  Single-attempt, 15-minute, webcam presence-monitored examination. Successfully completing this proctored test records official skill mastery.
                 </p>
                 <div className="pt-1">
                   <Link
@@ -814,31 +884,30 @@ export function ModuleWorkspace(props: Props) {
                 </div>
               </div>
             ) : (
-              <div className="relative overflow-hidden rounded-sm bg-white/95 border border-slate-200/90 p-6 sm:p-7 shadow-md backdrop-blur-md grid grid-cols-1 sm:grid-cols-[1fr_120px] gap-6 items-center">
+              <div className="relative overflow-hidden rounded-none bg-white/95 border border-slate-200/90 p-6 sm:p-7 shadow-md backdrop-blur-md grid grid-cols-1 sm:grid-cols-[1fr_120px] gap-6 items-center">
                 <div className="space-y-1.5">
-                  <h3 className="text-lg font-black text-slate-800 flex items-center gap-2">
-                    <IconLock className="h-5 w-5 text-slate-500" />
-                    <span>Official Proctored Assessment</span>
-                  </h3>
+                  <div className="flex items-center gap-2">
+                    <span className="px-2 py-0.5 rounded-none bg-slate-100 text-slate-500 text-[10px] font-black">
+                      04 · PROCTORED TEST
+                    </span>
+                    <h3 className="text-base font-black text-slate-700 flex items-center gap-2">
+                      <IconLock className="h-4 w-4 text-slate-400" />
+                      <span>Official Proctored Assessment</span>
+                    </h3>
+                  </div>
                   <p className="text-xs text-slate-500 font-medium leading-relaxed">
-                    Complete at least one practice quiz attempt in the arena above to unlock this assessment.
+                    Complete at least one practice quiz attempt in Step 03 above to unlock this assessment.
                   </p>
                 </div>
 
-                {/* 3D Laptop with Shield Illustration & Lock Badge */}
                 <div className="flex items-center justify-center relative select-none">
-                  <div className="relative w-24 h-20 rounded-xs bg-slate-100 border border-slate-300 shadow-md flex flex-col items-center justify-center">
-                    <div className="w-16 h-10 rounded-xs bg-slate-800 flex items-center justify-center">
-                      <div className="w-6 h-6 rounded-xs bg-slate-700 flex items-center justify-center">
-                        <path d="M 3 6 L 6 9 L 10 3" stroke="#94A3B8" strokeWidth="1.5" fill="none" />
-                      </div>
+                  <div className="relative w-22 h-18 rounded-none bg-slate-100 border border-slate-300 shadow-md flex flex-col items-center justify-center">
+                    <div className="w-14 h-9 rounded-none bg-slate-800 flex items-center justify-center">
+                      <div className="w-5 h-5 rounded-none bg-slate-700" />
                     </div>
-                    <div className="w-20 h-2 bg-slate-300 rounded-b-xs mt-1" />
                   </div>
-
-                  {/* Circular Lock Badge */}
-                  <div className="absolute -top-2 -right-2 h-7 w-7 rounded-full bg-slate-100 border border-slate-300 flex items-center justify-center shadow-md">
-                    <IconLock className="h-3.5 w-3.5 text-slate-600" />
+                  <div className="absolute -top-1 -right-1 h-6 w-6 rounded-none bg-slate-800 border border-slate-300 flex items-center justify-center shadow-md">
+                    <IconLock className="h-3 w-3 text-white" />
                   </div>
                 </div>
               </div>
@@ -870,7 +939,7 @@ export function ModuleWorkspace(props: Props) {
                     </div>
                     <h4 className="text-base font-extrabold text-slate-900">Milestone Treasure Ready!</h4>
                     <p className="text-xs text-slate-500 max-w-xs mx-auto">
-                      You completed all stages for <span className="font-bold text-slate-800">{props.skillName}</span>. Swipe below to claim your milestone reward!
+                      You completed all 4 stages for <span className="font-bold text-slate-800">{props.skillName}</span>. Swipe below to claim your milestone reward!
                     </p>
                   </div>
                 </SlideToUnlock>
@@ -879,7 +948,7 @@ export function ModuleWorkspace(props: Props) {
               <div className="rounded-none bg-white/95 border border-purple-100 p-4 shadow-xs backdrop-blur-md flex items-center justify-center gap-2.5 text-xs font-bold text-slate-700">
                 <IconLock className="h-4 w-4 text-purple-600" />
                 <span>
-                  Complete all steps above ({resourceMarked ? 1 : 0} + {practiceAttempted ? 1 : 0} + {props.proctoredAlreadyTaken ? 1 : 0}/3) to unlock <span className="text-[#6D28D9] font-black">Milestone Loot!</span> 🎁
+                  Complete all 4 stages above (Course + Coding + Practice + Proctored Test) to unlock <strong className="text-purple-700">Milestone Loot! 🎁</strong>
                 </span>
               </div>
             )}
