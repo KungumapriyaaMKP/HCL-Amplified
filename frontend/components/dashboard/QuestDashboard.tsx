@@ -240,16 +240,16 @@ export function QuestDashboard({
 
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             {/* Pathway 1: AI & Machine Learning */}
-            <div className="rounded-lg border border-slate-200/80 bg-white p-5 shadow-sm transition-all hover:shadow-md flex flex-col justify-between">
+            <div className="rounded-sm border border-slate-200/90 bg-white p-5 shadow-2xs transition-all hover:shadow-md hover:border-purple-300 flex flex-col justify-between group">
               <div className="flex items-center gap-3.5">
-                <div className="flex h-12 w-12 items-center justify-center rounded-md bg-[#EDE9FE] text-[#7C3AED] shrink-0">
-                  <IconBrain className="h-6 w-6" />
+                <div className="flex h-11 w-11 items-center justify-center rounded-xs bg-gradient-to-br from-[#7C3AED] via-[#6D28D9] to-[#4C1D95] text-white shadow-sm ring-1 ring-purple-300/40 shrink-0">
+                  <IconBrain className="h-6 w-6 stroke-[1.8]" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-slate-900">
+                  <h4 className="text-sm font-extrabold text-slate-900 group-hover:text-[#6D28D9] transition-colors">
                     AI & Machine Learning
                   </h4>
-                  <p className="text-xs text-slate-500 font-medium">
+                  <p className="text-xs text-slate-500 font-medium leading-relaxed">
                     Python, Neural Networks, PyTorch & LLMs
                   </p>
                 </div>
@@ -259,34 +259,34 @@ export function QuestDashboard({
                 <div className="flex-1">
                   <div className="flex items-center justify-between text-[11px] font-bold mb-1.5">
                     <span className="text-slate-500">Starter Pathway</span>
-                    <span className="text-[#6D28D9] font-bold">12 Modules</span>
+                    <span className="text-[#6D28D9] font-black">12 Modules</span>
                   </div>
-                  <div className="h-1.5 w-full rounded-sm bg-slate-100 overflow-hidden">
-                    <div className="h-full rounded-sm bg-[#7C3AED]" style={{ width: "0%" }} />
+                  <div className="h-1.5 w-full rounded-xs bg-slate-100 overflow-hidden">
+                    <div className="h-full rounded-xs bg-[#7C3AED]" style={{ width: "0%" }} />
                   </div>
                 </div>
 
                 <Link
                   href="/goals/new"
-                  className="flex h-8 w-8 items-center justify-center rounded-md bg-[#EDE9FE] text-[#6D28D9] hover:bg-[#DDD6FE] transition-colors shrink-0 shadow-sm"
+                  className="flex h-8 w-8 items-center justify-center rounded-xs bg-slate-50 border border-slate-200 text-slate-700 group-hover:bg-[#6D28D9] group-hover:border-[#6D28D9] group-hover:text-white transition-all shrink-0 shadow-2xs"
                   title="Start Path"
                 >
-                  <IconArrowRight className="h-4 w-4" />
+                  <IconArrowRight className="h-4 w-4 stroke-[2.2]" />
                 </Link>
               </div>
             </div>
 
             {/* Pathway 2: Full-Stack Web Development */}
-            <div className="rounded-lg border border-slate-200/80 bg-white p-5 shadow-sm transition-all hover:shadow-md flex flex-col justify-between">
+            <div className="rounded-sm border border-slate-200/90 bg-white p-5 shadow-2xs transition-all hover:shadow-md hover:border-emerald-300 flex flex-col justify-between group">
               <div className="flex items-center gap-3.5">
-                <div className="flex h-12 w-12 items-center justify-center rounded-md bg-[#D1FAE5] text-[#059669] shrink-0">
-                  <IconCode className="h-6 w-6" />
+                <div className="flex h-11 w-11 items-center justify-center rounded-xs bg-gradient-to-br from-[#059669] via-[#047857] to-[#065F46] text-white shadow-sm ring-1 ring-emerald-300/40 shrink-0">
+                  <IconCode className="h-6 w-6 stroke-[2.2]" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-slate-900">
+                  <h4 className="text-sm font-extrabold text-slate-900 group-hover:text-[#059669] transition-colors">
                     Full-Stack Web Dev
                   </h4>
-                  <p className="text-xs text-slate-500 font-medium">
+                  <p className="text-xs text-slate-500 font-medium leading-relaxed">
                     React, Next.js, Node.js & Database Architecture
                   </p>
                 </div>
@@ -296,19 +296,19 @@ export function QuestDashboard({
                 <div className="flex-1">
                   <div className="flex items-center justify-between text-[11px] font-bold mb-1.5">
                     <span className="text-slate-500">Starter Pathway</span>
-                    <span className="text-[#059669] font-bold">15 Modules</span>
+                    <span className="text-[#059669] font-black">15 Modules</span>
                   </div>
-                  <div className="h-1.5 w-full rounded-sm bg-slate-100 overflow-hidden">
-                    <div className="h-full rounded-sm bg-[#059669]" style={{ width: "0%" }} />
+                  <div className="h-1.5 w-full rounded-xs bg-slate-100 overflow-hidden">
+                    <div className="h-full rounded-xs bg-[#059669]" style={{ width: "0%" }} />
                   </div>
                 </div>
 
                 <Link
                   href="/goals/new"
-                  className="flex h-8 w-8 items-center justify-center rounded-md bg-[#D1FAE5] text-[#059669] hover:bg-[#A7F3D0] transition-colors shrink-0 shadow-sm"
+                  className="flex h-8 w-8 items-center justify-center rounded-xs bg-slate-50 border border-slate-200 text-slate-700 group-hover:bg-[#059669] group-hover:border-[#059669] group-hover:text-white transition-all shrink-0 shadow-2xs"
                   title="Start Path"
                 >
-                  <IconArrowRight className="h-4 w-4" />
+                  <IconArrowRight className="h-4 w-4 stroke-[2.2]" />
                 </Link>
               </div>
             </div>
