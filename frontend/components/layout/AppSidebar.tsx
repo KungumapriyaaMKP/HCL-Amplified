@@ -92,13 +92,13 @@ export function AppSidebar({
               <Link
                 key={item.label}
                 href={item.href}
-                className={`flex items-center gap-3 px-3 py-2 rounded-xs text-xs font-semibold transition-all ${
+                className={`flex items-center gap-3 px-3 py-2 rounded-xs text-xs font-bold transition-all ${
                   isActive
                     ? "bg-[#6D28D9] text-white shadow-sm shadow-purple-500/20"
-                    : "text-slate-600 hover:bg-purple-50 hover:text-[#6D28D9]"
+                    : "text-slate-900 hover:bg-purple-50 hover:text-[#6D28D9]"
                 }`}
               >
-                <Icon className={`w-4 h-4 ${isActive ? "text-white" : "text-slate-400 group-hover:text-[#6D28D9]"}`} />
+                <Icon className={`w-4 h-4 stroke-[2] ${isActive ? "text-white" : "text-slate-800 group-hover:text-[#6D28D9]"}`} />
                 <span>{item.label}</span>
               </Link>
             );
