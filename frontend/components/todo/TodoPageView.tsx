@@ -112,7 +112,7 @@ const INITIAL_TASKS: TodoTask[] = [
     priority: "High",
     dueDate: "Today",
     xpReward: 30,
-    completed: true,
+    completed: false,
   },
   {
     id: "task-5",
@@ -122,7 +122,7 @@ const INITIAL_TASKS: TodoTask[] = [
     priority: "Low",
     dueDate: "26 May 2025",
     xpReward: 15,
-    completed: true,
+    completed: false,
   },
   {
     id: "task-6",
@@ -172,7 +172,7 @@ const INITIAL_TASKS: TodoTask[] = [
     priority: "Low",
     dueDate: "Today",
     xpReward: 10,
-    completed: true,
+    completed: false,
   },
 ];
 

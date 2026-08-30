@@ -433,7 +433,7 @@ export function QuestDashboard({
         <AchievementsWidget streak={streak} xp={xp} badgeCount={badgeCount} />
 
         {/* 3. Weekly Progress */}
-        <WeeklyProgressWidget />
+        <WeeklyProgressWidget xp={xp} streak={streak} />
       </div>
 
     </div>

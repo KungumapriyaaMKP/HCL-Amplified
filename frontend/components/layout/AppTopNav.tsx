@@ -70,7 +70,7 @@ export function AppTopNav({
           {/* Flame Quick Pill */}
           <div className="flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-2 shadow-sm">
             <IconFlame className="h-4 w-4 fill-orange-400 text-orange-500" />
-            <span className="text-xs font-bold text-slate-800">3</span>
+            <span className="text-xs font-bold text-slate-800">{streak}</span>
           </div>
 
           {/* Bookmark Quick Icon */}

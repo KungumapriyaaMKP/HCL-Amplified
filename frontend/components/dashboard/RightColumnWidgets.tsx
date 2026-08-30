@@ -329,17 +329,27 @@ export function AchievementsWidget({
 }
 
 /**
- * 3. Weekly Progress Widget with Bar Chart
+ * 3. Weekly Progress Widget with Dynamic Hours
  */
-export function WeeklyProgressWidget() {
+export function WeeklyProgressWidget({
+  xp = 0,
+  streak = 0,
+}: {
+  xp?: number;
+  streak?: number;
+}) {
+  const isNew = xp === 0 && streak === 0;
+  const hoursText = isNew ? "0.0 hrs" : `${Math.max(0.5, +(xp / 100).toFixed(1))} hrs`;
+  const diffText = isNew ? "0.0 hrs" : "+1.5 hrs";
+
   const days = [
-    { label: "Mon", height: "h-8", active: false },
-    { label: "Tue", height: "h-14", active: false },
-    { label: "Wed", height: "h-20", active: true },
-    { label: "Thu", height: "h-16", active: false },
-    { label: "Fri", height: "h-24", active: false },
-    { label: "Sat", height: "h-10", active: false },
-    { label: "Sun", height: "h-6", active: false },
+    { label: "Mon", height: isNew ? "h-2 bg-slate-100" : "h-8 bg-purple-100", active: false },
+    { label: "Tue", height: isNew ? "h-2 bg-slate-100" : "h-14 bg-purple-100", active: false },
+    { label: "Wed", height: isNew ? "h-2 bg-slate-100" : "h-20 bg-gradient-to-t from-[#6D28D9] to-[#8B5CF6]", active: !isNew },
+    { label: "Thu", height: isNew ? "h-2 bg-slate-100" : "h-16 bg-purple-100", active: false },
+    { label: "Fri", height: isNew ? "h-2 bg-slate-100" : "h-24 bg-purple-100", active: false },
+    { label: "Sat", height: isNew ? "h-2 bg-slate-100" : "h-10 bg-purple-100", active: false },
+    { label: "Sun", height: isNew ? "h-2 bg-slate-100" : "h-6 bg-purple-100", active: false },
   ];
 
   return (
@@ -349,13 +359,13 @@ export function WeeklyProgressWidget() {
         <div>
           <h3 className="text-sm font-extrabold text-slate-900">Weekly Progress</h3>
           <div className="flex items-center gap-1.5 mt-0.5">
-            <span className="text-xs font-bold text-[#6D28D9]">3.2 hrs</span>
+            <span className="text-xs font-bold text-[#6D28D9]">{hoursText}</span>
             <span className="text-[11px] text-slate-400 font-medium">this week</span>
           </div>
         </div>
         <div className="flex items-center gap-1 text-[11px] font-bold text-slate-600 bg-slate-50 border border-slate-200 px-2 py-1 rounded-xs">
           <IconTrendingUp className="h-3.5 w-3.5 text-emerald-600" />
-          <span>+1.5 hrs</span>
+          <span>{diffText}</span>
         </div>
       </div>
 
@@ -365,11 +375,7 @@ export function WeeklyProgressWidget() {
           <div key={day.label} className="flex flex-col items-center gap-2 flex-1">
             <div className="w-full flex items-end justify-center h-20">
               <div
-                className={`w-full max-w-[20px] rounded-t-xs transition-all ${
-                  day.active
-                    ? "bg-gradient-to-t from-[#6D28D9] to-[#8B5CF6] shadow-xs"
-                    : "bg-purple-100 hover:bg-purple-200"
-                } ${day.height}`}
+                className={`w-full max-w-[20px] rounded-t-xs transition-all ${day.height}`}
               />
             </div>
             <span className="text-[10px] font-semibold text-slate-400">{day.label}</span>

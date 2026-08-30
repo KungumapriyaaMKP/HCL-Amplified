@@ -35,21 +35,21 @@ export function InteractiveSkillMapTree({
     modules.length > 0
       ? modules
       : [
-          { id: "1", skillName: "SQL & Databases", status: "completed", order: 1 },
-          { id: "2", skillName: "CSS & UI Layout", status: "completed", order: 2 },
-          { id: "3", skillName: "JavaScript Mechanics", status: "in_progress", order: 3 },
-          { id: "4", skillName: "React Framework", status: "available", order: 4 },
-          { id: "5", skillName: "Node.js & Backend", status: "available", order: 5 },
-          { id: "6", skillName: "Next.js Full-Stack", status: "locked", order: 6 },
+          { id: "1", skillName: "Foundations & Syntax", status: hasGoals ? "in_progress" : "available", order: 1 },
+          { id: "2", skillName: "Data Structures", status: "available", order: 2 },
+          { id: "3", skillName: "Core Algorithms", status: "available", order: 3 },
+          { id: "4", skillName: "Framework Basics", status: "locked", order: 4 },
+          { id: "5", skillName: "Backend & APIs", status: "locked", order: 5 },
+          { id: "6", skillName: "Full-Stack Project", status: "locked", order: 6 },
           { id: "7", skillName: "Capstone Deployment", status: "locked", order: 7 },
         ];
 
   // Derive up to 7 nodes for the topology layout
-  const n1 = displayNodes[0] || { id: "1", skillName: "Foundations", status: "completed" };
-  const n2 = displayNodes[1] || { id: "2", skillName: "Core Skills", status: "completed" };
-  const n3 = displayNodes[2] || { id: "3", skillName: "Active Module", status: "in_progress" };
-  const n4 = displayNodes[3] || { id: "4", skillName: "Specialization", status: "available" };
-  const n5 = displayNodes[4] || { id: "5", skillName: "Applied Practice", status: "available" };
+  const n1 = displayNodes[0] || { id: "1", skillName: "Foundations", status: "available" };
+  const n2 = displayNodes[1] || { id: "2", skillName: "Core Skills", status: "available" };
+  const n3 = displayNodes[2] || { id: "3", skillName: "Active Module", status: "available" };
+  const n4 = displayNodes[3] || { id: "4", skillName: "Specialization", status: "locked" };
+  const n5 = displayNodes[4] || { id: "5", skillName: "Applied Practice", status: "locked" };
   const n6 = displayNodes[5] || { id: "6", skillName: "Advanced Mastery", status: "locked" };
   const n7 = displayNodes[6] || { id: "7", skillName: "Projects", status: "locked" };
 
