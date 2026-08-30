@@ -29,10 +29,10 @@ export default async function SkillGraphPage({ params }: { params: Promise<{ id:
   const { nodes, edges } = domainSkillGraph(detail.goal.domain);
 
   return (
-    <div className="flex min-h-screen bg-[#FFF9F6] text-slate-900 font-sans">
+    <div className="flex min-h-screen bg-[#F8F9FD] text-slate-900 font-sans">
       {/* 1. Left Sidebar Navigation */}
       <AppSidebar
-        displayName={profile?.displayName || "Yuvi"}
+        displayName={profile?.displayName || "Learner"}
         level={1}
         levelTitle="Newcomer"
       />
