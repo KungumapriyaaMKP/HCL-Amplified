@@ -12,97 +12,11 @@ interface CertificateModalProps {
 
 export function CertificateModal({ isOpen, onClose, data }: CertificateModalProps) {
   const [copied, setCopied] = useState(false);
-  const [printing, setPrinting] = useState(false);
 
   if (!isOpen) return null;
 
   function handlePrint() {
-    setPrinting(true);
-    const certElement = document.getElementById("certificate-view-render");
-    if (!certElement) {
-      window.print();
-      setPrinting(false);
-      return;
-    }
-
-    // Collect all stylesheets from current document
-    const styleTags = Array.from(document.querySelectorAll("style, link[rel='stylesheet']"))
-      .map((el) => el.outerHTML)
-      .join("\n");
-
-    const printFrame = document.createElement("iframe");
-    printFrame.style.position = "fixed";
-    printFrame.style.right = "0";
-    printFrame.style.bottom = "0";
-    printFrame.style.width = "0px";
-    printFrame.style.height = "0px";
-    printFrame.style.border = "none";
-    printFrame.style.zIndex = "-1000";
-    document.body.appendChild(printFrame);
-
-    const doc = printFrame.contentWindow?.document;
-    if (!doc) {
-      window.print();
-      setPrinting(false);
-      return;
-    }
-
-    doc.open();
-    doc.write(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>${data.title} - Certificate of Mastery</title>
-          <meta charset="utf-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-          ${styleTags}
-          <style>
-            @page {
-              size: landscape;
-              margin: 8mm;
-            }
-            *, *::before, *::after {
-              -webkit-print-color-adjust: exact !important;
-              print-color-adjust: exact !important;
-              color-adjust: exact !important;
-            }
-            body {
-              margin: 0;
-              padding: 0;
-              background-color: #ffffff;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              min-height: 100vh;
-              box-sizing: border-box;
-            }
-            .certificate-print-container {
-              width: 100% !important;
-              max-width: 960px !important;
-              margin: 0 auto !important;
-              box-shadow: none !important;
-              page-break-inside: avoid !important;
-              break-inside: avoid !important;
-            }
-          </style>
-        </head>
-        <body>
-          ${certElement.outerHTML}
-        </body>
-      </html>
-    `);
-    doc.close();
-
-    setTimeout(() => {
-      printFrame.contentWindow?.focus();
-      printFrame.contentWindow?.print();
-      setPrinting(false);
-      setTimeout(() => {
-        if (document.body.contains(printFrame)) {
-          document.body.removeChild(printFrame);
-        }
-      }, 2000);
-    }, 400);
+    window.print();
   }
 
   function handleShare() {
@@ -113,26 +27,50 @@ export function CertificateModal({ isOpen, onClose, data }: CertificateModalProp
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-md overflow-y-auto print:p-0 print:bg-white print:static">
-      {/* Global Scoped Print Styles to isolate certificate if direct window.print() is called */}
+      {/* Global Print Isolation Stylesheet */}
       <style>{`
         @media print {
           @page {
             size: landscape;
-            margin: 8mm;
+            margin: 0;
           }
-          body > *:not(#certificate-modal-wrapper) {
-            display: none !important;
-          }
-          #certificate-modal-wrapper {
-            position: static !important;
+          html, body {
+            background-color: #ffffff !important;
+            margin: 0 !important;
             padding: 0 !important;
-            background: white !important;
+            height: 100% !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          /* Hide all elements on the entire page */
+          body * {
+            visibility: hidden !important;
+          }
+          /* Make only the certificate container and all its children visible */
+          #certificate-print-portal,
+          #certificate-print-portal * {
+            visibility: visible !important;
+          }
+          #certificate-print-portal {
+            position: fixed !important;
+            left: 0 !important;
+            top: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            margin: 0 !important;
+            padding: 24px !important;
+            box-sizing: border-box !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            background: #ffffff !important;
+            z-index: 2147483647 !important;
           }
           .certificate-print-container {
             width: 100% !important;
-            max-width: 100% !important;
+            max-width: 960px !important;
+            margin: 0 auto !important;
             box-shadow: none !important;
-            border-width: 6px !important;
             page-break-inside: avoid !important;
             break-inside: avoid !important;
           }
@@ -140,7 +78,7 @@ export function CertificateModal({ isOpen, onClose, data }: CertificateModalProp
       `}</style>
       
       {/* Container Card with Sharp Borders */}
-      <div id="certificate-modal-wrapper" className="relative w-full max-w-5xl bg-white border-2 border-purple-500/40 shadow-2xl p-4 sm:p-8 space-y-6 my-auto print:border-none print:shadow-none print:p-0 rounded-none">
+      <div className="relative w-full max-w-5xl bg-white border-2 border-purple-500/40 shadow-2xl p-4 sm:p-8 space-y-6 my-auto print:border-none print:shadow-none print:p-0 rounded-none">
         
         {/* Top Controls Bar (Hidden during print) */}
         <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-200 print:hidden">
@@ -155,11 +93,10 @@ export function CertificateModal({ isOpen, onClose, data }: CertificateModalProp
             <button
               type="button"
               onClick={handlePrint}
-              disabled={printing}
-              className="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-[#6D28D9] to-[#7C3AED] text-white text-xs font-bold shadow-md shadow-purple-500/20 hover:opacity-95 cursor-pointer rounded-none disabled:opacity-75"
+              className="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-[#6D28D9] to-[#7C3AED] text-white text-xs font-bold shadow-md shadow-purple-500/20 hover:opacity-95 cursor-pointer rounded-none"
             >
               <IconPrinter className="w-4 h-4" />
-              <span>{printing ? "Preparing PDF..." : "Print / Download PDF"}</span>
+              <span>Print / Download PDF</span>
             </button>
 
             <button
@@ -181,8 +118,8 @@ export function CertificateModal({ isOpen, onClose, data }: CertificateModalProp
           </div>
         </div>
 
-        {/* The Authentic Certificate Canvas */}
-        <div className="overflow-x-auto py-2">
+        {/* The Authentic Certificate Canvas enclosed in isolation portal */}
+        <div id="certificate-print-portal" className="overflow-x-auto py-2">
           <CertificateView data={data} />
         </div>
 
