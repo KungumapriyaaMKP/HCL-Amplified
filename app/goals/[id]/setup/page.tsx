@@ -9,6 +9,7 @@ import { AnimatedAIChat } from "@/components/ui/animated-ai-chat";
 import { SetupStepperHeader, type SetupStep } from "@/components/ui/setup-stepper-header";
 import { Target3DIllustration } from "@/components/ui/target-3d-illustration";
 import { type ChatBubble } from "@/frontend/components/chat/ChatThread";
+import CubeLoader from "@/components/ui/cube-loader";
 import {
   IconSparkles,
   IconArrowRight,
@@ -318,7 +319,7 @@ export default function GoalSetupPage() {
 
         {/* STEP C: Diagnostic Assessment */}
         {goal.status === "diagnostic" && (
-          <div className="rounded-md border border-slate-200 bg-white p-5 sm:p-7 text-center shadow-sm relative overflow-hidden max-w-3xl mx-auto w-full my-auto">
+          <div className="rounded-none border border-slate-200 bg-white p-5 sm:p-7 text-center shadow-xs relative overflow-hidden max-w-3xl mx-auto w-full my-auto">
             {/* Ambient Background Wave SVG */}
             <svg
               className="absolute inset-0 w-full h-full pointer-events-none opacity-30"
@@ -340,7 +341,18 @@ export default function GoalSetupPage() {
               />
             </svg>
 
-            {!diagQuestions ? (
+            {diagLoading ? (
+              <div className="relative z-10 py-4">
+                <CubeLoader
+                  title={diagQuestions ? "SCORING ASSESSMENT" : "GENERATING QUESTIONS"}
+                  subtitle={
+                    diagQuestions
+                      ? "Applying 2PL-IRT ability calibration to compute your starting mastery vector…"
+                      : "Targeting domain prerequisite vector and synthesizing questions…"
+                  }
+                />
+              </div>
+            ) : !diagQuestions ? (
               <div className="relative z-10 text-center py-4 space-y-3">
                 <div>
                   <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
@@ -357,16 +369,16 @@ export default function GoalSetupPage() {
                     type="button"
                     disabled={diagLoading}
                     onClick={startDiagnostic}
-                    className="inline-flex items-center gap-2 rounded-md bg-gradient-to-r from-[#6D28D9] via-[#7C3AED] to-[#8B5CF6] text-white px-7 py-3 text-xs sm:text-sm font-bold shadow-md shadow-purple-500/20 hover:opacity-95 transition-all cursor-pointer"
+                    className="inline-flex items-center gap-2 rounded-none bg-gradient-to-r from-[#6D28D9] via-[#7C3AED] to-[#8B5CF6] text-white px-7 py-3 text-xs sm:text-sm font-bold shadow-md shadow-purple-500/20 hover:opacity-95 transition-all cursor-pointer"
                   >
-                    <span>{diagLoading ? "Generating Questions..." : "Begin Diagnostic Assessment"}</span>
+                    <span>Begin Diagnostic Assessment</span>
                     <IconArrowRight className="h-4 w-4" />
                   </button>
                 </div>
               </div>
             ) : diagScore !== null ? (
               <div className="relative z-10 text-center py-4 space-y-3">
-                <div className="inline-flex h-16 w-16 items-center justify-center rounded-md bg-gradient-to-tr from-[#6D28D9] to-[#06B6D4] text-white shadow-md">
+                <div className="inline-flex h-16 w-16 items-center justify-center rounded-none bg-gradient-to-tr from-[#6D28D9] to-[#06B6D4] text-white shadow-md">
                   <span className="text-2xl font-extrabold">{diagScore}%</span>
                 </div>
                 <div>
@@ -375,7 +387,7 @@ export default function GoalSetupPage() {
                     Your baseline proficiency has been calibrated. Ready to generate your path.
                   </p>
                 </div>
-                <Button onClick={loadGoal} size="lg" className="rounded-md px-6">
+                <Button onClick={loadGoal} size="lg" className="rounded-none px-6">
                   <span>Continue to Roadmap</span>
                   <IconArrowRight className="h-4 w-4" />
                 </Button>
@@ -393,15 +405,15 @@ export default function GoalSetupPage() {
                         Question {currentQuestionIndex + 1} of {diagQuestions.length}
                       </p>
                     </div>
-                    <span className="rounded-md bg-purple-50 border border-purple-200 px-2.5 py-0.5 text-xs font-bold text-[#7C3AED]">
+                    <span className="rounded-none bg-purple-50 border border-purple-200 px-2.5 py-0.5 text-xs font-bold text-[#7C3AED]">
                       {Object.keys(diagAnswers).length} / {diagQuestions.length} Answered
                     </span>
                   </div>
 
                   {/* Top Progress Bar */}
-                  <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div className="w-full h-1.5 bg-slate-100 rounded-none overflow-hidden">
                     <div
-                      className="h-full bg-gradient-to-r from-[#6D28D9] to-[#7C3AED] transition-all duration-300 rounded-full"
+                      className="h-full bg-gradient-to-r from-[#6D28D9] to-[#7C3AED] transition-all duration-300 rounded-none"
                       style={{
                         width: `${((currentQuestionIndex + 1) / diagQuestions.length) * 100}%`,
                       }}
@@ -414,7 +426,7 @@ export default function GoalSetupPage() {
                   const q = diagQuestions[currentQuestionIndex];
                   if (!q) return null;
                   return (
-                    <div key={q.id} className="rounded-md border border-slate-200 bg-slate-50/50 p-4 space-y-3">
+                    <div key={q.id} className="rounded-none border border-slate-200 bg-slate-50/50 p-4 space-y-3">
                       <p className="text-xs sm:text-sm font-bold text-slate-900 leading-snug">
                         <span className="text-[#7C3AED] mr-1.5">{currentQuestionIndex + 1}.</span> {q.question}
                       </p>
@@ -425,9 +437,9 @@ export default function GoalSetupPage() {
                             <label
                               key={oi}
                               onClick={() => setDiagAnswers((a) => ({ ...a, [q.id]: oi }))}
-                              className={`flex cursor-pointer items-center gap-2.5 rounded-md border p-2.5 text-xs sm:text-sm font-medium transition-all ${
+                              className={`flex cursor-pointer items-center gap-2.5 rounded-none border p-2.5 text-xs sm:text-sm font-medium transition-all ${
                                 selected
-                                  ? "border-[#7C3AED] bg-purple-50 text-[#7C3AED] shadow-2xs ring-1 ring-purple-300"
+                                    ? "border-[#7C3AED] bg-purple-50 text-[#7C3AED] shadow-2xs ring-1 ring-purple-300"
                                   : "border-slate-200 bg-white text-slate-700 hover:border-purple-200 hover:bg-purple-50/30"
                               }`}
                             >
@@ -453,7 +465,7 @@ export default function GoalSetupPage() {
                     type="button"
                     disabled={currentQuestionIndex === 0}
                     onClick={() => setCurrentQuestionIndex((i) => Math.max(0, i - 1))}
-                    className="inline-flex items-center gap-1 px-4 py-2 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-md disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors"
+                    className="inline-flex items-center gap-1 px-4 py-2 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-none disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors"
                   >
                     Previous
                   </button>
@@ -465,7 +477,7 @@ export default function GoalSetupPage() {
                       onClick={() =>
                         setCurrentQuestionIndex((i) => Math.min(diagQuestions.length - 1, i + 1))
                       }
-                      className="inline-flex items-center gap-1.5 px-5 py-2 text-xs font-bold text-white bg-gradient-to-r from-[#6D28D9] to-[#7C3AED] rounded-md shadow-sm hover:opacity-95 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all"
+                      className="inline-flex items-center gap-1.5 px-5 py-2 text-xs font-bold text-white bg-gradient-to-r from-[#6D28D9] to-[#7C3AED] rounded-none shadow-sm hover:opacity-95 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all"
                     >
                       <span>Next Question</span>
                       <IconArrowRight className="h-3.5 w-3.5" />
@@ -475,7 +487,7 @@ export default function GoalSetupPage() {
                       type="button"
                       disabled={diagLoading || Object.keys(diagAnswers).length < diagQuestions.length}
                       onClick={submitDiagnostic}
-                      className="inline-flex items-center gap-1.5 px-5 py-2 text-xs font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-600 rounded-md shadow-sm hover:opacity-95 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all"
+                      className="inline-flex items-center gap-1.5 px-5 py-2 text-xs font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-600 rounded-none shadow-sm hover:opacity-95 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all"
                     >
                       {diagLoading ? "Scoring..." : "Submit Assessment"}
                     </button>
@@ -486,23 +498,13 @@ export default function GoalSetupPage() {
           </div>
         )}
 
-        {/* STEP D: Generating Roadmap Automatically */}
+        {/* STEP D: Generating Roadmap Automatically with 3D CubeLoader */}
         {(goal.status === "ready" || generating) && (
-          <div className="rounded-md border border-slate-200 bg-white p-8 sm:p-12 text-center shadow-sm space-y-4 max-w-xl mx-auto w-full my-auto">
-            <div>
-              <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
-                Synthesizing Your AI Learning Path
-              </h2>
-              <p className="mt-1.5 text-xs sm:text-sm text-slate-500 max-w-md mx-auto leading-relaxed">
-                Assembling your personalized skill graph roadmap and optimizing prerequisite order...
-              </p>
-            </div>
-
-            <div className="pt-3 max-w-xs mx-auto">
-              <div className="w-full h-2 bg-purple-100 rounded-full overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-[#6D28D9] to-[#7C3AED] rounded-full animate-pulse w-full" />
-              </div>
-            </div>
+          <div className="rounded-none border border-slate-200 bg-white p-6 sm:p-10 text-center shadow-xs space-y-4 max-w-xl mx-auto w-full my-auto">
+            <CubeLoader
+              title="SYNTHESIZING ADAPTIVE ROADMAP"
+              subtitle="Assembling personalized skill graph DAG, calculating gap vectors, and scheduling optimal milestone sequence…"
+            />
           </div>
         )}
 

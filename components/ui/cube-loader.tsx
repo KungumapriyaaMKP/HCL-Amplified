@@ -10,15 +10,15 @@ export interface CubeLoaderProps {
 }
 
 export default function CubeLoader({
-  title = "Encrypting Biometrics",
-  subtitle = "Storing your secure 128-d face descriptor, please wait…",
+  title = "Loading",
+  subtitle = "Preparing your experience, please wait…",
   className,
 }: CubeLoaderProps) {
   return (
-    <div className={cn('flex flex-col items-center justify-center gap-8 p-6 min-h-[300px] bg-slate-950/0 perspective-container', className)}>
+    <div className={cn('flex flex-col items-center justify-center gap-10 p-8 min-h-[380px] bg-transparent perspective-container select-none', className)}>
       
       {/* 3D Scene Wrapper */}
-      <div className='relative w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center preserve-3d'>
+      <div className='relative w-24 h-24 flex items-center justify-center preserve-3d'>
         
         {/* THE SPINNING CUBE CONTAINER */}
         <div className='relative w-full h-full preserve-3d animate-cube-spin'>
@@ -63,15 +63,15 @@ export default function CubeLoader({
         </div>
 
         {/* Floor Shadow (Scales with the breathing) */}
-        <div className='absolute -bottom-16 w-20 sm:w-24 h-6 sm:h-8 bg-black/40 blur-xl rounded-[100%] animate-shadow-breathe' />
+        <div className='absolute -bottom-20 w-24 h-8 bg-purple-950/20 blur-xl rounded-[100%] animate-shadow-breathe' />
       </div>
 
       {/* Loading Text */}
-      <div className='flex flex-col items-center gap-1 mt-2 text-center'>
-        <h3 className='text-xs sm:text-sm font-black tracking-[0.3em] text-cyan-300 uppercase animate-pulse'>
+      <div className='flex flex-col items-center gap-1.5 mt-2 text-center max-w-md'>
+        <h3 className='text-xs sm:text-sm font-extrabold tracking-[0.25em] text-[#7C3AED] uppercase'>
           {title}
         </h3>
-        <p className='text-[11px] sm:text-xs text-slate-400 font-medium'>
+        <p className='text-xs text-slate-500 font-medium leading-relaxed'>
           {subtitle}
         </p>
       </div>
@@ -166,5 +166,5 @@ export default function CubeLoader({
         .bottom { transform: rotateX(-90deg); }
       `}</style>
     </div>
-  )
+  );
 }
