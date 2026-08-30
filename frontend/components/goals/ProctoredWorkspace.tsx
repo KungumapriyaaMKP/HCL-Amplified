@@ -17,6 +17,7 @@ import {
   IconUserCheck,
   IconLock,
 } from "@tabler/icons-react";
+import CubeLoader from "@/components/ui/cube-loader";
 
 type Question = { id: string; question: string; options: string[] };
 type Flag = { type: "tab_switch" | "blur" | "fullscreen_exit" | "identity_mismatch" | "no_face_detected"; at: number };
@@ -498,12 +499,16 @@ export function ProctoredWorkspace({
 
   if (phase === "loading" || phase === "submitting") {
     return (
-      <Card className="p-12 text-center">
-        <div className="flex items-center justify-center gap-2 text-purple-400 text-sm font-bold">
-          <span className="h-3 w-3 rounded-full bg-purple-400 animate-ping" />
-          <span>{phase === "loading" ? "Initializing Biometrics & Assessment Environment..." : "AI Examiner Grading Responses..."}</span>
-        </div>
-      </Card>
+      <div className="relative rounded-none border border-purple-100/90 bg-white p-8 sm:p-12 shadow-xl shadow-purple-500/5 text-slate-900 flex flex-col items-center justify-center min-h-[380px]">
+        <CubeLoader
+          title={phase === "loading" ? "INITIALIZING ENVIRONMENT" : "EVALUATING RESPONSES"}
+          subtitle={
+            phase === "loading"
+              ? "Preparing biometric telemetry, security sandbox & assessment questions…"
+              : "AI Examiner is validating answers and computing skill mastery score…"
+          }
+        />
+      </div>
     );
   }
 
