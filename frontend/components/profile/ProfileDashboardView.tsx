@@ -253,28 +253,7 @@ export function ProfileDashboardView({
 
               </div>
 
-              {/* Bottom Progress Bar Row */}
-              <div className="mt-6 pt-4 border-t border-slate-100">
-                <div className="flex items-center justify-between text-xs font-bold text-slate-700 mb-2">
-                  <span className="flex items-center gap-1.5 text-[#7C3AED]">
-                    <IconBolt className="h-3.5 w-3.5" />
-                    Level {level} Calibration
-                  </span>
-                  <span className="text-slate-500">{pct}% to Level {level + 1}</span>
-                </div>
 
-                <div className="h-2.5 w-full rounded-none bg-slate-100 overflow-hidden">
-                  <div
-                    className="h-full rounded-none bg-gradient-to-r from-[#6366F1] to-[#7C3AED] transition-all duration-500"
-                    style={{ width: `${Math.max(5, pct)}%` }}
-                  />
-                </div>
-
-                <div className="mt-2 flex items-center justify-between text-[11px] text-slate-400 font-medium">
-                  <span>Current Tier Mastery</span>
-                  <span>{xpIntoLevel} / {xpForNextLevel} XP</span>
-                </div>
-              </div>
 
             </div>
           </div>
