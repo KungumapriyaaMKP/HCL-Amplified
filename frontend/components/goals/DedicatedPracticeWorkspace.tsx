@@ -170,8 +170,8 @@ export function DedicatedPracticeWorkspace({
         {!loading && !submitting && result && (
           <div className="space-y-6">
             
-            {/* Top Score HUD Card (100% Match to Design Image) */}
-            <div className="rounded-3xl border border-purple-100/90 bg-gradient-to-b from-white to-[#FAF9FF] p-6 sm:p-10 text-center shadow-xl shadow-purple-500/5 space-y-6 relative overflow-hidden backdrop-blur-md">
+            {/* Top Score HUD Card (Sharp Edges) */}
+            <div className="rounded-none border border-purple-100/90 bg-gradient-to-b from-white to-[#FAF9FF] p-6 sm:p-10 text-center shadow-xl shadow-purple-500/5 space-y-6 relative overflow-hidden backdrop-blur-md">
               {/* Decorative Corner Dot Grid Matrices */}
               <div className="absolute top-6 left-6 pointer-events-none opacity-30 select-none">
                 <svg width="40" height="40" viewBox="0 0 40 40" fill="#818CF8">
@@ -218,7 +218,7 @@ export function DedicatedPracticeWorkspace({
                       </defs>
 
                       {/* Minimal Design Accents from Target Image */}
-                      <rect x="18" y="34" width="8" height="4" rx="1.5" fill="#F59E0B" transform="rotate(20 18 34)" opacity="0.9" />
+                      <rect x="18" y="34" width="8" height="4" rx="0" fill="#F59E0B" transform="rotate(20 18 34)" opacity="0.9" />
                       <path d="M 230 34 L 234 36 L 231 39 L 227 37 Z" fill="#A855F7" opacity="0.9" />
 
                       {/* Left Laurel Branch (Realistic Pointed Leaves) */}
@@ -359,9 +359,9 @@ export function DedicatedPracticeWorkspace({
               <div className="pt-2 flex justify-center w-full">
                 <SlideToUnlock
                   sliderText="Swipe to claim Practice Loot"
-                  className="max-w-xl border-purple-100/90 bg-white/90 shadow-sm"
+                  className="max-w-xl border-purple-100/90 bg-white/90 shadow-sm rounded-none"
                   unlockedContent={
-                    <div className="w-full flex items-center justify-between p-3 sm:p-3.5 rounded-xl bg-gradient-to-r from-[#6366F1] via-[#06B6D4] to-[#10B981] shadow-lg text-white">
+                    <div className="w-full flex items-center justify-between p-3 sm:p-3.5 rounded-none bg-gradient-to-r from-[#6366F1] via-[#06B6D4] to-[#10B981] shadow-lg text-white">
                       <div className="flex items-center gap-3">
                         {/* 3D Glowing Hexagon Shield Badge */}
                         <div className="relative flex items-center justify-center shrink-0">
@@ -385,9 +385,9 @@ export function DedicatedPracticeWorkspace({
                       </div>
 
                       {/* Right Lock Button */}
-                      <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-white flex items-center justify-center shadow-md shrink-0">
+                      <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-none bg-white flex items-center justify-center shadow-md shrink-0">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0D9488" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                          <rect x="3" y="11" width="18" height="11" rx="0" ry="0" />
                           <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                         </svg>
                       </div>
@@ -395,7 +395,7 @@ export function DedicatedPracticeWorkspace({
                   }
                 >
                   <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-xl bg-purple-100/70 border border-purple-200/80 flex items-center justify-center text-purple-600 shadow-2xs shrink-0">
+                    <div className="h-10 w-10 rounded-none bg-purple-100/70 border border-purple-200/80 flex items-center justify-center text-purple-600 shadow-2xs shrink-0">
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M 12 3 L 14.5 9.5 L 21 12 L 14.5 14.5 L 12 21 L 9.5 14.5 L 3 12 L 9.5 9.5 Z" />
                         <path d="M 19 3 L 20 6 L 23 7 L 20 8 L 19 11 L 18 8 L 15 7 L 18 6 Z" />
@@ -409,12 +409,12 @@ export function DedicatedPracticeWorkspace({
                 </SlideToUnlock>
               </div>
 
-              {/* Action Buttons Row */}
+              {/* Action Buttons Row (Sharp Corners) */}
               <div className="pt-2 flex flex-wrap items-center justify-center gap-3.5">
                 {/* 1. Return to Goal Roadmap */}
                 <Link
                   href={`/goals/${goalId}`}
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#6366F1] to-[#7C3AED] text-white text-xs font-bold shadow-md shadow-purple-500/25 hover:opacity-95 hover:shadow-lg transition-all cursor-pointer"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-none bg-gradient-to-r from-[#6366F1] to-[#7C3AED] text-white text-xs font-bold shadow-md shadow-purple-500/25 hover:opacity-95 hover:shadow-lg transition-all cursor-pointer"
                 >
                   <IconArrowLeft className="h-4 w-4" />
                   <span>Return to Goal Roadmap</span>
@@ -423,7 +423,7 @@ export function DedicatedPracticeWorkspace({
                 {/* 2. Take Proctored Exam */}
                 <Link
                   href={`/goals/${goalId}/modules/${moduleId}/proctored`}
-                  className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl border border-purple-200/90 bg-white text-[#6366F1] text-xs font-bold hover:bg-purple-50/60 shadow-2xs transition-all cursor-pointer"
+                  className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-none border border-purple-200/90 bg-white text-[#6366F1] text-xs font-bold hover:bg-purple-50/60 shadow-2xs transition-all cursor-pointer"
                 >
                   <IconShieldCheck className="h-4 w-4 text-[#6366F1]" />
                   <span>Take Proctored Exam</span>
@@ -434,7 +434,7 @@ export function DedicatedPracticeWorkspace({
                 <button
                   type="button"
                   onClick={startPractice}
-                  className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl border border-slate-200 bg-white text-slate-700 text-xs font-bold hover:bg-slate-50 shadow-2xs transition-all cursor-pointer"
+                  className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-none border border-slate-200 bg-white text-slate-700 text-xs font-bold hover:bg-slate-50 shadow-2xs transition-all cursor-pointer"
                 >
                   <IconRefresh className="h-4 w-4 text-slate-600" />
                   <span>Retake Practice</span>

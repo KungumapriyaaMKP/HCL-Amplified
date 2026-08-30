@@ -54,7 +54,7 @@ export const SlideToUnlock = ({
   return (
     <div
       className={cn(
-        'relative w-full max-w-xl overflow-hidden rounded-2xl border border-purple-100/90 bg-white p-5 sm:p-6 text-slate-900 shadow-sm space-y-4',
+        'relative w-full max-w-xl overflow-hidden rounded-none border border-purple-100/90 bg-white p-5 sm:p-6 text-slate-900 shadow-sm space-y-4',
         className
       )}
     >
@@ -70,7 +70,7 @@ export const SlideToUnlock = ({
           >
             <div
               ref={sliderRef}
-              className="relative h-14 w-full rounded-xl bg-slate-100/90 border border-slate-200/80 overflow-hidden flex items-center shadow-inner"
+              className="relative h-14 w-full rounded-none bg-slate-100/90 border border-slate-200/80 overflow-hidden flex items-center shadow-inner"
             >
               <motion.div
                 ref={handleRef}
@@ -79,7 +79,7 @@ export const SlideToUnlock = ({
                 dragElastic={0.08}
                 style={{ x }}
                 onDragEnd={onDragEnd}
-                className="absolute left-1 top-1 bottom-1 z-10 flex h-12 w-12 cursor-grab items-center justify-center rounded-lg bg-gradient-to-r from-[#6366F1] to-[#7C3AED] text-white shadow-md active:cursor-grabbing hover:opacity-95"
+                className="absolute left-1 top-1 bottom-1 z-10 flex h-12 w-12 cursor-grab items-center justify-center rounded-none bg-gradient-to-r from-[#6366F1] to-[#7C3AED] text-white shadow-md active:cursor-grabbing hover:opacity-95"
               >
                 <ChevronRightIcon className="h-5 w-5 stroke-[2.5]" />
               </motion.div>
