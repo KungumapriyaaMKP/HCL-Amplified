@@ -17,6 +17,7 @@ import {
   IconArrowRight,
   IconSparkles,
   IconCode,
+  IconDatabase,
 } from "@tabler/icons-react";
 
 export interface QuestDashboardGoal {
@@ -245,91 +246,170 @@ export function QuestDashboard({
           </div>
         </div>
 
-        {/* 2. CONTINUE YOUR LEARNING / POPULAR PATHS */}
+        {/* 2. CONTINUE YOUR LEARNING / YOUR ACTIVE PATHWAYS */}
         <div>
           <div className="mb-3 flex items-center justify-between">
             <h3 className="text-sm sm:text-base font-bold text-slate-900">
-              {hasGoals ? "Continue Your Learning" : "Recommended Pathways"}
+              {hasGoals ? "Continue Your Pathways" : "Recommended Pathways"}
             </h3>
             <Link href="/goals/new" className="text-xs font-bold text-[#6D28D9] hover:underline">
-              {hasGoals ? "View all" : "Explore all topics"}
+              {hasGoals ? "+ Start New Pathway" : "Explore all topics"}
             </Link>
           </div>
 
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-            {/* Pathway 1: AI & Machine Learning */}
-            <div className="rounded-sm border border-slate-200/90 bg-white p-5 shadow-2xs transition-all hover:shadow-md hover:border-purple-300 flex flex-col justify-between group">
-              <div className="flex items-center gap-3.5">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xs bg-gradient-to-br from-[#7C3AED] via-[#6D28D9] to-[#4C1D95] text-white shadow-sm ring-1 ring-purple-300/40 shrink-0">
-                  <IconBrain className="h-6 w-6 stroke-[1.8]" />
-                </div>
-                <div>
-                  <h4 className="text-sm font-extrabold text-slate-900 group-hover:text-[#6D28D9] transition-colors">
-                    AI & Machine Learning
-                  </h4>
-                  <p className="text-xs text-slate-500 font-medium leading-relaxed">
-                    Python, Neural Networks, PyTorch & LLMs
-                  </p>
-                </div>
-              </div>
+            {/* If user has started goals, render their actual active pathways! */}
+            {hasGoals && goals.map((goal) => {
+              const goalPercent = Math.round((goal.completedModules / Math.max(1, goal.totalModules)) * 100);
+              const isAi = goal.domain === "ai-ml";
+              const isWeb = goal.domain === "web-dev";
+              const isData = goal.domain === "data-science";
 
-              <div className="mt-5 flex items-center justify-between gap-4">
-                <div className="flex-1">
-                  <div className="flex items-center justify-between text-[11px] font-bold mb-1.5">
-                    <span className="text-slate-500">Starter Pathway</span>
-                    <span className="text-[#6D28D9] font-black">12 Modules</span>
-                  </div>
-                  <div className="h-1.5 w-full rounded-xs bg-slate-100 overflow-hidden">
-                    <div className="h-full rounded-xs bg-[#7C3AED]" style={{ width: "0%" }} />
-                  </div>
-                </div>
+              const badgeGradient = isAi
+                ? "from-[#7C3AED] via-[#6D28D9] to-[#4C1D95]"
+                : isWeb
+                ? "from-[#059669] via-[#047857] to-[#065F46]"
+                : isData
+                ? "from-[#0284C7] via-[#0369A1] to-[#075985]"
+                : "from-[#D97706] via-[#B45309] to-[#92400E]";
 
-                <Link
-                  href={aiGoalLink}
-                  className="flex h-8 w-8 items-center justify-center rounded-xs bg-slate-50 border border-slate-200 text-slate-700 group-hover:bg-[#6D28D9] group-hover:border-[#6D28D9] group-hover:text-white transition-all shrink-0 shadow-2xs"
-                  title="Start Path"
+              const barColor = isAi ? "bg-[#7C3AED]" : isWeb ? "bg-[#059669]" : isData ? "bg-[#0284C7]" : "bg-[#D97706]";
+              const hoverBorder = isAi ? "hover:border-purple-300" : isWeb ? "hover:border-emerald-300" : isData ? "hover:border-sky-300" : "hover:border-amber-300";
+
+              return (
+                <div
+                  key={goal.id}
+                  className={`rounded-sm border border-slate-200/90 bg-white p-5 shadow-2xs transition-all hover:shadow-md ${hoverBorder} flex flex-col justify-between group`}
                 >
-                  <IconArrowRight className="h-4 w-4 stroke-[2.2]" />
-                </Link>
-              </div>
-            </div>
-
-            {/* Pathway 2: Full-Stack Web Development */}
-            <div className="rounded-sm border border-slate-200/90 bg-white p-5 shadow-2xs transition-all hover:shadow-md hover:border-emerald-300 flex flex-col justify-between group">
-              <div className="flex items-center gap-3.5">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xs bg-gradient-to-br from-[#059669] via-[#047857] to-[#065F46] text-white shadow-sm ring-1 ring-emerald-300/40 shrink-0">
-                  <IconCode className="h-6 w-6 stroke-[2.2]" />
-                </div>
-                <div>
-                  <h4 className="text-sm font-extrabold text-slate-900 group-hover:text-[#059669] transition-colors">
-                    Full-Stack Web Dev
-                  </h4>
-                  <p className="text-xs text-slate-500 font-medium leading-relaxed">
-                    React, Next.js, Node.js & Database Architecture
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-5 flex items-center justify-between gap-4">
-                <div className="flex-1">
-                  <div className="flex items-center justify-between text-[11px] font-bold mb-1.5">
-                    <span className="text-slate-500">Starter Pathway</span>
-                    <span className="text-[#059669] font-black">15 Modules</span>
+                  <div className="flex items-center gap-3.5">
+                    <div className={`flex h-11 w-11 items-center justify-center rounded-xs bg-gradient-to-br ${badgeGradient} text-white shadow-sm ring-1 ring-purple-300/40 shrink-0`}>
+                      {isAi && <IconBrain className="h-6 w-6 stroke-[1.8]" />}
+                      {isWeb && <IconCode className="h-6 w-6 stroke-[2.2]" />}
+                      {isData && <IconDatabase className="h-6 w-6 stroke-[1.8]" />}
+                      {!isAi && !isWeb && !isData && <IconSparkles className="h-6 w-6 stroke-[1.8]" />}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <h4 className="text-sm font-extrabold text-slate-900 group-hover:text-[#6D28D9] transition-colors truncate">
+                        {goal.goalText || goal.targetRole || (isAi ? "AI & Machine Learning" : isWeb ? "Full-Stack Web Dev" : "Learning Pathway")}
+                      </h4>
+                      <p className="text-xs text-slate-500 font-medium leading-relaxed truncate">
+                        {goal.nextAction
+                          ? `Next: ${goal.nextAction.skillName}`
+                          : goal.targetRole || `${goal.totalModules} Modules Enrolled`}
+                      </p>
+                    </div>
                   </div>
-                  <div className="h-1.5 w-full rounded-xs bg-slate-100 overflow-hidden">
-                    <div className="h-full rounded-xs bg-[#059669]" style={{ width: "0%" }} />
+
+                  <div className="mt-5 flex items-center justify-between gap-4">
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between text-[11px] font-bold mb-1.5">
+                        <span className="text-slate-500 font-bold">
+                          {goal.completedModules > 0 ? `${goalPercent}% Complete` : "In Progress"}
+                        </span>
+                        <span className="text-[#6D28D9] font-black">
+                          {goal.completedModules}/{goal.totalModules} Modules
+                        </span>
+                      </div>
+                      <div className="h-1.5 w-full rounded-xs bg-slate-100 overflow-hidden">
+                        <div
+                          className={`h-full rounded-xs ${barColor} transition-all duration-500`}
+                          style={{ width: `${Math.max(goalPercent, 6)}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <Link
+                      href={`/goals/${goal.id}`}
+                      className="flex h-8 w-8 items-center justify-center rounded-xs bg-slate-50 border border-slate-200 text-slate-700 group-hover:bg-[#6D28D9] group-hover:border-[#6D28D9] group-hover:text-white transition-all shrink-0 shadow-2xs"
+                      title="Continue Pathway"
+                    >
+                      <IconArrowRight className="h-4 w-4 stroke-[2.2]" />
+                    </Link>
                   </div>
                 </div>
+              );
+            })}
 
-                <Link
-                  href={webGoalLink}
-                  className="flex h-8 w-8 items-center justify-center rounded-xs bg-slate-50 border border-slate-200 text-slate-700 group-hover:bg-[#059669] group-hover:border-[#059669] group-hover:text-white transition-all shrink-0 shadow-2xs"
-                  title="Start Path"
-                >
-                  <IconArrowRight className="h-4 w-4 stroke-[2.2]" />
-                </Link>
-              </div>
-            </div>
+            {/* If user has 0 or 1 goal, show starter pathways so there are always at least 2 cards */}
+            {(!hasGoals || goals.length === 1) && (
+              <>
+                {(!hasGoals || goals[0]?.domain !== "ai-ml") && (
+                  <div className="rounded-sm border border-slate-200/90 bg-white p-5 shadow-2xs transition-all hover:shadow-md hover:border-purple-300 flex flex-col justify-between group">
+                    <div className="flex items-center gap-3.5">
+                      <div className="flex h-11 w-11 items-center justify-center rounded-xs bg-gradient-to-br from-[#7C3AED] via-[#6D28D9] to-[#4C1D95] text-white shadow-sm ring-1 ring-purple-300/40 shrink-0">
+                        <IconBrain className="h-6 w-6 stroke-[1.8]" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-extrabold text-slate-900 group-hover:text-[#6D28D9] transition-colors">
+                          AI & Machine Learning
+                        </h4>
+                        <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                          Python, Neural Networks, PyTorch & LLMs
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mt-5 flex items-center justify-between gap-4">
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between text-[11px] font-bold mb-1.5">
+                          <span className="text-slate-500">Starter Pathway</span>
+                          <span className="text-[#6D28D9] font-black">12 Modules</span>
+                        </div>
+                        <div className="h-1.5 w-full rounded-xs bg-slate-100 overflow-hidden">
+                          <div className="h-full rounded-xs bg-[#7C3AED]" style={{ width: "0%" }} />
+                        </div>
+                      </div>
+
+                      <Link
+                        href={aiGoalLink}
+                        className="flex h-8 w-8 items-center justify-center rounded-xs bg-slate-50 border border-slate-200 text-slate-700 group-hover:bg-[#6D28D9] group-hover:border-[#6D28D9] group-hover:text-white transition-all shrink-0 shadow-2xs"
+                        title="Start Path"
+                      >
+                        <IconArrowRight className="h-4 w-4 stroke-[2.2]" />
+                      </Link>
+                    </div>
+                  </div>
+                )}
+
+                {(!hasGoals || goals[0]?.domain !== "web-dev") && (
+                  <div className="rounded-sm border border-slate-200/90 bg-white p-5 shadow-2xs transition-all hover:shadow-md hover:border-emerald-300 flex flex-col justify-between group">
+                    <div className="flex items-center gap-3.5">
+                      <div className="flex h-11 w-11 items-center justify-center rounded-xs bg-gradient-to-br from-[#059669] via-[#047857] to-[#065F46] text-white shadow-sm ring-1 ring-emerald-300/40 shrink-0">
+                        <IconCode className="h-6 w-6 stroke-[2.2]" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-extrabold text-slate-900 group-hover:text-[#059669] transition-colors">
+                          Full-Stack Web Dev
+                        </h4>
+                        <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                          React, Next.js, Node.js & Database Architecture
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mt-5 flex items-center justify-between gap-4">
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between text-[11px] font-bold mb-1.5">
+                          <span className="text-slate-500">Starter Pathway</span>
+                          <span className="text-[#059669] font-black">15 Modules</span>
+                        </div>
+                        <div className="h-1.5 w-full rounded-xs bg-slate-100 overflow-hidden">
+                          <div className="h-full rounded-xs bg-[#059669]" style={{ width: "0%" }} />
+                        </div>
+                      </div>
+
+                      <Link
+                        href={webGoalLink}
+                        className="flex h-8 w-8 items-center justify-center rounded-xs bg-slate-50 border border-slate-200 text-slate-700 group-hover:bg-[#059669] group-hover:border-[#059669] group-hover:text-white transition-all shrink-0 shadow-2xs"
+                        title="Start Path"
+                      >
+                        <IconArrowRight className="h-4 w-4 stroke-[2.2]" />
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
           </div>
         </div>
 
