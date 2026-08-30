@@ -13,6 +13,8 @@ import {
   IconLock,
   IconAward,
   IconTarget,
+  IconCode,
+  IconTerminal2,
 } from "@tabler/icons-react";
 import { SlideToUnlock } from "@/components/ui/reward-card";
 
@@ -598,6 +600,14 @@ export function ModuleWorkspace(props: Props) {
                       <IconExternalLink className="h-4 w-4" />
                     </a>
 
+                    <Link
+                      href={`/goals/${props.goalId}/modules/${props.moduleId}/compiler`}
+                      className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-sm bg-[#1A1538] border border-cyan-500/50 text-cyan-300 text-xs font-bold hover:bg-[#251F4E] hover:text-cyan-200 transition-all cursor-pointer shadow-md"
+                    >
+                      <IconTerminal2 className="h-4 w-4 text-cyan-400" />
+                      <span>Code Lab / Compiler</span>
+                    </Link>
+
                     {!resourceMarked ? (
                       <button
                         type="button"
@@ -688,14 +698,14 @@ export function ModuleWorkspace(props: Props) {
             </div>
 
             {/* --------------------------------------------------------------------- */}
-            {/* CARD 2: Step 02 (Practice Assessment - Dedicated Arena Link)          */}
+            {/* CARD 2: Step 02 (Practice Assessment & Code Compiler Lab)             */}
             {/* --------------------------------------------------------------------- */}
             {resourceMarked ? (
               <div className="relative overflow-hidden rounded-none bg-white border-2 border-purple-200 p-6 sm:p-7 shadow-lg backdrop-blur-md space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
                     <IconTarget className="h-5 w-5 text-[#7C3AED]" />
-                    <span>Practice Assessment</span>
+                    <span>Practice &amp; Coding Lab</span>
                   </h3>
                   <span className="px-2.5 py-0.5 rounded-none bg-cyan-50 border border-cyan-200 text-cyan-800 text-xs font-black">
                     UNLIMITED RETAKES
@@ -703,29 +713,46 @@ export function ModuleWorkspace(props: Props) {
                 </div>
 
                 <p className="text-xs text-slate-600 font-medium leading-relaxed">
-                  Test your comprehension with low-stakes adaptive multiple-choice questions in the dedicated practice arena before attempting the official proctored exam.
+                  Practice hands-on coding challenges in the live in-browser compiler or test your comprehension with adaptive multiple-choice quizzes before attempting the official proctored exam.
                 </p>
 
-                <div className="pt-1">
+                <div className="pt-1 flex flex-wrap items-center gap-3">
                   <Link
                     href={`/goals/${props.goalId}/modules/${props.moduleId}/practice`}
                     className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-none bg-gradient-to-r from-[#6D28D9] via-[#7C3AED] to-[#8B5CF6] text-white text-xs font-extrabold shadow-md shadow-purple-500/20 hover:opacity-95 hover:shadow-lg transition-all cursor-pointer"
                   >
-                    <span>{practiceAttempted ? "Retake Practice" : "Launch Practice Arena"}</span>
+                    <span>{practiceAttempted ? "Retake Practice Quiz" : "Launch Practice Quiz"}</span>
                     <IconArrowRight className="h-4 w-4" />
+                  </Link>
+
+                  <Link
+                    href={`/goals/${props.goalId}/modules/${props.moduleId}/compiler`}
+                    className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-none bg-[#0F172A] border border-cyan-500/60 text-cyan-300 text-xs font-extrabold shadow-md hover:bg-[#1E293B] hover:text-cyan-200 transition-all cursor-pointer"
+                  >
+                    <IconCode className="h-4 w-4 text-cyan-400" />
+                    <span>Open Code Compiler</span>
                   </Link>
                 </div>
               </div>
             ) : (
               <div className="relative overflow-hidden rounded-none bg-white/95 border border-slate-200/90 p-6 sm:p-7 shadow-md backdrop-blur-md grid grid-cols-1 sm:grid-cols-[1fr_120px] gap-6 items-center">
-                <div className="space-y-1.5">
+                <div className="space-y-2">
                   <h3 className="text-lg font-black text-slate-800 flex items-center gap-2">
                     <IconLock className="h-5 w-5 text-slate-500" />
-                    <span>Practice Assessment</span>
+                    <span>Practice &amp; Coding Lab</span>
                   </h3>
                   <p className="text-xs text-slate-500 font-medium leading-relaxed">
-                    Complete the resource review above to unlock practice assessments.
+                    Complete the resource review above to unlock adaptive practice quizzes and official assessments. You can also jump straight into the coding playground below.
                   </p>
+                  <div className="pt-1">
+                    <Link
+                      href={`/goals/${props.goalId}/modules/${props.moduleId}/compiler`}
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-[#6D28D9] hover:text-[#5B21B6] hover:underline"
+                    >
+                      <IconCode className="h-3.5 w-3.5" />
+                      <span>Open Interactive Code Compiler →</span>
+                    </Link>
+                  </div>
                 </div>
 
                 {/* 3D Paper Checklist Illustration with Lock Badge */}

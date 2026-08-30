@@ -11,7 +11,12 @@ export default async function CompilerPage({ params }: { params: Promise<{ id: s
   const { id, moduleId } = await params;
   const user = await requireUserOrRedirect(`/goals/${id}/modules/${moduleId}/compiler`);
   const detail = await getModuleDetail(user.id, moduleId);
-  if (!detail || !detail.module.isProgramming || !detail.module.programmingLanguage) redirect(`/goals/${id}`);
+  if (!detail) redirect(`/goals/${id}`);
+
+  const language = detail.module.programmingLanguage || 
+    (detail.skill.name.toLowerCase().includes("python") ? "python" : 
+     detail.skill.name.toLowerCase().includes("type") ? "typescript" : 
+     detail.skill.name.toLowerCase().includes("sql") ? "python" : "javascript");
 
   return (
     <div className="flex min-h-screen bg-[#F8F9FD] text-slate-900 font-sans">
@@ -37,7 +42,7 @@ export default async function CompilerPage({ params }: { params: Promise<{ id: s
               {detail.skill.name} Practice Challenges
             </h1>
           </div>
-          <CompilerWorkspace moduleId={moduleId} skillName={detail.skill.name} language={detail.module.programmingLanguage} />
+          <CompilerWorkspace moduleId={moduleId} skillName={detail.skill.name} language={language} />
         </main>
       </div>
     </div>
