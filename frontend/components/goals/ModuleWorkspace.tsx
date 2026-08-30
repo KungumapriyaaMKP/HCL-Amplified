@@ -362,15 +362,15 @@ export function ModuleWorkspace(props: Props) {
             {/* --------------------------------------------------------------------- */}
             {/* CARD 1: Step 01 Hero Card (Dark Purple/Navy Developer Card)           */}
             {/* --------------------------------------------------------------------- */}
-            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#1C1736] via-[#140F2D] to-[#0E0A22] border border-purple-500/30 p-6 sm:p-7 shadow-2xl text-white">
+            <div className="relative overflow-hidden rounded-sm bg-gradient-to-br from-[#1C1736] via-[#140F2D] to-[#0E0A22] border border-purple-500/30 p-6 sm:p-7 shadow-xl text-white">
               
               {/* Top Row Badges */}
               <div className="flex items-center justify-between gap-3 mb-4">
-                <span className="px-3 py-1 rounded-md bg-purple-900/80 border border-purple-400/40 text-purple-200 text-[11px] font-black uppercase tracking-wider shadow-xs">
+                <span className="px-3 py-1 rounded-xs bg-purple-900/80 border border-purple-400/40 text-purple-200 text-[11px] font-black uppercase tracking-wider shadow-xs">
                   {props.skillName}
                 </span>
 
-                <span className="px-3 py-1 rounded-md bg-[#251E49] border border-purple-500/30 text-purple-300 text-[11px] font-extrabold tracking-wide">
+                <span className="px-3 py-1 rounded-xs bg-[#251E49] border border-purple-500/30 text-purple-300 text-[11px] font-extrabold tracking-wide">
                   ~{hoursEst}h ESTIMATED
                 </span>
               </div>
@@ -395,7 +395,7 @@ export function ModuleWorkspace(props: Props) {
                         trackEvent({ eventType: "open", modality: props.resourceType });
                         if (!resourceMarked) postProgress({ type: "started" });
                       }}
-                      className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-md bg-gradient-to-r from-[#A855F7] via-[#8B5CF6] to-[#7C3AED] text-white text-xs font-black shadow-lg shadow-purple-500/30 hover:opacity-95 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
+                      className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-sm bg-gradient-to-r from-[#A855F7] via-[#8B5CF6] to-[#7C3AED] text-white text-xs font-black shadow-lg shadow-purple-500/30 hover:opacity-95 hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer"
                     >
                       <span>Launch Resource</span>
                       <IconExternalLink className="h-4 w-4" />
@@ -410,13 +410,13 @@ export function ModuleWorkspace(props: Props) {
                           await trackEvent({ eventType: "complete", modality: props.resourceType });
                           setResourceMarked(true);
                         }}
-                        className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-md bg-[#28214A] border border-purple-400/30 text-slate-200 text-xs font-bold hover:bg-[#342B60] hover:text-white transition-all cursor-pointer disabled:opacity-50"
+                        className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-sm bg-[#28214A] border border-purple-400/30 text-slate-200 text-xs font-bold hover:bg-[#342B60] hover:text-white transition-all cursor-pointer disabled:opacity-50"
                       >
                         <span>Mark Step Complete</span>
                         <IconCheck className="h-4 w-4" />
                       </button>
                     ) : (
-                      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 text-xs font-bold">
+                      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-sm bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 text-xs font-bold">
                         <IconCheck className="h-4 w-4 stroke-[3]" />
                         <span>Step Completed</span>
                       </div>
@@ -426,22 +426,22 @@ export function ModuleWorkspace(props: Props) {
 
                 {/* 3D Desktop Monitor Illustration with Code Lines & {} Badge */}
                 <div className="hidden lg:flex flex-col items-center justify-center relative select-none">
-                  <div className="relative w-36 h-28 rounded-lg bg-[#0F0C24] border-2 border-purple-500/40 shadow-xl p-2.5 flex flex-col justify-between">
+                  <div className="relative w-36 h-28 rounded-xs bg-[#0F0C24] border-2 border-purple-500/40 shadow-xl p-2.5 flex flex-col justify-between">
                     {/* Monitor Code Lines */}
                     <div className="space-y-1.5">
-                      <div className="h-1.5 w-16 bg-purple-400/80 rounded-full" />
-                      <div className="h-1.5 w-24 bg-cyan-400/70 rounded-full" />
-                      <div className="h-1.5 w-20 bg-emerald-400/70 rounded-full" />
-                      <div className="h-1.5 w-14 bg-amber-400/70 rounded-full" />
-                      <div className="h-1.5 w-22 bg-purple-300/60 rounded-full" />
+                      <div className="h-1.5 w-16 bg-purple-400/80 rounded-xs" />
+                      <div className="h-1.5 w-24 bg-cyan-400/70 rounded-xs" />
+                      <div className="h-1.5 w-20 bg-emerald-400/70 rounded-xs" />
+                      <div className="h-1.5 w-14 bg-amber-400/70 rounded-xs" />
+                      <div className="h-1.5 w-22 bg-purple-300/60 rounded-xs" />
                     </div>
 
                     {/* Monitor Stand */}
-                    <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-8 h-3 bg-purple-900 rounded-b-md" />
+                    <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-8 h-3 bg-purple-900 rounded-b-xs" />
                   </div>
 
                   {/* Floating Hexagonal Code Symbol Badge */}
-                  <div className="absolute -right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-tr from-[#6D28D9] to-[#8B5CF6] border border-purple-200 text-white font-mono font-black text-sm shadow-lg drop-shadow-md">
+                  <div className="absolute -right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-9 h-9 rounded-xs bg-gradient-to-tr from-[#6D28D9] to-[#8B5CF6] border border-purple-200 text-white font-mono font-black text-sm shadow-lg drop-shadow-md">
                     &#123;&#125;
                   </div>
                 </div>
@@ -461,7 +461,7 @@ export function ModuleWorkspace(props: Props) {
                       await postProgress({ type: "feedback", feedback: "too_easy" });
                       setFeedbackSent("too_easy");
                     }}
-                    className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md border text-xs font-bold transition-all cursor-pointer ${
+                    className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xs border text-xs font-bold transition-all cursor-pointer ${
                       feedbackSent === "too_easy"
                         ? "bg-emerald-900 border-emerald-400 text-white shadow-sm"
                         : "bg-[#0A2616] border-emerald-600/50 text-emerald-300 hover:bg-emerald-950"
@@ -478,7 +478,7 @@ export function ModuleWorkspace(props: Props) {
                       await postProgress({ type: "feedback", feedback: "just_right" });
                       setFeedbackSent("just_right");
                     }}
-                    className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md border text-xs font-bold transition-all cursor-pointer ${
+                    className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xs border text-xs font-bold transition-all cursor-pointer ${
                       feedbackSent === "just_right"
                         ? "bg-blue-900 border-blue-400 text-white shadow-sm"
                         : "bg-[#0C1E3D] border-blue-600/50 text-blue-300 hover:bg-blue-950"
@@ -495,7 +495,7 @@ export function ModuleWorkspace(props: Props) {
                       await postProgress({ type: "feedback", feedback: "too_hard" });
                       setFeedbackSent("too_hard");
                     }}
-                    className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md border text-xs font-bold transition-all cursor-pointer ${
+                    className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xs border text-xs font-bold transition-all cursor-pointer ${
                       feedbackSent === "too_hard"
                         ? "bg-amber-900 border-amber-400 text-white shadow-sm"
                         : "bg-[#2D1606] border-amber-600/50 text-amber-300 hover:bg-amber-950"
@@ -513,11 +513,11 @@ export function ModuleWorkspace(props: Props) {
             {/* CARD 2: Step 02 (Practice Assessment - Light Glass Card)              */}
             {/* --------------------------------------------------------------------- */}
             {resourceMarked ? (
-              <div className="relative overflow-hidden rounded-2xl bg-white/98 border-2 border-purple-200 p-6 shadow-xl backdrop-blur-md">
+              <div className="relative overflow-hidden rounded-sm bg-white/98 border-2 border-purple-200 p-6 shadow-xl backdrop-blur-md">
                 <PracticeQuiz moduleId={props.moduleId} onSubmitted={() => setPracticeAttempted(true)} />
               </div>
             ) : (
-              <div className="relative overflow-hidden rounded-2xl bg-white/95 border border-slate-200/90 p-6 sm:p-7 shadow-lg backdrop-blur-md grid grid-cols-1 sm:grid-cols-[1fr_120px] gap-6 items-center">
+              <div className="relative overflow-hidden rounded-sm bg-white/95 border border-slate-200/90 p-6 sm:p-7 shadow-md backdrop-blur-md grid grid-cols-1 sm:grid-cols-[1fr_120px] gap-6 items-center">
                 <div className="space-y-1.5">
                   <h3 className="text-lg font-black text-slate-800 flex items-center gap-2">
                     <IconLock className="h-5 w-5 text-slate-500" />
@@ -530,18 +530,18 @@ export function ModuleWorkspace(props: Props) {
 
                 {/* 3D Paper Checklist Illustration with Lock Badge */}
                 <div className="flex items-center justify-center relative select-none">
-                  <div className="relative w-22 h-26 rounded-lg bg-slate-50 border border-slate-200 shadow-md p-2 space-y-1.5">
+                  <div className="relative w-22 h-26 rounded-xs bg-slate-50 border border-slate-200 shadow-md p-2 space-y-1.5">
                     <div className="flex items-center gap-1">
                       <div className="h-2 w-2 rounded-xs bg-slate-300" />
-                      <div className="h-1.5 w-12 bg-slate-200 rounded-full" />
+                      <div className="h-1.5 w-12 bg-slate-200 rounded-xs" />
                     </div>
                     <div className="flex items-center gap-1">
                       <div className="h-2 w-2 rounded-xs bg-slate-300" />
-                      <div className="h-1.5 w-10 bg-slate-200 rounded-full" />
+                      <div className="h-1.5 w-10 bg-slate-200 rounded-xs" />
                     </div>
                     <div className="flex items-center gap-1">
                       <div className="h-2 w-2 rounded-xs bg-slate-300" />
-                      <div className="h-1.5 w-14 bg-slate-200 rounded-full" />
+                      <div className="h-1.5 w-14 bg-slate-200 rounded-xs" />
                     </div>
                     {/* Pencil */}
                     <div className="absolute -bottom-1 -right-2 w-10 h-2 bg-amber-400 rotate-45 rounded-xs shadow-xs border border-amber-600" />
@@ -559,13 +559,13 @@ export function ModuleWorkspace(props: Props) {
             {/* CARD 3: Step 03 (Official Proctored Assessment - Light Glass Card)    */}
             {/* --------------------------------------------------------------------- */}
             {props.proctoredAlreadyTaken ? (
-              <div className="relative overflow-hidden rounded-2xl bg-white/98 border-2 border-emerald-200 p-6 shadow-xl backdrop-blur-md space-y-3">
+              <div className="relative overflow-hidden rounded-sm bg-white/98 border-2 border-emerald-200 p-6 shadow-xl backdrop-blur-md space-y-3">
                 <div className="flex items-center justify-between">
                   <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
                     <IconAward className="h-5 w-5 text-emerald-600" />
                     <span>Official Proctored Assessment Cleared</span>
                   </h3>
-                  <span className="px-3 py-1 rounded-md bg-emerald-100 text-emerald-800 text-xs font-black">
+                  <span className="px-3 py-1 rounded-xs bg-emerald-100 text-emerald-800 text-xs font-black">
                     MASTERY RECORDED
                   </span>
                 </div>
@@ -574,13 +574,13 @@ export function ModuleWorkspace(props: Props) {
                 </div>
               </div>
             ) : practiceAttempted ? (
-              <div className="relative overflow-hidden rounded-2xl bg-white/98 border-2 border-purple-300 p-6 shadow-xl backdrop-blur-md space-y-4">
+              <div className="relative overflow-hidden rounded-sm bg-white/98 border-2 border-purple-300 p-6 shadow-xl backdrop-blur-md space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
                     <IconAward className="h-5 w-5 text-[#6D28D9]" />
                     <span>Official Proctored Assessment</span>
                   </h3>
-                  <span className="px-2.5 py-0.5 rounded-md bg-purple-100 text-purple-800 text-xs font-black">
+                  <span className="px-2.5 py-0.5 rounded-xs bg-purple-100 text-purple-800 text-xs font-black">
                     UNLOCKED
                   </span>
                 </div>
@@ -589,14 +589,14 @@ export function ModuleWorkspace(props: Props) {
                 </p>
                 <Link
                   href={`/goals/${props.goalId}/modules/${props.moduleId}/proctored`}
-                  className="inline-flex items-center justify-center gap-2 w-full px-5 py-3 rounded-md bg-gradient-to-r from-[#6D28D9] to-[#8B5CF6] text-white text-xs font-black shadow-lg shadow-purple-500/20 hover:opacity-95 transition-all"
+                  className="inline-flex items-center justify-center gap-2 w-full px-5 py-3 rounded-sm bg-gradient-to-r from-[#6D28D9] to-[#8B5CF6] text-white text-xs font-black shadow-lg shadow-purple-500/20 hover:opacity-95 transition-all"
                 >
                   <span>Begin Proctored Assessment</span>
                   <IconArrowRight className="h-4 w-4" />
                 </Link>
               </div>
             ) : (
-              <div className="relative overflow-hidden rounded-2xl bg-white/95 border border-slate-200/90 p-6 sm:p-7 shadow-lg backdrop-blur-md grid grid-cols-1 sm:grid-cols-[1fr_120px] gap-6 items-center">
+              <div className="relative overflow-hidden rounded-sm bg-white/95 border border-slate-200/90 p-6 sm:p-7 shadow-md backdrop-blur-md grid grid-cols-1 sm:grid-cols-[1fr_120px] gap-6 items-center">
                 <div className="space-y-1.5">
                   <h3 className="text-lg font-black text-slate-800 flex items-center gap-2">
                     <IconLock className="h-5 w-5 text-slate-500" />
@@ -609,9 +609,9 @@ export function ModuleWorkspace(props: Props) {
 
                 {/* 3D Laptop with Shield Illustration & Lock Badge */}
                 <div className="flex items-center justify-center relative select-none">
-                  <div className="relative w-24 h-20 rounded-lg bg-slate-100 border border-slate-300 shadow-md flex flex-col items-center justify-center">
+                  <div className="relative w-24 h-20 rounded-xs bg-slate-100 border border-slate-300 shadow-md flex flex-col items-center justify-center">
                     <div className="w-16 h-10 rounded-xs bg-slate-800 flex items-center justify-center">
-                      <div className="w-6 h-6 rounded-full bg-slate-700 flex items-center justify-center">
+                      <div className="w-6 h-6 rounded-xs bg-slate-700 flex items-center justify-center">
                         <path d="M 3 6 L 6 9 L 10 3" stroke="#94A3B8" strokeWidth="1.5" fill="none" />
                       </div>
                     </div>
@@ -629,7 +629,7 @@ export function ModuleWorkspace(props: Props) {
             {/* --------------------------------------------------------------------- */}
             {/* BOTTOM REWARD CARD (Beside the Treasure Chest)                        */}
             {/* --------------------------------------------------------------------- */}
-            <div className="rounded-xl bg-white/95 border border-purple-100 p-4 shadow-md backdrop-blur-md flex items-center justify-center gap-2.5 text-xs font-bold text-slate-700">
+            <div className="rounded-sm bg-white/95 border border-purple-100 p-4 shadow-sm backdrop-blur-md flex items-center justify-center gap-2.5 text-xs font-bold text-slate-700">
               <IconLock className="h-4 w-4 text-purple-600" />
               <span>
                 Complete all steps above to unlock <span className="text-[#6D28D9] font-black">amazing rewards!</span> 🎁
