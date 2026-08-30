@@ -21,13 +21,51 @@ import {
   IconCalendar,
   IconFlame,
   IconX,
+  IconCloud,
+  IconDeviceMobile,
+  IconShieldLock,
+  IconSparkles,
+  IconServer,
+  IconLayersLinked,
+  IconCpu,
+  IconActivity,
+  IconBriefcase,
+  IconBug,
+  IconCube,
+  IconTerminal2,
+  IconBuildingSkyscraper,
+  IconDeviceGamepad2,
+  IconPalette,
 } from "@tabler/icons-react";
+
+export const ALL_DOMAINS_LIST = [
+  { name: "Programming", icon: IconCode, bg: "#8B5CF6", tagBg: "bg-purple-50 text-purple-700 border-purple-100" },
+  { name: "Web Development", icon: IconWorld, bg: "#38BDF8", tagBg: "bg-sky-50 text-sky-700 border-sky-100" },
+  { name: "Data Science", icon: IconTrendingUp, bg: "#22C55E", tagBg: "bg-emerald-50 text-emerald-700 border-emerald-100" },
+  { name: "AI & ML", icon: IconBrain, bg: "#6366F1", tagBg: "bg-indigo-50 text-indigo-700 border-indigo-100" },
+  { name: "Database", icon: IconDatabase, bg: "#F59E0B", tagBg: "bg-amber-50 text-amber-700 border-amber-100" },
+  { name: "Cloud & DevOps", icon: IconCloud, bg: "#06B6D4", tagBg: "bg-cyan-50 text-cyan-700 border-cyan-100" },
+  { name: "Mobile Development", icon: IconDeviceMobile, bg: "#F43F5E", tagBg: "bg-rose-50 text-rose-700 border-rose-100" },
+  { name: "Cybersecurity", icon: IconShieldLock, bg: "#EF4444", tagBg: "bg-red-50 text-red-700 border-red-100" },
+  { name: "Generative AI & Enterprise LLMs", icon: IconSparkles, bg: "#A855F7", tagBg: "bg-purple-50 text-purple-700 border-purple-100" },
+  { name: "Data Engineering & Big Data", icon: IconServer, bg: "#14B8A6", tagBg: "bg-teal-50 text-teal-700 border-teal-100" },
+  { name: "Enterprise Java & Microservices", icon: IconLayersLinked, bg: "#F97316", tagBg: "bg-orange-50 text-orange-700 border-orange-100" },
+  { name: "IoT & Embedded Engineering", icon: IconCpu, bg: "#84CC16", tagBg: "bg-lime-50 text-lime-700 border-lime-100" },
+  { name: "SRE & Cloud Observability", icon: IconActivity, bg: "#D946EF", tagBg: "bg-fuchsia-50 text-fuchsia-700 border-fuchsia-100" },
+  { name: "Digital Product Management", icon: IconBriefcase, bg: "#3B82F6", tagBg: "bg-blue-50 text-blue-700 border-blue-100" },
+  { name: "QA & Test Automation", icon: IconBug, bg: "#EC4899", tagBg: "bg-pink-50 text-pink-700 border-pink-100" },
+  { name: "Blockchain & Web3", icon: IconCube, bg: "#9333EA", tagBg: "bg-purple-50 text-purple-700 border-purple-100" },
+  { name: "Mainframe & Cloud Migration", icon: IconTerminal2, bg: "#64748B", tagBg: "bg-slate-50 text-slate-700 border-slate-100" },
+  { name: "SAP & Enterprise ERP", icon: IconBuildingSkyscraper, bg: "#2563EB", tagBg: "bg-blue-50 text-blue-700 border-blue-100" },
+  { name: "Game Engine & 3D Simulation", icon: IconDeviceGamepad2, bg: "#EAB308", tagBg: "bg-yellow-50 text-yellow-700 border-yellow-100" },
+  { name: "UI/UX & Design Systems", icon: IconPalette, bg: "#FB7185", tagBg: "bg-rose-50 text-rose-700 border-rose-100" },
+];
 
 export interface TodoTask {
   id: string;
   title: string;
   description: string;
-  category: "Programming" | "Web Development" | "Data Science" | "Database" | "AI & ML";
+  category: string;
   priority: "High" | "Medium" | "Low";
   dueDate: string;
   xpReward: number;
@@ -97,6 +135,36 @@ const INITIAL_TASKS: TodoTask[] = [
   },
   {
     id: "task-7",
+    title: "Docker Multi-Stage Builds & Kubernetes Pods",
+    description: "Configure Dockerfile caching and deploy sample cluster manifest.",
+    category: "Cloud & DevOps",
+    priority: "High",
+    dueDate: "Today",
+    xpReward: 35,
+    completed: false,
+  },
+  {
+    id: "task-8",
+    title: "Flutter State Management with Riverpod",
+    description: "Build asynchronous providers and auto-dispose listeners.",
+    category: "Mobile Development",
+    priority: "Medium",
+    dueDate: "Tomorrow",
+    xpReward: 25,
+    completed: false,
+  },
+  {
+    id: "task-9",
+    title: "OWASP Top 10 Web Vulnerability Assessment",
+    description: "Audit token authorization and SQL injection boundaries.",
+    category: "Cybersecurity",
+    priority: "High",
+    dueDate: "In 2 days",
+    xpReward: 45,
+    completed: false,
+  },
+  {
+    id: "task-10",
     title: "Weekly Habit & Streak Review",
     description: "Check study consistency and claim daily streak bonus.",
     category: "Programming",
@@ -120,7 +188,7 @@ export function TodoPageView() {
   const [isAdding, setIsAdding] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [newDesc, setNewDesc] = useState("");
-  const [newCategory, setNewCategory] = useState<TodoTask["category"]>("Programming");
+  const [newCategory, setNewCategory] = useState<string>("Programming");
   const [newPriority, setNewPriority] = useState<TodoTask["priority"]>("Medium");
   const [newDueDate, setNewDueDate] = useState("Today");
   const [newXp, setNewXp] = useState(25);
@@ -169,11 +237,11 @@ export function TodoPageView() {
 
   const categoryItems = [
     { label: "All Categories", count: totalCount, icon: IconLayoutGrid },
-    { label: "Programming", count: tasks.filter((t) => t.category === "Programming").length, icon: IconCode },
-    { label: "Web Development", count: tasks.filter((t) => t.category === "Web Development").length, icon: IconWorld },
-    { label: "Data Science", count: tasks.filter((t) => t.category === "Data Science").length, icon: IconTrendingUp },
-    { label: "Database", count: tasks.filter((t) => t.category === "Database").length, icon: IconDatabase },
-    { label: "AI & ML", count: tasks.filter((t) => t.category === "AI & ML").length, icon: IconBrain },
+    ...ALL_DOMAINS_LIST.map((d) => ({
+      label: d.name,
+      count: tasks.filter((t) => t.category === d.name).length,
+      icon: d.icon,
+    })),
   ];
 
   // Filtering
@@ -216,55 +284,27 @@ export function TodoPageView() {
   }, [tasks, selectedQuickView, selectedCategory, selectedPriority, searchQuery, sortBy]);
 
   // Helper for Category Icon Box with Sharp Edges
-  const renderCategoryIcon = (category: TodoTask["category"]) => {
-    switch (category) {
-      case "Programming":
-        return (
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-none bg-[#8B5CF6] text-white shadow-xs">
-            <IconCode className="h-4 w-4 stroke-[2.2]" />
-          </div>
-        );
-      case "Web Development":
-        return (
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-none bg-[#38BDF8] text-white shadow-xs">
-            <IconWorld className="h-4 w-4 stroke-[2.2]" />
-          </div>
-        );
-      case "Data Science":
-        return (
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-none bg-[#22C55E] text-white shadow-xs">
-            <IconTrendingUp className="h-4 w-4 stroke-[2.2]" />
-          </div>
-        );
-      case "Database":
-        return (
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-none bg-[#F59E0B] text-white shadow-xs">
-            <IconDatabase className="h-4 w-4 stroke-[2.2]" />
-          </div>
-        );
-      case "AI & ML":
-        return (
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-none bg-[#6366F1] text-white shadow-xs">
-            <IconBrain className="h-4 w-4 stroke-[2.2]" />
-          </div>
-        );
-    }
+  const renderCategoryIcon = (category: string) => {
+    const domain = ALL_DOMAINS_LIST.find((d) => d.name === category) || { icon: IconCode, bg: "#8B5CF6" };
+    const Icon = domain.icon;
+    return (
+      <div
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-none text-white shadow-xs"
+        style={{ backgroundColor: domain.bg }}
+      >
+        <Icon className="h-4 w-4 stroke-[2.2]" />
+      </div>
+    );
   };
 
   // Helper for Category Pill with Sharp Edges
-  const renderCategoryPill = (category: TodoTask["category"]) => {
-    switch (category) {
-      case "Programming":
-        return <span className="inline-flex items-center px-2 py-0.5 rounded-none bg-purple-50 text-purple-700 border border-purple-100 text-[10px] font-bold">Programming</span>;
-      case "Web Development":
-        return <span className="inline-flex items-center px-2 py-0.5 rounded-none bg-sky-50 text-sky-700 border border-sky-100 text-[10px] font-bold">Web Dev</span>;
-      case "Data Science":
-        return <span className="inline-flex items-center px-2 py-0.5 rounded-none bg-emerald-50 text-emerald-700 border border-emerald-100 text-[10px] font-bold">Data Science</span>;
-      case "Database":
-        return <span className="inline-flex items-center px-2 py-0.5 rounded-none bg-amber-50 text-amber-700 border border-amber-100 text-[10px] font-bold">Database</span>;
-      case "AI & ML":
-        return <span className="inline-flex items-center px-2 py-0.5 rounded-none bg-indigo-50 text-indigo-700 border border-indigo-100 text-[10px] font-bold">AI & ML</span>;
-    }
+  const renderCategoryPill = (category: string) => {
+    const domain = ALL_DOMAINS_LIST.find((d) => d.name === category) || { tagBg: "bg-purple-50 text-purple-700 border-purple-100" };
+    return (
+      <span className={`inline-flex items-center px-2 py-0.5 rounded-none border text-[10px] font-bold ${domain.tagBg}`}>
+        {category}
+      </span>
+    );
   };
 
   // Helper for Priority Pill with Sharp Edges
@@ -375,11 +415,16 @@ export function TodoPageView() {
 
           {/* Task Categories Card */}
           <div className="rounded-none border border-slate-200 bg-white p-4 shadow-xs space-y-3">
-            <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider">
-              Categories
-            </h3>
+            <div className="flex items-center justify-between">
+              <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider">
+                Categories
+              </h3>
+              <span className="text-[10px] font-bold text-purple-600 bg-purple-50 px-1.5 py-0.5">
+                {ALL_DOMAINS_LIST.length} Domains
+              </span>
+            </div>
 
-            <div className="space-y-1">
+            <div className="space-y-1 max-h-[380px] overflow-y-auto pr-1 scrollbar-thin">
               {categoryItems.map((item) => {
                 const isSelected = selectedCategory === item.label;
                 const Icon = item.icon;
@@ -394,11 +439,11 @@ export function TodoPageView() {
                         : "text-slate-900 hover:bg-slate-50 hover:text-black font-semibold"
                     }`}
                   >
-                    <div className="flex items-center gap-2.5">
-                      <Icon className={`h-4 w-4 ${isSelected ? "text-[#6D28D9]" : "text-slate-700"} stroke-[2]`} />
-                      <span className="text-xs">{item.label}</span>
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <Icon className={`h-4 w-4 shrink-0 ${isSelected ? "text-[#6D28D9]" : "text-slate-700"} stroke-[2]`} />
+                      <span className="text-xs truncate">{item.label}</span>
                     </div>
-                    <span className={`text-[10px] font-bold ${isSelected ? "text-[#6D28D9]" : "text-slate-500"}`}>
+                    <span className={`text-[10px] font-bold shrink-0 ${isSelected ? "text-[#6D28D9]" : "text-slate-500"}`}>
                       {item.count}
                     </span>
                   </button>
@@ -518,16 +563,17 @@ export function TodoPageView() {
 
               <div className="flex flex-wrap items-center justify-between gap-2.5 pt-1">
                 <div className="flex items-center gap-2 flex-wrap">
+                  {/* ALL DOMAINS DROPDOWN */}
                   <select
                     value={newCategory}
-                    onChange={(e) => setNewCategory(e.target.value as any)}
-                    className="px-2.5 py-1.5 rounded-none border border-slate-300 bg-white text-xs font-bold text-slate-900 focus:outline-none"
+                    onChange={(e) => setNewCategory(e.target.value)}
+                    className="px-2.5 py-1.5 rounded-none border border-slate-300 bg-white text-xs font-bold text-slate-900 focus:outline-none max-w-[220px]"
                   >
-                    <option value="Programming">Programming</option>
-                    <option value="Web Development">Web Development</option>
-                    <option value="Data Science">Data Science</option>
-                    <option value="Database">Database</option>
-                    <option value="AI & ML">AI & ML</option>
+                    {ALL_DOMAINS_LIST.map((d) => (
+                      <option key={d.name} value={d.name}>
+                        {d.name}
+                      </option>
+                    ))}
                   </select>
 
                   <select
@@ -558,6 +604,7 @@ export function TodoPageView() {
                   >
                     <option value={10}>+10 XP</option>
                     <option value={20}>+20 XP</option>
+                    <option value={25}>+25 XP</option>
                     <option value={30}>+30 XP</option>
                     <option value={40}>+40 XP</option>
                     <option value={50}>+50 XP</option>
