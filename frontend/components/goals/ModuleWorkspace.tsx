@@ -619,37 +619,6 @@ export function ModuleWorkspace(props: Props) {
                       </div>
                     )}
                   </div>
-
-                  {/* Step 01 SlideToUnlock Reward Card */}
-                  {resourceMarked && (
-                    <div className="pt-4 max-w-md">
-                      <SlideToUnlock
-                        sliderText="Swipe to claim Resource XP"
-                        className="max-w-none border-purple-400/30 bg-[#0F0C24] text-white shadow-lg"
-                        unlockedContent={
-                          <div className="flex items-center justify-between p-3.5 bg-gradient-to-r from-[#8B5CF6] to-[#6D28D9] text-white rounded-none shadow-md">
-                            <div className="space-y-0.5">
-                              <p className="text-xs font-black">Step 01 Mastery Credited! +25 XP</p>
-                              <p className="text-[10px] text-purple-200">Prerequisite Knowledge Unlocked</p>
-                            </div>
-                            <div className="h-8 w-8 rounded-full bg-white text-purple-700 flex items-center justify-center font-black text-xs shadow-xs">
-                              ✦
-                            </div>
-                          </div>
-                        }
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="h-8 w-8 rounded-none bg-purple-900/60 border border-purple-400/40 flex items-center justify-center text-purple-300">
-                            <IconCheck className="h-4 w-4 stroke-[3]" />
-                          </div>
-                          <div>
-                            <h4 className="text-xs font-black text-white">Step 01 Cleared • Resource Done</h4>
-                            <p className="text-[10px] text-slate-300">Swipe below to claim your study bonus XP</p>
-                          </div>
-                        </div>
-                      </SlideToUnlock>
-                    </div>
-                  )}
                 </div>
 
                 {/* 3D Desktop Monitor Illustration with Code Lines & {} Badge */}
