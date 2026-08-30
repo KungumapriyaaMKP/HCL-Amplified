@@ -1,6 +1,10 @@
 import { redirect } from "next/navigation";
 import { requireUserOrRedirect } from "@/lib/auth";
 import { getModuleDetail } from "@/lib/moduleDetail";
+import { db } from "@/lib/db";
+import { profiles } from "@/db/schema";
+import { eq } from "drizzle-orm";
+import { getTotalXp, levelForXp, levelTitle } from "@/lib/gamification";
 import { AppSidebar } from "@/frontend/components/layout/AppSidebar";
 import { ModuleWorkspace } from "@/frontend/components/goals/ModuleWorkspace";
 import { AssistantWidget } from "@/frontend/components/goals/AssistantWidget";
@@ -11,13 +15,30 @@ export default async function ModulePage({ params }: { params: Promise<{ id: str
   const detail = await getModuleDetail(user.id, moduleId);
   if (!detail) redirect(`/goals/${id}`);
 
+  let displayName = "Learner";
+  let totalXp = 0;
+
+  try {
+    const [profileResult, xpResult] = await Promise.all([
+      db.select().from(profiles).where(eq(profiles.userId, user.id)),
+      getTotalXp(user.id),
+    ]);
+    const [profile] = profileResult;
+    if (profile?.displayName) displayName = profile.displayName;
+    totalXp = xpResult || 0;
+  } catch (_err) {}
+
+  const userLevel = levelForXp(totalXp);
+  const userLevelTitle = levelTitle(userLevel.level);
+
   return (
-    <div className="flex h-screen max-h-screen overflow-hidden bg-[#FFF9F6] text-slate-900 font-sans">
+    <div className="flex h-screen max-h-screen overflow-hidden bg-[#FDFBF7] text-slate-900 font-sans">
       {/* 1. Left Sidebar Navigation */}
       <AppSidebar
-        displayName="Yuvi"
-        level={1}
-        levelTitle="Newcomer"
+        displayName={displayName}
+        level={userLevel.level}
+        levelTitle={userLevelTitle}
+        activeGoalId={id}
       />
 
       {/* 2. Main Scrollable Workspace - Full Edge-to-Edge Canvas */}

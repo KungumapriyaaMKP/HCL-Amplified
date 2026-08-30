@@ -84,17 +84,17 @@ export function ModuleWorkspace(props: Props) {
   return (
     <div className="relative w-full min-h-screen py-6 px-4 sm:px-6 flex flex-col items-center select-none font-sans">
       
-      {/* Background Studio Ambient Image Overlay */}
-      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+      {/* Background Studio Ambient Image Overlay - Fixed for seamless scrolling */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <Image
           src="/images/journey/study_desk_bg.jpg"
           alt="Study Desk Studio"
           fill
           unoptimized
-          className="object-cover object-top opacity-95"
+          className="object-cover object-center opacity-95"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-white/30" />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-white/20" />
       </div>
 
       <div className="relative z-10 w-full max-w-5xl space-y-5">
