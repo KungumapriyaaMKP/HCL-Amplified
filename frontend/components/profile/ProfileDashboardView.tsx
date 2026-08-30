@@ -253,7 +253,30 @@ export function ProfileDashboardView({
 
               </div>
 
+              {/* Bottom Information Details: Primary Track, Status & Milestone */}
+              <div className="mt-5 pt-4 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                <div className="rounded-none border border-slate-200 bg-slate-50/80 px-3 py-2">
+                  <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Primary Track</div>
+                  <div className="text-xs font-bold text-slate-800 mt-0.5 truncate">
+                    {data.goals?.[0]?.goalText || data.goals?.[0]?.domain || "Full-Stack Web Dev"}
+                  </div>
+                </div>
 
+                <div className="rounded-none border border-slate-200 bg-slate-50/80 px-3 py-2">
+                  <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Learner Status</div>
+                  <div className="text-xs font-bold text-emerald-600 mt-0.5 flex items-center gap-1.5">
+                    <span className="h-1.5 w-1.5 rounded-none bg-emerald-500 animate-pulse" />
+                    <span>Active Contributor</span>
+                  </div>
+                </div>
+
+                <div className="rounded-none border border-slate-200 bg-slate-50/80 px-3 py-2">
+                  <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Next Milestone</div>
+                  <div className="text-xs font-bold text-[#7C3AED] mt-0.5">
+                    Level {level + 1} ({xpForNextLevel} XP)
+                  </div>
+                </div>
+              </div>
 
             </div>
           </div>
