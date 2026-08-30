@@ -399,13 +399,6 @@ export function ProctoredWorkspace({
           {/* Left Column: Score Gauge & Title */}
           <div className="lg:col-span-5 flex flex-col items-center text-center">
             <div className="relative flex items-center justify-center">
-              {/* Floating Sparkle Stars */}
-              <span className="absolute -top-3 -left-3 text-purple-400 select-none text-xs">✦</span>
-              <span className="absolute top-1 -right-2 text-purple-400 select-none text-xs">✦</span>
-              <span className="absolute -bottom-2 -left-2 text-purple-400 select-none text-xs">✦</span>
-              <span className="absolute -bottom-1 -right-4 text-purple-400 select-none text-xs">✦</span>
-              <span className="absolute top-1/2 -right-6 text-amber-300 select-none text-sm">✦</span>
-
               {/* Circular Gauge Ring */}
               <div className="h-36 w-36 sm:h-40 sm:w-40 rounded-full border-4 border-indigo-400/80 bg-gradient-to-b from-purple-100/60 via-white to-indigo-100/50 flex flex-col items-center justify-center shadow-[0_0_25px_rgba(99,102,241,0.25)]">
                 <span className="text-4xl sm:text-5xl font-black text-[#6366F1] tracking-tight">
