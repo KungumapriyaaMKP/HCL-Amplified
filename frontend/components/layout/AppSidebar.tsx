@@ -56,6 +56,18 @@ export function AppSidebar({
 
   const isResourcesPage = pathname === "/resources";
 
+  async function handleLogout() {
+    try {
+      const supabase = createClient();
+      await supabase.auth.signOut();
+    } catch {}
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch {}
+    router.push("/login");
+    router.refresh();
+  }
+
   return (
     <aside className="relative z-30 w-64 shrink-0 bg-white border-r border-slate-200/90 flex flex-col justify-between p-5 min-h-screen shadow-2xs">
       <div>
@@ -92,7 +104,7 @@ export function AppSidebar({
               <Link
                 key={item.label}
                 href={item.href}
-                className={`flex items-center gap-3.5 px-3.5 py-2.5 rounded-xs text-sm font-bold tracking-tight transition-all ${
+                className={`flex items-center gap-3.5 px-3.5 py-2.5 rounded-none text-sm font-bold tracking-tight transition-all ${
                   isActive
                     ? "bg-[#6D28D9] text-white shadow-sm shadow-purple-500/20 font-extrabold"
                     : "text-slate-900 hover:bg-purple-50 hover:text-[#6D28D9]"
@@ -103,30 +115,47 @@ export function AppSidebar({
               </Link>
             );
           })}
+
+          {/* Log Out Nav Button */}
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3.5 px-3.5 py-2.5 rounded-none text-sm font-bold tracking-tight text-slate-700 hover:bg-rose-50 hover:text-rose-600 transition-all cursor-pointer select-none group text-left mt-1"
+          >
+            <IconLogout className="w-5 h-5 stroke-[2.2] shrink-0 text-slate-600 group-hover:text-rose-600 transition-colors" />
+            <span>Log Out</span>
+          </button>
         </nav>
       </div>
 
       {/* Bottom User Profile Section */}
-      <div className="pt-4 border-t border-slate-100 space-y-3">
-        <Link
-          href="/profile"
-          className="flex items-center justify-between p-2 rounded-xs border border-slate-100 bg-white hover:border-purple-200 hover:bg-purple-50/50 transition-all group"
-        >
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xs bg-gradient-to-tr from-[#6D28D9] to-[#8B5CF6] text-sm font-black text-white shadow-xs">
+      <div className="pt-4 border-t border-slate-100 space-y-2">
+        <div className="flex items-center justify-between p-2 rounded-none border border-slate-100 bg-white hover:border-purple-200 transition-all">
+          <Link
+            href="/profile"
+            className="flex items-center gap-2.5 flex-1 min-w-0 group"
+          >
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-none bg-gradient-to-tr from-[#6D28D9] to-[#8B5CF6] text-sm font-black text-white shadow-xs">
               {displayName.charAt(0).toUpperCase()}
             </div>
-            <div>
-              <div className="text-xs font-bold text-slate-900 leading-tight">
+            <div className="min-w-0 flex-1">
+              <div className="text-xs font-bold text-slate-900 leading-tight truncate">
                 {displayName}
               </div>
-              <div className="text-[10px] font-medium text-slate-500">
+              <div className="text-[10px] font-medium text-slate-500 truncate">
                 Level {level} • {levelTitle}
               </div>
             </div>
-          </div>
-          <IconChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
-        </Link>
+          </Link>
+          <button
+            type="button"
+            onClick={handleLogout}
+            title="Log Out"
+            className="p-1.5 rounded-none text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+          >
+            <IconLogout className="w-4 h-4 stroke-[2.2]" />
+          </button>
+        </div>
       </div>
     </aside>
   );
