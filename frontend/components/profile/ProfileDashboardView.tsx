@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import type { DashboardData } from "@/lib/dashboardData";
@@ -12,7 +12,6 @@ import {
   IconFileText,
   IconArrowRight,
   IconTarget,
-  IconSearch,
   IconChevronDown,
 } from "@tabler/icons-react";
 
@@ -34,51 +33,7 @@ export function ProfileDashboardView({
   const xpForNextLevel = gamification.xpForNextLevel || 50;
   const pct = xpForNextLevel > 0 ? Math.min(100, Math.round((xpIntoLevel / xpForNextLevel) * 100)) : 0;
 
-  const [activeMatrixTab, setActiveMatrixTab] = useState<"proficiency" | "retention">("proficiency");
-  const [filterTier, setFilterTier] = useState<string>("ALL");
-  const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const skillCards = [
-    {
-      id: "linear-algebra",
-      name: "Linear Algebra",
-      symbol: "1:1",
-      iconBg: "bg-emerald-500 text-white",
-      badge: "NOVICE",
-      score: 15,
-      sparkColor: "#10B981",
-      progressBg: "bg-emerald-500",
-      points: "M0 18 L20 16 L40 20 L60 12 L80 16 L100 6",
-    },
-    {
-      id: "calculus-basics",
-      name: "Calculus Basics",
-      symbol: "∫ dx",
-      iconBg: "bg-blue-600 text-white",
-      badge: "NOVICE",
-      score: 15,
-      sparkColor: "#3B82F6",
-      progressBg: "bg-blue-600",
-      points: "M0 19 L20 17 L40 20 L60 13 L80 15 L100 7",
-    },
-    {
-      id: "python-programming",
-      name: "Python Programming",
-      symbol: "Py",
-      iconBg: "bg-amber-400 text-amber-950 font-black",
-      badge: "NOVICE",
-      score: 10,
-      sparkColor: "#F59E0B",
-      progressBg: "bg-amber-500",
-      points: "M0 20 L20 18 L40 21 L60 16 L80 18 L100 11",
-    },
-  ];
-
-  const filteredSkills = skillCards.filter((s) => {
-    const matchesSearch = s.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesFilter = filterTier === "ALL" || s.badge === filterTier;
-    return matchesSearch && matchesFilter;
-  });
 
   return (
     <div className="relative min-h-screen bg-[#F8F9FD] text-slate-900 font-sans pb-16 overflow-x-hidden">
@@ -405,145 +360,7 @@ export function ProfileDashboardView({
 
         </div>
 
-        {/* ================= MIDDLE: SKILL PROFICIENCY MATRIX ================= */}
-        <div className="rounded-none border border-slate-200 bg-white p-6 shadow-xs space-y-5">
-          
-          {/* Header & Tabs */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <span className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#7C3AED]">
-                ALGORITHMIC MASTERY & MEMORY
-              </span>
-              <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">
-                Skill Proficiency Matrix
-              </h2>
-            </div>
 
-            {/* Right Mode Toggle Tabs with Sharp Edges */}
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setActiveMatrixTab("proficiency")}
-                className={`flex items-center gap-1.5 rounded-none px-4 py-2 text-xs font-bold transition-all shadow-xs cursor-pointer ${
-                  activeMatrixTab === "proficiency"
-                    ? "bg-[#4338CA] text-white"
-                    : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
-                }`}
-              >
-                <span>PROFICIENCY RATINGS (2)</span>
-              </button>
-              <button
-                onClick={() => setActiveMatrixTab("retention")}
-                className={`flex items-center gap-1.5 rounded-none px-4 py-2 text-xs font-bold transition-all cursor-pointer ${
-                  activeMatrixTab === "retention"
-                    ? "bg-[#4338CA] text-white shadow-xs"
-                    : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
-                }`}
-              >
-                <span>RETENTION & VITALITY (2)</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Search Bar & Tier Filter Pills with Sharp Edges */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-1">
-            <div className="relative w-full max-w-xs">
-              <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search skills by name..."
-                className="w-full rounded-none border border-slate-200 bg-slate-50/70 py-1.5 pl-8 pr-3 text-xs text-slate-800 placeholder-slate-400 focus:border-[#7C3AED] focus:bg-white focus:outline-none"
-              />
-            </div>
-
-            {/* Filter Pills */}
-            <div className="flex flex-wrap items-center gap-1.5">
-              {["ALL", "MASTER", "EXPERT", "ADEPT", "NOVICE"].map((tier) => (
-                <button
-                  key={tier}
-                  onClick={() => setFilterTier(tier)}
-                  className={`rounded-none px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider transition-all cursor-pointer ${
-                    filterTier === tier
-                      ? "bg-[#7C3AED] text-white shadow-xs"
-                      : "border border-slate-200 bg-white text-slate-500 hover:bg-slate-50"
-                  }`}
-                >
-                  {tier}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* 3 Skill Cards Grid with Sharp Edges */}
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredSkills.map((s) => (
-              <div
-                key={s.id}
-                className="rounded-none border border-slate-200 bg-white p-4 shadow-xs hover:border-purple-400 hover:shadow-md transition-all flex flex-col justify-between min-h-[140px]"
-              >
-                <div>
-                  {/* Top Row: Symbol Icon & Title & Novice Badge */}
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex items-center gap-2.5">
-                      <div className={`flex h-9 w-9 items-center justify-center rounded-none ${s.iconBg} text-xs font-black shadow-xs shrink-0`}>
-                        {s.symbol}
-                      </div>
-                      <div>
-                        <div className="text-sm font-bold text-slate-900 leading-tight">{s.name}</div>
-                        <div className="text-[11px] text-slate-400 mt-0.5">Mastery Score</div>
-                      </div>
-                    </div>
-
-                    <span className="rounded-none border border-slate-200 bg-slate-50 px-2 py-0.5 text-[9px] font-bold text-slate-500 uppercase">
-                      {s.badge}
-                    </span>
-                  </div>
-
-                  {/* Score & Sparkline Graph */}
-                  <div className="mt-3 flex items-end justify-between">
-                    <span className="text-lg font-black text-slate-900 leading-none">
-                      {s.score}%
-                    </span>
-
-                    {/* Sparkline Graph Vector with dots */}
-                    <svg viewBox="0 0 100 24" className="w-28 h-6 overflow-visible">
-                      <path
-                        d={s.points}
-                        fill="none"
-                        stroke={s.sparkColor}
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                      />
-                      <circle cx="20" cy="16" r="1.5" fill={s.sparkColor} />
-                      <circle cx="40" cy="20" r="1.5" fill={s.sparkColor} />
-                      <circle cx="60" cy="12" r="1.5" fill={s.sparkColor} />
-                      <circle cx="80" cy="16" r="1.5" fill={s.sparkColor} />
-                      <circle cx="100" cy="6" r="2.5" fill={s.sparkColor} />
-                    </svg>
-                  </div>
-                </div>
-
-                {/* Bottom Progress Bar */}
-                <div className="mt-3 h-1.5 w-full rounded-none bg-slate-100 overflow-hidden">
-                  <div className={`h-full rounded-none ${s.progressBg}`} style={{ width: `${s.score}%` }} />
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Explore All Skills Centered Button */}
-          <div className="pt-2 flex justify-center">
-            <Link
-              href="/dashboard#skill-map"
-              className="inline-flex items-center gap-1.5 rounded-none border border-slate-200 bg-white px-6 py-2 text-xs font-bold text-[#2563EB] shadow-xs hover:bg-slate-50 transition-all"
-            >
-              <span>Explore All Skills</span>
-              <IconArrowRight className="h-3.5 w-3.5" />
-            </Link>
-          </div>
-
-        </div>
 
         {/* ================= BOTTOM ROW: ACTIVITY HEATMAP ================= */}
         <div className="w-full">
