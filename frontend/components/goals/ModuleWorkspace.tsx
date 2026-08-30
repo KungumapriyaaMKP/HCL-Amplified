@@ -740,9 +740,9 @@ export function ModuleWorkspace(props: Props) {
                 <div className="pt-1">
                   <Link
                     href={`/goals/${props.goalId}/modules/${props.moduleId}/practice`}
-                    className="inline-flex items-center justify-center gap-2 w-full px-5 py-3.5 rounded-none bg-gradient-to-r from-[#6D28D9] via-[#7C3AED] to-[#8B5CF6] text-white text-xs font-black shadow-md shadow-purple-500/20 hover:opacity-95 hover:shadow-lg transition-all cursor-pointer"
+                    className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-none bg-gradient-to-r from-[#6D28D9] via-[#7C3AED] to-[#8B5CF6] text-white text-xs font-extrabold shadow-md shadow-purple-500/20 hover:opacity-95 hover:shadow-lg transition-all cursor-pointer"
                   >
-                    <span>{practiceAttempted ? "Retake Practice Assessment Arena" : "Launch Practice Assessment Arena"}</span>
+                    <span>{practiceAttempted ? "Retake Practice" : "Launch Practice Arena"}</span>
                     <IconArrowRight className="h-4 w-4" />
                   </Link>
                 </div>
@@ -878,13 +878,15 @@ export function ModuleWorkspace(props: Props) {
                 <p className="text-xs text-slate-600 font-medium leading-relaxed">
                   Single-attempt, timed, webcam presence-monitored trial. Successfully completing this assessment records official skill mastery.
                 </p>
-                <Link
-                  href={`/goals/${props.goalId}/modules/${props.moduleId}/proctored`}
-                  className="inline-flex items-center justify-center gap-2 w-full px-5 py-3 rounded-sm bg-gradient-to-r from-[#6D28D9] to-[#8B5CF6] text-white text-xs font-black shadow-lg shadow-purple-500/20 hover:opacity-95 transition-all"
-                >
-                  <span>Begin Proctored Assessment</span>
-                  <IconArrowRight className="h-4 w-4" />
-                </Link>
+                <div className="pt-1">
+                  <Link
+                    href={`/goals/${props.goalId}/modules/${props.moduleId}/proctored`}
+                    className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-none bg-gradient-to-r from-[#6D28D9] to-[#8B5CF6] text-white text-xs font-extrabold shadow-md shadow-purple-500/20 hover:opacity-95 transition-all cursor-pointer"
+                  >
+                    <span>Begin Proctored Assessment</span>
+                    <IconArrowRight className="h-4 w-4" />
+                  </Link>
+                </div>
               </div>
             ) : (
               <div className="relative overflow-hidden rounded-sm bg-white/95 border border-slate-200/90 p-6 sm:p-7 shadow-md backdrop-blur-md grid grid-cols-1 sm:grid-cols-[1fr_120px] gap-6 items-center">
