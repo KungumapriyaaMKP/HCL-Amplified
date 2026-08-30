@@ -140,7 +140,31 @@ function extractJsonBlock(text: string): string {
 function generateFallbackJson<T>(messages: ChatMessage[]): T {
   const combined = messages.map((m) => m.content).join(" ").toLowerCase();
 
-  // 1. Proctored Assessment: Exactly 15 questions
+  // 1. Coding Exercises & Test Cases
+  if (combined.includes("exercise") || combined.includes("testcases") || combined.includes("test cases")) {
+    return {
+      exercises: [
+        {
+          title: "Sum of Two Numbers",
+          prompt: "Read two integers from a single line of input, separated by a space.\nPrint their sum as a single integer, with no extra text.",
+          testCases: [
+            { input: "4 7", expectedOutput: "11" },
+            { input: "100 250", expectedOutput: "350" }
+          ]
+        },
+        {
+          title: "Even or Odd",
+          prompt: "Read a single integer from input. Print 'Even' if the number is divisible by 2, or 'Odd' otherwise.",
+          testCases: [
+            { input: "8", expectedOutput: "Even" },
+            { input: "13", expectedOutput: "Odd" }
+          ]
+        }
+      ]
+    } as T;
+  }
+
+  // 2. Proctored Assessment: Exactly 15 questions
   if (combined.includes("proctored")) {
     return {
       questions: [
@@ -343,7 +367,7 @@ function generateFallbackJson<T>(messages: ChatMessage[]): T {
     } as T;
   }
 
-  // 2. Diagnostic & Practice Quizzes
+  // 3. Diagnostic & Practice Quizzes
   if (combined.includes("diagnostic") || combined.includes("questiongeneration") || combined.includes("questions") || combined.includes("practice")) {
     return {
       questions: [
@@ -403,6 +427,7 @@ function generateFallbackJson<T>(messages: ChatMessage[]): T {
     } as T;
   }
 
+  // 4. Conversational Intake & Roadmap Setup
   if (combined.includes("intake") || combined.includes("goal")) {
     return {
       reply: "Great! I have customized your learning pathway and structured your roadmap step-by-step. Let's start with your first module!",
@@ -414,26 +439,12 @@ function generateFallbackJson<T>(messages: ChatMessage[]): T {
     } as T;
   }
 
+  // 5. Socratic Hints & Feedback
   if (combined.includes("socratic") || combined.includes("feedback") || combined.includes("hint")) {
     return {
       feedback: "Review the question carefully. Focus on standard principles and syntax structure.",
       hint: "Consider edge cases and proper parameter formatting.",
       correct: false
-    } as T;
-  }
-
-  if (combined.includes("exercise") || combined.includes("testcases")) {
-    return {
-      exercises: [
-        {
-          title: "Sum of Two Numbers",
-          prompt: "Read two integers from a single line of input, separated by a space.\nPrint their sum as a single integer, with no extra text.",
-          testCases: [
-            { input: "4 7", expectedOutput: "11" },
-            { input: "100 250", expectedOutput: "350" }
-          ]
-        }
-      ]
     } as T;
   }
 
