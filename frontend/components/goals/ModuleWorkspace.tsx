@@ -459,63 +459,44 @@ export function ModuleWorkspace(props: Props) {
                 </div>
               </div>
 
-              {/* Module Difficulty Calibration */}
-              <div className="mt-6 pt-4 border-t border-purple-500/20 space-y-2">
-                <p className="text-[11px] font-bold text-slate-300">
-                  Calibrate Module Difficulty for Future Recommendations:
-                </p>
+              {/* Module Difficulty Calibration - Sleek Segmented Control */}
+              <div className="mt-6 pt-4 border-t border-purple-500/20 flex flex-wrap items-center justify-between gap-3">
+                <div className="space-y-0.5">
+                  <p className="text-[11px] font-semibold text-slate-300">
+                    Difficulty Calibration
+                  </p>
+                  <p className="text-[10px] text-slate-400">
+                    Fine-tune AI recommendation pacing
+                  </p>
+                </div>
                 
-                <div className="flex flex-wrap items-center gap-2.5">
-                  <button
-                    type="button"
-                    disabled={busy}
-                    onClick={async () => {
-                      await postProgress({ type: "feedback", feedback: "too_easy" });
-                      setFeedbackSent("too_easy");
-                    }}
-                    className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xs border text-xs font-bold transition-all cursor-pointer ${
-                      feedbackSent === "too_easy"
-                        ? "bg-emerald-900 border-emerald-400 text-white shadow-sm"
-                        : "bg-[#0A2616] border-emerald-600/50 text-emerald-300 hover:bg-emerald-950"
-                    }`}
-                  >
-                    <span>😄</span>
-                    <span>Too Easy</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    disabled={busy}
-                    onClick={async () => {
-                      await postProgress({ type: "feedback", feedback: "just_right" });
-                      setFeedbackSent("just_right");
-                    }}
-                    className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xs border text-xs font-bold transition-all cursor-pointer ${
-                      feedbackSent === "just_right"
-                        ? "bg-blue-900 border-blue-400 text-white shadow-sm"
-                        : "bg-[#0C1E3D] border-blue-600/50 text-blue-300 hover:bg-blue-950"
-                    }`}
-                  >
-                    <span>😐</span>
-                    <span>Balanced</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    disabled={busy}
-                    onClick={async () => {
-                      await postProgress({ type: "feedback", feedback: "too_hard" });
-                      setFeedbackSent("too_hard");
-                    }}
-                    className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xs border text-xs font-bold transition-all cursor-pointer ${
-                      feedbackSent === "too_hard"
-                        ? "bg-amber-900 border-amber-400 text-white shadow-sm"
-                        : "bg-[#2D1606] border-amber-600/50 text-amber-300 hover:bg-amber-950"
-                    }`}
-                  >
-                    <span>🤔</span>
-                    <span>Challenging</span>
-                  </button>
+                <div className="inline-flex items-center p-1 rounded-sm bg-[#090717]/90 border border-purple-500/30 shadow-inner gap-1">
+                  {[
+                    { id: "too_easy", label: "Easy", dot: "bg-emerald-400" },
+                    { id: "just_right", label: "Balanced", dot: "bg-sky-400" },
+                    { id: "too_hard", label: "Challenging", dot: "bg-amber-400" },
+                  ].map((item) => {
+                    const isSelected = feedbackSent === item.id;
+                    return (
+                      <button
+                        key={item.id}
+                        type="button"
+                        disabled={busy}
+                        onClick={async () => {
+                          await postProgress({ type: "feedback", feedback: item.id });
+                          setFeedbackSent(item.id);
+                        }}
+                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xs text-xs font-semibold transition-all cursor-pointer select-none ${
+                          isSelected
+                            ? "bg-purple-600/40 text-white border border-purple-400/60 shadow-xs"
+                            : "text-slate-400 hover:text-slate-200 hover:bg-white/5 border border-transparent"
+                        }`}
+                      >
+                        <span className={`w-1.5 h-1.5 rounded-full ${item.dot}`} />
+                        <span>{item.label}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
