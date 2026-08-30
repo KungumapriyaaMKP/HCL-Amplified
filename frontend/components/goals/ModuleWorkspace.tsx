@@ -715,37 +715,6 @@ export function ModuleWorkspace(props: Props) {
                     <IconArrowRight className="h-4 w-4" />
                   </Link>
                 </div>
-
-                {/* Step 02 SlideToUnlock Reward Card */}
-                {practiceAttempted && (
-                  <div className="pt-2">
-                    <SlideToUnlock
-                      sliderText="Swipe to claim Practice Badge"
-                      className="max-w-none border-emerald-200 bg-emerald-50/40 text-slate-900 shadow-sm"
-                      unlockedContent={
-                        <div className="flex items-center justify-between p-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-none shadow-md">
-                          <div className="space-y-0.5">
-                            <p className="text-xs font-black">Step 02 Practice Cleared! +50 XP</p>
-                            <p className="text-[10px] text-emerald-100">Step 03 Proctored Exam Unlocked</p>
-                          </div>
-                          <div className="h-8 w-8 rounded-full bg-white text-emerald-600 flex items-center justify-center font-black text-xs shadow-xs">
-                            🛡️
-                          </div>
-                        </div>
-                      }
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="h-8 w-8 rounded-none bg-emerald-100 border border-emerald-300 flex items-center justify-center text-emerald-700">
-                          <IconTarget className="h-4 w-4" />
-                        </div>
-                        <div>
-                          <h4 className="text-xs font-black text-slate-900">Step 02 Cleared • Practice Finished</h4>
-                          <p className="text-[10px] text-slate-500">Swipe below to claim your practice bonus reward</p>
-                        </div>
-                      </div>
-                    </SlideToUnlock>
-                  </div>
-                )}
               </div>
             ) : (
               <div className="relative overflow-hidden rounded-none bg-white/95 border border-slate-200/90 p-6 sm:p-7 shadow-md backdrop-blur-md grid grid-cols-1 sm:grid-cols-[1fr_120px] gap-6 items-center">
@@ -802,35 +771,6 @@ export function ModuleWorkspace(props: Props) {
                 </div>
                 <div className="text-3xl font-black text-emerald-600">
                   {props.proctoredScore}/100
-                </div>
-
-                {/* Step 03 SlideToUnlock Reward Card */}
-                <div className="pt-2">
-                  <SlideToUnlock
-                    sliderText="Swipe to claim Official Certificate"
-                    className="max-w-none border-amber-200 bg-amber-50/40 text-slate-900 shadow-sm"
-                    unlockedContent={
-                      <div className="flex items-center justify-between p-3.5 bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white rounded-none shadow-md">
-                        <div className="space-y-0.5">
-                          <p className="text-xs font-black">Official Skill Certification! +100 XP</p>
-                          <p className="text-[10px] text-amber-100">Permanent Mastery Recorded on Profile</p>
-                        </div>
-                        <div className="h-8 w-8 rounded-full bg-white text-amber-600 flex items-center justify-center font-black text-xs shadow-xs">
-                          🏆
-                        </div>
-                      </div>
-                    }
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="h-8 w-8 rounded-none bg-amber-100 border border-amber-300 flex items-center justify-center text-amber-700">
-                        <IconAward className="h-4 w-4" />
-                      </div>
-                      <div>
-                        <h4 className="text-xs font-black text-slate-900">Step 03 Cleared • Exam Passed</h4>
-                        <p className="text-[10px] text-slate-500">Swipe below to claim your verified proctored certificate</p>
-                      </div>
-                    </div>
-                  </SlideToUnlock>
                 </div>
               </div>
             ) : practiceAttempted ? (
