@@ -42,9 +42,7 @@ export function YourPlanForToday({ hasGoals = true }: { hasGoals?: boolean }) {
   const [tasks, setTasks] = useState<DailyTaskItem[]>([]);
   const [agendaItems, setAgendaItems] = useState<PlanAgendaItem[]>([]);
   const [coachIntro, setCoachIntro] = useState<string | null>(null);
-  const [newTaskTitle, setNewTaskTitle] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -76,45 +74,6 @@ export function YourPlanForToday({ hasGoals = true }: { hasGoals?: boolean }) {
       isMounted = false;
     };
   }, []);
-
-  const handleAddTask = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const title = newTaskTitle.trim();
-    if (!title || isSubmitting) return;
-
-    setIsSubmitting(true);
-    setNewTaskTitle("");
-
-    const tempId = "temp-" + Date.now();
-    const optimisticTask: DailyTaskItem = {
-      id: tempId,
-      title,
-      completed: false,
-      createdAt: new Date().toISOString(),
-    };
-
-    setTasks((prev) => [optimisticTask, ...prev]);
-
-    try {
-      const res = await fetch("/api/tasks", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title }),
-      });
-
-      if (res.ok) {
-        const { task } = await res.json();
-        setTasks((prev) => prev.map((t) => (t.id === tempId ? task : t)));
-      } else {
-        setTasks((prev) => prev.filter((t) => t.id !== tempId));
-      }
-    } catch (err) {
-      console.error("Failed to add task:", err);
-      setTasks((prev) => prev.filter((t) => t.id !== tempId));
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   const handleToggleTask = async (id: string, currentCompleted: boolean) => {
     setTasks((prev) =>
@@ -253,31 +212,32 @@ export function YourPlanForToday({ hasGoals = true }: { hasGoals?: boolean }) {
         ))}
 
         {tasks.length === 0 && agendaItems.length === 0 && !isLoading && (
-          <div className="py-4 text-center text-xs text-slate-500 font-semibold">
-            No active tasks. Add your own task below!
+          <div className="py-6 text-center space-y-2">
+            <p className="text-xs text-slate-500 font-semibold">
+              No tasks scheduled for today.
+            </p>
+            <Link
+              href="/todo"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xs bg-purple-50 hover:bg-purple-100 border border-purple-200 text-xs font-bold text-[#6D28D9] transition-colors"
+            >
+              <span>Go to To-Do List</span>
+              <IconArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
         )}
       </div>
 
-      {/* Add Task Input Form */}
-      <form onSubmit={handleAddTask} className="flex items-center gap-2 pt-2 border-t border-slate-200">
-        <input
-          type="text"
-          value={newTaskTitle}
-          onChange={(e) => setNewTaskTitle(e.target.value)}
-          placeholder="Add a daily study task..."
-          className="flex-1 px-3 py-2 rounded-xs border border-slate-300 text-xs font-medium text-slate-900 placeholder-slate-500 focus:outline-hidden focus:border-purple-600 focus:ring-1 focus:ring-purple-600 shadow-2xs transition-all"
-          disabled={isSubmitting}
-        />
-        <button
-          type="submit"
-          disabled={!newTaskTitle.trim() || isSubmitting}
-          className="inline-flex items-center gap-1 px-3.5 py-2 rounded-xs bg-[#6D28D9] hover:bg-[#5B21B6] disabled:opacity-50 text-white text-xs font-extrabold transition-all shadow-xs cursor-pointer"
+      {/* Footer Link to Dedicated To-Do List Section */}
+      <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
+        <Link
+          href="/todo"
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-[#6D28D9] hover:underline"
         >
-          <IconPlus className="w-4 h-4 stroke-[3]" />
-          <span>Add</span>
-        </button>
-      </form>
+          <span>Manage in To-Do List</span>
+          <IconArrowRight className="w-3.5 h-3.5 stroke-[2.2]" />
+        </Link>
+        <span className="text-[10px] text-slate-400 font-medium">Auto-synced</span>
+      </div>
     </div>
   );
 }
