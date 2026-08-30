@@ -42,6 +42,18 @@ export const SlideToUnlock = ({
   const onDragEnd = (_event: any, info: any) => {
     if (dragConstraint > 0 && info.offset.x > dragConstraint * 0.75) {
       setUnlocked(true);
+      try {
+        confetti({
+          particleCount: 100,
+          spread: 85,
+          origin: { y: 0.6 },
+          colors: ['#8B5CF6', '#A855F7', '#06B6D4', '#10B981', '#F59E0B', '#3B82F6'],
+          scalar: 1.15,
+          ticks: 220,
+        });
+      } catch {
+        // Safe fallback
+      }
       onUnlock?.();
     } else {
       // Snap back to the start
