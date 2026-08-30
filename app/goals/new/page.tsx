@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { AppSidebar } from "@/frontend/components/layout/AppSidebar";
 import { TRACK_PACES } from "@/data/domains";
 import {
   IconChevronLeft,
@@ -18,8 +17,8 @@ import {
 
 function WebDevBadge() {
   return (
-    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#F3E8FF] flex items-center justify-center shrink-0">
-      <svg viewBox="0 0 48 48" fill="none" className="w-9 h-9" xmlns="http://www.w3.org/2000/svg">
+    <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-full bg-[#F3E8FF] flex items-center justify-center shrink-0">
+      <svg viewBox="0 0 48 48" fill="none" className="w-10 h-10" xmlns="http://www.w3.org/2000/svg">
         <rect x="8" y="12" width="32" height="24" rx="4" fill="#6D28D9" />
         <rect x="8" y="12" width="32" height="7" rx="4" fill="#5B21B6" />
         <circle cx="13" cy="15.5" r="1.2" fill="#E9D5FF" />
@@ -36,8 +35,8 @@ function WebDevBadge() {
 
 function DataScienceBadge() {
   return (
-    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#E0F2FE] flex items-center justify-center shrink-0">
-      <svg viewBox="0 0 48 48" fill="none" className="w-9 h-9" xmlns="http://www.w3.org/2000/svg">
+    <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-full bg-[#E0F2FE] flex items-center justify-center shrink-0">
+      <svg viewBox="0 0 48 48" fill="none" className="w-10 h-10" xmlns="http://www.w3.org/2000/svg">
         {/* Bars */}
         <rect x="12" y="27" width="5" height="11" rx="1.5" fill="#0284C7" />
         <rect x="20" y="20" width="5" height="18" rx="1.5" fill="#0284C7" />
@@ -53,8 +52,8 @@ function DataScienceBadge() {
 
 function AiMlBadge() {
   return (
-    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#DCFCE7] flex items-center justify-center shrink-0">
-      <svg viewBox="0 0 48 48" fill="none" className="w-9 h-9" xmlns="http://www.w3.org/2000/svg">
+    <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-full bg-[#DCFCE7] flex items-center justify-center shrink-0">
+      <svg viewBox="0 0 48 48" fill="none" className="w-10 h-10" xmlns="http://www.w3.org/2000/svg">
         {/* Brain Synapse Graphic */}
         <path
           d="M24 10 C20 10, 14 12, 14 18 C14 21, 16 23, 14 26 C12 29, 14 34, 18 36 C20 37, 24 37, 24 38"
@@ -83,8 +82,8 @@ function AiMlBadge() {
 
 function CloudDevOpsBadge() {
   return (
-    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#FEF3C7] flex items-center justify-center shrink-0">
-      <svg viewBox="0 0 48 48" fill="none" className="w-9 h-9" xmlns="http://www.w3.org/2000/svg">
+    <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-full bg-[#FEF3C7] flex items-center justify-center shrink-0">
+      <svg viewBox="0 0 48 48" fill="none" className="w-10 h-10" xmlns="http://www.w3.org/2000/svg">
         {/* Cloud */}
         <path
           d="M17 22 C14.2 22, 12 24.2, 12 27 C12 29.8, 14.2 32, 17 32 L31 32 C34.3 32, 37 29.3, 37 26 C37 22.8, 34.5 20.2, 31.3 20 C30.6 15.5, 26.7 12, 22 12 C18.1 12, 14.8 14.4, 13.5 18 C14.6 18, 15.8 18.5, 16.7 19.3"
@@ -105,8 +104,8 @@ function CloudDevOpsBadge() {
 
 function MobileDevBadge() {
   return (
-    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#FCE7F3] flex items-center justify-center shrink-0">
-      <svg viewBox="0 0 48 48" fill="none" className="w-9 h-9" xmlns="http://www.w3.org/2000/svg">
+    <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-full bg-[#FCE7F3] flex items-center justify-center shrink-0">
+      <svg viewBox="0 0 48 48" fill="none" className="w-10 h-10" xmlns="http://www.w3.org/2000/svg">
         {/* Smartphone */}
         <rect x="15" y="10" width="18" height="28" rx="4" stroke="#DB2777" strokeWidth="2.2" fill="none" />
         <line x1="21" y1="14" x2="27" y2="14" stroke="#DB2777" strokeWidth="2" strokeLinecap="round" />
@@ -118,8 +117,8 @@ function MobileDevBadge() {
 
 function CybersecurityBadge() {
   return (
-    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#EDE9FE] flex items-center justify-center shrink-0">
-      <svg viewBox="0 0 48 48" fill="none" className="w-9 h-9" xmlns="http://www.w3.org/2000/svg">
+    <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-full bg-[#EDE9FE] flex items-center justify-center shrink-0">
+      <svg viewBox="0 0 48 48" fill="none" className="w-10 h-10" xmlns="http://www.w3.org/2000/svg">
         {/* Shield */}
         <path
           d="M24 10 L33 14 V23 C33 29, 29 34.5, 24 37 C19 34.5, 15 29, 15 23 V14 L24 10 Z"
@@ -246,17 +245,8 @@ function NewGoalForm() {
   ];
 
   return (
-    <div className="flex min-h-screen bg-[#F8F9FD] text-slate-900 font-sans">
-      {/* 1. Left Sidebar Navigation */}
-      <AppSidebar
-        displayName="yuvi"
-        level={1}
-        levelTitle="Newcomer"
-      />
-
-      {/* 2. Main Scrollable Content */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto max-h-screen">
-        <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 py-8 space-y-6">
+    <div className="min-h-screen bg-[#FAFBFD] text-slate-900 font-sans flex flex-col justify-center py-10 px-4 sm:px-8">
+      <main className="mx-auto w-full max-w-6xl space-y-6">
         
         {/* ================= HEADER & STEP TRACKER EXACT MATCH TO IMAGE 1 ================= */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -264,7 +254,7 @@ function NewGoalForm() {
           {/* Left Title & Back Button */}
           <div className="flex items-center gap-3.5">
             <button
-              onClick={() => (step > 0 ? setStep(step - 1) : router.back())}
+              onClick={() => (step > 0 ? setStep(step - 1) : router.push("/dashboard"))}
               className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 shadow-sm hover:bg-slate-50 transition-all cursor-pointer"
               title="Go Back"
             >
@@ -274,7 +264,7 @@ function NewGoalForm() {
               <div className="text-[11px] font-black uppercase tracking-[0.2em] text-[#6D28D9]">
                 GOAL SETUP · STEP {step + 1} OF 3
               </div>
-              <h1 className="text-2xl sm:text-[26px] font-black text-slate-900 tracking-tight leading-tight">
+              <h1 className="text-2xl sm:text-[28px] font-black text-slate-900 tracking-tight leading-tight">
                 Set a New Learning Goal
               </h1>
             </div>
@@ -283,8 +273,8 @@ function NewGoalForm() {
           {/* Right Mascot + 3-Step Stepper */}
           <div className="flex items-center justify-end gap-3.5 self-end sm:self-center">
             {/* Cute Bot Mascot Avatar Circle */}
-            <div className="flex h-10 w-10 items-center justify-center rounded-full border border-purple-200 bg-purple-50/80 shadow-xs">
-              <span className="text-lg">🤖</span>
+            <div className="flex h-11 w-11 items-center justify-center rounded-full border border-purple-200 bg-purple-50/90 shadow-xs relative">
+              <span className="text-xl">🤖</span>
             </div>
 
             {/* Stepper Dots & Labels */}
@@ -297,7 +287,7 @@ function NewGoalForm() {
                   <React.Fragment key={st.num}>
                     {idx > 0 && (
                       <div
-                        className={`h-[1.5px] w-8 sm:w-12 transition-colors mb-4 ${
+                        className={`h-[2px] w-10 sm:w-14 transition-colors mb-4 ${
                           step >= idx ? "bg-[#6D28D9]" : "bg-slate-200"
                         }`}
                       />
@@ -334,10 +324,10 @@ function NewGoalForm() {
 
         {/* ================= STEP 0: DOMAIN SELECTION EXACT MATCH TO IMAGE 1 ================= */}
         {step === 0 && (
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-xs">
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-7 sm:p-9 shadow-xs">
             
             {/* Header inside Card */}
-            <div className="flex items-center gap-3.5 mb-6 pb-4 border-b border-slate-100/80">
+            <div className="flex items-center gap-3.5 mb-7 pb-4 border-b border-slate-100/90">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 text-[#6D28D9] border border-purple-100 shadow-2xs shrink-0">
                 <IconLayoutGrid className="h-5 w-5 stroke-[2.2]" />
               </div>
@@ -352,7 +342,7 @@ function NewGoalForm() {
             </div>
 
             {/* 6 Domain Cards Grid - Horizontal Layout Matching Image 1 */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {DOMAIN_OPTIONS.map((d) => {
                 return (
                   <div
@@ -361,14 +351,14 @@ function NewGoalForm() {
                       setDomain(d.id);
                       setStep(1);
                     }}
-                    className="group relative flex items-center justify-between gap-4 rounded-xl border border-slate-200/90 bg-white p-5 hover:border-purple-300 hover:shadow-md transition-all duration-200 cursor-pointer"
+                    className="group relative flex items-center justify-between gap-4 rounded-xl border border-slate-200/90 bg-white p-5 sm:p-6 hover:border-purple-300 hover:shadow-md transition-all duration-200 cursor-pointer min-h-[115px]"
                   >
                     {/* Left: Circular Icon Avatar */}
                     {d.badge}
 
                     {/* Middle: Title & Description */}
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm sm:text-[15px] font-extrabold text-slate-900 group-hover:text-[#6D28D9] transition-colors leading-snug">
+                    <div className="flex-1 min-w-0 pr-1">
+                      <div className="text-sm sm:text-[15.5px] font-extrabold text-slate-900 group-hover:text-[#6D28D9] transition-colors leading-snug">
                         {d.name}
                       </div>
                       <div className="mt-1 text-xs text-slate-500 font-normal leading-relaxed">
@@ -392,9 +382,9 @@ function NewGoalForm() {
 
         {/* ================= STEP 1: PACE SELECTION ================= */}
         {step === 1 && (
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-xs">
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-7 sm:p-9 shadow-xs">
             
-            <div className="flex items-center gap-3.5 mb-5 pb-4 border-b border-slate-100/80">
+            <div className="flex items-center gap-3.5 mb-6 pb-4 border-b border-slate-100/90">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 text-[#6D28D9] border border-purple-100 shadow-2xs shrink-0">
                 <IconClock className="h-5 w-5 stroke-[2.2]" />
               </div>
@@ -408,7 +398,7 @@ function NewGoalForm() {
               </div>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-3.5">
               {TRACK_PACES.map((t) => {
                 const selected = trackPace === t.id;
                 return (
@@ -462,7 +452,7 @@ function NewGoalForm() {
 
         {/* ================= STEP 2: GOAL OBJECTIVE & INTAKE ================= */}
         {step === 2 && (
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-xs">
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-7 sm:p-9 shadow-xs">
             
             <div className="mb-5">
               <h2 className="text-base sm:text-lg font-black text-slate-900 leading-tight">
@@ -509,14 +499,13 @@ function NewGoalForm() {
         )}
 
       </main>
-      </div>
     </div>
   );
 }
 
 export default function NewGoalPage() {
   return (
-    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-[#F8F9FD] text-slate-500 font-sans text-xs">Loading Quest Wizard...</div>}>
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-[#FAFBFD] text-slate-500 font-sans text-xs">Loading Quest Wizard...</div>}>
       <NewGoalForm />
     </Suspense>
   );
