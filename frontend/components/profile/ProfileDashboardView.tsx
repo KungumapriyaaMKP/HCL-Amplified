@@ -239,14 +239,14 @@ export function ProfileDashboardView({
                   </div>
                 </div>
 
-                {/* Exact 3D Student Pixar Character */}
-                <div className="shrink-0 self-end sm:self-center pr-2">
+                {/* Exact 3D Student Pixar Character (Ultra HD) */}
+                <div className="shrink-0 self-end sm:self-center pr-1">
                   <Image
                     src="/images/profile/student_avatar.png"
                     alt="Learner Avatar 3D"
-                    width={130}
-                    height={130}
-                    className="object-contain drop-shadow-md select-none"
+                    width={150}
+                    height={150}
+                    className="w-32 h-32 sm:w-36 sm:h-36 object-contain rounded-xs drop-shadow-md select-none"
                     unoptimized
                   />
                 </div>
