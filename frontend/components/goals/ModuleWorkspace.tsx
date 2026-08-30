@@ -518,11 +518,11 @@ export function ModuleWorkspace(props: Props) {
             </div>
 
             {/* FINAL DESTINATION: 3D Locked Treasure Chest */}
-            <div className="relative flex flex-col items-center z-20 group cursor-pointer mt-1">
+            <div className="relative flex flex-col items-center z-20 group cursor-pointer mt-2">
               <div className="relative flex flex-col items-center">
-                <div className="absolute -bottom-4 w-44 h-12 rounded-full bg-slate-900/30 blur-lg" />
+                <div className="absolute -bottom-6 w-56 h-16 rounded-full bg-slate-900/30 blur-xl" />
                 
-                <div className="relative h-32 w-32 drop-shadow-[0_16px_32px_rgba(30,41,59,0.5)] group-hover:scale-105 transition-transform">
+                <div className="relative h-44 w-44 sm:h-52 sm:w-52 drop-shadow-[0_20px_40px_rgba(30,41,59,0.6)] group-hover:scale-105 transition-transform">
                   <Image
                     src="/images/journey/treasure_transparent.png"
                     alt="Locked Chest"
@@ -532,18 +532,18 @@ export function ModuleWorkspace(props: Props) {
                   />
                   {!props.proctoredAlreadyTaken && (
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="h-10 w-10 rounded-full bg-gradient-to-b from-slate-800 to-slate-950 border-2 border-slate-300 flex items-center justify-center shadow-2xl ring-2 ring-black/20">
-                        <IconLock className="h-5 w-5 text-white stroke-[2.5]" />
+                      <div className="h-12 w-12 rounded-full bg-gradient-to-b from-slate-800 to-slate-950 border-2 border-slate-300 flex items-center justify-center shadow-2xl ring-2 ring-black/20">
+                        <IconLock className="h-6 w-6 text-white stroke-[2.5]" />
                       </div>
                     </div>
                   )}
                 </div>
 
-                <div className="-mt-6 relative flex flex-col items-center">
-                  <div className="w-40 h-8 rounded-full bg-gradient-to-r from-slate-700 via-slate-600 to-slate-700 border-2 border-slate-400 shadow-md flex items-center justify-center">
-                    <div className="w-32 h-4 rounded-full bg-slate-800/60 blur-2xs" />
+                <div className="-mt-8 relative flex flex-col items-center">
+                  <div className="w-48 sm:w-56 h-9 rounded-full bg-gradient-to-r from-slate-700 via-slate-600 to-slate-700 border-2 border-slate-400 shadow-md flex items-center justify-center">
+                    <div className="w-36 h-5 rounded-full bg-slate-800/60 blur-2xs" />
                   </div>
-                  <div className="-mt-4 w-46 h-9 rounded-full bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border-2 border-slate-600 shadow-xl" />
+                  <div className="-mt-5 w-54 sm:w-64 h-10 rounded-full bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border-2 border-slate-600 shadow-xl" />
                 </div>
               </div>
             </div>
