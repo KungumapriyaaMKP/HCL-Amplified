@@ -38,12 +38,19 @@ export async function POST(req: NextRequest) {
       if (mimeType !== "application/pdf" && !mimeType.startsWith("text/")) {
         return jsonError("Only PDF or plain text resumes are supported");
       }
-      const buffer = Buffer.from(await file.arrayBuffer());
-      resumeText = await extractResumeText(buffer, mimeType);
+      try {
+        const buffer = Buffer.from(await file.arrayBuffer());
+        resumeText = await extractResumeText(buffer, mimeType);
+      } catch (err) {
+        console.error("Resume parsing error:", err);
+      }
     }
 
     if (!resumeText && !currentRole && !careerGoal && yearsExperience == null) {
-      return jsonError("Provide a resume file or answer at least one question");
+      return jsonError(
+        "Could not extract readable text from the uploaded document. Please fill in your Current Role or Career Goal below.",
+        400
+      );
     }
 
     const extraction = await chatJson<Extraction>(
@@ -51,9 +58,11 @@ export async function POST(req: NextRequest) {
       { temperature: 0.3, maxTokens: 1500 },
     );
 
+    const cleanResumeText = resumeText ? resumeText.replace(/[\x00\u0000]/g, "").trim() : null;
+
     await db
       .update(profiles)
-      .set({ resumeText, resumeProfile: extraction })
+      .set({ resumeText: cleanResumeText, resumeProfile: extraction })
       .where(eq(profiles.userId, user.id));
 
     // Seed skill_mastery from the resume - but only for skills this learner
@@ -61,7 +70,8 @@ export async function POST(req: NextRequest) {
     // the weakest signal in the app (stated < resume < diagnostic <
     // practice < proctored); it must never overwrite anything stronger,
     // and shouldn't even overwrite an equally-weak self-reported value.
-    const validSkillIds = extraction.skillMastery.filter((s) => SKILLS_BY_ID.has(s.skillId)).map((s) => s.skillId);
+    const skillList = extraction.skillMastery ?? [];
+    const validSkillIds = skillList.filter((s) => SKILLS_BY_ID.has(s.skillId)).map((s) => s.skillId);
     let seededCount = 0;
     if (validSkillIds.length > 0) {
       const existing = await db
@@ -70,7 +80,7 @@ export async function POST(req: NextRequest) {
         .where(and(eq(skillMastery.userId, user.id), inArray(skillMastery.skillId, validSkillIds)));
       const existingIds = new Set(existing.map((r) => r.skillId));
 
-      for (const s of extraction.skillMastery) {
+      for (const s of skillList) {
         if (!SKILLS_BY_ID.has(s.skillId) || existingIds.has(s.skillId)) continue;
         await db.insert(skillMastery).values({
           userId: user.id,

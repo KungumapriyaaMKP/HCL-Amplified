@@ -64,7 +64,7 @@ export function computePoincareLayout(
   }
 
   // 3. Define radius for each depth level (concentric horizons)
-  // depth 0: 0.22, depth 1: 0.46, depth 2: 0.68, depth 3+: 0.86
+  // depth 0: 0.24, depth 1: 0.48, depth 2: 0.70, depth 3+: 0.86
   const depthRadii = [0.24, 0.48, 0.70, 0.86];
 
   const poincareNodes: PoincareNode[] = [];

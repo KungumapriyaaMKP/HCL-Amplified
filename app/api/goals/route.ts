@@ -43,6 +43,7 @@ export async function POST(req: NextRequest) {
     if (!DOMAINS.some((d) => d.id === domain)) return jsonError("Invalid domain");
     if (!TRACK_PACES.some((t) => t.id === trackPace)) return jsonError("Invalid track pace");
     if (!goalText || goalText.trim().length < 3) return jsonError("Describe your goal in a bit more detail");
+    if (goalText.length > 500) return jsonError("Goal description must be 500 characters or fewer");
 
     const [goal] = await db
       .insert(goals)

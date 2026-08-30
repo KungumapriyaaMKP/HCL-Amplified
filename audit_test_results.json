@@ -1,0 +1,258 @@
+[
+  {
+    "suite": "Compiler",
+    "name": "Valid JavaScript execution",
+    "passed": true,
+    "route": "/api/compiler/run",
+    "details": {
+      "stdout": "Math output: 4\n",
+      "stderr": "",
+      "exitCode": 0
+    }
+  },
+  {
+    "suite": "Compiler",
+    "name": "Valid Python execution",
+    "passed": true,
+    "route": "/api/compiler/run",
+    "details": {
+      "stdout": "Python output: 9\r\n",
+      "stderr": "",
+      "exitCode": 0
+    }
+  },
+  {
+    "suite": "Compiler",
+    "name": "Infinite loop timeout protection",
+    "passed": true,
+    "route": "/api/compiler/run",
+    "details": {
+      "stdout": "",
+      "stderr": "\n[Execution timed out after 8s]",
+      "exitCode": null
+    }
+  },
+  {
+    "suite": "Compiler",
+    "name": "Syntax error capture",
+    "passed": true,
+    "route": "/api/compiler/run",
+    "details": {
+      "stdout": "",
+      "stderr": "C:\\Users\\JAIADH~1\\AppData\\Local\\Temp\\pathwise-run-OaWsWv\\main.js:1\r\nconst x = ;\r\n          ^\r\n\r\nSyntaxError: Unexpected token ';'\r\n    at wrapSafe (node:internal/modules/cjs/loader:1691:18)\r\n    at Module._compile (node:internal/modules/cjs/loader:1734:20)\r\n    at Object..js (node:internal/modules/cjs/loader:1893:10)\r\n    at Module.load (node:internal/modules/cjs/loader:1480:32)\r\n    at Module._load (node:internal/modules/cjs/loader:1299:12)\r\n    at TracingChannel.traceSync (node:diagnostics_channel:328:14)\r\n    at wrapModuleLoad (node:internal/modules/cjs/loader:244:24)\r\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)\r\n    at node:internal/main/run_main_module:33:47\r\n\r\nNode.js v24.11.0\r\n",
+      "exitCode": 1
+    }
+  },
+  {
+    "suite": "Compiler",
+    "name": "Unsupported language rejection",
+    "passed": true,
+    "route": "/api/compiler/run",
+    "details": "Unsupported language for the practice compiler: cobol"
+  },
+  {
+    "suite": "Spaced Repetition",
+    "name": "SM-2 'again' grade resets reps and interval to 1 day",
+    "passed": true,
+    "route": "lib/review.ts",
+    "details": {
+      "intervalDays": 1,
+      "ease": 2.3,
+      "reps": 0,
+      "dueAt": "2026-08-30T10:40:20.594Z"
+    }
+  },
+  {
+    "suite": "Spaced Repetition",
+    "name": "SM-2 'good' grade advances interval according to ease factor",
+    "passed": true,
+    "route": "lib/review.ts",
+    "details": {
+      "intervalDays": 15,
+      "ease": 2.5,
+      "reps": 3,
+      "dueAt": "2026-09-13T10:40:20.594Z"
+    }
+  },
+  {
+    "suite": "Resilience",
+    "name": "Deterministic static question bank returns verified MCQs for offline degraded mode",
+    "passed": true,
+    "route": "data/reviewQuestions.ts",
+    "details": {
+      "count": 2
+    }
+  },
+  {
+    "suite": "HTTP Routing",
+    "name": "GET /",
+    "passed": true,
+    "route": "/",
+    "details": {
+      "status": 200
+    }
+  },
+  {
+    "suite": "HTTP Routing",
+    "name": "GET /login",
+    "passed": true,
+    "route": "/login",
+    "details": {
+      "status": 200
+    }
+  },
+  {
+    "suite": "HTTP Routing",
+    "name": "GET /signup",
+    "passed": true,
+    "route": "/signup",
+    "details": {
+      "status": 200
+    }
+  },
+  {
+    "suite": "HTTP Routing",
+    "name": "GET /dashboard (Graceful Demo Fallback)",
+    "passed": true,
+    "route": "/dashboard",
+    "details": {
+      "status": 200
+    }
+  },
+  {
+    "suite": "HTTP Routing",
+    "name": "GET /leaderboard",
+    "passed": true,
+    "route": "/leaderboard",
+    "details": {
+      "status": 200
+    }
+  },
+  {
+    "suite": "HTTP Routing",
+    "name": "GET /community",
+    "passed": true,
+    "route": "/community",
+    "details": {
+      "status": 200
+    }
+  },
+  {
+    "suite": "HTTP Routing",
+    "name": "GET /community/web-dev (Auth Guard Behavior)",
+    "passed": true,
+    "category": "AUTH",
+    "route": "/community/[domain]",
+    "details": {
+      "status": 200
+    }
+  },
+  {
+    "suite": "Security & AuthZ",
+    "name": "POST /api/goals rejects unauthenticated requests with 401",
+    "passed": true,
+    "route": "/api/goals",
+    "details": {
+      "status": 401,
+      "body": {
+        "error": "Not authenticated"
+      }
+    }
+  },
+  {
+    "suite": "Security & Input Validation",
+    "name": "POST /api/auth/signup rejects empty fields",
+    "passed": true,
+    "route": "/api/auth/signup",
+    "details": {
+      "status": 400,
+      "body": {
+        "error": "Email and password are required"
+      }
+    }
+  },
+  {
+    "suite": "Security & Input Validation",
+    "name": "POST /api/auth/signup handles special chars & injection payloads safely",
+    "passed": true,
+    "route": "/api/auth/signup",
+    "details": {
+      "status": 200,
+      "body": {
+        "ok": true
+      }
+    }
+  },
+  {
+    "suite": "Security & Input Validation",
+    "name": "GET /api/community/[domain] rejects invalid domain slug",
+    "passed": true,
+    "route": "/api/community/[domain]",
+    "details": {
+      "status": 401,
+      "body": {
+        "error": "Not authenticated"
+      }
+    }
+  },
+  {
+    "suite": "API Integration",
+    "name": "GET /api/profile endpoint exists and enforces auth",
+    "passed": true,
+    "route": "/api/profile",
+    "details": {
+      "status": 401,
+      "body": {
+        "error": "Not authenticated"
+      }
+    }
+  },
+  {
+    "suite": "API Integration",
+    "name": "POST /api/modules/[id]/proctored/generate exists and handles requests safely",
+    "passed": true,
+    "route": "/api/modules/[id]/proctored/generate",
+    "details": {
+      "status": 401,
+      "body": {
+        "error": "Not authenticated"
+      }
+    }
+  },
+  {
+    "suite": "Productivity",
+    "name": "GET /api/tasks enforces authentication safely",
+    "passed": true,
+    "route": "/api/tasks",
+    "details": {
+      "status": 401
+    }
+  },
+  {
+    "suite": "Productivity",
+    "name": "POST /api/focus/start validates auth and creates sessions",
+    "passed": true,
+    "route": "/api/focus/start",
+    "details": {
+      "status": 401
+    }
+  },
+  {
+    "suite": "Productivity",
+    "name": "GET /api/review/today serves spaced repetition queue",
+    "passed": true,
+    "route": "/api/review/today",
+    "details": {
+      "status": 401
+    }
+  },
+  {
+    "suite": "Productivity",
+    "name": "GET /api/plan/today generates daily unified agenda",
+    "passed": true,
+    "route": "/api/plan/today",
+    "details": {
+      "status": 401
+    }
+  }
+]

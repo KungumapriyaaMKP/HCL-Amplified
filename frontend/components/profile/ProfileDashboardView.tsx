@@ -379,7 +379,7 @@ export function ProfileDashboardView({
                 </p>
 
                 <Link
-                  href="/profile#resume"
+                  href="/onboarding/resume?next=/profile"
                   className="mt-3 inline-flex items-center gap-1 text-xs font-extrabold text-[#2563EB] hover:underline"
                 >
                   <span>UPLOAD RESUME</span>

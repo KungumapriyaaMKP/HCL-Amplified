@@ -11,8 +11,9 @@ import {
   userBadges,
   badges,
   profiles,
+  focusSessions,
 } from "@/db/schema";
-import { eq, desc, asc } from "drizzle-orm";
+import { eq, desc, asc, and } from "drizzle-orm";
 import { getTotalXp, levelForXp, levelTitle } from "@/lib/gamification";
 import { checkDisengagement } from "@/lib/adapt";
 import { computeSkillDecay } from "@/lib/decay";
@@ -31,6 +32,7 @@ export async function getDashboardData(userId: string) {
     masteryRows,
     activity,
     adaptations,
+    focusRows,
   ] = await Promise.all([
     db.select().from(profiles).where(eq(profiles.userId, userId)),
     getTotalXp(userId),
@@ -63,6 +65,10 @@ export async function getDashboardData(userId: string) {
       .where(eq(adaptationLog.userId, userId))
       .orderBy(desc(adaptationLog.createdAt))
       .limit(15),
+    db
+      .select()
+      .from(focusSessions)
+      .where(and(eq(focusSessions.userId, userId), eq(focusSessions.completed, true))),
   ]);
 
   const [profile] = profileResult;
@@ -122,6 +128,19 @@ export async function getDashboardData(userId: string) {
     }
   }
 
+  const totalFocusSeconds = focusRows.reduce((acc, row) => acc + (row.actualSeconds || 0), 0);
+  const totalFocusMinutes = Math.round(totalFocusSeconds / 60);
+  const totalFocusBlocks = focusRows.length;
+  const averageIntegrity =
+    focusRows.length > 0
+      ? Math.round(
+          focusRows.reduce(
+            (acc, row) => acc + Math.max(0, 100 - (row.interruptions || 0) * 5),
+            0
+          ) / focusRows.length
+        )
+      : 100;
+
   return {
     profile,
     disengagement,
@@ -131,8 +150,13 @@ export async function getDashboardData(userId: string) {
       levelTitle: levelTitle(level.level),
       xpIntoLevel: level.xpIntoLevel,
       xpForNextLevel: level.xpForNextLevel,
-      streak: streak ?? { currentStreak: 0, longestStreak: 0 },
+      streak: streak ?? { currentStreak: 0, longestStreak: 0, freezes: 0 },
       badges: earnedBadges,
+    },
+    productivity: {
+      totalFocusMinutes,
+      totalFocusBlocks,
+      averageIntegrity,
     },
     goals: goalSummaries,
     mastery: masteryRows,

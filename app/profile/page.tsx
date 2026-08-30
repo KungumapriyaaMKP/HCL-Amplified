@@ -37,8 +37,13 @@ export default async function ProfilePage() {
         levelTitle: "Newcomer",
         xpIntoLevel: 0,
         xpForNextLevel: 50,
-        streak: { userId: "mock-user", currentStreak: 0, longestStreak: 0, lastActiveDate: null },
+        streak: { userId: "mock-user", currentStreak: 0, longestStreak: 0, lastActiveDate: null, freezes: 0 },
         badges: [],
+      },
+      productivity: {
+        totalFocusMinutes: 0,
+        totalFocusBlocks: 0,
+        averageIntegrity: 100,
       },
       goals: [
         { id: "g1", title: "Master Machine Learning", domain: "ai-ml", trackPace: "balanced", userId: "mock-user", createdAt: new Date(), updatedAt: new Date(), pathId: "p1", totalModules: 12, completedModules: 2, nextAction: null },

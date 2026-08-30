@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { PracticeQuiz } from "@/frontend/components/goals/PracticeQuiz";
+import { FocusTimer } from "@/frontend/components/goals/FocusTimer";
 import {
   IconArrowLeft,
   IconArrowRight,
@@ -83,8 +84,8 @@ export function ModuleWorkspace(props: Props) {
 
       <div className="relative z-10 w-full max-w-5xl space-y-5">
         
-        {/* Top Back Navigation Link */}
-        <div>
+        {/* Top Back Navigation Link & Focus Timer */}
+        <div className="flex items-center justify-between">
           <Link
             href={`/goals/${props.goalId}`}
             className="inline-flex items-center gap-1.5 text-xs font-bold text-purple-600 hover:text-purple-700 transition-colors group"
@@ -92,6 +93,7 @@ export function ModuleWorkspace(props: Props) {
             <IconArrowLeft className="h-4 w-4 group-hover:-translate-x-0.5 transition-transform" />
             <span>Back to Roadmap</span>
           </Link>
+          <FocusTimer moduleId={props.moduleId} skillName={props.skillName} compact />
         </div>
 
         {/* Main 2-Column Stage (Left 3D Stepper Trail + Right Cards) */}

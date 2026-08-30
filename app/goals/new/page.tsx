@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import React, { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { AppSidebar } from "@/frontend/components/layout/AppSidebar";
 import { TRACK_PACES } from "@/data/domains";
 import {
@@ -67,14 +67,23 @@ const DOMAIN_OPTIONS: DomainOption[] = [
   },
 ];
 
-export default function NewGoalPage() {
+function NewGoalForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const domainQuery = searchParams?.get("domain");
+
   const [step, setStep] = useState(0);
   const [domain, setDomain] = useState<string>("web-dev");
   const [trackPace, setTrackPace] = useState<string>("balanced");
   const [goalText, setGoalText] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (domainQuery && DOMAIN_OPTIONS.some((d) => d.id === domainQuery)) {
+      setDomain(domainQuery);
+    }
+  }, [domainQuery]);
 
   async function createGoal() {
     setLoading(true);
@@ -359,5 +368,13 @@ export default function NewGoalPage() {
       </main>
       </div>
     </div>
+  );
+}
+
+export default function NewGoalPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-[#F8F9FD] text-slate-500 font-sans text-xs">Loading Quest Wizard...</div>}>
+      <NewGoalForm />
+    </Suspense>
   );
 }

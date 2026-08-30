@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { requireUser } from "@/lib/auth";
+import { requireUserOrRedirect } from "@/lib/auth";
 import { isValidDomain } from "@/lib/community";
 import { db } from "@/lib/db";
 import { profiles } from "@/db/schema";
@@ -15,15 +15,16 @@ export default async function CommunityDomainPage({ params }: { params: Promise<
   const { domain } = await params;
   if (!isValidDomain(domain)) redirect("/community");
 
-  const user = await requireUser();
+  const user = await requireUserOrRedirect(`/community/${domain}`);
   const [profile] = await db.select().from(profiles).where(eq(profiles.userId, user.id));
+  const displayName = profile?.displayName || "yuvi";
   const domainMeta = DOMAINS.find((d) => d.id === domain)!;
 
   return (
     <div className="flex min-h-screen bg-[#F8F9FD] text-slate-900 font-sans">
       {/* 1. Left Sidebar Navigation */}
       <AppSidebar
-        displayName={profile?.displayName || "yuvi"}
+        displayName={displayName}
         level={1}
         levelTitle="Newcomer"
       />

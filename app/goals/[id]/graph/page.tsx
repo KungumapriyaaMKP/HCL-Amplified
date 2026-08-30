@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { requireUser } from "@/lib/auth";
+import { requireUserOrRedirect } from "@/lib/auth";
 import { getGoalDetail } from "@/lib/goalData";
 import { getMasteryMap } from "@/lib/adapt";
 import { domainSkillGraph, resolveGoalSkills, requiredSkillSet } from "@/lib/skillGraph";
@@ -15,7 +15,7 @@ import { IconArrowLeft, IconLayersLinked } from "@tabler/icons-react";
 
 export default async function SkillGraphPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const user = await requireUser();
+  const user = await requireUserOrRedirect(`/goals/${id}/graph`);
   const detail = await getGoalDetail(user.id, id);
   if (!detail) redirect("/dashboard");
 

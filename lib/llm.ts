@@ -19,32 +19,57 @@ export async function chatComplete(
   const openRouterKey = process.env.OPENROUTER_API_KEY;
 
   if (groqKey) {
-    const model = process.env.GROQ_MODEL || "gpt-oss-120b";
-    const res = await fetch(GROQ_URL, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${groqKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model,
-        messages,
-        temperature: opts.temperature ?? 0.5,
-        max_tokens: opts.maxTokens ?? 1800,
-      }),
-    });
+    const candidateModels = Array.from(
+      new Set([
+        process.env.GROQ_MODEL || "qwen/qwen3.8-27b",
+        "qwen/qwen3.8-27b",
+        "openai/gpt-oss-120b",
+        "openai/gpt-oss-20b",
+        "qwen/qwen3.6-27b",
+      ])
+    );
 
-    if (!res.ok) {
-      const text = await res.text();
-      throw new LlmError(`Groq request failed (${res.status}): ${text.slice(0, 500)}`);
+    let lastError: string | null = null;
+    for (const model of candidateModels) {
+      try {
+        const res = await fetch(GROQ_URL, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${groqKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model,
+            messages,
+            temperature: opts.temperature ?? 0.5,
+            max_tokens: opts.maxTokens ?? 1800,
+          }),
+        });
+
+        if (!res.ok) {
+          const text = await res.text();
+          lastError = `Groq (${model}) failed (${res.status}): ${text.slice(0, 500)}`;
+          // If rate limit / TPM limit exceeded or model not found, try next candidate
+          if (res.status === 413 || res.status === 429 || res.status === 404) {
+            console.warn(`Groq model ${model} rate-limited or unavailable (${res.status}), trying fallback...`);
+            continue;
+          }
+          throw new LlmError(lastError);
+        }
+
+        const data = await res.json();
+        const content = data?.choices?.[0]?.message?.content;
+        if (typeof content === "string") {
+          return content;
+        }
+      } catch (err) {
+        if (err instanceof LlmError && !err.message.includes("413") && !err.message.includes("429")) {
+          throw err;
+        }
+      }
     }
 
-    const data = await res.json();
-    const content = data?.choices?.[0]?.message?.content;
-    if (typeof content !== "string") {
-      throw new LlmError("Groq returned no message content");
-    }
-    return content;
+    throw new LlmError(lastError || "Groq returned no message content across all models");
   }
 
   if (openRouterKey) {

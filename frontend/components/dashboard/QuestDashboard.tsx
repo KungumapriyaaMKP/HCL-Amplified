@@ -4,7 +4,6 @@ import React from "react";
 import Link from "next/link";
 import {
   MountainHeroLandscape,
-  CircularProgress40,
 } from "@/frontend/components/dashboard/Illustrations";
 import { InteractiveSkillMapTree } from "@/frontend/components/dashboard/InteractiveSkillMapTree";
 import {
@@ -15,11 +14,8 @@ import {
 import {
   IconCheck,
   IconBrain,
-  IconChartBar,
   IconArrowRight,
-  IconChevronRight,
   IconSparkles,
-  IconCompass,
   IconCode,
 } from "@tabler/icons-react";
 
@@ -57,8 +53,12 @@ interface QuestDashboardProps {
   xpIntoLevel?: number;
   xpForNextLevel?: number;
   streak?: number;
+  freezes?: number;
   badgeCount?: number;
   goals?: QuestDashboardGoal[];
+  activeGoalId?: string;
+  activeAiGoalId?: string;
+  activeDataScienceGoalId?: string;
 }
 
 export function QuestDashboard({
@@ -69,8 +69,12 @@ export function QuestDashboard({
   xpIntoLevel = 0,
   xpForNextLevel = 50,
   streak = 0,
+  freezes = 0,
   badgeCount = 0,
   goals = [],
+  activeGoalId,
+  activeAiGoalId,
+  activeDataScienceGoalId,
 }: QuestDashboardProps) {
   const hasGoals = goals.length > 0;
   const activeGoal = hasGoals ? goals[0] : null;
@@ -81,6 +85,9 @@ export function QuestDashboard({
     ? Math.round((activeGoal.completedModules / (activeGoal.totalModules || 1)) * 100)
     : 0;
 
+  const aiGoalLink = activeAiGoalId ? `/goals/${activeAiGoalId}` : (activeGoalId ? `/goals/${activeGoalId}` : "/goals/new");
+  const webGoalLink = activeGoalId ? `/goals/${activeGoalId}` : "/goals/new";
+
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 max-w-[1440px]">
       
@@ -88,7 +95,7 @@ export function QuestDashboard({
       <div className="space-y-6 lg:col-span-8">
         
         {/* 1. CURRENT QUEST HERO CARD */}
-        <div className="relative overflow-hidden rounded-lg border border-slate-200/70 bg-gradient-to-r from-[#FAF8FE] via-[#F5F1FD] to-[#EDE5FD] p-7 sm:p-8 shadow-sm min-h-[220px] flex flex-col justify-between">
+        <div className="relative overflow-hidden rounded-sm border border-slate-200/90 bg-gradient-to-r from-[#FAF8FE] via-[#F5F1FD] to-[#EDE5FD] p-7 sm:p-8 shadow-2xs min-h-[220px] flex flex-col justify-between">
           
           {/* Vector Mountain Landscape Illustration Layer */}
           <MountainHeroLandscape />
@@ -101,11 +108,11 @@ export function QuestDashboard({
                 <IconSparkles className="w-3.5 h-3.5" />
               </div>
               <h2 className="mt-1 text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                {hasGoals ? (activeGoal?.targetRole || "Master Learning Path") : "Start Your First Quest"}
+                {hasGoals ? (activeGoal?.goalText || activeGoal?.targetRole || "Master Learning Path") : "Start Your First Quest"}
               </h2>
               <p className="mt-1 text-xs sm:text-sm font-normal text-slate-600 max-w-md">
                 {hasGoals
-                  ? "Build a strong foundation and complete modules to earn XP."
+                  ? "Build a strong foundation and complete modules to earn XP and rank up."
                   : "Set your target role or topic, and let AI build your personalized adaptive learning journey."}
               </p>
             </div>
@@ -180,11 +187,11 @@ export function QuestDashboard({
                           />
                         )}
                         <div
-                          className={`flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-md text-xs font-bold transition-all ${
+                          className={`flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-xs text-xs font-bold transition-all ${
                             isCompleted
-                              ? "bg-emerald-500 text-white shadow-sm"
+                              ? "bg-emerald-500 text-white shadow-xs"
                               : isCurrent
-                              ? "bg-[#7C3AED] text-white shadow-md ring-4 ring-purple-100"
+                              ? "bg-[#7C3AED] text-white shadow-xs ring-4 ring-purple-100"
                               : "border border-slate-300 bg-white text-slate-400"
                           }`}
                         >
@@ -195,15 +202,15 @@ export function QuestDashboard({
                   })
                 ) : (
                   <>
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white border border-purple-200 text-xs font-bold text-[#6D28D9] shadow-2xs">
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xs bg-white border border-purple-200 text-xs font-bold text-[#6D28D9] shadow-2xs">
                       <span>1. Choose Goal</span>
                     </div>
                     <div className="h-[2px] w-4 bg-purple-300" />
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white/80 border border-slate-200 text-xs font-medium text-slate-600">
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xs bg-white/80 border border-slate-200 text-xs font-medium text-slate-600">
                       <span>2. AI Diagnostic</span>
                     </div>
                     <div className="h-[2px] w-4 bg-slate-300" />
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white/80 border border-slate-200 text-xs font-medium text-slate-600">
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xs bg-white/80 border border-slate-200 text-xs font-medium text-slate-600">
                       <span>3. Level Up</span>
                     </div>
                   </>
@@ -228,7 +235,7 @@ export function QuestDashboard({
             <div>
               <Link
                 href={hasGoals ? `/goals/${activeGoal?.id}` : "/goals/new"}
-                className="inline-flex items-center gap-2 rounded-md bg-gradient-to-r from-[#6D28D9] via-[#7C3AED] to-[#8B5CF6] hover:from-[#5B21B6] hover:to-[#7C3AED] px-6 py-2.5 text-xs sm:text-sm font-bold text-white shadow-[0_6px_20px_rgba(109,40,217,0.35)] transition-all hover:scale-105"
+                className="inline-flex items-center gap-2 rounded-xs bg-gradient-to-r from-[#6D28D9] via-[#7C3AED] to-[#8B5CF6] hover:from-[#5B21B6] hover:to-[#7C3AED] px-6 py-2.5 text-xs sm:text-sm font-bold text-white shadow-xs transition-all hover:scale-[1.02]"
               >
                 <span>{hasGoals ? "Continue Learning" : "Create a Quest"}</span>
                 <IconArrowRight className="h-4 w-4 stroke-[2.5]" />
@@ -278,7 +285,7 @@ export function QuestDashboard({
                 </div>
 
                 <Link
-                  href="/goals/new"
+                  href={aiGoalLink}
                   className="flex h-8 w-8 items-center justify-center rounded-xs bg-slate-50 border border-slate-200 text-slate-700 group-hover:bg-[#6D28D9] group-hover:border-[#6D28D9] group-hover:text-white transition-all shrink-0 shadow-2xs"
                   title="Start Path"
                 >
@@ -315,7 +322,7 @@ export function QuestDashboard({
                 </div>
 
                 <Link
-                  href="/goals/new"
+                  href={webGoalLink}
                   className="flex h-8 w-8 items-center justify-center rounded-xs bg-slate-50 border border-slate-200 text-slate-700 group-hover:bg-[#059669] group-hover:border-[#059669] group-hover:text-white transition-all shrink-0 shadow-2xs"
                   title="Start Path"
                 >

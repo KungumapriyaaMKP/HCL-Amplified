@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { requireUser } from "@/lib/auth";
+import { requireUserOrRedirect } from "@/lib/auth";
 import { getGoalDetail } from "@/lib/goalData";
 import { db } from "@/lib/db";
 import { profiles } from "@/db/schema";
@@ -10,7 +10,7 @@ import { DOMAINS } from "@/data/domains";
 
 export default async function GoalPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const user = await requireUser();
+  const user = await requireUserOrRedirect(`/goals/${id}`);
   const detail = await getGoalDetail(user.id, id);
   if (!detail) redirect("/dashboard");
   if (!detail.path) redirect(`/goals/${id}/setup`);
@@ -25,6 +25,7 @@ export default async function GoalPage({ params }: { params: Promise<{ id: strin
         displayName={profile?.displayName || "Yuvi"}
         level={1}
         levelTitle="Newcomer"
+        activeGoalId={id}
       />
 
       {/* 2. Main 3D Journey Road Map Content with seamless scrolling */}

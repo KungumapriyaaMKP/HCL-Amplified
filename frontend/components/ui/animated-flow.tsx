@@ -215,11 +215,11 @@ export function AnimatedFlow({
 }: AnimatedFlowProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mouseRef = useRef({ x: 0.5, y: 0.5, targetX: 0.5, targetY: 0.5 });
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = React.useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
   const selectedPalette = VARIANT_PALETTES[variant === "custom" ? "blue" : variant]["light"];
 
@@ -295,7 +295,7 @@ export function AnimatedFlow({
     const uColor5 = gl.getUniformLocation(program, "u_color5");
 
     let animId: number;
-    let startTime = performance.now();
+    const startTime = performance.now();
 
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);

@@ -12,8 +12,12 @@ export default async function DashboardPage() {
   let xpIntoLevel = 0;
   let xpForNextLevel = 50;
   let currentStreak = 0;
+  let freezes = 0;
   let badgeCount = 0;
   let goals: any[] = [];
+  let activeGoalId: string | undefined;
+  let activeAiGoalId: string | undefined;
+  let activeDataScienceGoalId: string | undefined;
 
   try {
     const user = await requireUser();
@@ -26,19 +30,27 @@ export default async function DashboardPage() {
     xpIntoLevel = data.gamification.xpIntoLevel ?? 0;
     xpForNextLevel = data.gamification.xpForNextLevel || 50;
     currentStreak = data.gamification.streak?.currentStreak ?? 0;
+    freezes = data.gamification.streak?.freezes ?? 0;
     badgeCount = data.gamification.badges?.length ?? 0;
     goals = data.goals || [];
+
+    if (data.goals && data.goals.length > 0) {
+      activeGoalId = data.goals[0]?.id;
+      activeAiGoalId = data.goals.find((g) => g.domain === "ai-ml")?.id;
+      activeDataScienceGoalId = data.goals.find((g) => g.domain === "data-science")?.id;
+    }
   } catch (_err) {
     // Graceful fallback to default matching screenshot
   }
 
   return (
-    <div className="flex min-h-screen bg-[#FAFBFD] text-slate-900">
+    <div className="flex min-h-screen bg-[#FAFBFD] text-slate-900 font-sans">
       {/* 1. Left Sidebar Navigation */}
       <AppSidebar
         displayName={displayName}
         level={level}
         levelTitle={levelTitle}
+        activeGoalId={activeGoalId}
       />
 
       {/* 2. Main Scrollable Dashboard Content */}
@@ -64,8 +76,12 @@ export default async function DashboardPage() {
             xpIntoLevel={xpIntoLevel}
             xpForNextLevel={xpForNextLevel}
             streak={currentStreak}
+            freezes={freezes}
             badgeCount={badgeCount}
             goals={goals}
+            activeGoalId={activeGoalId}
+            activeAiGoalId={activeAiGoalId}
+            activeDataScienceGoalId={activeDataScienceGoalId}
           />
         </main>
       </div>

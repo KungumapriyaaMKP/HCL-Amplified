@@ -7,4 +7,7 @@ export const BADGES = [
   { id: "streak_7", name: "7-Day Streak", description: "Active for 7 days in a row.", icon: "streak_7" },
   { id: "code_runner", name: "Code Runner", description: "Ran your first practice program in the compiler.", icon: "code_runner" },
   { id: "comeback", name: "Comeback", description: "Recovered mastery after a rough proctored test via remediation.", icon: "comeback" },
+  { id: "deep_work", name: "Deep Work", description: "Completed 5 Pomodoro focus sessions.", icon: "deep_work" },
+  { id: "review_rigor", name: "Review Rigor", description: "Completed 10 spaced repetition reviews.", icon: "review_rigor" },
+  { id: "focus_master", name: "Focus Master", description: "Completed a 25-minute focus session with 100% focus integrity.", icon: "focus_master" },
 ] as const;
