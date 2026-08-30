@@ -170,76 +170,236 @@ export function DedicatedPracticeWorkspace({
         {!loading && !submitting && result && (
           <div className="space-y-6">
             
-            {/* Top Score HUD Card */}
-            <div className="rounded-none border border-slate-200 bg-white p-6 sm:p-8 text-center shadow-xs space-y-4 relative overflow-hidden">
-              <div className="inline-flex h-20 w-20 items-center justify-center rounded-none bg-gradient-to-tr from-[#6D28D9] to-[#06B6D4] text-white font-black text-3xl shadow-lg shadow-purple-500/20">
-                {result.score}%
+            {/* Top Score HUD Card (100% Match to Design Image) */}
+            <div className="rounded-3xl border border-purple-100/90 bg-gradient-to-b from-white to-[#FAF9FF] p-6 sm:p-10 text-center shadow-xl shadow-purple-500/5 space-y-6 relative overflow-hidden backdrop-blur-md">
+              {/* Decorative Corner Dot Grid Matrices */}
+              <div className="absolute top-6 left-6 pointer-events-none opacity-30 select-none">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="#818CF8">
+                  <circle cx="4" cy="4" r="1.5" /><circle cx="15" cy="4" r="1.5" /><circle cx="26" cy="4" r="1.5" /><circle cx="36" cy="4" r="1.5" />
+                  <circle cx="4" cy="15" r="1.5" /><circle cx="15" cy="15" r="1.5" /><circle cx="26" cy="15" r="1.5" /><circle cx="36" cy="15" r="1.5" />
+                  <circle cx="4" cy="26" r="1.5" /><circle cx="15" cy="26" r="1.5" /><circle cx="26" cy="26" r="1.5" /><circle cx="36" cy="26" r="1.5" />
+                  <circle cx="4" cy="36" r="1.5" /><circle cx="15" cy="36" r="1.5" /><circle cx="26" cy="36" r="1.5" /><circle cx="36" cy="36" r="1.5" />
+                </svg>
               </div>
 
-              <div>
-                <span className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#7C3AED]">
+              <div className="absolute bottom-6 right-6 pointer-events-none opacity-30 select-none">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="#818CF8">
+                  <circle cx="4" cy="4" r="1.5" /><circle cx="15" cy="4" r="1.5" /><circle cx="26" cy="4" r="1.5" /><circle cx="36" cy="4" r="1.5" />
+                  <circle cx="4" cy="15" r="1.5" /><circle cx="15" cy="15" r="1.5" /><circle cx="26" cy="15" r="1.5" /><circle cx="36" cy="15" r="1.5" />
+                  <circle cx="4" cy="26" r="1.5" /><circle cx="15" cy="26" r="1.5" /><circle cx="26" cy="26" r="1.5" /><circle cx="36" cy="26" r="1.5" />
+                  <circle cx="4" cy="36" r="1.5" /><circle cx="15" cy="36" r="1.5" /><circle cx="26" cy="36" r="1.5" /><circle cx="36" cy="36" r="1.5" />
+                </svg>
+              </div>
+
+              {/* Decorative Concentric Corner Ring Accents */}
+              <div className="absolute -bottom-16 -left-16 w-36 h-36 rounded-full border border-purple-200/50 pointer-events-none" />
+              <div className="absolute -top-16 -right-16 w-36 h-36 rounded-full border border-purple-200/50 pointer-events-none" />
+
+              {/* Laurel Wreath & Circular Score Gauge HUD */}
+              <div className="relative flex items-center justify-center pt-2">
+                <svg width="240" height="150" viewBox="0 0 240 150" fill="none" className="overflow-visible select-none">
+                  <defs>
+                    <linearGradient id="scoreGaugeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#818CF8" />
+                      <stop offset="50%" stopColor="#6366F1" />
+                      <stop offset="100%" stopColor="#06B6D4" />
+                    </linearGradient>
+
+                    <filter id="gaugeShadow" x="-20%" y="-20%" width="140%" height="140%">
+                      <feDropShadow dx="0" dy="4" stdDeviation="6" floodColor="#6366F1" floodOpacity="0.18" />
+                    </filter>
+                  </defs>
+
+                  {/* Floating Confetti Accents around the Laurel */}
+                  <rect x="36" y="24" width="7" height="4" rx="1" fill="#3B82F6" transform="rotate(25 36 24)" />
+                  <rect x="30" y="50" width="5" height="5" rx="1" fill="#8B5CF6" transform="rotate(-15 30 50)" />
+                  <circle cx="50" cy="32" r="2" fill="#06B6D4" />
+                  <path d="M 58 42 L 60 45 L 63 46 L 60 47 L 58 50 L 57 47 L 54 46 L 57 45 Z" fill="#F59E0B" />
+                  <rect x="68" y="28" width="6" height="3" rx="0.8" fill="#EC4899" transform="rotate(45 68 28)" />
+                  
+                  <rect x="200" y="24" width="7" height="4" rx="1" fill="#06B6D4" transform="rotate(-20 200 24)" />
+                  <rect x="186" y="32" width="6" height="4" rx="1" fill="#F59E0B" transform="rotate(35 186 32)" />
+                  <circle cx="210" cy="48" r="2" fill="#3B82F6" />
+                  <path d="M 180 44 L 181.5 46.5 L 184 47 L 181.5 48 L 180 50.5 L 179 48 L 176.5 47 L 179 46.5 Z" fill="#A855F7" />
+                  <rect x="194" y="58" width="6" height="6" rx="1" fill="#8B5CF6" transform="rotate(15 194 58)" />
+
+                  {/* Symmetrical Laurel Wreath Branches */}
+                  {/* Left Branch */}
+                  <g opacity="0.85">
+                    <path d="M 72 108 C 62 88 65 58 84 42" stroke="#DDD6FE" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+                    <ellipse cx="64" cy="98" rx="7" ry="3.5" fill="#E0E7FF" transform="rotate(-35 64 98)" />
+                    <ellipse cx="72" cy="92" rx="7" ry="3.5" fill="#C7D2FE" transform="rotate(-15 72 92)" />
+                    <ellipse cx="60" cy="80" rx="7" ry="3.5" fill="#E0E7FF" transform="rotate(-40 60 80)" />
+                    <ellipse cx="69" cy="74" rx="7" ry="3.5" fill="#C7D2FE" transform="rotate(-20 69 74)" />
+                    <ellipse cx="64" cy="60" rx="7" ry="3.5" fill="#E0E7FF" transform="rotate(-45 64 60)" />
+                    <ellipse cx="74" cy="54" rx="7" ry="3.5" fill="#C7D2FE" transform="rotate(-25 74 54)" />
+                    <ellipse cx="76" cy="42" rx="6.5" ry="3" fill="#A5B4FC" transform="rotate(-50 76 42)" />
+                    <ellipse cx="85" cy="38" rx="6.5" ry="3" fill="#C7D2FE" transform="rotate(-30 85 38)" />
+                  </g>
+
+                  {/* Right Branch */}
+                  <g opacity="0.85">
+                    <path d="M 168 108 C 178 88 175 58 156 42" stroke="#DDD6FE" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+                    <ellipse cx="176" cy="98" rx="7" ry="3.5" fill="#E0E7FF" transform="rotate(35 176 98)" />
+                    <ellipse cx="168" cy="92" rx="7" ry="3.5" fill="#C7D2FE" transform="rotate(15 168 92)" />
+                    <ellipse cx="180" cy="80" rx="7" ry="3.5" fill="#E0E7FF" transform="rotate(40 180 80)" />
+                    <ellipse cx="171" cy="74" rx="7" ry="3.5" fill="#C7D2FE" transform="rotate(20 171 74)" />
+                    <ellipse cx="176" cy="60" rx="7" ry="3.5" fill="#E0E7FF" transform="rotate(45 176 60)" />
+                    <ellipse cx="166" cy="54" rx="7" ry="3.5" fill="#C7D2FE" transform="rotate(25 166 54)" />
+                    <ellipse cx="164" cy="42" rx="6.5" ry="3" fill="#A5B4FC" transform="rotate(50 164 42)" />
+                    <ellipse cx="155" cy="38" rx="6.5" ry="3" fill="#C7D2FE" transform="rotate(30 155 38)" />
+                  </g>
+
+                  {/* Circular Progress Gauge */}
+                  <g filter="url(#gaugeShadow)">
+                    <circle
+                      cx="120"
+                      cy="75"
+                      r="44"
+                      fill="#FFFFFF"
+                      stroke="#F1F5F9"
+                      strokeWidth="8.5"
+                    />
+
+                    <circle
+                      cx="120"
+                      cy="75"
+                      r="44"
+                      fill="none"
+                      stroke="url(#scoreGaugeGrad)"
+                      strokeWidth="8.5"
+                      strokeLinecap="round"
+                      strokeDasharray={`${(result.score / 100) * 276.46} 276.46`}
+                      transform="rotate(-90 120 75)"
+                    />
+                  </g>
+
+                  {/* Center Score Text & Label */}
+                  <text
+                    x="120"
+                    y="72"
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                    fill="#1E1B4B"
+                    fontSize="30"
+                    fontWeight="900"
+                    letterSpacing="-0.5"
+                  >
+                    {result.score}%
+                  </text>
+                  <text
+                    x="120"
+                    y="93"
+                    textAnchor="middle"
+                    fill="#64748B"
+                    fontSize="11"
+                    fontWeight="600"
+                  >
+                    Score
+                  </text>
+                </svg>
+              </div>
+
+              {/* Assessment Completed Pill Label with Divider Lines */}
+              <div className="flex items-center justify-center gap-3 pt-1">
+                <div className="h-[1px] w-12 bg-purple-200" />
+                <span className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#6366F1]">
                   ASSESSMENT COMPLETED
                 </span>
-                <h1 className="text-2xl font-black text-slate-900 tracking-tight mt-1">
+                <div className="h-[1px] w-12 bg-purple-200" />
+              </div>
+
+              <div className="space-y-1.5">
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-[#1E1B4B] tracking-tight">
                   {result.score >= 70 ? "Milestone Accuracy Achieved!" : "Practice Complete • Ready for Review"}
                 </h1>
-                <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto leading-relaxed">
-                  You answered <span className="font-bold text-slate-900">{result.correctCount} of {result.total}</span> questions correctly. Review the explanations below to reinforce your understanding.
+                <p className="text-xs sm:text-sm text-slate-500 max-w-lg mx-auto leading-relaxed">
+                  You answered <span className="font-bold text-[#6366F1]">{result.correctCount} of {result.total}</span> questions correctly. Review the explanations below to reinforce your understanding.
                 </p>
               </div>
 
-              {/* SlideToUnlock Practice Reward Card */}
-              <div className="pt-2 flex justify-center">
+              {/* SlideToUnlock Reward Card with Sparkle Badge & Unlocked Gradient Pill */}
+              <div className="pt-2 flex justify-center w-full">
                 <SlideToUnlock
                   sliderText="Swipe to claim Practice Loot"
-                  className="max-w-md border-purple-200 bg-purple-50/40 text-slate-900 shadow-sm"
+                  className="max-w-xl border-purple-100/90 bg-white/90 shadow-sm"
                   unlockedContent={
-                    <div className="flex items-center justify-between p-3.5 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 text-white rounded-none shadow-md">
-                      <div className="space-y-0.5">
-                        <p className="text-xs font-black">Practice Score Credited! +50 XP Claimed</p>
-                        <p className="text-[10px] text-emerald-100">Step 03 Proctored Exam Unlocked</p>
+                    <div className="w-full flex items-center justify-between p-3 sm:p-3.5 rounded-xl bg-gradient-to-r from-[#6366F1] via-[#06B6D4] to-[#10B981] shadow-lg text-white">
+                      <div className="flex items-center gap-3">
+                        {/* 3D Glowing Hexagon Shield Badge */}
+                        <div className="relative flex items-center justify-center shrink-0">
+                          <svg width="42" height="42" viewBox="0 0 42 42" fill="none" className="drop-shadow-md">
+                            <circle cx="5" cy="9" r="1.5" fill="#FDE047" />
+                            <circle cx="37" cy="8" r="1.5" fill="#FDE047" />
+                            <path d="M 21 3 L 36 11.5 L 36 28.5 L 21 37 L 6 28.5 L 6 11.5 Z" fill="#818CF8" stroke="#FFFFFF" strokeWidth="2.5" strokeLinejoin="round" />
+                            <path d="M 21 7 L 32 13.5 L 32 26.5 L 21 33 L 10 26.5 L 10 13.5 Z" fill="#FFFFFF" opacity="0.25" />
+                            <path d="M 15 21 L 19 25 L 27 16" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        </div>
+
+                        <div className="text-left">
+                          <p className="text-sm font-extrabold text-white tracking-tight leading-snug">
+                            Practice Score Credited! +50 XP Claimed
+                          </p>
+                          <p className="text-[11px] text-cyan-100 font-semibold">
+                            Step 03 Proctored Exam Unlocked
+                          </p>
+                        </div>
                       </div>
-                      <div className="h-8 w-8 rounded-full bg-white text-emerald-700 flex items-center justify-center font-black text-xs shadow-xs">
-                        🛡️
+
+                      {/* Right Lock Button */}
+                      <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-white flex items-center justify-center shadow-md shrink-0">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0D9488" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                        </svg>
                       </div>
                     </div>
                   }
                 >
-                  <div className="text-left">
-                    <h4 className="text-xs font-black text-slate-900">Step 02 Practice Completed</h4>
-                    <p className="text-[10px] text-slate-500">Swipe the slider below to claim your practice milestone bonus</p>
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-xl bg-purple-100/70 border border-purple-200/80 flex items-center justify-center text-purple-600 shadow-2xs shrink-0">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M 12 3 L 14.5 9.5 L 21 12 L 14.5 14.5 L 12 21 L 9.5 14.5 L 3 12 L 9.5 9.5 Z" />
+                        <path d="M 19 3 L 20 6 L 23 7 L 20 8 L 19 11 L 18 8 L 15 7 L 18 6 Z" />
+                      </svg>
+                    </div>
+                    <div className="text-left">
+                      <h4 className="text-sm font-extrabold text-[#1E1B4B]">Step 02 Practice Completed</h4>
+                      <p className="text-xs text-slate-400">Swipe the slider below to claim your practice milestone bonus</p>
+                    </div>
                   </div>
                 </SlideToUnlock>
               </div>
 
-              {/* Redirect Action Buttons */}
-              <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
-                {/* Primary Button: Return to Roadmap */}
+              {/* Action Buttons Row */}
+              <div className="pt-2 flex flex-wrap items-center justify-center gap-3.5">
+                {/* 1. Return to Goal Roadmap */}
                 <Link
                   href={`/goals/${goalId}`}
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-none bg-gradient-to-r from-[#6D28D9] via-[#7C3AED] to-[#8B5CF6] text-white text-xs font-extrabold shadow-md shadow-purple-500/25 hover:opacity-95 hover:shadow-lg transition-all cursor-pointer"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#6366F1] to-[#7C3AED] text-white text-xs font-bold shadow-md shadow-purple-500/25 hover:opacity-95 hover:shadow-lg transition-all cursor-pointer"
                 >
                   <IconArrowLeft className="h-4 w-4" />
                   <span>Return to Goal Roadmap</span>
                 </Link>
 
-                {/* Secondary Option: Proctored Test */}
+                {/* 2. Take Proctored Exam */}
                 <Link
                   href={`/goals/${goalId}/modules/${moduleId}/proctored`}
-                  className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-none border border-purple-200 bg-purple-50 text-[#7C3AED] text-xs font-extrabold hover:bg-purple-100 transition-all cursor-pointer"
+                  className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl border border-purple-200/90 bg-white text-[#6366F1] text-xs font-bold hover:bg-purple-50/60 shadow-2xs transition-all cursor-pointer"
                 >
-                  <IconShieldCheck className="h-4 w-4" />
+                  <IconShieldCheck className="h-4 w-4 text-[#6366F1]" />
                   <span>Take Proctored Exam</span>
                   <IconArrowRight className="h-4 w-4" />
                 </Link>
 
-                {/* Retake Button */}
+                {/* 3. Retake Practice */}
                 <button
                   type="button"
                   onClick={startPractice}
-                  className="inline-flex items-center justify-center gap-1.5 px-4 py-3.5 rounded-none border border-slate-200 bg-white text-slate-600 text-xs font-bold hover:bg-slate-50 transition-all cursor-pointer"
+                  className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl border border-slate-200 bg-white text-slate-700 text-xs font-bold hover:bg-slate-50 shadow-2xs transition-all cursor-pointer"
                 >
-                  <IconRefresh className="h-4 w-4" />
+                  <IconRefresh className="h-4 w-4 text-slate-600" />
                   <span>Retake Practice</span>
                 </button>
               </div>

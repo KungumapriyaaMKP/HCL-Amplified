@@ -105,7 +105,7 @@ export const SlideToUnlock = ({
   return (
     <div
       className={cn(
-        'relative w-full max-w-sm overflow-hidden rounded-none border border-purple-200/90 bg-white p-6 text-slate-900 shadow-md',
+        'relative w-full max-w-xl overflow-hidden rounded-2xl border border-purple-100/90 bg-white p-5 sm:p-6 text-slate-900 shadow-sm space-y-4',
         className
       )}
     >
@@ -117,11 +117,11 @@ export const SlideToUnlock = ({
             initial={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.3 }}
-            className="relative mt-5"
+            className="relative mt-2"
           >
             <div
               ref={sliderRef}
-              className="relative h-13 w-full rounded-none bg-slate-100 border border-slate-200 overflow-hidden flex items-center"
+              className="relative h-14 w-full rounded-xl bg-slate-100/90 border border-slate-200/80 overflow-hidden flex items-center shadow-inner"
             >
               <motion.div
                 ref={handleRef}
@@ -130,14 +130,14 @@ export const SlideToUnlock = ({
                 dragElastic={0.08}
                 style={{ x }}
                 onDragEnd={onDragEnd}
-                className="absolute left-0 top-0 z-10 flex h-13 w-13 cursor-grab items-center justify-center rounded-none bg-gradient-to-r from-[#6D28D9] to-[#8B5CF6] text-white shadow-md active:cursor-grabbing hover:opacity-95"
+                className="absolute left-1 top-1 bottom-1 z-10 flex h-12 w-12 cursor-grab items-center justify-center rounded-lg bg-gradient-to-r from-[#6366F1] to-[#7C3AED] text-white shadow-md active:cursor-grabbing hover:opacity-95"
               >
                 <ChevronRightIcon className="h-5 w-5 stroke-[2.5]" />
               </motion.div>
               <motion.span
                 style={{ opacity: textOpacity }}
                 className={cn(
-                  'absolute inset-0 flex items-center justify-center pl-10 text-xs font-extrabold uppercase tracking-wider text-slate-600 select-none pointer-events-none',
+                  'absolute inset-0 flex items-center justify-center pl-12 text-xs font-bold uppercase tracking-wider text-slate-500 select-none pointer-events-none',
                   shimmer &&
                     'animate-pulse bg-gradient-to-r from-purple-700 via-indigo-600 to-purple-800 bg-clip-text text-transparent'
                 )}
@@ -149,9 +149,10 @@ export const SlideToUnlock = ({
         ) : (
           <motion.div
             key="unlocked"
-            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            initial={{ opacity: 0, y: -15, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.4, delay: 0.05 }}
+            transition={{ duration: 0.35, ease: 'easeOut' }}
+            className="w-full"
           >
             {unlockedContent}
           </motion.div>
