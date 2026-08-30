@@ -90,7 +90,7 @@ export function SocraticModal({
         )}
 
         <Button onClick={onClose} className="w-full">
-          I Understand — Return to Quiz
+          I Understand | Return to Quiz
         </Button>
       </div>
     </div>

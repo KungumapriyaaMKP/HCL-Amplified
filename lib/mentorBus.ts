@@ -25,13 +25,13 @@ export function emitNudge(event: MentorEvent, message?: string) {
 
 export const MENTOR_MESSAGES: Record<MentorEvent, string[]> = {
   quiz_pass: [
-    "Sharp work — that concept is locked in.",
+    "Sharp work | that concept is locked in.",
     "Correct! Your skill mastery just increased.",
     "Great understanding. Moving forward.",
   ],
   badge_unlock: [
     "Achievement unlocked! Keep your momentum going.",
-    "New badge earned — outstanding progress.",
+    "New badge earned | outstanding progress.",
   ],
   code_run: [
     "Code executed! Hands-on practice is where mastery happens.",
@@ -53,7 +53,7 @@ export const MENTOR_MESSAGES: Record<MentorEvent, string[]> = {
 
 export const IDLE_THOUGHTS: string[] = [
   "Ready when you are.",
-  "Take your time — understanding comes with practice.",
+  "Take your time | understanding comes with practice.",
   "One step at a time.",
   "You've got this.",
   "Building strong foundations.",

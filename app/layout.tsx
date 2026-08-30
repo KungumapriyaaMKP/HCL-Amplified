@@ -17,7 +17,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "QuestLearn — AI Adaptive Learning Platform",
+  title: "QuestLearn | AI Adaptive Learning Platform",
   description: "A personalized, AI-powered learning path recommender.",
 };
 

@@ -11,7 +11,7 @@ export function generateYouTubeFallback(skillId: string, skillName?: string): Ca
 
   return {
     id: `yt-fallback-${skillId}`,
-    title: `${name} — Video Tutorials & Course Walkthrough (YouTube)`,
+    title: `${name} | Video Tutorials & Course Walkthrough (YouTube)`,
     description: `Curated free video tutorials and full comprehensive guides for mastering ${name}.`,
     type: "video",
     provider: "YouTube",

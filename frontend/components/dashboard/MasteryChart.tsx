@@ -17,7 +17,7 @@ export function MasteryChart({ mastery }: { mastery: DashboardData["mastery"] })
           <IconActivity className="h-5 w-5 text-purple-400" />
           <span>SKILL MASTERY MATRIX</span>
         </h3>
-        <p className="mt-2 text-xs text-slate-400">No skills assessed yet — embark on a goal to build your skill profile.</p>
+        <p className="mt-2 text-xs text-slate-400">No skills assessed yet | embark on a goal to build your skill profile.</p>
       </Card>
     );
   }

@@ -31,7 +31,7 @@ export function ReminderBanner({
           <IconAlertCircle className="h-6 w-6 text-purple-400 shrink-0" />
           <div>
             <p className="text-sm font-black text-white">
-              Resume Your Path — <strong className="text-purple-300">{next.skillName}</strong> module is waiting.
+              Resume Your Path | <strong className="text-purple-300">{next.skillName}</strong> module is waiting.
             </p>
             <p className="text-xs text-slate-400">
               It has been {disengagement.daysSinceActive} days since your last session. Dive back in to maintain momentum.

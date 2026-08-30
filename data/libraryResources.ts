@@ -362,7 +362,7 @@ export const COMPREHENSIVE_RESOURCES: ResourceItem[] = [
    * ========================================================================= */
   {
     id: "mob-vid-1",
-    title: "Flutter & Dart Full Course – Cross-Platform iOS & Android",
+    title: "Flutter & Dart Full Course - Cross-Platform iOS & Android",
     description: "Stateful widgets, Riverpod state management, REST APIs, and native device animations.",
     type: "Video",
     domain: "Mobile Development",

@@ -25,7 +25,7 @@ export function AdaptationFeed({ adaptations }: { adaptations: DashboardData["ad
 
       {adaptations.length === 0 ? (
         <p className="text-xs text-slate-400">
-          No adaptations logged yet — as you complete assessments and provide feedback, the AI dynamically reconfigures your curriculum roadmap.
+          No adaptations logged yet. As you complete assessments and provide feedback, the AI dynamically reconfigures your curriculum roadmap.
         </p>
       ) : (
         <ul className="space-y-3.5 max-h-[300px] overflow-y-auto pr-1 scrollbar-thin">

@@ -64,7 +64,7 @@ function FaceOnboarding() {
       clearInterval(interval);
       if (!result) {
         setScanProgress(0);
-        setError("No face detected — please center your face inside the dashed frame and retry.");
+        setError("No face detected | please center your face inside the dashed frame and retry.");
         return;
       }
       setScanProgress(100);
@@ -75,7 +75,7 @@ function FaceOnboarding() {
     } catch {
       clearInterval(interval);
       setScanProgress(0);
-      setError("Could not process frame — please try again.");
+      setError("Could not process frame | please try again.");
     } finally {
       setCapturing(false);
     }
@@ -99,7 +99,7 @@ function FaceOnboarding() {
         router.push(next);
       }, 700);
     } catch {
-      setError("Could not save biometric profile — you can register later before your first proctored test.");
+      setError("Could not save biometric profile | you can register later before your first proctored test.");
       setSaving(false);
     }
   }

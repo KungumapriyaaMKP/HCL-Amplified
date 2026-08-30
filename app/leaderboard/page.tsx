@@ -221,7 +221,7 @@ export default async function LeaderboardPage() {
 
           <div className="space-y-2">
             {leaderboard.length === 0 && (
-              <p className="p-8 text-center text-xs text-slate-400">No entries yet — be the first to complete a module and claim Rank #1!</p>
+              <p className="p-8 text-center text-xs text-slate-400">No entries yet | be the first to complete a module and claim Rank #1!</p>
             )}
 
             {leaderboard.map((row) => {

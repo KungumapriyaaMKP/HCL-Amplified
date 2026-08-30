@@ -30,7 +30,7 @@ export function ActivityHeatmap({ activity }: { activity: DashboardData["activit
           <IconCalendar className="h-5 w-5 text-purple-400" />
           <span>ACTIVITY VELOCITY LOG</span>
         </h3>
-        <p className="mt-2 text-xs text-slate-400">No activity logged yet — complete quizzes and code challenges to record your progress.</p>
+        <p className="mt-2 text-xs text-slate-400">No activity logged yet | complete quizzes and code challenges to record your progress.</p>
       </Card>
     );
   }
