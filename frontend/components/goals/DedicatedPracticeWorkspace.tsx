@@ -195,19 +195,20 @@ export function DedicatedPracticeWorkspace({
               <div className="absolute -bottom-16 -left-16 w-36 h-36 rounded-full border border-purple-200/50 pointer-events-none" />
               <div className="absolute -top-16 -right-16 w-36 h-36 rounded-full border border-purple-200/50 pointer-events-none" />
 
-              {/* Laurel Wreath & Circular Score Gauge HUD (Exact Match to Image 1) */}
+              {/* Laurel Wreath & Circular Score Gauge HUD (Exact Match to Image 2) */}
               <div className="relative flex items-center justify-center pt-2">
                 {(() => {
                   const angleDeg = -90 + (result.score / 100) * 360;
                   const angleRad = (angleDeg * Math.PI) / 180;
-                  const dotX = 120 + 48 * Math.cos(angleRad);
-                  const dotY = 75 + 48 * Math.sin(angleRad);
+                  const dotX = 120 + 49 * Math.cos(angleRad);
+                  const dotY = 75 + 49 * Math.sin(angleRad);
                   return (
                     <svg width="250" height="155" viewBox="0 0 250 155" fill="none" className="overflow-visible select-none">
                       <defs>
                         <linearGradient id="scoreGaugeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                          <stop offset="0%" stopColor="#4F46E5" />
-                          <stop offset="60%" stopColor="#2563EB" />
+                          <stop offset="0%" stopColor="#4338CA" />
+                          <stop offset="35%" stopColor="#6366F1" />
+                          <stop offset="70%" stopColor="#0EA5E9" />
                           <stop offset="100%" stopColor="#06B6D4" />
                         </linearGradient>
 
@@ -217,36 +218,65 @@ export function DedicatedPracticeWorkspace({
                       </defs>
 
                       {/* Minimal Design Accents from Target Image */}
-                      <rect x="24" y="36" width="8" height="4" rx="1.5" fill="#F59E0B" transform="rotate(20 24 36)" opacity="0.9" />
-                      <path d="M 226 36 L 230 38 L 227 41 L 223 39 Z" fill="#A855F7" opacity="0.9" />
+                      <rect x="18" y="34" width="8" height="4" rx="1.5" fill="#F59E0B" transform="rotate(20 18 34)" opacity="0.9" />
+                      <path d="M 230 34 L 234 36 L 231 39 L 227 37 Z" fill="#A855F7" opacity="0.9" />
 
-                      {/* Soft Lilac Laurel Wreath on Left and Right (Exact match to target) */}
-                      {/* Left Laurel Branch */}
-                      <g opacity="0.75">
-                        <ellipse cx="44" cy="112" rx="7.5" ry="3.5" fill="#EDE9FE" transform="rotate(-30 44 112)" />
-                        <ellipse cx="50" cy="104" rx="7.5" ry="3.5" fill="#DDD6FE" transform="rotate(-15 50 104)" />
-                        <ellipse cx="40" cy="94" rx="7.5" ry="3.5" fill="#EDE9FE" transform="rotate(-35 40 94)" />
-                        <ellipse cx="48" cy="86" rx="7.5" ry="3.5" fill="#DDD6FE" transform="rotate(-20 48 86)" />
-                        <ellipse cx="42" cy="74" rx="7.5" ry="3.5" fill="#EDE9FE" transform="rotate(-40 42 74)" />
-                        <ellipse cx="52" cy="66" rx="7.5" ry="3.5" fill="#DDD6FE" transform="rotate(-25 52 66)" />
-                        <ellipse cx="48" cy="54" rx="7.5" ry="3.5" fill="#EDE9FE" transform="rotate(-45 48 54)" />
-                        <ellipse cx="60" cy="48" rx="7" ry="3.2" fill="#DDD6FE" transform="rotate(-30 60 48)" />
-                        <ellipse cx="60" cy="38" rx="6.5" ry="3" fill="#EDE9FE" transform="rotate(-50 60 38)" />
-                        <ellipse cx="72" cy="34" rx="6.5" ry="3" fill="#DDD6FE" transform="rotate(-35 72 34)" />
+                      {/* Left Laurel Branch (Realistic Pointed Leaves) */}
+                      <g opacity="0.85">
+                        {/* Curved Stem */}
+                        <path d="M 52 118 C 40 92 44 58 64 36" stroke="#E9D5FF" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+
+                        {/* Pair 1 (Base) */}
+                        <path d="M 0 0 C 3 -2.2, 7 -2.2, 11 0 C 7 2.2, 3 2.2, 0 0 Z" fill="#DDD6FE" transform="translate(51, 114) rotate(-140)" />
+                        <path d="M 0 0 C 3 -2.2, 7 -2.2, 11 0 C 7 2.2, 3 2.2, 0 0 Z" fill="#DDD6FE" transform="translate(53, 112) rotate(-55)" />
+
+                        {/* Pair 2 */}
+                        <path d="M 0 0 C 3.5 -2.5, 8 -2.5, 12 0 C 8 2.5, 3.5 2.5, 0 0 Z" fill="#E9D5FF" transform="translate(46, 96) rotate(-135)" />
+                        <path d="M 0 0 C 3.5 -2.5, 8 -2.5, 12 0 C 8 2.5, 3.5 2.5, 0 0 Z" fill="#DDD6FE" transform="translate(48, 94) rotate(-50)" />
+
+                        {/* Pair 3 */}
+                        <path d="M 0 0 C 3.5 -2.5, 8 -2.5, 12 0 C 8 2.5, 3.5 2.5, 0 0 Z" fill="#E9D5FF" transform="translate(43, 76) rotate(-130)" />
+                        <path d="M 0 0 C 3.5 -2.5, 8 -2.5, 12 0 C 8 2.5, 3.5 2.5, 0 0 Z" fill="#DDD6FE" transform="translate(46, 74) rotate(-45)" />
+
+                        {/* Pair 4 */}
+                        <path d="M 0 0 C 3.5 -2.5, 8 -2.5, 12 0 C 8 2.5, 3.5 2.5, 0 0 Z" fill="#E9D5FF" transform="translate(46, 56) rotate(-120)" />
+                        <path d="M 0 0 C 3.5 -2.5, 8 -2.5, 12 0 C 8 2.5, 3.5 2.5, 0 0 Z" fill="#DDD6FE" transform="translate(50, 54) rotate(-35)" />
+
+                        {/* Pair 5 (Top) */}
+                        <path d="M 0 0 C 3 -2.2, 7 -2.2, 10 0 C 7 2.2, 3 2.2, 0 0 Z" fill="#E9D5FF" transform="translate(54, 42) rotate(-105)" />
+                        <path d="M 0 0 C 3 -2.2, 7 -2.2, 10 0 C 7 2.2, 3 2.2, 0 0 Z" fill="#DDD6FE" transform="translate(59, 40) rotate(-20)" />
+
+                        {/* Apex Tip Leaf */}
+                        <path d="M 0 0 C 3 -2.2, 7 -2.2, 10 0 C 7 2.2, 3 2.2, 0 0 Z" fill="#C4B5FD" transform="translate(64, 36) rotate(-60)" />
                       </g>
 
-                      {/* Right Laurel Branch */}
-                      <g opacity="0.75">
-                        <ellipse cx="206" cy="112" rx="7.5" ry="3.5" fill="#EDE9FE" transform="rotate(30 206 112)" />
-                        <ellipse cx="200" cy="104" rx="7.5" ry="3.5" fill="#DDD6FE" transform="rotate(15 200 104)" />
-                        <ellipse cx="210" cy="94" rx="7.5" ry="3.5" fill="#EDE9FE" transform="rotate(35 210 94)" />
-                        <ellipse cx="202" cy="86" rx="7.5" ry="3.5" fill="#DDD6FE" transform="rotate(20 202 86)" />
-                        <ellipse cx="208" cy="74" rx="7.5" ry="3.5" fill="#EDE9FE" transform="rotate(40 208 74)" />
-                        <ellipse cx="198" cy="66" rx="7.5" ry="3.5" fill="#DDD6FE" transform="rotate(25 198 66)" />
-                        <ellipse cx="202" cy="54" rx="7.5" ry="3.5" fill="#EDE9FE" transform="rotate(45 202 54)" />
-                        <ellipse cx="190" cy="48" rx="7" ry="3.2" fill="#DDD6FE" transform="rotate(30 190 48)" />
-                        <ellipse cx="190" cy="38" rx="6.5" ry="3" fill="#EDE9FE" transform="rotate(50 190 38)" />
-                        <ellipse cx="178" cy="34" rx="6.5" ry="3" fill="#DDD6FE" transform="rotate(35 178 34)" />
+                      {/* Right Laurel Branch (Mirrored for 100% Symmetrical Perfection) */}
+                      <g opacity="0.85" transform="translate(240, 0) scale(-1, 1)">
+                        {/* Curved Stem */}
+                        <path d="M 52 118 C 40 92 44 58 64 36" stroke="#E9D5FF" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+
+                        {/* Pair 1 (Base) */}
+                        <path d="M 0 0 C 3 -2.2, 7 -2.2, 11 0 C 7 2.2, 3 2.2, 0 0 Z" fill="#DDD6FE" transform="translate(51, 114) rotate(-140)" />
+                        <path d="M 0 0 C 3 -2.2, 7 -2.2, 11 0 C 7 2.2, 3 2.2, 0 0 Z" fill="#DDD6FE" transform="translate(53, 112) rotate(-55)" />
+
+                        {/* Pair 2 */}
+                        <path d="M 0 0 C 3.5 -2.5, 8 -2.5, 12 0 C 8 2.5, 3.5 2.5, 0 0 Z" fill="#E9D5FF" transform="translate(46, 96) rotate(-135)" />
+                        <path d="M 0 0 C 3.5 -2.5, 8 -2.5, 12 0 C 8 2.5, 3.5 2.5, 0 0 Z" fill="#DDD6FE" transform="translate(48, 94) rotate(-50)" />
+
+                        {/* Pair 3 */}
+                        <path d="M 0 0 C 3.5 -2.5, 8 -2.5, 12 0 C 8 2.5, 3.5 2.5, 0 0 Z" fill="#E9D5FF" transform="translate(43, 76) rotate(-130)" />
+                        <path d="M 0 0 C 3.5 -2.5, 8 -2.5, 12 0 C 8 2.5, 3.5 2.5, 0 0 Z" fill="#DDD6FE" transform="translate(46, 74) rotate(-45)" />
+
+                        {/* Pair 4 */}
+                        <path d="M 0 0 C 3.5 -2.5, 8 -2.5, 12 0 C 8 2.5, 3.5 2.5, 0 0 Z" fill="#E9D5FF" transform="translate(46, 56) rotate(-120)" />
+                        <path d="M 0 0 C 3.5 -2.5, 8 -2.5, 12 0 C 8 2.5, 3.5 2.5, 0 0 Z" fill="#DDD6FE" transform="translate(50, 54) rotate(-35)" />
+
+                        {/* Pair 5 (Top) */}
+                        <path d="M 0 0 C 3 -2.2, 7 -2.2, 10 0 C 7 2.2, 3 2.2, 0 0 Z" fill="#E9D5FF" transform="translate(54, 42) rotate(-105)" />
+                        <path d="M 0 0 C 3 -2.2, 7 -2.2, 10 0 C 7 2.2, 3 2.2, 0 0 Z" fill="#DDD6FE" transform="translate(59, 40) rotate(-20)" />
+
+                        {/* Apex Tip Leaf */}
+                        <path d="M 0 0 C 3 -2.2, 7 -2.2, 10 0 C 7 2.2, 3 2.2, 0 0 Z" fill="#C4B5FD" transform="translate(64, 36) rotate(-60)" />
                       </g>
 
                       {/* Circular Progress Gauge */}
@@ -255,34 +285,34 @@ export function DedicatedPracticeWorkspace({
                         <circle
                           cx="120"
                           cy="75"
-                          r="48"
+                          r="49"
                           fill="#FFFFFF"
-                          stroke="#F1F5F9"
-                          strokeWidth="8"
+                          stroke="#F3F0FF"
+                          strokeWidth="11"
                         />
 
                         {/* Progress Arc */}
                         <circle
                           cx="120"
                           cy="75"
-                          r="48"
+                          r="49"
                           fill="none"
                           stroke="url(#scoreGaugeGrad)"
-                          strokeWidth="8"
+                          strokeWidth="11"
                           strokeLinecap="round"
-                          strokeDasharray={`${(result.score / 100) * 301.59} 301.59`}
+                          strokeDasharray={`${(result.score / 100) * 307.88} 307.88`}
                           transform="rotate(-90 120 75)"
                         />
 
                         {/* Progress Tip Glowing Dot Indicator */}
-                        <circle cx={dotX} cy={dotY} r="5" fill="#06B6D4" />
-                        <circle cx={dotX} cy={dotY} r="2" fill="#FFFFFF" />
+                        <circle cx={dotX} cy={dotY} r="6" fill="#06B6D4" />
+                        <circle cx={dotX} cy={dotY} r="2.5" fill="#FFFFFF" />
                       </g>
 
                       {/* Center Score Text & Subtitle Label */}
                       <text
                         x="120"
-                        y="71"
+                        y="70"
                         textAnchor="middle"
                         dominantBaseline="central"
                         fill="#1E1B4B"
@@ -294,7 +324,7 @@ export function DedicatedPracticeWorkspace({
                       </text>
                       <text
                         x="120"
-                        y="94"
+                        y="93"
                         textAnchor="middle"
                         fill="#64748B"
                         fontSize="12"
