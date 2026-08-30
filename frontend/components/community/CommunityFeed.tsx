@@ -181,6 +181,18 @@ export function CommunityFeed({ domain }: { domain: string }) {
           </div>
         </div>
 
+        {/* Center: 3D Character Trio Graphics Placed in the Marked Area */}
+        <div className="shrink-0 hidden md:flex items-center justify-center px-4">
+          <Image
+            src="/images/community/avatars_trio_3d.png"
+            alt="Community Members"
+            width={165}
+            height={55}
+            className="object-contain select-none drop-shadow-xs"
+            unoptimized
+          />
+        </div>
+
         {/* Right Side: Join Guild CTA / New Discussion */}
         <div className="flex items-center gap-2.5">
           {joined ? (
