@@ -40,9 +40,9 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
         purpose: "practice",
         domain: domainName,
         skills: [{ id: row.skill.id, name: row.skill.name, description: row.skill.description }],
-        count: 5,
+        count: 10,
       }),
-      { temperature: 0.7, maxTokens: 1800 },
+      { temperature: 0.7, maxTokens: 3500 },
     );
 
     const [attempt] = await db
