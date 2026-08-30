@@ -130,6 +130,17 @@ export function ModuleWorkspace(props: Props) {
                   <stop offset="100%" stopColor="#1E293B" />
                 </linearGradient>
 
+                <linearGradient id="emeraldShieldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#34D399" />
+                  <stop offset="50%" stopColor="#10B981" />
+                  <stop offset="100%" stopColor="#047857" />
+                </linearGradient>
+
+                <linearGradient id="emeraldPedestalGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#10B981" />
+                  <stop offset="100%" stopColor="#064E3B" />
+                </linearGradient>
+
                 <filter id="auraGlow" x="-30%" y="-30%" width="160%" height="160%">
                   <feGaussianBlur stdDeviation="8" result="blur" />
                   <feComposite in="SourceGraphic" in2="blur" operator="over" />
@@ -218,27 +229,70 @@ export function ModuleWorkspace(props: Props) {
             {/* Neon Dashed Light Trail 1 -> 2 */}
             <div className="w-10 h-28 flex justify-center -my-2 relative z-10">
               <svg width="24" height="100%" viewBox="0 0 24 112" fill="none" preserveAspectRatio="none">
-                <rect x="7" y="0" width="10" height="112" fill="#7C3AED" opacity="0.25" filter="url(#auraGlow)" />
-                <line x1="12" y1="0" x2="12" y2="112" stroke="#7C3AED" strokeWidth="8" strokeLinecap="round" />
+                <rect
+                  x="7"
+                  y="0"
+                  width="10"
+                  height="112"
+                  fill={practiceAttempted ? "#10B981" : "#7C3AED"}
+                  opacity={practiceAttempted ? 0.35 : 0.25}
+                  filter="url(#auraGlow)"
+                />
+                <line
+                  x1="12"
+                  y1="0"
+                  x2="12"
+                  y2="112"
+                  stroke={practiceAttempted ? "#10B981" : "#7C3AED"}
+                  strokeWidth="8"
+                  strokeLinecap="round"
+                />
                 <line x1="12" y1="0" x2="12" y2="112" stroke="#FFFFFF" strokeWidth="3" strokeDasharray="6 6" strokeLinecap="round" />
               </svg>
             </div>
 
-            {/* STEP 02: 3D Steel Hexagonal Pedestal (Practice Assessment) */}
+            {/* STEP 02: 3D Hexagonal Pedestal (Practice Assessment - Turns Green When Completed) */}
             <div className="relative flex flex-col items-center z-20">
               <svg width="110" height="135" viewBox="0 0 110 135" fill="none" className="overflow-visible">
+                {/* Pedestal Ambient Light Aura when completed */}
+                {practiceAttempted && (
+                  <ellipse cx="55" cy="108" rx="46" ry="16" fill="#10B981" opacity="0.45" filter="url(#auraGlow)" />
+                )}
+
                 {/* 3D Tiered Base Cylinder */}
                 <g filter="url(#stepperShadow)">
                   {/* Bottom Cylinder Wall */}
-                  <path d="M 16 104 C 16 118 94 118 94 104 L 94 114 C 94 126 16 126 16 114 Z" fill="url(#silverPedestalGrad)" />
+                  <path
+                    d="M 16 104 C 16 118 94 118 94 104 L 94 114 C 94 126 16 126 16 114 Z"
+                    fill={practiceAttempted ? "url(#emeraldPedestalGrad)" : "url(#silverPedestalGrad)"}
+                  />
                   {/* Base Ring Top Surface */}
-                  <ellipse cx="55" cy="104" rx="39" ry="11" fill="#475569" stroke="#94A3B8" strokeWidth="1.5" />
+                  <ellipse
+                    cx="55"
+                    cy="104"
+                    rx="39"
+                    ry="11"
+                    fill={practiceAttempted ? "#065F46" : "#475569"}
+                    stroke={practiceAttempted ? "#34D399" : "#94A3B8"}
+                    strokeWidth="1.5"
+                  />
+
+                  {practiceAttempted && (
+                    <ellipse cx="55" cy="102" rx="34" ry="8" fill="none" stroke="#A7F3D0" strokeWidth="2.5" opacity="0.9" />
+                  )}
                   
-                  {/* Metallic Lock Badge on Right Rim */}
+                  {/* Metallic Lock / Checked Badge on Right Rim */}
                   <g transform="translate(74, 96)">
-                    <circle cx="9" cy="9" r="9" fill="#1E293B" stroke="#94A3B8" strokeWidth="1.5" />
-                    {resourceMarked ? (
-                      <path d="M 5 9 L 8 12 L 13 6" stroke="#10B981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    <circle
+                      cx="9"
+                      cy="9"
+                      r="9"
+                      fill={practiceAttempted ? "#064E3B" : "#1E293B"}
+                      stroke={practiceAttempted ? "#34D399" : "#94A3B8"}
+                      strokeWidth="1.5"
+                    />
+                    {practiceAttempted || resourceMarked ? (
+                      <path d="M 5 9 L 8 12 L 13 6" stroke="#10B981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                     ) : (
                       <g transform="translate(4.5, 4)">
                         <path d="M 2 4.5 L 2 3 C 2 1.3 3.3 0 5 0 C 6.7 0 8 1.3 8 3 L 8 4.5" stroke="#CBD5E1" strokeWidth="1.5" fill="none" />
@@ -249,33 +303,81 @@ export function ModuleWorkspace(props: Props) {
                   </g>
                 </g>
 
-                {/* 3D Hexagonal Shield 02 */}
+                {/* 3D Hexagonal Shield 02 - Emerald Green when completed */}
                 <g transform="translate(55, 52) scale(0.92)" filter="url(#stepperShadow)">
                   <path
                     d="M 0 -48 L 38 -26 L 38 26 L 0 48 L -38 26 L -38 -26 Z"
-                    fill="url(#silverShieldGrad)"
-                    stroke="#E2E8F0"
+                    fill={practiceAttempted ? "url(#emeraldShieldGrad)" : "url(#silverShieldGrad)"}
+                    stroke={practiceAttempted ? "#A7F3D0" : "#E2E8F0"}
                     strokeWidth="3.5"
                     strokeLinejoin="round"
                   />
                   <path
                     d="M 0 -38 L 29 -20 L 29 20 L 0 38 L -29 20 L -29 -20 Z"
-                    fill="#F8FAFC"
-                    stroke="#CBD5E1"
+                    fill={practiceAttempted ? "#ECFDF5" : "#F8FAFC"}
+                    stroke={practiceAttempted ? "#6EE7B7" : "#CBD5E1"}
                     strokeWidth="1.5"
                     strokeLinejoin="round"
                   />
                   {/* Text 02 */}
-                  <text x="0" y="-12" textAnchor="middle" fill="#475569" fontSize="11" fontWeight="900" letterSpacing="1">
+                  <text
+                    x="0"
+                    y="-12"
+                    textAnchor="middle"
+                    fill={practiceAttempted ? "#047857" : "#475569"}
+                    fontSize="11"
+                    fontWeight="900"
+                    letterSpacing="1"
+                  >
                     02
                   </text>
                   {/* Checklist Clipboard Icon */}
                   <g transform="translate(-10, -2)">
-                    <rect x="0" y="0" width="20" height="24" rx="2" fill="#E2E8F0" stroke="#64748B" strokeWidth="1.5" />
-                    <rect x="5" y="-2" width="10" height="4" rx="1" fill="#475569" />
-                    <line x1="4" y1="7" x2="16" y2="7" stroke="#64748B" strokeWidth="1.5" strokeLinecap="round" />
-                    <line x1="4" y1="12" x2="14" y2="12" stroke="#64748B" strokeWidth="1.5" strokeLinecap="round" />
-                    <line x1="4" y1="17" x2="11" y2="17" stroke="#64748B" strokeWidth="1.5" strokeLinecap="round" />
+                    <rect
+                      x="0"
+                      y="0"
+                      width="20"
+                      height="24"
+                      rx="2"
+                      fill={practiceAttempted ? "#D1FAE5" : "#E2E8F0"}
+                      stroke={practiceAttempted ? "#059669" : "#64748B"}
+                      strokeWidth="1.5"
+                    />
+                    <rect
+                      x="5"
+                      y="-2"
+                      width="10"
+                      height="4"
+                      rx="1"
+                      fill={practiceAttempted ? "#047857" : "#475569"}
+                    />
+                    <line
+                      x1="4"
+                      y1="7"
+                      x2="16"
+                      y2="7"
+                      stroke={practiceAttempted ? "#059669" : "#64748B"}
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                    <line
+                      x1="4"
+                      y1="12"
+                      x2="14"
+                      y2="12"
+                      stroke={practiceAttempted ? "#059669" : "#64748B"}
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                    <line
+                      x1="4"
+                      y1="17"
+                      x2="11"
+                      y2="17"
+                      stroke={practiceAttempted ? "#059669" : "#64748B"}
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
                   </g>
                 </g>
               </svg>
@@ -284,24 +386,62 @@ export function ModuleWorkspace(props: Props) {
             {/* Neon Dashed Light Trail 2 -> 3 */}
             <div className="w-10 h-28 flex justify-center -my-2 relative z-10">
               <svg width="24" height="100%" viewBox="0 0 24 112" fill="none" preserveAspectRatio="none">
-                <line x1="12" y1="0" x2="12" y2="112" stroke="#64748B" strokeWidth="8" strokeLinecap="round" />
+                {props.proctoredAlreadyTaken && (
+                  <rect x="7" y="0" width="10" height="112" fill="#10B981" opacity="0.35" filter="url(#auraGlow)" />
+                )}
+                <line
+                  x1="12"
+                  y1="0"
+                  x2="12"
+                  y2="112"
+                  stroke={props.proctoredAlreadyTaken ? "#10B981" : "#64748B"}
+                  strokeWidth="8"
+                  strokeLinecap="round"
+                />
                 <line x1="12" y1="0" x2="12" y2="112" stroke="#FFFFFF" strokeWidth="3" strokeDasharray="6 6" strokeLinecap="round" />
               </svg>
             </div>
 
-            {/* STEP 03: 3D Steel Hexagonal Pedestal (Official Proctored Assessment) */}
+            {/* STEP 03: 3D Hexagonal Pedestal (Official Proctored Assessment) */}
             <div className="relative flex flex-col items-center z-20">
               <svg width="110" height="135" viewBox="0 0 110 135" fill="none" className="overflow-visible">
+                {/* Pedestal Ambient Light Aura when completed */}
+                {props.proctoredAlreadyTaken && (
+                  <ellipse cx="55" cy="108" rx="46" ry="16" fill="#10B981" opacity="0.45" filter="url(#auraGlow)" />
+                )}
+
                 {/* 3D Tiered Base Cylinder */}
                 <g filter="url(#stepperShadow)">
-                  <path d="M 16 104 C 16 118 94 118 94 104 L 94 114 C 94 126 16 126 16 114 Z" fill="url(#silverPedestalGrad)" />
-                  <ellipse cx="55" cy="104" rx="39" ry="11" fill="#475569" stroke="#94A3B8" strokeWidth="1.5" />
+                  <path
+                    d="M 16 104 C 16 118 94 118 94 104 L 94 114 C 94 126 16 126 16 114 Z"
+                    fill={props.proctoredAlreadyTaken ? "url(#emeraldPedestalGrad)" : "url(#silverPedestalGrad)"}
+                  />
+                  <ellipse
+                    cx="55"
+                    cy="104"
+                    rx="39"
+                    ry="11"
+                    fill={props.proctoredAlreadyTaken ? "#065F46" : "#475569"}
+                    stroke={props.proctoredAlreadyTaken ? "#34D399" : "#94A3B8"}
+                    strokeWidth="1.5"
+                  />
+
+                  {props.proctoredAlreadyTaken && (
+                    <ellipse cx="55" cy="102" rx="34" ry="8" fill="none" stroke="#A7F3D0" strokeWidth="2.5" opacity="0.9" />
+                  )}
                   
                   {/* Metallic Lock Badge on Right Rim */}
                   <g transform="translate(74, 96)">
-                    <circle cx="9" cy="9" r="9" fill="#1E293B" stroke="#94A3B8" strokeWidth="1.5" />
-                    {practiceAttempted ? (
-                      <path d="M 5 9 L 8 12 L 13 6" stroke="#10B981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    <circle
+                      cx="9"
+                      cy="9"
+                      r="9"
+                      fill={props.proctoredAlreadyTaken ? "#064E3B" : "#1E293B"}
+                      stroke={props.proctoredAlreadyTaken ? "#34D399" : "#94A3B8"}
+                      strokeWidth="1.5"
+                    />
+                    {props.proctoredAlreadyTaken || practiceAttempted ? (
+                      <path d="M 5 9 L 8 12 L 13 6" stroke="#10B981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                     ) : (
                       <g transform="translate(4.5, 4)">
                         <path d="M 2 4.5 L 2 3 C 2 1.3 3.3 0 5 0 C 6.7 0 8 1.3 8 3 L 8 4.5" stroke="#CBD5E1" strokeWidth="1.5" fill="none" />
@@ -316,27 +456,48 @@ export function ModuleWorkspace(props: Props) {
                 <g transform="translate(55, 52) scale(0.92)" filter="url(#stepperShadow)">
                   <path
                     d="M 0 -48 L 38 -26 L 38 26 L 0 48 L -38 26 L -38 -26 Z"
-                    fill="url(#silverShieldGrad)"
-                    stroke="#E2E8F0"
+                    fill={props.proctoredAlreadyTaken ? "url(#emeraldShieldGrad)" : "url(#silverShieldGrad)"}
+                    stroke={props.proctoredAlreadyTaken ? "#A7F3D0" : "#E2E8F0"}
                     strokeWidth="3.5"
                     strokeLinejoin="round"
                   />
                   <path
                     d="M 0 -38 L 29 -20 L 29 20 L 0 38 L -29 20 L -29 -20 Z"
-                    fill="#F8FAFC"
-                    stroke="#CBD5E1"
+                    fill={props.proctoredAlreadyTaken ? "#ECFDF5" : "#F8FAFC"}
+                    stroke={props.proctoredAlreadyTaken ? "#6EE7B7" : "#CBD5E1"}
                     strokeWidth="1.5"
                     strokeLinejoin="round"
                   />
                   {/* Text 03 */}
-                  <text x="0" y="-12" textAnchor="middle" fill="#475569" fontSize="11" fontWeight="900" letterSpacing="1">
+                  <text
+                    x="0"
+                    y="-12"
+                    textAnchor="middle"
+                    fill={props.proctoredAlreadyTaken ? "#047857" : "#475569"}
+                    fontSize="11"
+                    fontWeight="900"
+                    letterSpacing="1"
+                  >
                     03
                   </text>
                   {/* Graduation Cap Icon */}
                   <g transform="translate(-13, 0)">
-                    <path d="M 13 0 L 26 6 L 13 12 L 0 6 Z" fill="#475569" stroke="#334155" strokeWidth="1" />
-                    <path d="M 4 8.5 L 4 15 C 4 18 22 18 22 15 L 22 8.5" fill="#64748B" />
-                    <path d="M 23 8 L 25 15" stroke="#475569" strokeWidth="1.5" strokeLinecap="round" />
+                    <path
+                      d="M 13 0 L 26 6 L 13 12 L 0 6 Z"
+                      fill={props.proctoredAlreadyTaken ? "#047857" : "#475569"}
+                      stroke={props.proctoredAlreadyTaken ? "#064E3B" : "#334155"}
+                      strokeWidth="1"
+                    />
+                    <path
+                      d="M 4 8.5 L 4 15 C 4 18 22 18 22 15 L 22 8.5"
+                      fill={props.proctoredAlreadyTaken ? "#10B981" : "#64748B"}
+                    />
+                    <path
+                      d="M 23 8 L 25 15"
+                      stroke={props.proctoredAlreadyTaken ? "#047857" : "#475569"}
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
                   </g>
                 </g>
               </svg>
