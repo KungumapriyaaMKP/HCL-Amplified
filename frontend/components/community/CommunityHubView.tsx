@@ -16,7 +16,6 @@ import {
   IconUsers,
   IconMessage2,
   IconSparkles,
-  IconBolt,
 } from "@tabler/icons-react";
 
 export type CommunityDomainItem = {
@@ -219,8 +218,8 @@ export function CommunityHubView({ domains }: { domains: CommunityDomainItem[] }
 
   return (
     <div className="space-y-6">
-      {/* Search & Filter Controls */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-xs">
+      {/* Search & Filter Controls (Sharp Edges) */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 rounded-xs border border-slate-200/90 bg-white p-4 shadow-2xs">
         {/* Search input */}
         <div className="relative flex-1 max-w-md">
           <IconSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
@@ -229,17 +228,17 @@ export function CommunityHubView({ domains }: { domains: CommunityDomainItem[] }
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search guilds by skill, topic or framework (e.g. React, PyTorch, Docker)..."
-            className="w-full rounded-xl border border-slate-200 bg-slate-50/70 py-2.5 pl-10 pr-4 text-xs text-slate-800 placeholder-slate-400 focus:border-[#7C3AED] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#7C3AED] transition-all"
+            className="w-full rounded-xs border border-slate-200 bg-slate-50/70 py-2.5 pl-10 pr-4 text-xs text-slate-800 placeholder-slate-400 focus:border-[#7C3AED] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#7C3AED] transition-all"
           />
         </div>
 
-        {/* Category Filters */}
+        {/* Category Filters (Sharp Edges) */}
         <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => setCategory("all")}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+            className={`px-3.5 py-1.5 rounded-xs text-xs font-bold transition-all cursor-pointer ${
               category === "all"
-                ? "bg-[#7C3AED] text-white shadow-xs"
+                ? "bg-[#7C3AED] text-white shadow-2xs"
                 : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
             }`}
           >
@@ -247,9 +246,9 @@ export function CommunityHubView({ domains }: { domains: CommunityDomainItem[] }
           </button>
           <button
             onClick={() => setCategory("engineering")}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+            className={`px-3.5 py-1.5 rounded-xs text-xs font-bold transition-all cursor-pointer ${
               category === "engineering"
-                ? "bg-[#7C3AED] text-white shadow-xs"
+                ? "bg-[#7C3AED] text-white shadow-2xs"
                 : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
             }`}
           >
@@ -257,9 +256,9 @@ export function CommunityHubView({ domains }: { domains: CommunityDomainItem[] }
           </button>
           <button
             onClick={() => setCategory("ai-data")}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+            className={`px-3.5 py-1.5 rounded-xs text-xs font-bold transition-all cursor-pointer ${
               category === "ai-data"
-                ? "bg-[#7C3AED] text-white shadow-xs"
+                ? "bg-[#7C3AED] text-white shadow-2xs"
                 : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
             }`}
           >
@@ -267,9 +266,9 @@ export function CommunityHubView({ domains }: { domains: CommunityDomainItem[] }
           </button>
           <button
             onClick={() => setCategory("cloud-sec")}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+            className={`px-3.5 py-1.5 rounded-xs text-xs font-bold transition-all cursor-pointer ${
               category === "cloud-sec"
-                ? "bg-[#7C3AED] text-white shadow-xs"
+                ? "bg-[#7C3AED] text-white shadow-2xs"
                 : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
             }`}
           >
@@ -278,7 +277,7 @@ export function CommunityHubView({ domains }: { domains: CommunityDomainItem[] }
         </div>
       </div>
 
-      {/* Guild Cards Grid */}
+      {/* Guild Cards Grid (Sharp Edges) */}
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {filteredDomains.map((d) => {
           const meta = DOMAIN_DETAILS[d.id] || {
@@ -294,14 +293,14 @@ export function CommunityHubView({ domains }: { domains: CommunityDomainItem[] }
 
           return (
             <Link key={d.id} href={`/community/${d.id}`} className="group block h-full select-none">
-              <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs transition-all duration-300 hover:border-purple-300 hover:shadow-lg hover:-translate-y-1">
+              <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-xs border border-slate-200/90 bg-white p-6 shadow-2xs transition-all duration-200 hover:border-purple-300 hover:shadow-sm hover:-translate-y-0.5">
                 
                 {/* Top Row */}
                 <div>
                   <div className="flex items-start justify-between gap-3 mb-3">
                     <div className="flex items-center gap-2">
-                      <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                      <span className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                      <span className="flex h-2 w-2 rounded-xs bg-emerald-500 animate-pulse" />
+                      <span className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-xs">
                         ACTIVE GUILD
                       </span>
                     </div>
@@ -324,7 +323,7 @@ export function CommunityHubView({ domains }: { domains: CommunityDomainItem[] }
                     {meta.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="text-[10px] font-semibold text-slate-600 border border-slate-200 bg-slate-50 px-2 py-0.5 rounded-md"
+                        className="text-[10px] font-semibold text-slate-600 border border-slate-200 bg-slate-50 px-2 py-0.5 rounded-xs"
                       >
                         {tag}
                       </span>
@@ -345,9 +344,9 @@ export function CommunityHubView({ domains }: { domains: CommunityDomainItem[] }
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-white rounded-lg bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] px-3.5 py-1.5 shadow-xs group-hover:opacity-95 transition-all">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-white rounded-xs bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] px-3.5 py-1.5 shadow-2xs group-hover:opacity-95 transition-all">
                     <span>Enter Hub</span>
-                    <IconArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                    <IconArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
                   </div>
                 </div>
 
@@ -358,7 +357,7 @@ export function CommunityHubView({ domains }: { domains: CommunityDomainItem[] }
       </div>
 
       {filteredDomains.length === 0 && (
-        <div className="rounded-2xl border-2 border-dashed border-slate-200 bg-white p-12 text-center">
+        <div className="rounded-xs border-2 border-dashed border-slate-200 bg-white p-12 text-center">
           <IconSearch className="h-8 w-8 text-slate-400 mx-auto mb-2" />
           <h3 className="text-base font-bold text-slate-900">No Matching Guilds</h3>
           <p className="mt-1 text-xs text-slate-500">
@@ -367,11 +366,11 @@ export function CommunityHubView({ domains }: { domains: CommunityDomainItem[] }
         </div>
       )}
 
-      {/* Community Collaboration Guidelines Banner */}
-      <div className="rounded-2xl border border-slate-200/80 bg-gradient-to-r from-purple-50 via-white to-blue-50 p-5 shadow-xs">
+      {/* Community Collaboration Guidelines Banner (Sharp Edges) */}
+      <div className="rounded-xs border border-slate-200/90 bg-gradient-to-r from-purple-50 via-white to-blue-50 p-5 shadow-2xs">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-purple-100 text-[#7C3AED] shadow-xs">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xs bg-purple-100 text-[#7C3AED] shadow-2xs">
               <IconSparkles className="h-5 w-5" />
             </div>
             <div>
@@ -386,10 +385,10 @@ export function CommunityHubView({ domains }: { domains: CommunityDomainItem[] }
 
           <Link
             href="/dashboard"
-            className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#3B82F6] to-[#7C3AED] px-4 py-2 text-xs font-bold text-white shadow-xs hover:opacity-95 active:scale-98 transition-all shrink-0"
+            className="flex items-center gap-2 rounded-xs bg-gradient-to-r from-[#3B82F6] to-[#7C3AED] px-4 py-2 text-xs font-bold text-white shadow-2xs hover:opacity-95 active:scale-98 transition-all shrink-0"
           >
-            <IconBolt className="h-3.5 w-3.5" />
-            <span>Go to Active Quest</span>
+            <span>Explore Dashboard</span>
+            <IconArrowRight className="h-4 w-4" />
           </Link>
         </div>
       </div>

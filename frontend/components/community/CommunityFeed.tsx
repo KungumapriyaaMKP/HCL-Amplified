@@ -126,13 +126,13 @@ export function CommunityFeed({ domain }: { domain: string }) {
   return (
     <div className="space-y-4">
       
-      {/* ================= CARD 1: ENROLLED MEMBERS STATS & JOIN BUTTON ================= */}
-      <div className="rounded-2xl border border-slate-100 bg-white px-6 py-4 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      {/* ================= CARD 1: ENROLLED MEMBERS STATS & JOIN BUTTON (SHARP EDGES) ================= */}
+      <div className="rounded-xs border border-slate-200/90 bg-white px-6 py-4 shadow-2xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         
         {/* Left Side: Users Icon + Count + Sparkline Wave */}
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-3.5">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-500 shrink-0">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xs bg-emerald-50 text-emerald-500 shrink-0 border border-emerald-100">
               <IconUsers className="h-5 w-5" />
             </div>
             <div>
@@ -161,17 +161,17 @@ export function CommunityFeed({ domain }: { domain: string }) {
           </div>
         </div>
 
-        {/* Right Side: Join Guild CTA / New Discussion */}
+        {/* Right Side: Join Guild CTA / New Discussion (Sharp Edges) */}
         <div className="flex items-center gap-2">
           {joined ? (
             <>
-              <span className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-xs font-bold text-emerald-700 shadow-xs">
+              <span className="inline-flex items-center gap-1.5 rounded-xs border border-emerald-200 bg-emerald-50 px-4 py-2 text-xs font-bold text-emerald-700 shadow-2xs">
                 <IconCheck className="h-4 w-4 text-emerald-600" />
                 <span>Community Member</span>
               </span>
               <button
                 onClick={() => setShowCompose(!showCompose)}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-[#7C3AED] px-4 py-2 text-xs font-bold text-white shadow-xs hover:bg-[#6D28D9] transition-all cursor-pointer"
+                className="inline-flex items-center gap-1.5 rounded-xs bg-[#7C3AED] px-4 py-2 text-xs font-bold text-white shadow-2xs hover:bg-[#6D28D9] transition-all cursor-pointer"
               >
                 <IconPencil className="h-3.5 w-3.5" />
                 <span>{showCompose ? "Close Form" : "New Discussion"}</span>
@@ -181,7 +181,7 @@ export function CommunityFeed({ domain }: { domain: string }) {
             <button
               disabled={joining}
               onClick={join}
-              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#7C3AED] via-[#6D28D9] to-[#6366F1] px-6 py-3 text-xs sm:text-sm font-bold text-white shadow-md hover:opacity-95 transition-all cursor-pointer disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-xs bg-gradient-to-r from-[#7C3AED] via-[#6D28D9] to-[#6366F1] px-6 py-2.5 text-xs sm:text-sm font-bold text-white shadow-2xs hover:opacity-95 transition-all cursor-pointer disabled:opacity-50"
             >
               <span>✨ Join Community Guild</span>
               <IconArrowRight className="h-4 w-4" />
@@ -191,12 +191,12 @@ export function CommunityFeed({ domain }: { domain: string }) {
 
       </div>
 
-      {/* ================= CARD 2: NOTICE CARD WITH 3D AVATAR TRIO ================= */}
-      <div className="rounded-2xl border border-slate-100 bg-white px-6 py-3 shadow-xs flex items-center justify-between gap-4 overflow-hidden select-none">
+      {/* ================= CARD 2: NOTICE CARD WITH 3D AVATAR TRIO (SHARP EDGES) ================= */}
+      <div className="rounded-xs border border-slate-200/90 bg-white px-6 py-3 shadow-2xs flex items-center justify-between gap-4 overflow-hidden select-none">
         
         {/* Left Side: Purple Rounded Icon + Message */}
         <div className="flex items-center gap-3.5">
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#F3E8FF] text-[#7C3AED] shrink-0">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xs bg-[#F3E8FF] text-[#7C3AED] shrink-0 border border-purple-100">
             <IconUsers className="h-5 w-5 stroke-[2.2]" />
           </div>
           <p className="text-xs sm:text-sm font-medium text-slate-700 leading-snug">
@@ -219,21 +219,21 @@ export function CommunityFeed({ domain }: { domain: string }) {
       </div>
 
       {error && (
-        <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-xs font-bold text-red-600">
+        <div className="rounded-xs border border-red-200 bg-red-50 p-3 text-xs font-bold text-red-600">
           {error}
         </div>
       )}
 
       {/* ================= ACTIVE COMPOSE BOX (IF OPEN) ================= */}
       {showCompose && (
-        <div className="rounded-2xl border border-purple-200 bg-white p-5 sm:p-6 shadow-sm space-y-3">
+        <div className="rounded-xs border border-purple-200 bg-white p-5 sm:p-6 shadow-2xs space-y-3">
           <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">Start a Discussion</h3>
           <textarea
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             rows={3}
             placeholder="Ask a question, share a breakthrough, or discuss concepts with peers..."
-            className="w-full rounded-xl border border-slate-200 bg-slate-50/70 p-3 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:border-[#7C3AED] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#7C3AED] transition-all"
+            className="w-full rounded-xs border border-slate-200 bg-slate-50/70 p-3 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:border-[#7C3AED] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#7C3AED] transition-all"
           />
           <div className="flex items-center justify-end gap-2">
             <button
@@ -245,7 +245,7 @@ export function CommunityFeed({ domain }: { domain: string }) {
             <button
               disabled={posting || !draft.trim()}
               onClick={submitPost}
-              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] px-6 py-2.5 text-xs font-bold text-white shadow-xs hover:opacity-95 transition-all cursor-pointer disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-xs bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] px-6 py-2.5 text-xs font-bold text-white shadow-2xs hover:opacity-95 transition-all cursor-pointer disabled:opacity-50"
             >
               <span>{posting ? "Posting..." : "Publish Post"}</span>
               <IconArrowRight className="h-3.5 w-3.5" />
@@ -258,15 +258,13 @@ export function CommunityFeed({ domain }: { domain: string }) {
       {!posts ? (
         <div className="py-12 text-center text-slate-400">
           <div className="flex items-center justify-center gap-2 text-[#7C3AED] text-xs font-bold">
-            <span className="h-2 w-2 rounded-full bg-[#7C3AED] animate-ping" />
+            <span className="h-2 w-2 rounded-xs bg-[#7C3AED] animate-ping" />
             <span>Loading Community Discussions...</span>
           </div>
         </div>
       ) : posts.length === 0 ? (
-        /* Exact Empty State matching user screenshot */
-        <div className="rounded-3xl border border-slate-100 bg-white py-14 px-8 shadow-xs flex flex-col items-center justify-center text-center select-none">
+        <div className="rounded-xs border border-slate-200/90 bg-white py-14 px-8 shadow-2xs flex flex-col items-center justify-center text-center select-none">
           
-          {/* 3D Purple Chat Bubbles with Radiating Sparkles */}
           <div className="mb-1">
             <Image
               src="/images/community/chat_bubbles_3d.png"
@@ -290,7 +288,7 @@ export function CommunityFeed({ domain }: { domain: string }) {
               if (!joined) join();
               setShowCompose(true);
             }}
-            className="inline-flex items-center gap-2 rounded-2xl border-2 border-purple-200/90 bg-[#FAF5FF]/40 px-6 py-2.5 text-xs sm:text-sm font-bold text-[#7C3AED] hover:bg-purple-50 shadow-xs transition-all mt-6 cursor-pointer"
+            className="inline-flex items-center gap-2 rounded-xs border-2 border-purple-200/90 bg-[#FAF5FF]/40 px-6 py-2.5 text-xs sm:text-sm font-bold text-[#7C3AED] hover:bg-purple-50 shadow-2xs transition-all mt-6 cursor-pointer"
           >
             <span>Start a Discussion</span>
             <IconPencil className="h-3.5 w-3.5" />
@@ -302,10 +300,10 @@ export function CommunityFeed({ domain }: { domain: string }) {
           {posts.map(({ post, authorName, replies }) => (
             <div
               key={post.id}
-              className="rounded-2xl border border-slate-100 bg-white p-5 shadow-xs transition-all hover:border-purple-200 hover:shadow-md"
+              className="rounded-xs border border-slate-200/90 bg-white p-5 shadow-2xs transition-all hover:border-purple-200 hover:shadow-xs"
             >
               <div className="mb-2.5 flex items-center gap-2.5">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-purple-100 text-xs font-bold text-[#7C3AED] shadow-xs">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xs bg-purple-100 text-xs font-bold text-[#7C3AED] shadow-2xs border border-purple-200">
                   {authorName[0]?.toUpperCase() || "A"}
                 </div>
                 <div>
@@ -320,7 +318,7 @@ export function CommunityFeed({ domain }: { domain: string }) {
               {replies.length > 0 && (
                 <div className="mt-4 space-y-2.5 border-l-2 border-purple-200 pl-4 ml-4">
                   {replies.map(({ reply, authorName: replyAuthor }) => (
-                    <div key={reply.id} className="rounded-xl border border-slate-100 bg-slate-50/70 p-3">
+                    <div key={reply.id} className="rounded-xs border border-slate-200/80 bg-slate-50/70 p-3">
                       <div className="mb-1 flex items-center gap-2">
                         <span className="text-xs font-bold text-slate-900">{replyAuthor}</span>
                         <span className="text-[9px] text-slate-400">{formatTime(reply.createdAt)}</span>
@@ -331,7 +329,7 @@ export function CommunityFeed({ domain }: { domain: string }) {
                 </div>
               )}
 
-              {/* Reply Button / Box */}
+              {/* Reply Button / Box (Sharp Edges) */}
               {joined && (
                 <div className="mt-4 pt-3 border-t border-slate-100 pl-10.5">
                   {openReplyFor === post.id ? (
@@ -341,19 +339,19 @@ export function CommunityFeed({ domain }: { domain: string }) {
                         onChange={(e) => setReplyDraft(e.target.value)}
                         rows={2}
                         placeholder="Write a reply..."
-                        className="w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-xs text-slate-900 placeholder-slate-400 focus:border-[#7C3AED] focus:bg-white focus:outline-none"
+                        className="w-full rounded-xs border border-purple-400 bg-white p-2.5 text-xs text-slate-900 placeholder-slate-400 focus:border-[#7C3AED] focus:outline-none shadow-2xs"
                       />
                       <div className="flex items-center gap-2 justify-end">
                         <button
                           onClick={() => { setOpenReplyFor(null); setReplyDraft(""); }}
-                          className="px-3 py-1 text-xs text-slate-500 hover:text-slate-700"
+                          className="px-3 py-1 text-xs text-slate-500 hover:text-slate-700 cursor-pointer"
                         >
                           Cancel
                         </button>
                         <button
                           disabled={replying || !replyDraft.trim()}
                           onClick={() => submitReply(post.id)}
-                          className="rounded-md bg-[#7C3AED] px-3.5 py-1 text-xs font-bold text-white hover:bg-[#6D28D9] disabled:opacity-50"
+                          className="rounded-xs bg-[#7C3AED] px-4 py-1 text-xs font-bold text-white hover:bg-[#6D28D9] disabled:opacity-50 cursor-pointer shadow-2xs"
                         >
                           {replying ? "Replying..." : "Reply"}
                         </button>

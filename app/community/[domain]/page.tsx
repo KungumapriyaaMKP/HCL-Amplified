@@ -51,7 +51,7 @@ export default async function CommunityDomainPage({ params }: { params: Promise<
             <div className="flex items-start gap-4 sm:gap-5 max-w-2xl">
               
               {/* Purple Square Icon Container with White Code Tag */}
-              <div className="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-2xl bg-gradient-to-tr from-[#6366F1] to-[#7C3AED] text-white text-2xl sm:text-3xl font-black shadow-md shrink-0 border-4 border-white">
+              <div className="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-xs bg-gradient-to-tr from-[#6366F1] to-[#7C3AED] text-white text-2xl sm:text-3xl font-black shadow-md shrink-0 border-4 border-white">
                 {"</>"}
               </div>
 
