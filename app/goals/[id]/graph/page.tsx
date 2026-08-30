@@ -44,7 +44,7 @@ export default async function SkillGraphPage({ params }: { params: Promise<{ id:
           <div>
             <Link
               href={`/goals/${id}`}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white border border-purple-200 text-xs font-bold text-[#6D28D9] shadow-2xs hover:bg-purple-50 hover:border-purple-300 transition-all group"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-white border border-purple-200 text-xs font-bold text-[#6D28D9] shadow-2xs hover:bg-purple-50 hover:border-purple-300 transition-all group"
             >
               <IconArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
               <span>Back to Quest Roadmap</span>
@@ -54,7 +54,7 @@ export default async function SkillGraphPage({ params }: { params: Promise<{ id:
           {/* Header Title Section */}
           <div className="space-y-1.5">
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-purple-100/90 text-purple-800 text-[11px] font-black uppercase tracking-wider">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-xs bg-purple-100/90 text-purple-800 text-[11px] font-black uppercase tracking-wider">
                 <IconLayersLinked className="w-3.5 h-3.5 text-[#6D28D9]" />
                 <span>{domain?.name || "Web Development"} Topological Skill Tree</span>
               </span>
@@ -69,7 +69,7 @@ export default async function SkillGraphPage({ params }: { params: Promise<{ id:
           </div>
 
           {/* Legend Card */}
-          <div className="rounded-md border border-purple-100 bg-white/95 p-4 shadow-sm backdrop-blur-md">
+          <div className="rounded-sm border border-purple-100 bg-white/95 p-4 shadow-sm backdrop-blur-md">
             <SkillGraphLegend />
           </div>
 

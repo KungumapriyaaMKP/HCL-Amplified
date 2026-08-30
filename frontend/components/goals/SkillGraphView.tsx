@@ -113,8 +113,8 @@ export function SkillGraphView({
 
   return (
     <div className="space-y-6">
-      {/* 1. Interactive Poincaré Hyperbolic Constellation */}
-      <div className="relative flex flex-col items-center justify-center overflow-hidden rounded-md border-2 border-purple-200/80 bg-white/95 p-6 shadow-xl shadow-purple-500/5 backdrop-blur-md">
+      {/* 1. Interactive Poincaré Hyperbolic Constellation (Sharp Modern Edges) */}
+      <div className="relative flex flex-col items-center justify-center overflow-hidden rounded-sm border-2 border-purple-200/80 bg-white/95 p-6 shadow-xl shadow-purple-500/5 backdrop-blur-md">
         
         {/* Soft Ambient Background Glow */}
         <div className="pointer-events-none absolute inset-12 rounded-full bg-gradient-to-tr from-purple-300/20 via-amber-200/20 to-teal-200/20 blur-3xl" />
@@ -384,9 +384,9 @@ export function SkillGraphView({
         </div>
       </div>
 
-      {/* 2. Active Node Detail Drawer */}
+      {/* 2. Active Node Detail Drawer (Sharp Modern Edges) */}
       {activeNode && (
-        <div className="rounded-md border-2 border-purple-200 bg-white/98 p-5 shadow-lg shadow-purple-500/5 backdrop-blur-md space-y-4">
+        <div className="rounded-sm border-2 border-purple-200 bg-white/98 p-5 shadow-lg shadow-purple-500/5 backdrop-blur-md space-y-4">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
@@ -396,12 +396,12 @@ export function SkillGraphView({
                 />
                 <h3 className="text-lg font-black text-slate-900">{activeNode.name}</h3>
                 <span
-                  className="px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wider"
+                  className="px-2 py-0.5 rounded-xs text-[10px] font-extrabold uppercase tracking-wider"
                   style={{ backgroundColor: activeColors.bg, color: activeColors.text }}
                 >
                   {activeColors.badge}
                 </span>
-                <span className="px-2 py-0.5 rounded-md bg-purple-100 text-[#6D28D9] text-[10px] font-bold uppercase tracking-wider">
+                <span className="px-2 py-0.5 rounded-xs bg-purple-100 text-[#6D28D9] text-[10px] font-bold uppercase tracking-wider">
                   {activeNode.category.replace(/-/g, " ")}
                 </span>
               </div>
@@ -444,7 +444,7 @@ export function SkillGraphView({
               </span>
               <Link
                 href={`/goals/${goalId}`}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-gradient-to-r from-[#6D28D9] to-[#8B5CF6] text-white text-xs font-bold shadow-md shadow-purple-500/20 hover:opacity-95 transition-all"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-sm bg-gradient-to-r from-[#6D28D9] to-[#8B5CF6] text-white text-xs font-bold shadow-md shadow-purple-500/20 hover:opacity-95 transition-all"
               >
                 <span>View in Quest Roadmap</span>
                 <IconArrowRight className="w-4 h-4" />
