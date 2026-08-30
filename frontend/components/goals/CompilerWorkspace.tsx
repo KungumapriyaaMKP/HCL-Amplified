@@ -144,9 +144,29 @@ export function CompilerWorkspace({
   async function run() {
     setRunning(true);
     const { code, stdin } = stateFor(current);
+    const ex = exercises[current];
     try {
       const output = await executeCode(code, stdin);
-      updateCurrent({ output, results: null });
+      
+      // Automatically run internal test cases once run is done
+      let results: TestResult[] | null = null;
+      if (ex && ex.testCases && ex.testCases.length > 0) {
+        results = [];
+        for (const tc of ex.testCases) {
+          const body: RunResult = await executeCode(code, tc.input);
+          const actual = (body.stdout ?? "").trim();
+          const expected = tc.expectedOutput.trim();
+          results.push({
+            passed: !body.compileError && !body.stderr && actual === expected,
+            input: tc.input,
+            expected,
+            actual: body.compileError || body.stderr || actual,
+            error: body.compileError || body.stderr || null,
+          });
+        }
+      }
+
+      updateCurrent({ output, results });
       emitNudge("code_run");
     } finally {
       setRunning(false);
