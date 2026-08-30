@@ -52,6 +52,8 @@ interface JourneyMapViewProps {
   domainName: string;
   modules: JourneyModuleItem[];
   userDisplayName?: string;
+  totalXp?: number;
+  gems?: number;
 }
 
 export function JourneyMapView({
@@ -59,7 +61,9 @@ export function JourneyMapView({
   goalTitle,
   domainName,
   modules,
-  userDisplayName = "Yuvi",
+  userDisplayName = "Learner",
+  totalXp = 0,
+  gems = 0,
 }: JourneyMapViewProps) {
   // Sort modules by order
   const sortedModules = [...modules].sort(
@@ -249,12 +253,12 @@ export function JourneyMapView({
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white/95 border border-amber-200/90 text-amber-800 text-xs font-black shadow-xs backdrop-blur-xs">
             <span className="text-sm">🪙</span>
-            <span>320</span>
+            <span>{totalXp}</span>
           </div>
 
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white/95 border border-purple-200/90 text-[#7C3AED] text-xs font-black shadow-xs backdrop-blur-xs">
             <span className="text-sm">💎</span>
-            <span>15</span>
+            <span>{gems}</span>
           </div>
 
           <Link
