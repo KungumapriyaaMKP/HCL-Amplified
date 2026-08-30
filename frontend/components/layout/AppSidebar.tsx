@@ -104,39 +104,6 @@ export function AppSidebar({
             );
           })}
         </nav>
-
-        {/* Dynamic Contextual Promo Card */}
-        <div className="mt-6 pt-4 border-t border-slate-100">
-          {isResourcesPage ? (
-            <div className="relative overflow-hidden rounded-sm bg-gradient-to-br from-[#FAF8FE] via-[#F3EEFD] to-[#EDE5FD] border border-purple-200/80 p-3.5 shadow-2xs">
-              <div className="flex items-center gap-3">
-                <NeedResourcesBooksIllustration className="w-10 h-10 shrink-0" />
-                <div>
-                  <div className="text-xs font-black text-slate-900 leading-tight">
-                    Study Library
-                  </div>
-                  <div className="text-[10px] text-slate-600 font-medium">
-                    Curated materials & tools
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="relative overflow-hidden rounded-sm bg-gradient-to-br from-[#FAF8FE] via-[#F3EEFD] to-[#EDE5FD] border border-purple-200/80 p-3.5 shadow-2xs group">
-              <div className="flex items-center gap-3">
-                <RocketBlastingIllustration className="w-10 h-10 shrink-0 group-hover:scale-105 transition-transform" />
-                <div>
-                  <div className="text-xs font-black text-slate-900 leading-tight">
-                    Fast Track Quest
-                  </div>
-                  <div className="text-[10px] text-slate-600 font-medium">
-                    AI adaptive acceleration
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
       </div>
 
       {/* Bottom User Profile Section */}
