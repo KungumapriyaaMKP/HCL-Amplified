@@ -32,17 +32,26 @@ function ResumeOnboarding() {
   const [yearsExperience, setYearsExperience] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
   const [result, setResult] = useState<{ extraction: Extraction; seededCount: number } | null>(null);
 
   async function submit() {
-    setSubmitting(true);
+    setHasAttemptedSubmit(true);
     setError(null);
+
+    // Validate mandatory fields
+    if (!currentRole.trim() || !careerGoal.trim() || !yearsExperience.trim()) {
+      setError("Please fill in all mandatory fields (marked with *).");
+      return;
+    }
+
+    setSubmitting(true);
     try {
       const formData = new FormData();
       if (fileRef.current?.files?.[0]) formData.append("file", fileRef.current.files[0]);
-      if (currentRole.trim()) formData.append("currentRole", currentRole.trim());
-      if (careerGoal.trim()) formData.append("careerGoal", careerGoal.trim());
-      if (yearsExperience.trim()) formData.append("yearsExperience", yearsExperience.trim());
+      formData.append("currentRole", currentRole.trim());
+      formData.append("careerGoal", careerGoal.trim());
+      formData.append("yearsExperience", yearsExperience.trim());
 
       const res = await fetch("/api/profile/resume", { method: "POST", body: formData });
       const body = await res.json();
@@ -170,7 +179,7 @@ function ResumeOnboarding() {
           {/* Field 1: Current Role */}
           <div className="space-y-1.5">
             <label className="block text-[10px] font-extrabold uppercase tracking-wider text-slate-700">
-              CURRENT ROLE / SPECIALIZATION
+              CURRENT ROLE / SPECIALIZATION <span className="text-rose-500 font-black">*</span>
             </label>
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-none bg-[#F5F3FF] text-[#7C3AED] shrink-0 border border-purple-100">
@@ -178,10 +187,18 @@ function ResumeOnboarding() {
               </div>
               <input
                 type="text"
+                required
                 value={currentRole}
-                onChange={(e) => setCurrentRole(e.target.value)}
+                onChange={(e) => {
+                  setCurrentRole(e.target.value);
+                  if (error) setError(null);
+                }}
                 placeholder="e.g. Frontend Engineer"
-                className="w-full rounded-none border border-slate-200 bg-white px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] focus:outline-none transition-all shadow-2xs"
+                className={`w-full rounded-none border px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none transition-all shadow-2xs ${
+                  hasAttemptedSubmit && !currentRole.trim()
+                    ? "border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-1 focus:ring-rose-500"
+                    : "border-slate-200 bg-white focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED]"
+                }`}
               />
             </div>
           </div>
@@ -189,7 +206,7 @@ function ResumeOnboarding() {
           {/* Field 2: Career Objective */}
           <div className="space-y-1.5">
             <label className="block text-[10px] font-extrabold uppercase tracking-wider text-slate-700">
-              CAREER OBJECTIVE
+              CAREER OBJECTIVE <span className="text-rose-500 font-black">*</span>
             </label>
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-none bg-[#F5F3FF] text-[#7C3AED] shrink-0 border border-purple-100">
@@ -197,10 +214,18 @@ function ResumeOnboarding() {
               </div>
               <input
                 type="text"
+                required
                 value={careerGoal}
-                onChange={(e) => setCareerGoal(e.target.value)}
+                onChange={(e) => {
+                  setCareerGoal(e.target.value);
+                  if (error) setError(null);
+                }}
                 placeholder="e.g. Senior Distributed AI Architect"
-                className="w-full rounded-none border border-slate-200 bg-white px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] focus:outline-none transition-all shadow-2xs"
+                className={`w-full rounded-none border px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none transition-all shadow-2xs ${
+                  hasAttemptedSubmit && !careerGoal.trim()
+                    ? "border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-1 focus:ring-rose-500"
+                    : "border-slate-200 bg-white focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED]"
+                }`}
               />
             </div>
           </div>
@@ -208,7 +233,7 @@ function ResumeOnboarding() {
           {/* Field 3: Years of Experience */}
           <div className="space-y-1.5">
             <label className="block text-[10px] font-extrabold uppercase tracking-wider text-slate-700">
-              YEARS OF EXPERIENCE
+              YEARS OF EXPERIENCE <span className="text-rose-500 font-black">*</span>
             </label>
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-none bg-[#F5F3FF] text-[#7C3AED] shrink-0 border border-purple-100">
@@ -217,10 +242,18 @@ function ResumeOnboarding() {
               <input
                 type="number"
                 min={0}
+                required
                 value={yearsExperience}
-                onChange={(e) => setYearsExperience(e.target.value)}
+                onChange={(e) => {
+                  setYearsExperience(e.target.value);
+                  if (error) setError(null);
+                }}
                 placeholder="e.g. 3"
-                className="w-full rounded-none border border-slate-200 bg-white px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] focus:outline-none transition-all shadow-2xs"
+                className={`w-full rounded-none border px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none transition-all shadow-2xs ${
+                  hasAttemptedSubmit && !yearsExperience.trim()
+                    ? "border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-1 focus:ring-rose-500"
+                    : "border-slate-200 bg-white focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED]"
+                }`}
               />
             </div>
           </div>
