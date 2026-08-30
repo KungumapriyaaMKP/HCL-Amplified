@@ -33,6 +33,29 @@ export function ProfileDashboardView({
   const xpForNextLevel = gamification.xpForNextLevel || 50;
   const pct = xpForNextLevel > 0 ? Math.min(100, Math.round((xpIntoLevel / xpForNextLevel) * 100)) : 0;
 
+  const [clientResumeProfile, setClientResumeProfile] = React.useState<any>(null);
+  const [clientFaceEnrolled, setClientFaceEnrolled] = React.useState<boolean>(false);
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const stored = localStorage.getItem("pathwise_resume_profile");
+        if (stored) {
+          setClientResumeProfile(JSON.parse(stored));
+        } else if (localStorage.getItem("pathwise_resume_uploaded") === "true") {
+          setClientResumeProfile({ currentRole: "Profile Calibrated" });
+        }
+        if (localStorage.getItem("pathwise_face_enrolled") === "true") {
+          setClientFaceEnrolled(true);
+        }
+      } catch {}
+    }
+  }, []);
+
+  const resumeData = (profile?.resumeProfile as any) || clientResumeProfile;
+  const isResumeUploaded = Boolean(resumeData || profile?.resumeText);
+  const isFaceVerified = Boolean(profile?.faceDescriptor || clientFaceEnrolled);
+
 
 
   return (
@@ -243,27 +266,35 @@ export function ProfileDashboardView({
             <div className="relative flex items-center justify-between rounded-none border border-slate-200 bg-white p-5 shadow-xs overflow-hidden">
               <div className="pr-2 max-w-[65%]">
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-none bg-purple-100 text-[#7C3AED] shadow-xs shrink-0">
+                  <div className={`flex h-8 w-8 items-center justify-center rounded-none shadow-xs shrink-0 ${
+                    isFaceVerified ? "bg-emerald-100 text-emerald-600" : "bg-purple-100 text-[#7C3AED]"
+                  }`}>
                     <IconShieldCheck className="h-4.5 w-4.5" />
                   </div>
                   <div>
                     <div className="text-xs font-extrabold text-slate-900 leading-tight">BIOMETRIC CALIBRATION</div>
                     <div className="text-[9px] text-slate-400 font-medium">Proctored Identity Verification</div>
                   </div>
-                  <span className="ml-auto rounded-none border border-amber-200 bg-amber-50 px-2 py-0.5 text-[9px] font-bold text-amber-700">
-                    PENDING
+                  <span className={`ml-auto rounded-none border px-2 py-0.5 text-[9px] font-bold ${
+                    isFaceVerified
+                      ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                      : "border-amber-200 bg-amber-50 text-amber-700"
+                  }`}>
+                    {isFaceVerified ? "VERIFIED" : "PENDING"}
                   </span>
                 </div>
 
                 <p className="text-[11px] text-slate-500 leading-relaxed font-normal">
-                  Calibrate your facial scan before your first proctored examination.
+                  {isFaceVerified
+                    ? "Facial biometric signature verified. You are authorized for proctored examinations."
+                    : "Calibrate your facial scan before your first proctored examination."}
                 </p>
 
                 <Link
                   href="/calibration/face"
                   className="mt-3 inline-flex items-center gap-1 text-xs font-extrabold text-[#2563EB] hover:underline"
                 >
-                  <span>ENROLL FACE SIGNATURE</span>
+                  <span>{isFaceVerified ? "RE-CALIBRATE FACE" : "ENROLL FACE SIGNATURE"}</span>
                   <IconArrowRight className="h-3.5 w-3.5" />
                 </Link>
               </div>
@@ -319,27 +350,37 @@ export function ProfileDashboardView({
             <div className="relative flex items-center justify-between rounded-none border border-slate-200 bg-white p-5 shadow-xs overflow-hidden">
               <div className="pr-2 max-w-[65%]">
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-none bg-sky-100 text-sky-600 shadow-xs shrink-0">
+                  <div className={`flex h-8 w-8 items-center justify-center rounded-none shadow-xs shrink-0 ${
+                    isResumeUploaded ? "bg-emerald-100 text-emerald-600" : "bg-sky-100 text-sky-600"
+                  }`}>
                     <IconFileText className="h-4.5 w-4.5" />
                   </div>
                   <div>
                     <div className="text-xs font-extrabold text-slate-900 leading-tight">EXPERIENCE PROFILE</div>
                     <div className="text-[9px] text-slate-400 font-medium">Prerequisite & Starting Mastery</div>
                   </div>
-                  <span className="ml-auto rounded-none border border-slate-200 bg-slate-50 px-2 py-0.5 text-[9px] font-bold text-slate-600">
-                    NOT SET
+                  <span className={`ml-auto rounded-none border px-2 py-0.5 text-[9px] font-bold ${
+                    isResumeUploaded
+                      ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                      : "border-slate-200 bg-slate-50 text-slate-600"
+                  }`}>
+                    {isResumeUploaded ? "CALIBRATED" : "NOT SET"}
                   </span>
                 </div>
 
                 <p className="text-[11px] text-slate-500 leading-relaxed font-normal">
-                  Upload your resume to calibrate starting mastery and tailor milestone prerequisites.
+                  {isResumeUploaded
+                    ? (resumeData?.currentRole
+                        ? `Calibrated as ${resumeData.currentRole}${resumeData.yearsExperience ? ` (${resumeData.yearsExperience} yrs exp)` : ""}. Prerequisites tailored.`
+                        : "Resume credentials successfully calibrated and starting masteries credited.")
+                    : "Upload your resume to calibrate starting mastery and tailor milestone prerequisites."}
                 </p>
 
                 <Link
                   href="/onboarding/resume?next=/profile"
                   className="mt-3 inline-flex items-center gap-1 text-xs font-extrabold text-[#2563EB] hover:underline"
                 >
-                  <span>UPLOAD RESUME</span>
+                  <span>{isResumeUploaded ? "UPDATE RESUME" : "UPLOAD RESUME"}</span>
                   <IconArrowRight className="h-3.5 w-3.5" />
                 </Link>
               </div>

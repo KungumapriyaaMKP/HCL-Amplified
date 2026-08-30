@@ -57,6 +57,16 @@ function ResumeOnboarding() {
       const res = await fetch("/api/profile/resume", { method: "POST", body: formData });
       const body = await res.json();
       if (!res.ok) throw new Error(body.error || "Could not analyze credentials");
+      
+      if (typeof window !== "undefined") {
+        try {
+          localStorage.setItem("pathwise_resume_uploaded", "true");
+          if (body.extraction) {
+            localStorage.setItem("pathwise_resume_profile", JSON.stringify(body.extraction));
+          }
+        } catch {}
+      }
+
       setResult(body);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong analyzing resume");
