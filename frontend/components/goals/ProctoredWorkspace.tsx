@@ -816,72 +816,77 @@ export function ProctoredWorkspace({
   const seconds = secondsLeft % 60;
 
   return (
-    <div className="space-y-5">
-      
-      {/* Live Proctored HUD Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-purple-500/30 bg-[#0c1026]/90 p-4 shadow-[0_0_25px_rgba(139,92,246,0.3)] backdrop-blur-xl">
-        
+    <div className="space-y-4">
+      {/* 1. Live Proctored HUD Bar (Matches Mockup) */}
+      <div className="flex items-center justify-between gap-4 rounded-2xl border border-purple-100/90 bg-white p-4 sm:p-5 shadow-sm">
         {/* Timer */}
-        <div className="flex items-center gap-3">
-          <IconClock className="h-6 w-6 text-purple-400" />
+        <div className="flex items-center gap-3.5">
+          <div className="h-10 w-10 rounded-full bg-purple-100/80 text-purple-600 flex items-center justify-center shrink-0">
+            <IconClock className="h-5 w-5 text-purple-600" />
+          </div>
           <div>
-            <div className="text-[10px] font-black uppercase tracking-wider text-slate-400">TIME REMAINING</div>
-            <div className={`text-xl font-black tabular-nums ${secondsLeft < 60 ? "text-red-400 animate-pulse" : "text-amber-400"}`}>
-              {minutes}:{seconds.toString().padStart(2, "0")}
-            </div>
+            <span className="text-[11px] font-semibold text-slate-400 block leading-tight">Time Remaining</span>
+            <span className="text-2xl font-black text-[#1E1B4B] tabular-nums tracking-tight block leading-tight">
+              {minutes.toString().padStart(2, "0")}:{seconds.toString().padStart(2, "0")}
+            </span>
           </div>
         </div>
 
-        {/* Biometrics & Flags */}
+        {/* Biometrics & Live Webcam Frame */}
         <div className="flex items-center gap-3">
           {flags.length > 0 && (
-            <Badge tone="danger" className="flex items-center gap-1">
-              <IconAlertTriangle className="h-3.5 w-3.5" />
-              <span>{flags.length} Flag(s) Logged</span>
-            </Badge>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-50 border border-rose-200 text-rose-600 text-xs font-bold">
+              <IconAlertTriangle className="h-3.5 w-3.5 text-rose-500" />
+              <span>{flags.length} Flag(s)</span>
+            </div>
           )}
 
-          {faceStatus && (
-            <Badge tone={faceStatus === "verified" || faceStatus === "enrolled" ? "success" : faceStatus === "checking" ? "cyan" : "danger"}>
-              {faceStatus === "checking" && "Scanning..."}
-              {faceStatus === "enrolled" && "Face Enrolled"}
-              {faceStatus === "verified" && "Identity Verified"}
-              {faceStatus === "mismatch" && "Identity Warning"}
-              {faceStatus === "no_face" && "No Face Detected"}
-            </Badge>
-          )}
+          {/* Scanning Pill Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-100/70 border border-purple-200/80 text-purple-600 text-xs font-bold uppercase tracking-wider">
+            <span>
+              {faceStatus === "mismatch"
+                ? "WARNING..."
+                : faceStatus === "no_face"
+                ? "NO FACE..."
+                : "SCANNING..."}
+            </span>
+            <span
+              className={`h-2 w-2 rounded-full ${
+                faceStatus === "mismatch" || faceStatus === "no_face"
+                  ? "bg-rose-500"
+                  : "bg-emerald-400 animate-pulse"
+              }`}
+            />
+          </div>
 
-          {/* Cyber Webcam Frame */}
-          <div className="relative h-14 w-20 overflow-hidden rounded-xl border border-cyan-400/50 bg-black shadow-[0_0_12px_rgba(6,182,212,0.4)]">
+          {/* Webcam Thumbnail Frame */}
+          <div className="relative h-12 w-16 rounded-xl overflow-hidden border-2 border-purple-200 bg-slate-950 shadow-xs shrink-0">
             {cameraActive ? (
-              <video ref={videoRef} autoPlay muted playsInline className="h-full w-full object-cover" />
+              <video ref={videoRef} autoPlay muted playsInline className="h-full w-full object-cover scale-x-[-1]" />
             ) : (
               <div className="grid h-full w-full place-items-center text-[9px] font-bold text-slate-500">NO CAM</div>
             )}
-            <div className="pointer-events-none absolute inset-0 border border-cyan-400/30 rounded-xl" />
           </div>
         </div>
-
       </div>
 
-      {/* Question Sheet - Single Question at a Time */}
+      {/* 2. Question Quick Jump & Progress Header Card */}
       {questions.length > 0 && (
-        <div className="space-y-4">
-          {/* Question Quick Jump & Progress Header */}
-          <div className="rounded-none border border-purple-500/20 bg-[#080b1a]/95 p-4 sm:p-5 shadow-lg space-y-3">
+        <>
+          <div className="rounded-2xl border border-purple-100/90 bg-white p-4 sm:p-5 shadow-sm space-y-3">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-2">
-                <span className="text-[11px] font-black uppercase tracking-widest text-purple-400">
+                <span className="text-xs font-extrabold text-[#7C3AED]">
                   Question {currentIndex + 1} of {questions.length}
                 </span>
-                <span className="text-xs text-slate-500">•</span>
-                <span className="text-xs text-slate-400">
-                  {Object.keys(answers).length} / {questions.length} Answered
+                <span className="text-xs text-slate-300">•</span>
+                <span className="text-xs font-medium text-slate-400">
+                  {Object.keys(answers).length}/{questions.length} Answered
                 </span>
               </div>
 
-              {/* Quick Jump Buttons */}
-              <div className="flex flex-wrap items-center gap-1.5">
+              {/* Numbered Jump Buttons */}
+              <div className="flex flex-wrap items-center gap-2">
                 {questions.map((_, idx) => {
                   const isCurrent = currentIndex === idx;
                   const isAnswered = answers[questions[idx]?.id] !== undefined;
@@ -891,12 +896,12 @@ export function ProctoredWorkspace({
                       key={idx}
                       type="button"
                       onClick={() => setCurrentIndex(idx)}
-                      className={`h-7 w-7 rounded-none text-[11px] font-black transition-all cursor-pointer ${
+                      className={`h-8 w-8 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center ${
                         isCurrent
-                          ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-[0_0_10px_rgba(139,92,246,0.5)] ring-1 ring-white/50"
+                          ? "bg-[#7C3AED] text-white font-black shadow-sm"
                           : isAnswered
-                          ? "bg-cyan-950/80 border border-cyan-400/60 text-cyan-300 hover:border-cyan-300"
-                          : "bg-[#0c1026] border border-purple-500/20 text-slate-400 hover:border-purple-400/50 hover:text-slate-200"
+                          ? "bg-purple-100/80 border border-purple-300 text-purple-700"
+                          : "border border-purple-100 bg-[#FAF9FF] text-slate-500 hover:bg-purple-50"
                       }`}
                       title={`Jump to Question ${idx + 1}`}
                     >
@@ -907,30 +912,32 @@ export function ProctoredWorkspace({
               </div>
             </div>
 
-            {/* Linear Progress Bar */}
-            <div className="h-1.5 w-full bg-[#0c1026] overflow-hidden rounded-none border border-purple-500/10">
+            {/* Progress Line */}
+            <div className="h-1 w-full bg-purple-50 rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-purple-600 via-indigo-500 to-cyan-400 transition-all duration-300"
+                className="h-full bg-gradient-to-r from-purple-600 to-indigo-400 rounded-full transition-all duration-300"
                 style={{ width: `${(Object.keys(answers).length / Math.max(1, questions.length)) * 100}%` }}
               />
             </div>
           </div>
 
-          {/* Active Single Question Card */}
+          {/* 3. Active Single Question Card */}
           {questions[currentIndex] && (
-            <div className="rounded-none border border-purple-500/20 bg-[#080b1a]/95 p-6 sm:p-8 space-y-6 shadow-xl">
-              {/* Question Text */}
-              <div className="space-y-2">
-                <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-none bg-purple-950/70 border border-purple-500/30 text-purple-300 text-[10px] font-black uppercase tracking-wider">
-                  Question #{currentIndex + 1}
-                </div>
-                <h3 className="text-base sm:text-lg font-bold text-white leading-relaxed">
-                  {questions[currentIndex].question}
-                </h3>
+            <div className="rounded-2xl border border-purple-100/90 bg-white p-6 sm:p-8 space-y-6 shadow-sm">
+              {/* Question Header Badge */}
+              <div>
+                <span className="px-3 py-1 rounded-lg bg-purple-100/80 text-purple-600 text-[10px] font-extrabold uppercase tracking-wider inline-block">
+                  QUESTION #{currentIndex + 1}
+                </span>
               </div>
 
+              {/* Question Text */}
+              <h3 className="text-base sm:text-lg font-bold text-[#1E1B4B] leading-relaxed">
+                {questions[currentIndex].question}
+              </h3>
+
               {/* Options Stack */}
-              <div className="space-y-3 pt-2">
+              <div className="space-y-3 pt-1">
                 {questions[currentIndex].options.map((opt, oi) => {
                   const qId = questions[currentIndex].id;
                   const isSelected = answers[qId] === oi;
@@ -941,29 +948,34 @@ export function ProctoredWorkspace({
                       key={oi}
                       type="button"
                       onClick={() => setAnswers((a) => ({ ...a, [qId]: oi }))}
-                      className={`w-full text-left flex items-center gap-4 rounded-none border p-4 transition-all cursor-pointer ${
+                      className={`w-full text-left flex items-center justify-between gap-4 rounded-xl border p-4 transition-all cursor-pointer ${
                         isSelected
-                          ? "border-cyan-400 bg-cyan-950/60 text-white shadow-[0_0_16px_rgba(6,182,212,0.25)] ring-1 ring-cyan-400"
-                          : "border-purple-500/20 bg-[#0c1026] text-slate-300 hover:border-purple-400/50 hover:bg-[#121838]"
+                          ? "border-2 border-purple-400 bg-purple-50/50 shadow-xs"
+                          : "border border-purple-100/80 bg-white hover:border-purple-200 hover:bg-purple-50/30 text-slate-700"
                       }`}
                     >
-                      {/* Option Letter Badge */}
-                      <div
-                        className={`h-7 w-7 rounded-none flex items-center justify-center text-xs font-black shrink-0 transition-all ${
-                          isSelected
-                            ? "bg-cyan-400 text-black font-black"
-                            : "bg-purple-950/80 border border-purple-500/40 text-purple-300"
-                        }`}
-                      >
-                        {optionLetters[oi] || oi + 1}
+                      <div className="flex items-center gap-3.5 flex-1 min-w-0">
+                        {/* Option Letter Badge */}
+                        <div
+                          className={`h-8 w-8 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 transition-all ${
+                            isSelected
+                              ? "bg-purple-200/90 text-purple-800 font-black"
+                              : "bg-purple-100/70 text-purple-600"
+                          }`}
+                        >
+                          {optionLetters[oi] || oi + 1}
+                        </div>
+
+                        <span className="text-xs sm:text-sm font-medium text-slate-800 leading-relaxed font-mono sm:font-sans">
+                          {opt}
+                        </span>
                       </div>
 
-                      <span className="text-xs sm:text-sm font-medium leading-relaxed flex-1">
-                        {opt}
-                      </span>
-
+                      {/* Selected Checkmark Badge */}
                       {isSelected && (
-                        <div className="h-2 w-2 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)] shrink-0" />
+                        <div className="h-6 w-6 rounded-full bg-[#7C3AED] text-white flex items-center justify-center shrink-0 shadow-xs">
+                          <IconCheck className="h-3.5 w-3.5 stroke-[3]" />
+                        </div>
                       )}
                     </button>
                   );
@@ -971,12 +983,12 @@ export function ProctoredWorkspace({
               </div>
 
               {/* Navigation Actions Footer */}
-              <div className="pt-4 border-t border-purple-500/20 flex flex-wrap items-center justify-between gap-3">
+              <div className="pt-4 flex flex-wrap items-center justify-between gap-3">
                 <button
                   type="button"
                   onClick={() => setCurrentIndex((i) => Math.max(0, i - 1))}
                   disabled={currentIndex === 0}
-                  className="inline-flex items-center gap-2 px-5 py-3 rounded-none border border-purple-500/30 bg-[#0c1026] text-xs font-bold text-slate-300 hover:bg-[#151c3d] disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-purple-100 bg-white text-xs sm:text-sm font-bold text-slate-500 hover:bg-purple-50 shadow-xs disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
                 >
                   <IconChevronLeft className="h-4 w-4" />
                   <span>Previous</span>
@@ -987,7 +999,7 @@ export function ProctoredWorkspace({
                     <button
                       type="button"
                       onClick={() => setCurrentIndex((i) => Math.min(questions.length - 1, i + 1))}
-                      className="inline-flex items-center gap-2 px-6 py-3 rounded-none bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-xs font-bold shadow-md shadow-purple-500/20 hover:opacity-95 transition-all cursor-pointer"
+                      className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-gradient-to-r from-[#6366F1] to-[#7C3AED] text-white text-xs sm:text-sm font-bold shadow-md shadow-purple-500/20 hover:opacity-95 transition-all cursor-pointer"
                     >
                       <span>Next Question</span>
                       <IconChevronRight className="h-4 w-4" />
@@ -998,11 +1010,7 @@ export function ProctoredWorkspace({
                     type="button"
                     onClick={submit}
                     disabled={Object.keys(answers).length < questions.length}
-                    className={`inline-flex items-center gap-2 px-6 py-3 rounded-none text-xs font-black transition-all cursor-pointer ${
-                      Object.keys(answers).length === questions.length
-                        ? "bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 shadow-lg shadow-cyan-500/30 hover:opacity-95 ring-1 ring-white/40 animate-pulse"
-                        : "bg-purple-900/60 border border-purple-500/30 text-purple-300 disabled:opacity-40 disabled:pointer-events-none"
-                    }`}
+                    className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl border-2 border-purple-200 bg-white text-[#7C3AED] text-xs sm:text-sm font-bold shadow-xs hover:bg-purple-50 transition-all cursor-pointer disabled:opacity-40 disabled:pointer-events-none"
                   >
                     <span>Submit Official Assessment</span>
                     <IconArrowRight className="h-4 w-4" />
@@ -1011,9 +1019,8 @@ export function ProctoredWorkspace({
               </div>
             </div>
           )}
-        </div>
+        </>
       )}
-
     </div>
   );
 }
