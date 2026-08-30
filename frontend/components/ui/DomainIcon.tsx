@@ -5,6 +5,12 @@ import {
   IconCloud,
   IconDeviceMobile,
   IconShieldLock,
+  IconSparkles,
+  IconDatabase,
+  IconServer2,
+  IconCpu,
+  IconActivity,
+  IconBriefcase,
   IconCompass,
 } from "@tabler/icons-react";
 
@@ -22,6 +28,18 @@ export function DomainIcon({ id, className = "h-5 w-5" }: { id?: string; classNa
       return <IconDeviceMobile className={className} />;
     case "cybersecurity":
       return <IconShieldLock className={className} />;
+    case "gen-ai":
+      return <IconSparkles className={className} />;
+    case "data-engineering":
+      return <IconDatabase className={className} />;
+    case "enterprise-fullstack":
+      return <IconServer2 className={className} />;
+    case "embedded-iot":
+      return <IconCpu className={className} />;
+    case "sre-observability":
+      return <IconActivity className={className} />;
+    case "product-management":
+      return <IconBriefcase className={className} />;
     default:
       return <IconCompass className={className} />;
   }
