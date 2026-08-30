@@ -235,8 +235,8 @@ export function CompilerWorkspace({
         {/* Right Badges & Mascot Illustration */}
         <div className="flex items-center gap-4 self-start lg:self-auto">
           {/* Day Streak Card */}
-          <div className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-50 text-amber-500">
+          <div className="flex items-center gap-3 px-4 py-2.5 rounded-xs bg-white border border-slate-200/90 shadow-2xs">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xs bg-amber-50 text-amber-500">
               <IconFlame className="h-5 w-5 fill-amber-400 text-amber-500" />
             </div>
             <div>
@@ -250,8 +250,8 @@ export function CompilerWorkspace({
           </div>
 
           {/* XP Earned Card */}
-          <div className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-50 text-amber-500">
+          <div className="flex items-center gap-3 px-4 py-2.5 rounded-xs bg-white border border-slate-200/90 shadow-2xs">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xs bg-amber-50 text-amber-500">
               <IconStar className="h-5 w-5 fill-amber-400 text-amber-500" />
             </div>
             <div>
@@ -269,22 +269,22 @@ export function CompilerWorkspace({
             <svg viewBox="0 0 140 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full drop-shadow-md">
               <ellipse cx="70" cy="88" rx="60" ry="8" fill="#E0E7FF" opacity="0.6" />
               <path d="M110 82 C110 75 116 72 120 72 C124 72 130 75 130 82 Z" fill="#6EE7B7" />
-              <rect x="117" y="80" width="6" height="8" rx="2" fill="#D97706" />
+              <rect x="117" y="80" width="6" height="8" rx="1" fill="#D97706" />
 
-              <rect x="42" y="58" width="44" height="26" rx="3" fill="#334155" />
-              <rect x="45" y="61" width="38" height="20" rx="1.5" fill="#0F172A" />
+              <rect x="42" y="58" width="44" height="26" rx="2" fill="#334155" />
+              <rect x="45" y="61" width="38" height="20" rx="1" fill="#0F172A" />
               <path d="M36 84 L92 84 L88 88 L40 88 Z" fill="#64748B" />
               <text x="64" y="75" fontSize="9" fontWeight="900" fill="#818CF8" textAnchor="middle" fontFamily="monospace">&lt;/&gt;</text>
 
-              <rect x="52" y="38" width="36" height="32" rx="16" fill="#6366F1" />
-              <rect x="56" y="44" width="28" height="20" rx="10" fill="#4338CA" />
+              <rect x="52" y="38" width="36" height="32" rx="4" fill="#6366F1" />
+              <rect x="56" y="44" width="28" height="20" rx="2" fill="#4338CA" />
               <circle cx="64" cy="52" r="2.5" fill="#38BDF8" />
               <circle cx="76" cy="52" r="2.5" fill="#38BDF8" />
               <path d="M66 58 Q70 61 74 58" stroke="#38BDF8" strokeWidth="1.5" strokeLinecap="round" />
 
               <path d="M48 48 C48 30 92 30 92 48" stroke="#A78BFA" strokeWidth="3" fill="none" />
-              <rect x="46" y="44" width="6" height="12" rx="3" fill="#7C3AED" />
-              <rect x="88" y="44" width="6" height="12" rx="3" fill="#7C3AED" />
+              <rect x="46" y="44" width="6" height="12" rx="1" fill="#7C3AED" />
+              <rect x="88" y="44" width="6" height="12" rx="1" fill="#7C3AED" />
 
               <circle cx="48" cy="74" r="4" fill="#C7D2FE" />
               <circle cx="86" cy="74" r="4" fill="#C7D2FE" />
@@ -303,7 +303,7 @@ export function CompilerWorkspace({
         {/* ---------------- LEFT COLUMN: EXERCISES LIST ---------------- */}
         <div className="space-y-4">
           
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-xs">
+          <div className="rounded-sm border border-slate-200/90 bg-white p-5 shadow-2xs">
             {/* Header */}
             <div className="flex items-center gap-2 mb-5 pb-3 border-b border-slate-100">
               <IconFileCode className="h-4 w-4 text-[#7C3AED]" />
@@ -328,15 +328,15 @@ export function CompilerWorkspace({
                     <button
                       type="button"
                       onClick={() => setCurrent(i)}
-                      className={`relative z-10 flex w-full items-center justify-between gap-3 p-2.5 rounded-xl text-left transition-all cursor-pointer ${
+                      className={`relative z-10 flex w-full items-center justify-between gap-3 p-2.5 rounded-xs text-left transition-all cursor-pointer ${
                         active
-                          ? "bg-purple-50/80 border border-purple-200/80 shadow-xs"
+                          ? "bg-purple-50/80 border border-purple-200/80 shadow-2xs"
                           : "hover:bg-slate-50 border border-transparent"
                       }`}
                     >
                       <div className="flex items-center gap-3 min-w-0">
                         <div
-                          className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-black transition-all ${
+                          className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-xs text-xs font-black transition-all ${
                             active
                               ? "bg-[#6D28D9] text-white shadow-sm shadow-purple-500/30"
                               : complete
@@ -371,8 +371,8 @@ export function CompilerWorkspace({
           </div>
 
           {/* Motivational Bottom Card */}
-          <div className="rounded-2xl border border-purple-100 bg-gradient-to-br from-purple-50/70 via-indigo-50/30 to-purple-50/90 p-4 shadow-2xs flex items-center gap-3.5">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-[#6D28D9] to-[#8B5CF6] text-amber-300 shadow-md">
+          <div className="rounded-sm border border-purple-100 bg-gradient-to-br from-purple-50/70 via-indigo-50/30 to-purple-50/90 p-4 shadow-2xs flex items-center gap-3.5">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xs bg-gradient-to-tr from-[#6D28D9] to-[#8B5CF6] text-amber-300 shadow-sm">
               <span className="text-xl">🏆</span>
             </div>
             <div>
@@ -391,9 +391,9 @@ export function CompilerWorkspace({
         <div className="space-y-4">
           
           {/* Card 1: Challenge Details & 3D Python Laptop Illustration */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-xs relative overflow-hidden">
+          <div className="rounded-sm border border-slate-200/90 bg-white p-6 shadow-2xs relative overflow-hidden">
             <div className="flex items-center justify-between gap-2 mb-3">
-              <span className="rounded-full bg-purple-100/90 border border-purple-200/60 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-[#6D28D9]">
+              <span className="rounded-xs bg-purple-100/90 border border-purple-200/60 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-[#6D28D9]">
                 {skillName.toUpperCase()}
               </span>
 
@@ -403,7 +403,7 @@ export function CompilerWorkspace({
                   {exercises.map((_, idx) => (
                     <span
                       key={idx}
-                      className={`h-1.5 rounded-full transition-all ${
+                      className={`h-1.5 rounded-xs transition-all ${
                         idx === current
                           ? "w-4 bg-[#6D28D9]"
                           : isDoneByIndex(idx)
@@ -435,14 +435,14 @@ export function CompilerWorkspace({
                   <path d="M25 82 C20 72 32 66 38 68 C36 78 28 84 25 82 Z" fill="#10B981" />
                   <path d="M19 86 L31 86 L28 98 L22 98 Z" fill="#D97706" />
 
-                  <rect x="36" y="82" width="14" height="16" rx="3" fill="#38BDF8" />
+                  <rect x="36" y="82" width="14" height="16" rx="2" fill="#38BDF8" />
                   <path d="M50 85 C54 85 54 93 50 93" stroke="#38BDF8" strokeWidth="2.5" fill="none" />
                   <path d="M40 78 Q42 74 40 70" stroke="#CBD5E1" strokeWidth="1.5" strokeLinecap="round" />
 
-                  <rect x="52" y="32" width="86" height="56" rx="4" fill="#E2E8F0" stroke="#CBD5E1" strokeWidth="1.5" />
-                  <rect x="56" y="36" width="78" height="48" rx="2" fill="#F8FAFC" />
+                  <rect x="52" y="32" width="86" height="56" rx="2" fill="#E2E8F0" stroke="#CBD5E1" strokeWidth="1.5" />
+                  <rect x="56" y="36" width="78" height="48" rx="1" fill="#F8FAFC" />
                   <path d="M44 90 L146 90 L140 98 L50 98 Z" fill="#CBD5E1" />
-                  <rect x="84" y="91" width="22" height="3" rx="1.5" fill="#94A3B8" />
+                  <rect x="84" y="91" width="22" height="3" rx="1" fill="#94A3B8" />
 
                   <g transform="translate(80, 48) scale(0.65)">
                     <path
@@ -462,12 +462,12 @@ export function CompilerWorkspace({
           </div>
 
           {/* Card 2: Code Workspace & Terminal */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white overflow-hidden shadow-xs">
+          <div className="rounded-sm border border-slate-200/90 bg-white overflow-hidden shadow-2xs">
             
             {/* Top Workspace Toolbar */}
             <div className="flex items-center justify-between border-b border-slate-100 bg-[#FAF9FD] px-5 py-3">
               <div className="flex items-center gap-2">
-                <span className="flex h-6 w-6 items-center justify-center rounded-md bg-purple-100 text-[#7C3AED] font-mono text-xs font-black">
+                <span className="flex h-6 w-6 items-center justify-center rounded-xs bg-purple-100 text-[#7C3AED] font-mono text-xs font-black">
                   &lt;/&gt;
                 </span>
                 <span className="text-xs font-black uppercase tracking-wider text-[#6D28D9]">
@@ -479,21 +479,21 @@ export function CompilerWorkspace({
                 <button
                   type="button"
                   onClick={() => setIsDarkEditor((d) => !d)}
-                  className="p-1.5 rounded-lg hover:bg-slate-200/60 hover:text-slate-700 transition-colors cursor-pointer"
+                  className="p-1.5 rounded-xs hover:bg-slate-200/60 hover:text-slate-700 transition-colors cursor-pointer"
                   title="Toggle Theme"
                 >
                   <IconSun className="h-4 w-4" />
                 </button>
                 <button
                   type="button"
-                  className="p-1.5 rounded-lg hover:bg-slate-200/60 hover:text-slate-700 transition-colors cursor-pointer"
+                  className="p-1.5 rounded-xs hover:bg-slate-200/60 hover:text-slate-700 transition-colors cursor-pointer"
                   title="Fullscreen"
                 >
                   <IconMaximize className="h-4 w-4" />
                 </button>
                 <button
                   type="button"
-                  className="p-1.5 rounded-lg hover:bg-slate-200/60 hover:text-slate-700 transition-colors cursor-pointer"
+                  className="p-1.5 rounded-xs hover:bg-slate-200/60 hover:text-slate-700 transition-colors cursor-pointer"
                   title="Options"
                 >
                   <IconDotsVertical className="h-4 w-4" />
@@ -531,7 +531,7 @@ export function CompilerWorkspace({
                 type="button"
                 disabled={running}
                 onClick={run}
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border-2 border-purple-200 bg-white text-xs font-bold text-[#6D28D9] hover:bg-purple-50 shadow-2xs transition-all cursor-pointer disabled:opacity-50 shrink-0"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xs border-2 border-purple-200 bg-white text-xs font-bold text-[#6D28D9] hover:bg-purple-50 shadow-2xs transition-all cursor-pointer disabled:opacity-50 shrink-0"
               >
                 <IconPlayerPlay className="h-4 w-4 fill-purple-600 text-purple-600" />
                 <span>{running ? "Running..." : "Run Code"}</span>
@@ -542,14 +542,14 @@ export function CompilerWorkspace({
                 value={stdin}
                 onChange={(e) => updateCurrent({ stdin: e.target.value })}
                 placeholder="stdin input (optional for free-run)"
-                className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100 transition-all"
+                className="flex-1 rounded-xs border border-slate-200 bg-white px-4 py-2.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100 transition-all"
               />
 
               <button
                 type="button"
                 disabled={submitting || ex.testCases.length === 0}
                 onClick={submit}
-                className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#6366F1] to-[#7C3AED] text-xs font-black text-white shadow-md shadow-purple-500/25 hover:opacity-95 hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer disabled:opacity-50 shrink-0"
+                className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xs bg-gradient-to-r from-[#6366F1] to-[#7C3AED] text-xs font-black text-white shadow-md shadow-purple-500/25 hover:opacity-95 hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer disabled:opacity-50 shrink-0"
               >
                 <IconCheck className="h-4 w-4 stroke-[3]" />
                 <span>{submitting ? "Checking Tests..." : "Submit Solution"}</span>
@@ -575,7 +575,7 @@ export function CompilerWorkspace({
               <div className="p-4 border-t border-slate-200 bg-slate-50 space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className={`px-2.5 py-0.5 rounded-md text-[11px] font-black uppercase ${passedAll ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"}`}>
+                    <span className={`px-2.5 py-0.5 rounded-xs text-[11px] font-black uppercase ${passedAll ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"}`}>
                       {passedAll ? "All Test Cases Passed 🎉" : "Some Tests Failed"}
                     </span>
                     <span className="text-xs font-bold text-slate-600">
@@ -588,7 +588,7 @@ export function CompilerWorkspace({
                   {results.map((r, idx) => (
                     <div
                       key={idx}
-                      className={`p-3 rounded-xl border text-xs font-mono space-y-1 ${
+                      className={`p-3 rounded-xs border text-xs font-mono space-y-1 ${
                         r.passed
                           ? "bg-white border-emerald-200 text-slate-800"
                           : "bg-rose-50/60 border-rose-200 text-slate-800"
@@ -619,7 +619,7 @@ export function CompilerWorkspace({
               type="button"
               disabled={current === 0}
               onClick={() => setCurrent((c) => c - 1)}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 transition-all cursor-pointer disabled:opacity-40"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xs border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 transition-all cursor-pointer disabled:opacity-40"
             >
               <IconArrowLeft className="h-4 w-4" />
               <span>Previous</span>
@@ -634,7 +634,7 @@ export function CompilerWorkspace({
               type="button"
               disabled={current === exercises.length - 1}
               onClick={() => setCurrent((c) => c + 1)}
-              className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-all cursor-pointer disabled:opacity-40"
+              className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xs bg-white border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-all cursor-pointer disabled:opacity-40"
             >
               <span>Next</span>
               <IconArrowRight className="h-4 w-4" />
