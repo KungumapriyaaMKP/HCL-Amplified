@@ -543,10 +543,9 @@ export function ProfileDashboardView({
 
         </div>
 
-        {/* ================= BOTTOM ROW: ACTIVITY HEATMAP & AI PATH LOG ================= */}
-        <div className="grid gap-5 lg:grid-cols-2">
-          
-          {/* Left: Exact GitHub-Style Learning Activity Contribution Heatmap */}
+        {/* ================= BOTTOM ROW: ACTIVITY HEATMAP ================= */}
+        <div className="w-full">
+          {/* Exact GitHub-Style Learning Activity Contribution Heatmap */}
           <div className="rounded-none border border-[#30363D] bg-[#0D1117] text-slate-200 p-5 sm:p-6 shadow-md flex flex-col justify-between overflow-hidden">
             <div>
               {/* Header: Total Contributions + Settings Dropdown */}
@@ -643,57 +642,6 @@ export function ProfileDashboardView({
               </div>
             </div>
           </div>
-
-          {/* Right: AI Adaptive Path Log with Sharp Edges & Exact 3D Brain Mascot */}
-          <div className="relative rounded-none border border-slate-200 bg-white p-5 sm:p-6 shadow-xs flex flex-col justify-between overflow-hidden">
-            <div>
-              <div className="flex items-center justify-between gap-3 mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-none bg-purple-100 text-[#7C3AED] shadow-xs shrink-0">
-                    <IconBolt className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <div className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#7C3AED]">
-                      DYNAMIC RECALIBRATION
-                    </div>
-                    <h3 className="text-base font-extrabold text-slate-900 leading-tight">
-                      AI Adaptive Path Log
-                    </h3>
-                  </div>
-                </div>
-
-                <Link
-                  href="/dashboard"
-                  className="rounded-none border border-slate-200 bg-white px-3 py-1 text-xs font-bold text-slate-700 hover:bg-slate-50 shadow-xs"
-                >
-                  View All
-                </Link>
-              </div>
-
-              {/* Timeline Item */}
-              <div className="relative pl-6 border-l-2 border-purple-200 mt-5 space-y-1">
-                <span className="absolute -left-[5px] top-1 h-2 w-2 rounded-none bg-[#7C3AED]" />
-                <div className="text-[10px] font-bold text-slate-400">Today, 09:15 PM</div>
-                <div className="text-xs font-bold text-[#7C3AED]">Welcome to QuestLearn!</div>
-                <p className="text-[11px] text-slate-500 leading-relaxed font-normal">
-                  Initial assessment completed. Starting adaptive journey...
-                </p>
-              </div>
-            </div>
-
-            {/* Exact 3D Purple Brain Mascot */}
-            <div className="absolute right-4 bottom-3 pointer-events-none">
-              <Image
-                src="/images/profile/brain_mascot.png"
-                alt="Brain Mascot 3D"
-                width={72}
-                height={72}
-                className="object-contain drop-shadow-sm select-none"
-                unoptimized
-              />
-            </div>
-          </div>
-
         </div>
 
       </div>
