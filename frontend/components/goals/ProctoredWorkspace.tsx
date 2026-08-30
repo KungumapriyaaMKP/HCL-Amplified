@@ -16,6 +16,8 @@ import {
   IconDeviceLaptop,
   IconUserCheck,
   IconLock,
+  IconChevronLeft,
+  IconChevronRight,
 } from "@tabler/icons-react";
 import CubeLoader from "@/components/ui/cube-loader";
 
@@ -46,6 +48,7 @@ export function ProctoredWorkspace({
   const [questions, setQuestions] = useState<Question[]>([]);
   const [attemptId, setAttemptId] = useState<string | null>(null);
   const [answers, setAnswers] = useState<Record<string, number>>({});
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [secondsLeft, setSecondsLeft] = useState(0);
   const [flags, setFlags] = useState<Flag[]>([]);
   const [cameraActive, setCameraActive] = useState(false);
@@ -564,59 +567,155 @@ export function ProctoredWorkspace({
 
       </div>
 
-      {/* Question Sheet */}
-      <Card className="space-y-6 p-6 sm:p-8">
-        <div className="border-b border-purple-500/20 pb-3 flex items-center justify-between">
-          <h2 className="text-sm font-black text-white uppercase tracking-wider">Assessment Questions</h2>
-          <span className="rounded-full bg-purple-950 border border-purple-500/40 px-3 py-1 text-xs font-bold text-purple-300">
-            {Object.keys(answers).length} / {questions.length} Answered
-          </span>
-        </div>
+      {/* Question Sheet - Single Question at a Time */}
+      {questions.length > 0 && (
+        <div className="space-y-4">
+          {/* Question Quick Jump & Progress Header */}
+          <div className="rounded-none border border-purple-500/20 bg-[#080b1a]/95 p-4 sm:p-5 shadow-lg space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] font-black uppercase tracking-widest text-purple-400">
+                  Question {currentIndex + 1} of {questions.length}
+                </span>
+                <span className="text-xs text-slate-500">•</span>
+                <span className="text-xs text-slate-400">
+                  {Object.keys(answers).length} / {questions.length} Answered
+                </span>
+              </div>
 
-        {questions.map((q, qi) => (
-          <div key={q.id} className="rounded-2xl border border-purple-500/20 bg-[#080b1a]/90 p-5">
-            <p className="mb-3 text-xs font-bold text-slate-200">
-              <span className="text-purple-400 mr-1.5">{qi + 1}.</span> {q.question}
-            </p>
-            <div className="space-y-2">
-              {q.options.map((opt, oi) => {
-                const selected = answers[q.id] === oi;
-                return (
-                  <label
-                    key={oi}
-                    className={`flex cursor-pointer items-center gap-3 rounded-xl border p-3 text-xs font-medium transition-all ${
-                      selected
-                        ? "border-cyan-400 bg-cyan-950/60 text-cyan-200 shadow-[0_0_12px_rgba(6,182,212,0.3)] ring-1 ring-cyan-400/40"
-                        : "border-purple-500/20 bg-[#0c1026] text-slate-300 hover:border-purple-500/40 hover:bg-[#121838]"
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name={q.id}
-                      checked={selected}
-                      onChange={() => setAnswers((a) => ({ ...a, [q.id]: oi }))}
-                      className="accent-purple-500"
-                    />
-                    <span>{opt}</span>
-                  </label>
-                );
-              })}
+              {/* Quick Jump Buttons */}
+              <div className="flex flex-wrap items-center gap-1.5">
+                {questions.map((_, idx) => {
+                  const isCurrent = currentIndex === idx;
+                  const isAnswered = answers[questions[idx]?.id] !== undefined;
+
+                  return (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => setCurrentIndex(idx)}
+                      className={`h-7 w-7 rounded-none text-[11px] font-black transition-all cursor-pointer ${
+                        isCurrent
+                          ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-[0_0_10px_rgba(139,92,246,0.5)] ring-1 ring-white/50"
+                          : isAnswered
+                          ? "bg-cyan-950/80 border border-cyan-400/60 text-cyan-300 hover:border-cyan-300"
+                          : "bg-[#0c1026] border border-purple-500/20 text-slate-400 hover:border-purple-400/50 hover:text-slate-200"
+                      }`}
+                      title={`Jump to Question ${idx + 1}`}
+                    >
+                      {idx + 1}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Linear Progress Bar */}
+            <div className="h-1.5 w-full bg-[#0c1026] overflow-hidden rounded-none border border-purple-500/10">
+              <div
+                className="h-full bg-gradient-to-r from-purple-600 via-indigo-500 to-cyan-400 transition-all duration-300"
+                style={{ width: `${(Object.keys(answers).length / Math.max(1, questions.length)) * 100}%` }}
+              />
             </div>
           </div>
-        ))}
 
-        <div className="flex justify-end pt-4">
-          <Button
-            size="lg"
-            variant="primary"
-            onClick={submit}
-            disabled={Object.keys(answers).length < questions.length}
-          >
-            <span>Submit Official Assessment</span>
-            <IconArrowRight className="h-4 w-4" />
-          </Button>
+          {/* Active Single Question Card */}
+          {questions[currentIndex] && (
+            <div className="rounded-none border border-purple-500/20 bg-[#080b1a]/95 p-6 sm:p-8 space-y-6 shadow-xl">
+              {/* Question Text */}
+              <div className="space-y-2">
+                <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-none bg-purple-950/70 border border-purple-500/30 text-purple-300 text-[10px] font-black uppercase tracking-wider">
+                  Question #{currentIndex + 1}
+                </div>
+                <h3 className="text-base sm:text-lg font-bold text-white leading-relaxed">
+                  {questions[currentIndex].question}
+                </h3>
+              </div>
+
+              {/* Options Stack */}
+              <div className="space-y-3 pt-2">
+                {questions[currentIndex].options.map((opt, oi) => {
+                  const qId = questions[currentIndex].id;
+                  const isSelected = answers[qId] === oi;
+                  const optionLetters = ["A", "B", "C", "D", "E", "F"];
+
+                  return (
+                    <button
+                      key={oi}
+                      type="button"
+                      onClick={() => setAnswers((a) => ({ ...a, [qId]: oi }))}
+                      className={`w-full text-left flex items-center gap-4 rounded-none border p-4 transition-all cursor-pointer ${
+                        isSelected
+                          ? "border-cyan-400 bg-cyan-950/60 text-white shadow-[0_0_16px_rgba(6,182,212,0.25)] ring-1 ring-cyan-400"
+                          : "border-purple-500/20 bg-[#0c1026] text-slate-300 hover:border-purple-400/50 hover:bg-[#121838]"
+                      }`}
+                    >
+                      {/* Option Letter Badge */}
+                      <div
+                        className={`h-7 w-7 rounded-none flex items-center justify-center text-xs font-black shrink-0 transition-all ${
+                          isSelected
+                            ? "bg-cyan-400 text-black font-black"
+                            : "bg-purple-950/80 border border-purple-500/40 text-purple-300"
+                        }`}
+                      >
+                        {optionLetters[oi] || oi + 1}
+                      </div>
+
+                      <span className="text-xs sm:text-sm font-medium leading-relaxed flex-1">
+                        {opt}
+                      </span>
+
+                      {isSelected && (
+                        <div className="h-2 w-2 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)] shrink-0" />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Navigation Actions Footer */}
+              <div className="pt-4 border-t border-purple-500/20 flex flex-wrap items-center justify-between gap-3">
+                <button
+                  type="button"
+                  onClick={() => setCurrentIndex((i) => Math.max(0, i - 1))}
+                  disabled={currentIndex === 0}
+                  className="inline-flex items-center gap-2 px-5 py-3 rounded-none border border-purple-500/30 bg-[#0c1026] text-xs font-bold text-slate-300 hover:bg-[#151c3d] disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
+                >
+                  <IconChevronLeft className="h-4 w-4" />
+                  <span>Previous</span>
+                </button>
+
+                <div className="flex items-center gap-3">
+                  {currentIndex < questions.length - 1 ? (
+                    <button
+                      type="button"
+                      onClick={() => setCurrentIndex((i) => Math.min(questions.length - 1, i + 1))}
+                      className="inline-flex items-center gap-2 px-6 py-3 rounded-none bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-xs font-bold shadow-md shadow-purple-500/20 hover:opacity-95 transition-all cursor-pointer"
+                    >
+                      <span>Next Question</span>
+                      <IconChevronRight className="h-4 w-4" />
+                    </button>
+                  ) : null}
+
+                  <button
+                    type="button"
+                    onClick={submit}
+                    disabled={Object.keys(answers).length < questions.length}
+                    className={`inline-flex items-center gap-2 px-6 py-3 rounded-none text-xs font-black transition-all cursor-pointer ${
+                      Object.keys(answers).length === questions.length
+                        ? "bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 shadow-lg shadow-cyan-500/30 hover:opacity-95 ring-1 ring-white/40 animate-pulse"
+                        : "bg-purple-900/60 border border-purple-500/30 text-purple-300 disabled:opacity-40 disabled:pointer-events-none"
+                    }`}
+                  >
+                    <span>Submit Official Assessment</span>
+                    <IconArrowRight className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-      </Card>
+      )}
 
     </div>
   );
