@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { IconChevronRight, IconArrowRight, IconLayersLinked } from "@tabler/icons-react";
+import { IconChevronRight } from "@tabler/icons-react";
 
 export interface SkillNodeData {
   id: string;
@@ -28,7 +28,7 @@ export function InteractiveSkillMapTree({
   goalTitle = "Web Development",
   modules = [],
 }: InteractiveSkillMapTreeProps) {
-  const [hoveredNode, setHoveredNode] = useState<SkillNodeData | null>(null);
+  const [_hoveredNode, setHoveredNode] = useState<SkillNodeData | null>(null);
 
   // Default fallback curriculum if modules haven't populated yet
   const displayNodes: SkillNodeData[] =
@@ -36,8 +36,8 @@ export function InteractiveSkillMapTree({
       ? modules
       : [
           { id: "1", skillName: "Foundations & Syntax", status: hasGoals ? "in_progress" : "available", order: 1 },
-          { id: "2", skillName: "Data Structures", status: "available", order: 2 },
-          { id: "3", skillName: "Core Algorithms", status: "available", order: 3 },
+          { id: "2", skillName: "Data Structures", status: "locked", order: 2 },
+          { id: "3", skillName: "Core Algorithms", status: "locked", order: 3 },
           { id: "4", skillName: "Framework Basics", status: "locked", order: 4 },
           { id: "5", skillName: "Backend & APIs", status: "locked", order: 5 },
           { id: "6", skillName: "Full-Stack Project", status: "locked", order: 6 },
@@ -46,8 +46,8 @@ export function InteractiveSkillMapTree({
 
   // Derive up to 7 nodes for the topology layout
   const n1 = displayNodes[0] || { id: "1", skillName: "Foundations", status: "available" };
-  const n2 = displayNodes[1] || { id: "2", skillName: "Core Skills", status: "available" };
-  const n3 = displayNodes[2] || { id: "3", skillName: "Active Module", status: "available" };
+  const n2 = displayNodes[1] || { id: "2", skillName: "Core Skills", status: "locked" };
+  const n3 = displayNodes[2] || { id: "3", skillName: "Active Module", status: "locked" };
   const n4 = displayNodes[3] || { id: "4", skillName: "Specialization", status: "locked" };
   const n5 = displayNodes[4] || { id: "5", skillName: "Applied Practice", status: "locked" };
   const n6 = displayNodes[5] || { id: "6", skillName: "Advanced Mastery", status: "locked" };
@@ -55,9 +55,97 @@ export function InteractiveSkillMapTree({
 
   const graphHref = goalId ? `/goals/${goalId}/graph` : "/goals/new";
 
+  function renderNodeVisual(node: SkillNodeData, cx: number, cy: number) {
+    const isCompleted = node.status === "completed";
+    const isInProgress = node.status === "in_progress";
+    const isAvailable = node.status === "available";
+
+    if (isCompleted) {
+      return (
+        <g
+          className="cursor-pointer group"
+          onMouseEnter={() => setHoveredNode(node)}
+          onMouseLeave={() => setHoveredNode(null)}
+        >
+          <circle cx={cx} cy={cy} r="20" fill="#ECFDF5" stroke="#10B981" strokeWidth="2.5" />
+          <path
+            d={`M ${cx - 7} ${cy} L ${cx - 2} ${cy + 5} L ${cx + 8} ${cy - 6}`}
+            stroke="#059669"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill="none"
+          />
+          <text x={cx} y={cy + 37} textAnchor="middle" fill="#334155" fontSize="11" fontWeight="700">
+            {node.skillName}
+          </text>
+        </g>
+      );
+    }
+
+    if (isInProgress) {
+      return (
+        <Link href={goalId ? `/goals/${goalId}` : "/goals/new"}>
+          <g
+            className="cursor-pointer"
+            filter="url(#hub-shadow-dash)"
+            onMouseEnter={() => setHoveredNode(node)}
+            onMouseLeave={() => setHoveredNode(null)}
+          >
+            <circle cx={cx} cy={cy} r="28" fill="#EDE9FE" fillOpacity="0.8" />
+            <circle cx={cx} cy={cy} r="22" fill="url(#hub-glow-active)" stroke="#DDD6FE" strokeWidth="2.5" />
+            <text x={cx} y={cy + 6} textAnchor="middle" fill="#FFFFFF" fontSize="16" fontWeight="900">
+              ✦
+            </text>
+            <text x={cx} y={cy + 42} textAnchor="middle" fill="#0F172A" fontSize="12" fontWeight="900">
+              {node.skillName}
+            </text>
+          </g>
+        </Link>
+      );
+    }
+
+    if (isAvailable) {
+      return (
+        <g
+          className="cursor-pointer group"
+          onMouseEnter={() => setHoveredNode(node)}
+          onMouseLeave={() => setHoveredNode(null)}
+        >
+          <circle cx={cx} cy={cy} r="20" fill="#FAF5FF" stroke="#A855F7" strokeWidth="2.5" strokeDasharray="4 3" />
+          <circle cx={cx} cy={cy} r="5" fill="#A855F7" />
+          <text x={cx} y={cy + 37} textAnchor="middle" fill="#475569" fontSize="11" fontWeight="700">
+            {node.skillName}
+          </text>
+        </g>
+      );
+    }
+
+    // Locked Node
+    return (
+      <g
+        className="cursor-pointer opacity-50"
+        onMouseEnter={() => setHoveredNode(node)}
+        onMouseLeave={() => setHoveredNode(null)}
+      >
+        <circle cx={cx} cy={cy} r="18" fill="#F8FAFC" stroke="#CBD5E1" strokeWidth="2" />
+        <circle cx={cx} cy={cy} r="4" fill="#CBD5E1" />
+        <text x={cx} y={cy + 37} textAnchor="middle" fill="#94A3B8" fontSize="11" fontWeight="600">
+          {node.skillName}
+        </text>
+      </g>
+    );
+  }
+
+  const line1Color = n1.status === "completed" ? "#10B981" : "#E2E8F0";
+  const line2Color = n2.status === "completed" ? (n3.status === "completed" ? "#10B981" : "#8B5CF6") : "#E2E8F0";
+  const upperBranchColor = n3.status === "completed" || n3.status === "in_progress" ? (n4.status === "completed" ? "#10B981" : "#8B5CF6") : "#E2E8F0";
+  const lowerBranchColor = n3.status === "completed" || n3.status === "in_progress" ? (n5.status === "completed" ? "#10B981" : "#8B5CF6") : "#E2E8F0";
+  const line4Color = n4.status === "completed" ? "#10B981" : "#CBD5E1";
+  const line5Color = n5.status === "completed" ? "#10B981" : "#CBD5E1";
+
   return (
     <div id="skill-map" className="rounded-sm border border-slate-200/90 bg-white p-6 shadow-2xs">
-      
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div>
@@ -101,133 +189,54 @@ export function InteractiveSkillMapTree({
           </defs>
 
           {/* Connected Pathways */}
-          <line x1="70" y1="85" x2="160" y2="85" stroke="#10B981" strokeWidth="3" strokeLinecap="round" />
-          <line x1="200" y1="85" x2="275" y2="85" stroke="#8B5CF6" strokeWidth="3" strokeLinecap="round" />
-          
+          <line x1="70" y1="85" x2="160" y2="85" stroke={line1Color} strokeWidth="3" strokeLinecap="round" />
+          <line x1="200" y1="85" x2="275" y2="85" stroke={line2Color} strokeWidth="3" strokeLinecap="round" />
+
           {/* Upper Branch */}
-          <path d="M 335 85 C 375 85, 405 45, 440 45" stroke="#8B5CF6" strokeWidth="2.5" strokeDasharray="5 5" strokeLinecap="round" fill="none" />
-          <line x1="480" y1="45" x2="580" y2="45" stroke="#CBD5E1" strokeWidth="2.5" strokeLinecap="round" />
+          <path
+            d="M 335 85 C 375 85, 405 45, 440 45"
+            stroke={upperBranchColor}
+            strokeWidth="2.5"
+            strokeDasharray="5 5"
+            strokeLinecap="round"
+            fill="none"
+          />
+          <line x1="480" y1="45" x2="580" y2="45" stroke={line4Color} strokeWidth="2.5" strokeLinecap="round" />
 
           {/* Lower Branch */}
-          <path d="M 335 85 C 375 85, 405 125, 440 125" stroke="#10B981" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-          <line x1="480" y1="125" x2="580" y2="125" stroke="#CBD5E1" strokeWidth="2.5" strokeLinecap="round" />
+          <path
+            d="M 335 85 C 375 85, 405 125, 440 125"
+            stroke={lowerBranchColor}
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            fill="none"
+          />
+          <line x1="480" y1="125" x2="580" y2="125" stroke={line5Color} strokeWidth="2.5" strokeLinecap="round" />
 
-          {/* ========================================================================= */}
-          {/* NODE 1: (Foundation Completed)                                            */}
-          {/* ========================================================================= */}
-          <g
-            className="cursor-pointer group"
-            onMouseEnter={() => setHoveredNode(n1)}
-            onMouseLeave={() => setHoveredNode(null)}
-          >
-            <circle cx="50" cy="85" r="20" fill="#ECFDF5" stroke="#10B981" strokeWidth="2.5" />
-            <path d="M 43 85 L 48 90 L 58 79" stroke="#059669" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-            <text x="50" y="122" textAnchor="middle" fill="#334155" fontSize="11" fontWeight="700">
-              {n1.skillName}
-            </text>
-          </g>
+          {/* NODE 1 */}
+          {renderNodeVisual(n1, 50, 85)}
 
-          {/* ========================================================================= */}
-          {/* NODE 2: (Core Skill Completed)                                            */}
-          {/* ========================================================================= */}
-          <g
-            className="cursor-pointer group"
-            onMouseEnter={() => setHoveredNode(n2)}
-            onMouseLeave={() => setHoveredNode(null)}
-          >
-            <circle cx="180" cy="85" r="20" fill="#ECFDF5" stroke="#10B981" strokeWidth="2.5" />
-            <path d="M 173 85 L 178 90 L 188 79" stroke="#059669" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-            <text x="180" y="122" textAnchor="middle" fill="#334155" fontSize="11" fontWeight="700">
-              {n2.skillName}
-            </text>
-          </g>
+          {/* NODE 2 */}
+          {renderNodeVisual(n2, 180, 85)}
 
-          {/* ========================================================================= */}
-          {/* NODE 3: ACTIVE PURSUIT HUB (Current Skill)                                */}
-          {/* ========================================================================= */}
-          <Link href={goalId ? `/goals/${goalId}` : "/goals/new"}>
-            <g
-              className="cursor-pointer"
-              filter="url(#hub-shadow-dash)"
-              onMouseEnter={() => setHoveredNode(n3)}
-              onMouseLeave={() => setHoveredNode(null)}
-            >
-              {/* Outer Pulse Ring */}
-              <circle cx="305" cy="85" r="30" fill="#EDE9FE" fillOpacity="0.8" />
-              <circle cx="305" cy="85" r="24" fill="url(#hub-glow-active)" stroke="#DDD6FE" strokeWidth="2.5" />
-              {/* Center Icon */}
-              <text x="305" y="92" textAnchor="middle" fill="#FFFFFF" fontSize="18" fontWeight="900">
-                ✦
-              </text>
-              <text x="305" y="132" textAnchor="middle" fill="#0F172A" fontSize="12" fontWeight="900">
-                {n3.skillName}
-              </text>
-            </g>
-          </Link>
+          {/* NODE 3 */}
+          {renderNodeVisual(n3, 305, 85)}
 
-          {/* ========================================================================= */}
-          {/* NODE 4: Specialization Branch (Top)                                       */}
-          {/* ========================================================================= */}
-          <g
-            className="cursor-pointer opacity-90"
-            onMouseEnter={() => setHoveredNode(n4)}
-            onMouseLeave={() => setHoveredNode(null)}
-          >
-            <circle cx="460" cy="45" r="20" fill="#F5F3FF" stroke="#8B5CF6" strokeWidth="2.5" strokeDasharray="4 4" />
-            <text x="460" y="49" textAnchor="middle" fill="#7C3AED" fontSize="10" fontWeight="800">
-              ∂/∂x
-            </text>
-            <text x="460" y="78" textAnchor="middle" fill="#334155" fontSize="11" fontWeight="700">
-              {n4.skillName}
-            </text>
-          </g>
+          {/* NODE 4 */}
+          {renderNodeVisual(n4, 460, 45)}
 
-          {/* ========================================================================= */}
-          {/* NODE 5: Applied Practice Branch (Bottom)                                  */}
-          {/* ========================================================================= */}
-          <g
-            className="cursor-pointer opacity-90"
-            onMouseEnter={() => setHoveredNode(n5)}
-            onMouseLeave={() => setHoveredNode(null)}
-          >
-            <circle cx="460" cy="125" r="20" fill="#ECFDF5" stroke="#10B981" strokeWidth="2.5" />
-            <circle cx="460" cy="125" r="14" fill="#A7F3D0" opacity="0.6" />
-            <text x="460" y="158" textAnchor="middle" fill="#334155" fontSize="11" fontWeight="700">
-              {n5.skillName}
-            </text>
-          </g>
+          {/* NODE 5 */}
+          {renderNodeVisual(n5, 460, 125)}
 
-          {/* ========================================================================= */}
-          {/* NODE 6: Advanced Mastery (Top Right - Locked)                             */}
-          {/* ========================================================================= */}
-          <g
-            className="cursor-pointer opacity-60"
-            onMouseEnter={() => setHoveredNode(n6)}
-            onMouseLeave={() => setHoveredNode(null)}
-          >
-            <circle cx="600" cy="45" r="18" fill="#F8FAFC" stroke="#CBD5E1" strokeWidth="2" />
-            <text x="600" y="78" textAnchor="middle" fill="#64748B" fontSize="11" fontWeight="600">
-              {n6.skillName}
-            </text>
-          </g>
+          {/* NODE 6 */}
+          {renderNodeVisual(n6, 600, 45)}
 
-          {/* ========================================================================= */}
-          {/* NODE 7: Capstone Projects (Bottom Right - Locked)                         */}
-          {/* ========================================================================= */}
-          <g
-            className="cursor-pointer opacity-60"
-            onMouseEnter={() => setHoveredNode(n7)}
-            onMouseLeave={() => setHoveredNode(null)}
-          >
-            <circle cx="600" cy="125" r="18" fill="#F8FAFC" stroke="#CBD5E1" strokeWidth="2" />
-            <text x="600" y="158" textAnchor="middle" fill="#64748B" fontSize="11" fontWeight="600">
-              {n7.skillName}
-            </text>
-          </g>
+          {/* NODE 7 */}
+          {renderNodeVisual(n7, 600, 125)}
         </svg>
       </div>
 
-      {/* Legend & Action Bar */}
+      {/* Legend */}
       <div className="flex flex-wrap items-center justify-between border-t border-slate-100 pt-3 text-xs">
         <div className="flex items-center gap-5 text-slate-600 font-semibold text-[11px]">
           <span className="flex items-center gap-1.5">
@@ -243,15 +252,6 @@ export function InteractiveSkillMapTree({
             <span>Locked</span>
           </span>
         </div>
-
-        <Link
-          href={graphHref}
-          className="inline-flex items-center gap-1.5 font-extrabold text-[#6D28D9] hover:underline"
-        >
-          <IconLayersLinked className="h-3.5 w-3.5" />
-          <span>View Poincaré Topological Graph</span>
-          <IconArrowRight className="h-3.5 w-3.5" />
-        </Link>
       </div>
     </div>
   );
