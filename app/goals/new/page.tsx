@@ -651,9 +651,6 @@ function NewGoalForm() {
                     <h2 className="text-base sm:text-[17px] font-black text-slate-900">
                       Corporate & Enterprise Engineering
                     </h2>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-xs bg-blue-100/80 text-blue-700">
-                      HCLTech & Enterprise Focus
-                    </span>
                   </div>
                   <p className="text-xs text-slate-500 font-medium">
                     Production microservices, GenAI, ERP, reliability & industrial embedded systems
