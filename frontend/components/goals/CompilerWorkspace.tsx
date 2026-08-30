@@ -15,6 +15,7 @@ import {
   IconFlame,
   IconStar,
 } from "@tabler/icons-react";
+import CubeLoader from "@/components/ui/cube-loader";
 import { emitNudge } from "@/lib/mentorBus";
 import { runPythonInBrowser } from "@/lib/pyodideRunner";
 
@@ -94,6 +95,7 @@ export function CompilerWorkspace({
   totalXp?: number;
 }) {
   const [exercises, setExercises] = useState<Exercise[]>(DEFAULT_EXERCISES);
+  const [loading, setLoading] = useState(true);
   const [current, setCurrent] = useState(0);
   const [byExercise, setByExercise] = useState<Record<number, ExerciseState>>({});
   const [running, setRunning] = useState(false);
@@ -101,15 +103,21 @@ export function CompilerWorkspace({
   const [isDarkEditor, setIsDarkEditor] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     fetch(`/api/modules/${moduleId}/exercises`)
       .then((r) => r.json())
       .then((body) => {
         if (body.exercises && Array.isArray(body.exercises) && body.exercises.length > 0) {
           setExercises(body.exercises);
+        } else {
+          setExercises(DEFAULT_EXERCISES);
         }
       })
       .catch(() => {
         setExercises(DEFAULT_EXERCISES);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, [moduleId]);
 
@@ -179,6 +187,17 @@ export function CompilerWorkspace({
   };
 
   const lineCount = Math.max(8, code.split("\n").length);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[480px] py-16">
+        <CubeLoader
+          title="Generating Coding Exercises"
+          subtitle="Preparing coding challenges, test assertions, and interactive sandbox..."
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
