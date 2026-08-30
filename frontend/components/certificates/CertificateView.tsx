@@ -29,7 +29,7 @@ export function CertificateView({ data }: { data: CertificateData }) {
     `QL-${isGrand ? "GRAND" : "MILE"}-${Math.random().toString(36).substring(2, 8).toUpperCase()}-${new Date().getFullYear()}`;
 
   return (
-    <div className="certificate-print-container w-full max-w-4xl mx-auto bg-white text-slate-900 shadow-2xl relative overflow-hidden select-none border-8 border-[#1E1B4B] p-6 sm:p-10 font-serif">
+    <div id="certificate-view-render" className="certificate-print-container w-full max-w-4xl mx-auto bg-white text-slate-900 shadow-2xl relative overflow-hidden select-none border-8 border-[#1E1B4B] p-6 sm:p-10 font-serif">
       {/* Outer Golden Guilloche & Ornamental Frame */}
       <div className="border-4 border-[#D97706] p-4 sm:p-6 relative bg-gradient-to-b from-[#FFFDF7] via-[#FFFFFF] to-[#FFFBEB]">
         {/* Corner Decorative Ornaments */}
