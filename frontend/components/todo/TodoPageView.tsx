@@ -21,6 +21,7 @@ import {
   IconCalendar,
   IconFlame,
   IconX,
+  IconRotate2,
   IconCloud,
   IconDeviceMobile,
   IconShieldLock,
@@ -357,8 +358,8 @@ export function TodoPageView() {
             className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-none border border-slate-300 bg-white text-xs font-bold text-slate-900 hover:bg-slate-50 shadow-2xs transition-colors cursor-pointer shrink-0"
             title="Reset Filters"
           >
-            <IconAdjustmentsHorizontal className="h-4 w-4 text-slate-700" />
-            <span>Filters</span>
+            <IconRotate2 className="h-4 w-4 text-slate-700" />
+            <span>Reset</span>
           </button>
 
           <button
