@@ -394,17 +394,9 @@ export function DedicatedPracticeWorkspace({
                     </div>
                   }
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-none bg-purple-100/70 border border-purple-200/80 flex items-center justify-center text-purple-600 shadow-2xs shrink-0">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M 12 3 L 14.5 9.5 L 21 12 L 14.5 14.5 L 12 21 L 9.5 14.5 L 3 12 L 9.5 9.5 Z" />
-                        <path d="M 19 3 L 20 6 L 23 7 L 20 8 L 19 11 L 18 8 L 15 7 L 18 6 Z" />
-                      </svg>
-                    </div>
-                    <div className="text-left">
-                      <h4 className="text-sm font-extrabold text-[#1E1B4B]">Step 02 Practice Completed</h4>
-                      <p className="text-xs text-slate-400">Swipe the slider below to claim your practice milestone bonus</p>
-                    </div>
+                  <div className="text-left">
+                    <h4 className="text-sm font-extrabold text-[#1E1B4B]">Step 02 Practice Completed</h4>
+                    <p className="text-xs text-slate-400">Swipe the slider below to claim your practice milestone bonus</p>
                   </div>
                 </SlideToUnlock>
               </div>
