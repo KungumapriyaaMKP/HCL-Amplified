@@ -68,8 +68,8 @@ export function ModuleWorkspace(props: Props) {
   return (
     <div className="relative w-full min-h-screen py-6 px-4 sm:px-6 flex flex-col items-center select-none font-sans">
       
-      {/* Background Soft Studio Ambient Image Overlay */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-35">
+      {/* Background Soft Studio Ambient Image Overlay strictly scoped to content area */}
+      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden opacity-30">
         <Image
           src="/images/journey/study_desk_bg.jpg"
           alt="Study Desk Studio"

@@ -52,7 +52,7 @@ export function AppSidebar({
   const isResourcesPage = pathname === "/resources";
 
   return (
-    <aside className="w-64 shrink-0 bg-white border-r border-slate-100 flex flex-col justify-between p-5 min-h-screen">
+    <aside className="relative z-30 w-64 shrink-0 bg-white border-r border-slate-200/90 flex flex-col justify-between p-5 min-h-screen shadow-2xs">
       <div>
         {/* Brand Header */}
         <Link href="/dashboard" className="flex items-center gap-3 px-1 py-1 mb-6 group">
