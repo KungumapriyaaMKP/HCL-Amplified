@@ -373,11 +373,11 @@ export function ProctoredWorkspace({
 
   if (phase === "done" && result) {
     const score = result.score;
-    const totalQuestions = questions.length || 6;
+    const totalQuestions = questions.length || 15;
     const correctCount = Math.round((score / 100) * totalQuestions);
 
     return (
-      <div className="relative rounded-3xl border border-purple-100/90 bg-white p-6 sm:p-10 shadow-2xl shadow-purple-500/5 text-slate-900 overflow-hidden space-y-6">
+      <div className="relative rounded-none border border-purple-100/90 bg-white p-6 sm:p-10 shadow-2xl shadow-purple-500/5 text-slate-900 overflow-hidden space-y-6">
         {/* Decorative Corner Dot Matrices */}
         <div className="absolute top-6 right-6 pointer-events-none opacity-30 select-none hidden sm:block">
           <svg width="44" height="44" viewBox="0 0 44 44" fill="#818CF8">
@@ -389,8 +389,8 @@ export function ProctoredWorkspace({
         </div>
 
         {/* Decorative Ambient Right Edge Geometry */}
-        <div className="absolute -top-12 -right-12 w-56 h-56 rounded-full border border-purple-100/60 pointer-events-none" />
-        <div className="absolute -top-20 -right-20 w-72 h-72 rounded-full border border-purple-100/40 pointer-events-none" />
+        <div className="absolute -top-12 -right-12 w-56 h-56 rounded-none border border-purple-100/60 pointer-events-none" />
+        <div className="absolute -top-20 -right-20 w-72 h-72 rounded-none border border-purple-100/40 pointer-events-none" />
 
         {/* 1. Top Section: Score Circle Gauge & Mentor Encouragement Card */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
@@ -421,9 +421,9 @@ export function ProctoredWorkspace({
             </p>
           </div>
 
-          {/* Right Column: Teacher Mentor Banner */}
+          {/* Right Column: Teacher Mentor Banner (Sharp Edges) */}
           <div className="lg:col-span-7">
-            <div className="relative rounded-3xl bg-gradient-to-r from-[#F5F3FF] via-[#F3E8FF]/60 to-[#EDE9FE] border border-purple-100 p-6 flex items-center justify-between min-h-[220px] overflow-hidden shadow-xs">
+            <div className="relative rounded-none bg-gradient-to-r from-[#F5F3FF] via-[#F3E8FF]/60 to-[#EDE9FE] border border-purple-100 p-6 flex items-center justify-between min-h-[220px] overflow-hidden shadow-xs">
               {/* Background ambient icons */}
               <div className="absolute top-6 right-28 text-purple-200/50 pointer-events-none select-none">
                 <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -432,8 +432,8 @@ export function ProctoredWorkspace({
                 </svg>
               </div>
 
-              {/* Speech Bubble */}
-              <div className="relative bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-purple-100/90 max-w-[210px] sm:max-w-[240px] text-left z-10">
+              {/* Speech Bubble (Sharp Edges) */}
+              <div className="relative bg-white rounded-none p-4 sm:p-5 shadow-sm border border-purple-100/90 max-w-[210px] sm:max-w-[240px] text-left z-10">
                 <h4 className="text-xs font-bold text-[#1E1B4B] mb-1">
                   Great effort!
                 </h4>
@@ -445,10 +445,10 @@ export function ProctoredWorkspace({
                 <div className="absolute top-1/2 -right-2 -translate-y-1/2 w-0 h-0 border-t-8 border-t-transparent border-b-8 border-b-transparent border-l-8 border-l-white" />
               </div>
 
-              {/* 3D Teacher Mentor Avatar */}
+              {/* 3D Teacher Mentor Avatar (Transparent Cutout) */}
               <div className="relative w-44 h-48 sm:h-52 shrink-0 flex items-end justify-center z-10">
                 <img
-                  src="/mentor-girl-clean.png"
+                  src="/mentor-teacher-3d.png"
                   alt="AI Mentor"
                   className="h-full w-auto object-contain drop-shadow-md select-none pointer-events-none"
                 />
@@ -457,10 +457,10 @@ export function ProctoredWorkspace({
           </div>
         </div>
 
-        {/* 2. Middle Section: Evaluation Report & Skill Mastery Card */}
-        <div className="rounded-2xl border border-purple-100/90 bg-[#FAF9FF] p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-2xs">
+        {/* 2. Middle Section: Evaluation Report & Skill Mastery Card (Sharp Edges) */}
+        <div className="rounded-none border border-purple-100/90 bg-[#FAF9FF] p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-2xs">
           <div className="flex items-start gap-3.5">
-            <div className="h-10 w-10 rounded-xl bg-purple-100/80 border border-purple-200 flex items-center justify-center text-purple-600 shrink-0 mt-0.5">
+            <div className="h-10 w-10 rounded-none bg-purple-100/80 border border-purple-200 flex items-center justify-center text-purple-600 shrink-0 mt-0.5">
               <IconFileText className="h-5 w-5 text-purple-600" />
             </div>
             <div>
@@ -483,11 +483,11 @@ export function ProctoredWorkspace({
           </button>
         </div>
 
-        {/* 3. Stats Row (4 Columns) */}
-        <div className="rounded-2xl border border-purple-100/90 bg-[#FAF9FF] p-4 sm:p-5 grid grid-cols-2 md:grid-cols-4 gap-4 divide-y sm:divide-y-0 sm:divide-x divide-purple-100/80 shadow-2xs">
+        {/* 3. Stats Row (Sharp Edges) */}
+        <div className="rounded-none border border-purple-100/90 bg-[#FAF9FF] p-4 sm:p-5 grid grid-cols-2 md:grid-cols-4 gap-4 divide-y sm:divide-y-0 sm:divide-x divide-purple-100/80 shadow-2xs">
           {/* Stat 1: Score */}
           <div className="flex items-center gap-3 px-2 sm:px-4">
-            <div className="h-9 w-9 rounded-full bg-purple-100/80 flex items-center justify-center text-purple-600 shrink-0">
+            <div className="h-9 w-9 rounded-none bg-purple-100/80 border border-purple-200/60 flex items-center justify-center text-purple-600 shrink-0">
               <IconTarget className="h-4 w-4 text-purple-600" />
             </div>
             <div>
@@ -498,7 +498,7 @@ export function ProctoredWorkspace({
 
           {/* Stat 2: Correct Answers */}
           <div className="flex items-center gap-3 px-2 sm:px-4 pt-3 sm:pt-0">
-            <div className="h-9 w-9 rounded-full bg-purple-100/80 flex items-center justify-center text-purple-600 shrink-0">
+            <div className="h-9 w-9 rounded-none bg-purple-100/80 border border-purple-200/60 flex items-center justify-center text-purple-600 shrink-0">
               <IconCheck className="h-4 w-4 text-purple-600" />
             </div>
             <div>
@@ -509,18 +509,18 @@ export function ProctoredWorkspace({
 
           {/* Stat 3: Time Taken */}
           <div className="flex items-center gap-3 px-2 sm:px-4 pt-3 sm:pt-0">
-            <div className="h-9 w-9 rounded-full bg-purple-100/80 flex items-center justify-center text-purple-600 shrink-0">
+            <div className="h-9 w-9 rounded-none bg-purple-100/80 border border-purple-200/60 flex items-center justify-center text-purple-600 shrink-0">
               <IconClock className="h-4 w-4 text-purple-600" />
             </div>
             <div>
               <span className="text-[11px] font-semibold text-slate-400 block leading-tight">Time Taken</span>
-              <span className="text-base font-black text-[#1E1B4B] block leading-tight">09:48</span>
+              <span className="text-base font-black text-[#1E1B4B] block leading-tight">14:20</span>
             </div>
           </div>
 
           {/* Stat 4: Status */}
           <div className="flex items-center gap-3 px-2 sm:px-4 pt-3 sm:pt-0">
-            <div className="h-9 w-9 rounded-full bg-purple-100/80 flex items-center justify-center text-purple-600 shrink-0">
+            <div className="h-9 w-9 rounded-none bg-purple-100/80 border border-purple-200/60 flex items-center justify-center text-purple-600 shrink-0">
               <IconShieldCheck className="h-4 w-4 text-purple-600" />
             </div>
             <div>
@@ -530,12 +530,12 @@ export function ProctoredWorkspace({
           </div>
         </div>
 
-        {/* 4. Action Buttons Stack (Centered) */}
+        {/* 4. Action Buttons Stack (Centered & Sharp) */}
         <div className="flex flex-col items-center justify-center gap-3 pt-2">
           <button
             type="button"
             onClick={() => router.push(`/goals/${goalId}`)}
-            className="w-full max-w-sm py-3.5 rounded-xl bg-gradient-to-r from-[#6366F1] to-[#7C3AED] text-white text-xs sm:text-sm font-bold shadow-md shadow-purple-500/25 hover:opacity-95 cursor-pointer flex items-center justify-center gap-2"
+            className="w-full max-w-sm py-3.5 rounded-none bg-gradient-to-r from-[#6366F1] to-[#7C3AED] text-white text-xs sm:text-sm font-bold shadow-md shadow-purple-500/25 hover:opacity-95 cursor-pointer flex items-center justify-center gap-2"
           >
             <span>Return to Roadmap</span>
             <IconArrowRight className="h-4 w-4" />
@@ -544,7 +544,7 @@ export function ProctoredWorkspace({
           <button
             type="button"
             onClick={() => router.push(`/goals/${goalId}`)}
-            className="w-full max-w-sm py-3 rounded-xl border border-purple-200 bg-white text-[#7C3AED] text-xs sm:text-sm font-bold shadow-xs hover:bg-purple-50 cursor-pointer flex items-center justify-center gap-2"
+            className="w-full max-w-sm py-3 rounded-none border border-purple-200 bg-white text-[#7C3AED] text-xs sm:text-sm font-bold shadow-xs hover:bg-purple-50 cursor-pointer flex items-center justify-center gap-2"
           >
             <span>Review Answers &amp; Explanations</span>
           </button>
