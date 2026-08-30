@@ -10,6 +10,7 @@ import {
   IconBriefcase,
   IconTarget,
   IconCalendar,
+  IconSparkles,
 } from "@tabler/icons-react";
 
 type Extraction = {
@@ -72,9 +73,44 @@ function ResumeOnboarding() {
         <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-indigo-100/60 blur-3xl pointer-events-none" />
 
         <div className="w-full max-w-[560px] bg-white rounded-none p-8 sm:p-10 shadow-[0_20px_50px_rgba(79,70,229,0.06)] border border-slate-200 text-center relative z-10">
-          <div className="inline-flex h-16 w-16 items-center justify-center rounded-none bg-purple-50 text-[#7C3AED] mb-4 shadow-xs">
-            <IconCheck className="h-8 w-8" />
+          
+          {/* Dynamic Sparkling Glowing Checkmark Badge */}
+          <div className="relative inline-block mx-auto mb-6">
+            {/* Multi-color ambient radiant glowing aura */}
+            <div className="absolute -inset-2 bg-gradient-to-r from-purple-600 via-indigo-500 to-pink-500 rounded-none blur-lg opacity-75 animate-pulse" />
+            
+            {/* Expanding ping aura */}
+            <div className="absolute -inset-1 bg-purple-400 rounded-none opacity-30 animate-ping" />
+
+            {/* Sharp gradient border container */}
+            <div className="relative p-[2px] bg-gradient-to-tr from-[#4F46E5] via-[#9333EA] to-[#F43F5E] shadow-[0_0_30px_rgba(147,51,234,0.5)]">
+              {/* Inner white box */}
+              <div className="h-16 w-16 bg-white flex items-center justify-center text-[#7C3AED]">
+                <IconCheck className="h-8 w-8 stroke-[2.5] text-[#7C3AED] drop-shadow-[0_0_8px_rgba(124,58,237,0.6)]" />
+              </div>
+            </div>
+
+            {/* Floating Sparkle 1 (Top Right) */}
+            <div className="absolute -top-3 -right-3 text-amber-400 animate-bounce duration-700">
+              <IconSparkles className="h-5 w-5 fill-amber-400 filter drop-shadow-[0_0_6px_rgba(251,191,36,0.8)]" />
+            </div>
+
+            {/* Floating Sparkle 2 (Bottom Left) */}
+            <div className="absolute -bottom-2.5 -left-3 text-purple-400 animate-pulse duration-1000">
+              <IconSparkles className="h-4 w-4 fill-purple-400 filter drop-shadow-[0_0_6px_rgba(192,132,252,0.8)]" />
+            </div>
+
+            {/* Floating Sparkle 3 (Top Left Micro Star) */}
+            <div className="absolute -top-2 -left-2 text-pink-400 animate-pulse duration-500 font-bold select-none">
+              ✦
+            </div>
+
+            {/* Floating Sparkle 4 (Bottom Right Micro Star) */}
+            <div className="absolute -bottom-1.5 -right-2 text-indigo-400 animate-bounce duration-1000 font-bold select-none">
+              ✧
+            </div>
           </div>
+
           <h1 className="text-2xl font-black text-slate-900 tracking-tight">Experience Profile Calibrated</h1>
           <p className="mt-2 text-xs text-slate-500 leading-relaxed max-w-md mx-auto">{result.extraction.summary}</p>
           
