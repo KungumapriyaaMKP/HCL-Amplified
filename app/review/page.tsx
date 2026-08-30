@@ -10,7 +10,7 @@ export default async function ReviewPage() {
   const [profile] = await db.select().from(profiles).where(eq(profiles.userId, user.id));
 
   return (
-    <div className="flex min-h-screen bg-[#F8F9FD] text-slate-900 font-sans">
+    <div className="flex min-h-screen bg-gradient-to-br from-[#FAF8FC] via-[#F5F2FB] to-[#ECE6F9] text-slate-900 font-sans">
       {/* 1. Left Sidebar Navigation */}
       <AppSidebar
         displayName={profile?.displayName || "Learner"}
@@ -25,10 +25,10 @@ export default async function ReviewPage() {
             <span className="text-[10px] font-black uppercase tracking-[0.25em] text-[#7C3AED]">
               SPACED REPETITION ENGINE
             </span>
-            <h1 className="mt-1 text-2xl font-black text-slate-900">
+            <h1 className="mt-1 text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
               Daily Memory Calibration & Review Queue
             </h1>
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="mt-1 text-xs sm:text-sm text-slate-500 font-normal">
               Reinforce fading competencies using the SM-2 decay schedule to lock in long-term mastery.
             </p>
           </div>

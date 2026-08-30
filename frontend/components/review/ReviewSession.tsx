@@ -13,9 +13,16 @@ import {
   IconFlame,
   IconShieldCheck,
   IconAward,
+  IconLayoutGrid,
 } from "@tabler/icons-react";
 import { ReviewQueueItem } from "@/app/api/review/today/route";
 import { ReviewGrade } from "@/lib/review";
+import {
+  ReviewCelebrationIllustration,
+  StudioHangingLamp,
+  DotMatrixGrid,
+  CornerStudyDecor,
+} from "@/frontend/components/review/ReviewCelebrationIllustration";
 
 export function ReviewSession() {
   const [queue, setQueue] = useState<ReviewQueueItem[]>([]);
@@ -114,37 +121,65 @@ export function ReviewSession() {
     );
   }
 
+  // =========================================================================
+  // EXACT MATCH TO IMAGE 1: All Caught Up For Today State
+  // =========================================================================
   if (queue.length === 0 || isFinished) {
     return (
-      <div className="mx-auto max-w-xl py-12 px-4">
-        <Card className="p-8 text-center bg-white shadow-sm border border-slate-200/90">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-purple-50 text-[#7C3AED] mb-4">
+      <div className="relative w-full py-4 sm:py-6 flex flex-col items-center select-none font-sans">
+        
+        {/* Background Decorative Studio Elements matching Image 1 */}
+        <div className="absolute -top-6 right-2 pointer-events-none z-0 hidden md:block">
+          <StudioHangingLamp className="w-18 h-32 opacity-90" />
+        </div>
+        <div className="absolute top-8 right-24 pointer-events-none z-0 hidden lg:block">
+          <DotMatrixGrid rows={4} cols={4} />
+        </div>
+        <div className="absolute bottom-4 -left-6 pointer-events-none z-0 hidden md:block">
+          <CornerStudyDecor className="w-24 h-24 opacity-70" />
+        </div>
+        <div className="absolute bottom-12 -right-4 pointer-events-none z-0 hidden lg:block">
+          <DotMatrixGrid rows={4} cols={4} />
+        </div>
+
+        {/* Central Master Review Card matching Image 1 */}
+        <div className="relative z-10 w-full max-w-xl rounded-2xl border border-purple-100/90 bg-white/95 p-8 sm:p-10 shadow-xl shadow-purple-900/5 backdrop-blur-md text-center flex flex-col items-center">
+          
+          {/* Exact 3D Clipboard with Books, Plant & Confetti */}
+          <div className="mb-2">
+            <ReviewCelebrationIllustration className="w-64 sm:w-72 h-52 sm:h-56" />
+          </div>
+
+          {/* Heading */}
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center justify-center gap-2">
+            <span>{isFinished ? "Spaced Review Complete!" : "All Caught Up For Today!"}</span>
+            <span className="text-2xl">🎉</span>
+          </h2>
+
+          {/* Subtitle Description matching Image 1 */}
+          <div className="mt-3 text-xs sm:text-sm font-medium text-slate-600 leading-relaxed max-w-md mx-auto space-y-1">
             {isFinished ? (
-              <IconAward className="h-8 w-8 stroke-[2.5]" />
+              <p>
+                You strengthened {strengthenedSkills.length} key competencies and earned +{totalXpEarned} XP. Your decay intervals have been extended.
+              </p>
             ) : (
-              <IconShieldCheck className="h-8 w-8 text-emerald-600 stroke-[2.5]" />
+              <>
+                <p>No competencies are currently fading or due for review.</p>
+                <p>Great job staying ahead of the curve!</p>
+              </>
             )}
           </div>
 
-          <h2 className="text-2xl font-black text-slate-900">
-            {isFinished ? "Spaced Review Complete!" : "All Caught Up For Today!"}
-          </h2>
-          <p className="mt-2 text-xs text-slate-600 leading-relaxed max-w-md mx-auto">
-            {isFinished
-              ? `You strengthened ${strengthenedSkills.length} key competencies and earned +${totalXpEarned} XP. Your decay intervals have been extended.`
-              : "No competencies are currently fading or due for review. Great job staying ahead of the curve!"}
-          </p>
-
           {isFinished && strengthenedSkills.length > 0 && (
-            <div className="mt-6 rounded-lg bg-slate-50 p-4 text-left border border-slate-200/60">
-              <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block mb-2">
+            <div className="mt-6 w-full rounded-md bg-purple-50/60 p-4 text-left border border-purple-100">
+              <span className="text-[10px] font-black uppercase tracking-wider text-purple-600 block mb-2">
                 STRENGTHENED SKILLS
               </span>
               <div className="flex flex-wrap gap-1.5">
                 {strengthenedSkills.map((s, idx) => (
                   <span
                     key={idx}
-                    className="inline-flex items-center gap-1 rounded-md bg-white border border-slate-200 px-2.5 py-1 text-xs font-bold text-purple-900 shadow-2xs"
+                    className="inline-flex items-center gap-1 rounded-xs bg-white border border-purple-200 px-2.5 py-1 text-xs font-bold text-purple-900 shadow-2xs"
                   >
                     <IconCheck className="h-3.5 w-3.5 text-emerald-600 stroke-[3]" />
                     <span>{s}</span>
@@ -154,15 +189,28 @@ export function ReviewSession() {
             </div>
           )}
 
-          <div className="mt-8 flex items-center justify-center gap-3">
-            <Link href="/dashboard">
-              <Button size="md" variant="primary">
-                <span>Back to Dashboard</span>
-                <IconArrowRight className="h-4 w-4" />
-              </Button>
+          {/* Centered Star Divider matching Image 1 */}
+          <div className="relative w-full my-7 flex items-center justify-center">
+            <div className="w-full border-t border-purple-100" />
+            <div className="absolute px-3 bg-white text-purple-400 text-xs font-black">
+              ★
+            </div>
+          </div>
+
+          {/* Vibrant Action Button matching Image 1 */}
+          <div>
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center gap-2.5 rounded-sm bg-gradient-to-r from-[#6D28D9] via-[#7C3AED] to-[#8B5CF6] hover:from-[#5B21B6] hover:to-[#7C3AED] px-8 py-3 text-xs sm:text-sm font-extrabold text-white shadow-md shadow-purple-500/25 transition-all hover:scale-[1.02] cursor-pointer"
+            >
+              <IconLayoutGrid className="w-4 h-4 stroke-[2.2]" />
+              <span>Back to Dashboard</span>
+              <IconArrowRight className="w-4 h-4 stroke-[2.5]" />
             </Link>
           </div>
-        </Card>
+
+        </div>
+
       </div>
     );
   }
@@ -173,146 +221,125 @@ export function ReviewSession() {
     <div className="mx-auto max-w-2xl px-4 py-8">
       {/* Header & Breadcrumb */}
       <div className="mb-6 flex items-center justify-between">
-        <Link
-          href="/dashboard"
-          className="inline-flex items-center gap-1.5 text-xs font-bold text-purple-600 hover:text-purple-700"
-        >
+        <Link href="/dashboard" className="inline-flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-purple-600">
           <IconArrowLeft className="h-4 w-4" />
-          <span>Exit to Dashboard</span>
+          <span>Back to Dashboard</span>
         </Link>
-        <span className="text-xs font-bold text-slate-500">
-          Skill {currentSkillIndex + 1} of {queue.length}
-        </span>
+        <Badge tone="accent">
+          SKILL {currentSkillIndex + 1} OF {queue.length}
+        </Badge>
       </div>
 
       {/* Progress Bar */}
-      <div className="mb-6 h-1.5 w-full overflow-hidden rounded-full bg-slate-200">
-        <div
-          className="h-full rounded-full bg-[#7C3AED] transition-all duration-300"
-          style={{ width: `${Math.max(5, progressPct)}%` }}
-        />
+      <div className="mb-6">
+        <div className="flex items-center justify-between text-xs font-bold text-slate-600 mb-1.5">
+          <span>{currentSkill?.skillName}</span>
+          <span>Question {currentQuestionIndex + 1} of {currentSkill?.questions.length}</span>
+        </div>
+        <div className="h-2 w-full rounded-full bg-slate-200 overflow-hidden">
+          <div
+            className="h-full rounded-full bg-gradient-to-r from-purple-500 to-[#7C3AED] transition-all duration-300"
+            style={{ width: `${progressPct}%` }}
+          />
+        </div>
       </div>
 
-      {/* Main Flashcard / MCQ Question Container */}
-      <Card className="p-7 bg-white shadow-sm border border-slate-200/90">
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3.5">
-          <div className="flex items-center gap-2">
-            <Badge tone="accent">{currentSkill.skillName}</Badge>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-              {currentSkill.category}
+      {/* Question Card */}
+      {currentQuestion && (
+        <Card className="p-6 sm:p-8 bg-white border border-slate-200/90 shadow-sm">
+          <div className="mb-4">
+            <span className="text-[10px] font-black uppercase tracking-widest text-[#7C3AED] block mb-1">
+              FLASH RECALL
             </span>
+            <h3 className="text-lg sm:text-xl font-bold text-slate-900 leading-snug">
+              {currentQuestion.question}
+            </h3>
           </div>
 
-          <span
-            className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
-              currentSkill.decayTier === "decayed"
-                ? "bg-rose-50 text-rose-700 border border-rose-200/60"
-                : "bg-amber-50 text-amber-700 border border-amber-200/60"
-            }`}
-          >
-            <IconFlame className="h-3 w-3" />
-            <span>{currentSkill.decayTier === "decayed" ? "Decayed Mastery" : "Fading Retention"}</span>
-          </span>
-        </div>
+          {/* Options */}
+          <div className="space-y-2.5 my-6">
+            {currentQuestion.options.map((opt, idx) => {
+              const isSelected = selectedOption === idx;
+              const isCorrect = idx === currentQuestion.correctIndex;
 
-        {/* Question Text */}
-        <h3 className="text-base font-bold text-slate-900 leading-snug">
-          {currentQuestion?.question}
-        </h3>
-
-        {/* Option Choices */}
-        <div className="mt-5 space-y-2.5">
-          {currentQuestion?.options.map((opt, idx) => {
-            const isSelected = selectedOption === idx;
-            const isCorrect = idx === currentQuestion.correctIndex;
-
-            let optionStyle = "border-slate-200 hover:border-purple-300 hover:bg-purple-50/40 text-slate-800";
-            if (isAnswerRevealed) {
-              if (isCorrect) {
-                optionStyle = "border-emerald-500 bg-emerald-50 text-emerald-950 font-bold shadow-2xs";
-              } else if (isSelected && !isCorrect) {
-                optionStyle = "border-rose-400 bg-rose-50 text-rose-950 line-through opacity-90";
-              } else {
-                optionStyle = "border-slate-200 bg-slate-50 text-slate-400 opacity-60";
+              let optionStyle = "border-slate-200 bg-white hover:border-purple-300 text-slate-800";
+              if (isAnswerRevealed) {
+                if (isCorrect) {
+                  optionStyle = "border-emerald-500 bg-emerald-50 text-emerald-950 font-bold ring-1 ring-emerald-400";
+                } else if (isSelected && !isCorrect) {
+                  optionStyle = "border-rose-500 bg-rose-50 text-rose-950 ring-1 ring-rose-400";
+                } else {
+                  optionStyle = "border-slate-200 bg-slate-50 text-slate-400 opacity-60";
+                }
+              } else if (isSelected) {
+                optionStyle = "border-purple-500 bg-purple-50 text-purple-950 font-bold";
               }
-            }
 
-            return (
-              <button
-                key={idx}
-                disabled={isAnswerRevealed}
-                onClick={() => handleSelectOption(idx)}
-                className={`w-full text-left p-3.5 rounded-lg border text-xs transition-all flex items-center justify-between ${optionStyle}`}
-              >
-                <span>{opt}</span>
-                {isAnswerRevealed && isCorrect && (
-                  <IconCheck className="h-4 w-4 text-emerald-600 stroke-[3] shrink-0 ml-2" />
-                )}
-                {isAnswerRevealed && isSelected && !isCorrect && (
-                  <IconX className="h-4 w-4 text-rose-500 stroke-[3] shrink-0 ml-2" />
-                )}
-              </button>
-            );
-          })}
-        </div>
+              return (
+                <button
+                  key={idx}
+                  onClick={() => handleSelectOption(idx)}
+                  disabled={isAnswerRevealed}
+                  className={`w-full text-left p-4 rounded-md border text-xs sm:text-sm transition-all flex items-start justify-between gap-3 ${optionStyle}`}
+                >
+                  <span>{opt}</span>
+                  {isAnswerRevealed && isCorrect && (
+                    <IconCheck className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5 stroke-[3]" />
+                  )}
+                  {isAnswerRevealed && isSelected && !isCorrect && (
+                    <IconX className="h-4 w-4 text-rose-600 shrink-0 mt-0.5 stroke-[3]" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
 
-        {/* Explanation & Self-Rating SM-2 Controls */}
-        {isAnswerRevealed && (
-          <div className="mt-6 border-t border-slate-100 pt-5 animate-fade-in">
-            <div className="rounded-lg bg-slate-50 p-4 border border-slate-200/70 mb-5">
-              <span className="text-[10px] font-black uppercase tracking-wider text-purple-700 block mb-1">
-                EXPLANATION
-              </span>
-              <p className="text-xs text-slate-700 leading-relaxed">
-                {currentQuestion.explanation}
-              </p>
+          {/* Explanation Banner */}
+          {isAnswerRevealed && (
+            <div className="mt-4 p-4 rounded-md bg-purple-50/80 border border-purple-200/80 text-xs text-purple-950 leading-relaxed">
+              <span className="font-bold block mb-1">Concept Insight:</span>
+              <p>{currentQuestion.explanation}</p>
             </div>
+          )}
 
-            <div>
-              <p className="text-xs font-bold text-slate-800 mb-3 text-center">
-                Rate your recall difficulty to calibrate your next review interval:
-              </p>
-              <div className="grid grid-cols-4 gap-2">
+          {/* Self-Rating Calibration Buttons (SM-2 Grade) */}
+          {isAnswerRevealed && (
+            <div className="mt-6 pt-6 border-t border-slate-100">
+              <span className="text-xs font-bold text-slate-700 block mb-3 text-center">
+                How easy was this retrieval for you?
+              </span>
+              <div className="grid grid-cols-3 gap-2">
                 <button
-                  disabled={submitting}
-                  onClick={() => handleGradeAndAdvance("again")}
-                  className="flex flex-col items-center justify-center p-2.5 rounded-lg border border-rose-200 bg-rose-50/70 hover:bg-rose-100 text-rose-800 transition-all text-center"
-                >
-                  <span className="text-xs font-extrabold">Again</span>
-                  <span className="text-[10px] text-rose-600 mt-0.5">&lt; 1 day</span>
-                </button>
-
-                <button
-                  disabled={submitting}
                   onClick={() => handleGradeAndAdvance("hard")}
-                  className="flex flex-col items-center justify-center p-2.5 rounded-lg border border-amber-200 bg-amber-50/70 hover:bg-amber-100 text-amber-800 transition-all text-center"
+                  disabled={submitting}
+                  className="p-3 rounded-md border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-900 text-xs font-bold transition-colors text-center"
                 >
-                  <span className="text-xs font-extrabold">Hard</span>
-                  <span className="text-[10px] text-amber-600 mt-0.5">~ 2 days</span>
+                  <span className="block text-sm mb-0.5">Hard 😓</span>
+                  <span className="text-[10px] text-rose-700 font-normal">Review soon</span>
                 </button>
 
                 <button
-                  disabled={submitting}
                   onClick={() => handleGradeAndAdvance("good")}
-                  className="flex flex-col items-center justify-center p-2.5 rounded-lg border border-purple-200 bg-purple-50 hover:bg-purple-100 text-purple-900 transition-all text-center"
+                  disabled={submitting}
+                  className="p-3 rounded-md border border-amber-200 bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs font-bold transition-colors text-center"
                 >
-                  <span className="text-xs font-extrabold">Good</span>
-                  <span className="text-[10px] text-purple-600 mt-0.5">~ 4 days</span>
+                  <span className="block text-sm mb-0.5">Good 🙂</span>
+                  <span className="text-[10px] text-amber-700 font-normal">Standard decay</span>
                 </button>
 
                 <button
-                  disabled={submitting}
                   onClick={() => handleGradeAndAdvance("easy")}
-                  className="flex flex-col items-center justify-center p-2.5 rounded-lg border border-emerald-200 bg-emerald-50/70 hover:bg-emerald-100 text-emerald-800 transition-all text-center"
+                  disabled={submitting}
+                  className="p-3 rounded-md border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 text-xs font-bold transition-colors text-center"
                 >
-                  <span className="text-xs font-extrabold">Easy</span>
-                  <span className="text-[10px] text-emerald-600 mt-0.5">~ 7+ days</span>
+                  <span className="block text-sm mb-0.5">Easy! 🚀</span>
+                  <span className="text-[10px] text-emerald-700 font-normal">Extend interval</span>
                 </button>
               </div>
             </div>
-          </div>
-        )}
-      </Card>
+          )}
+        </Card>
+      )}
     </div>
   );
 }
