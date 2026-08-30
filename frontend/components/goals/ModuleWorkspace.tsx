@@ -141,12 +141,32 @@ export function ModuleWorkspace(props: Props) {
             {/* STEP 01: 3D Hexagonal Purple Pedestal with Flag */}
             <div className="relative flex flex-col items-center z-20 group">
               <svg width="110" height="135" viewBox="0 0 110 135" fill="none" className="overflow-visible">
-                {/* Waving Flag Behind Pedestal on Top-Right */}
-                <g transform="translate(68, 6)">
-                  {/* Flagpole */}
-                  <line x1="0" y1="2" x2="16" y2="-14" stroke="#4C1D95" strokeWidth="2.5" strokeLinecap="round" />
-                  {/* Purple Ribbon Flag */}
-                  <path d="M 14 -13 L 34 -11 C 28 -7 28 -7 34 -3 L 14 -1 Z" fill="#6D28D9" stroke="#5B21B6" strokeWidth="1" />
+                {/* Authentic 3D Planted Flagpole & Waving Purple Pennant Flag */}
+                <g filter="url(#stepperShadow)">
+                  {/* Flagpole planted into pedestal base */}
+                  <line x1="78" y1="98" x2="86" y2="-16" stroke="#4C1D95" strokeWidth="3" strokeLinecap="round" />
+                  <line x1="77.5" y1="98" x2="85.5" y2="-16" stroke="#DDD6FE" strokeWidth="1" opacity="0.6" strokeLinecap="round" />
+                  
+                  {/* Sphere Finial Ball on Top */}
+                  <circle cx="86" cy="-16" r="4.5" fill="#6D28D9" stroke="#E9D5FF" strokeWidth="1.5" />
+                  <circle cx="84.5" cy="-17.5" r="1.2" fill="#FFFFFF" />
+
+                  {/* 3D Waving Swallowtail Pennant Flag */}
+                  <path
+                    d="M 86 -13 C 98 -16, 106 -10, 118 -14 L 111 -3 L 118 8 C 106 4, 98 10, 86 6 Z"
+                    fill="url(#purpleShieldGrad)"
+                    stroke="#C4B5FD"
+                    strokeWidth="1.5"
+                    strokeLinejoin="round"
+                  />
+                  {/* Flag Fabric Wave Fold Shadow */}
+                  <path
+                    d="M 100 -12 C 106 -9, 107 -4, 100 0 C 106 3, 107 8, 100 8"
+                    stroke="#3B0764"
+                    strokeWidth="1.5"
+                    opacity="0.4"
+                    fill="none"
+                  />
                 </g>
 
                 {/* Pedestal Ambient Light Aura */}
