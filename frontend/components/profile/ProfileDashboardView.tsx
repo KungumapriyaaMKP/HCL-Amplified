@@ -16,7 +16,11 @@ import {
   IconChevronDown,
   IconCheck,
   IconSparkles,
+  IconAward,
+  IconPrinter,
 } from "@tabler/icons-react";
+import { CertificateModal } from "@/frontend/components/certificates/CertificateModal";
+import { CertificateData } from "@/frontend/components/certificates/CertificateView";
 
 export function ProfileDashboardView({
   data,
@@ -39,6 +43,7 @@ export function ProfileDashboardView({
   const [clientResumeProfile, setClientResumeProfile] = React.useState<any>(null);
   const [clientFaceEnrolled, setClientFaceEnrolled] = React.useState<boolean>(false);
   const [skillFilter, setSkillFilter] = React.useState<"ALL" | "PROCTORED" | "TRACKS" | "RESUME">("ALL");
+  const [activeCert, setActiveCert] = React.useState<CertificateData | null>(null);
 
   React.useEffect(() => {
     if (typeof window !== "undefined") {
@@ -647,6 +652,124 @@ export function ProfileDashboardView({
           </div>
 
         </div>
+
+        {/* ================= CERTIFIED CREDENTIALS & DIPLOMAS SECTION ================= */}
+        <div className="rounded-none border border-slate-200 bg-white p-5 sm:p-7 shadow-xs space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+            <div className="space-y-0.5">
+              <div className="flex items-center gap-2">
+                <IconAward className="h-5 w-5 text-[#7C3AED]" />
+                <h3 className="text-base font-extrabold text-slate-900 tracking-tight">
+                  Certified Credentials &amp; Diplomas
+                </h3>
+              </div>
+              <p className="text-xs text-slate-500 font-medium">
+                Official certificates awarded by QuestLearn AI Academic Board with biometric verification seals
+              </p>
+            </div>
+
+            <span className="self-start sm:self-auto rounded-none border border-amber-300 bg-amber-50 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-amber-800">
+              VERIFIABLE CREDENTIALS
+            </span>
+          </div>
+
+          {/* Grand Domain Diploma Feature Card */}
+          <div className="rounded-none border-2 border-amber-300/80 bg-gradient-to-br from-[#FFFBEB] via-[#FEF3C7]/30 to-[#FFF7ED] p-5 sm:p-6 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-5">
+            <div className="space-y-2 max-w-2xl">
+              <div className="flex items-center gap-2">
+                <span className="rounded-none bg-[#78350F] text-amber-200 text-[10px] font-black px-2.5 py-0.5 uppercase tracking-wider">
+                  GRAND DIPLOMA
+                </span>
+                <span className="text-xs font-bold text-amber-900">
+                  Full Curriculum Mastery
+                </span>
+              </div>
+              <h4 className="text-lg sm:text-xl font-black text-[#1E1B4B] tracking-tight">
+                Grand Certificate of Domain Mastery in Software Engineering &amp; AI
+              </h4>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Awarded to <strong className="text-slate-900">{displayName}</strong> for completing full multi-module milestone roadmaps, live interactive code sandboxes, and proctored competency evaluations.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                setActiveCert({
+                  type: "grand",
+                  recipientName: displayName,
+                  title: "Software Engineering & AI Mastery Pathway",
+                  domainName: "Advanced Computer Science",
+                  score: 98,
+                  skillsMastered: ["Python Core", "Data Structures", "SQL Systems", "React Architectures", "Machine Learning"],
+                });
+              }}
+              className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-none bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 text-white text-xs font-black shadow-lg shadow-amber-500/25 hover:opacity-95 hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer shrink-0"
+            >
+              <IconAward className="h-4 w-4" />
+              <span>View &amp; Print Grand Diploma 🎓</span>
+            </button>
+          </div>
+
+          {/* Milestone Certificate Grid */}
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 pt-2">
+            {[
+              { title: "Python Fundamentals & Logic", domain: "Data Science & AI", score: 96, date: "August 2026", skills: ["Python 3.12", "Algorithmic Logic", "Live Compiler"] },
+              { title: "SQL & Relational Schema Modeling", domain: "Database Engineering", score: 94, date: "August 2026", skills: ["PostgreSQL", "Relational Algebra", "Query Optimization"] },
+              { title: "Data Analysis with Pandas & NumPy", domain: "Data Science & AI", score: 95, date: "August 2026", skills: ["Pandas", "NumPy", "Data Cleaning"] },
+              { title: "React Component & Next.js Systems", domain: "Web Engineering", score: 98, date: "August 2026", skills: ["React 19", "Server Components", "State Pipelines"] },
+            ].map((cert, idx) => (
+              <div
+                key={idx}
+                className="rounded-none border border-slate-200 bg-white p-4 shadow-xs hover:border-purple-300 hover:shadow-md transition-all flex flex-col justify-between space-y-3"
+              >
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-black text-purple-700 bg-purple-50 px-2 py-0.5 rounded-none uppercase">
+                      MILESTONE 0{idx + 1}
+                    </span>
+                    <span className="text-xs font-black text-emerald-600">
+                      {cert.score}% SCORE
+                    </span>
+                  </div>
+                  <h5 className="text-xs font-extrabold text-slate-900 leading-snug">
+                    {cert.title}
+                  </h5>
+                  <p className="text-[10px] text-slate-400 font-medium">
+                    Issued to {displayName} · {cert.date}
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveCert({
+                      type: "milestone",
+                      recipientName: displayName,
+                      title: cert.title,
+                      domainName: cert.domain,
+                      score: cert.score,
+                      skillsMastered: cert.skills,
+                    });
+                  }}
+                  className="w-full inline-flex items-center justify-center gap-1.5 py-2 rounded-none bg-slate-900 text-white hover:bg-[#6D28D9] text-[11px] font-bold transition-colors cursor-pointer shadow-xs"
+                >
+                  <IconAward className="h-3.5 w-3.5" />
+                  <span>View Certificate</span>
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Dynamic Active Certificate Modal */}
+        {activeCert && (
+          <CertificateModal
+            isOpen={true}
+            onClose={() => setActiveCert(null)}
+            data={activeCert}
+          />
+        )}
 
         {/* ================= BOTTOM ROW: ACTIVITY HEATMAP ================= */}
         <div className="w-full">

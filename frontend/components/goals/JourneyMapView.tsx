@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -9,7 +9,10 @@ import {
   IconArrowRight,
   IconBell,
   IconLayersLinked,
+  IconAward,
 } from "@tabler/icons-react";
+import { CertificateModal } from "@/frontend/components/certificates/CertificateModal";
+import { CertificateData } from "@/frontend/components/certificates/CertificateView";
 
 export type JourneyModuleItem = {
   module: {
@@ -179,6 +182,8 @@ export function JourneyMapView({
     (m) => m.module.status === "completed"
   ).length;
   const totalCount = courseList.length;
+  const allModulesCompleted = completedCount === totalCount && totalCount > 0;
+  const [activeCert, setActiveCert] = useState<CertificateData | null>(null);
 
   // Find active module index (first in_progress or available, or first non-completed)
   let activeIdx = courseList.findIndex(
@@ -341,6 +346,7 @@ export function JourneyMapView({
           {courseList.slice(0, 5).map((item, idx) => {
             const isCompleted = item.module.status === "completed" || idx < activeIdx;
             const isCurrent = idx === activeIdx;
+            const isInProgress = isCurrent;
             const isLocked = !isCompleted && !isCurrent;
             const stepNumber = idx + 1;
             
@@ -371,7 +377,10 @@ export function JourneyMapView({
                     transform: "translate(-50%, -50%)",
                   }}
                 >
-                  <div className="relative flex flex-col items-center">
+                  <Link
+                    href={`/goals/${goalId}/modules/${item.module.id}`}
+                    className="relative flex flex-col items-center group cursor-pointer"
+                  >
                     {/* Radiant Aura on Active Current Step */}
                     {isCurrent && (
                       <div className="absolute -inset-6 rounded-full bg-purple-500/35 blur-xl animate-pulse" />
@@ -428,27 +437,23 @@ export function JourneyMapView({
                         {stepNumber}
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 </div>
 
-                {/* 2. Course Card (Anchored to the right of pedestal with exact vertical alignment) */}
+                {/* Module Roadmap Card */}
                 <div
                   className="absolute z-20"
                   style={{
-                    left: `${coords.x + 65}px`,
+                    left: `${coords.x + 55}px`,
                     top: `${coords.y}px`,
                     transform: "translateY(-50%)",
-                    width: "480px",
+                    width: "460px",
                   }}
                 >
-                  {isCurrent ? (
-                    /* Active Highlight Card with Directional Arrow (Sharper Edges) */
-                    <div className="relative bg-white/98 border-2 border-purple-400 rounded-md p-5 shadow-xl shadow-purple-500/15 backdrop-blur-md space-y-2.5">
-                      {/* Left Pointing Directional Arrow */}
-                      <div className="absolute -left-2.5 top-1/2 -translate-y-1/2 w-0 h-0 border-y-8 border-y-transparent border-r-[10px] border-r-purple-400" />
-
+                  {isInProgress ? (
+                    <div className="bg-white border-2 border-purple-400/80 rounded-none p-5 shadow-xl shadow-purple-500/10 backdrop-blur-md space-y-2.5">
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-extrabold uppercase tracking-wider text-purple-700 bg-purple-100/80 px-2.5 py-0.5 rounded-xs">
+                        <span className="text-[10px] font-extrabold uppercase tracking-wider text-purple-700 bg-purple-100/80 px-2.5 py-0.5 rounded-none">
                           COURSE · {provider} · {duration}
                         </span>
                         <span className="text-xs font-extrabold text-[#7C3AED]">In Progress</span>
@@ -465,7 +470,7 @@ export function JourneyMapView({
                       <div className="pt-1">
                         <Link
                           href={`/goals/${goalId}/modules/${item.module.id}`}
-                          className="inline-flex items-center justify-center gap-2 w-full rounded-md bg-gradient-to-r from-[#6D28D9] via-[#7C3AED] to-[#8B5CF6] text-white px-5 py-2.5 text-xs font-bold shadow-md shadow-purple-500/30 hover:opacity-95 hover:scale-[1.01] active:scale-[0.98] transition-all cursor-pointer group"
+                          className="inline-flex items-center justify-center gap-2 w-full rounded-none bg-gradient-to-r from-[#6D28D9] via-[#7C3AED] to-[#8B5CF6] text-white px-5 py-2.5 text-xs font-bold shadow-md shadow-purple-500/30 hover:opacity-95 hover:scale-[1.01] active:scale-[0.98] transition-all cursor-pointer group"
                         >
                           <span>Continue Course</span>
                           <IconArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -473,33 +478,59 @@ export function JourneyMapView({
                       </div>
                     </div>
                   ) : isCompleted ? (
-                    /* Completed Card (Sharper Edges) */
-                    <Link
-                      href={`/goals/${goalId}/modules/${item.module.id}`}
-                      className="block bg-white/95 border border-slate-200/90 rounded-md p-4 shadow-md backdrop-blur-xs hover:shadow-lg hover:border-emerald-300 transition-all cursor-pointer group"
-                    >
-                      <div className="flex items-center justify-between mb-1">
+                    /* Completed Card with Milestone Certificate Trigger */
+                    <div className="bg-white/95 border border-emerald-300/80 rounded-none p-4 shadow-md backdrop-blur-xs hover:shadow-lg transition-all space-y-2">
+                      <div className="flex items-center justify-between">
                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                           {provider} · {duration}
                         </span>
                         <span className="text-xs font-bold text-emerald-600 flex items-center gap-1">
-                          <IconCheck className="h-3 w-3 stroke-[3]" />
-                          <span>Completed</span>
+                          <IconCheck className="h-3.5 w-3.5 stroke-[3]" />
+                          <span>Milestone Passed</span>
                         </span>
                       </div>
-                      <h3 className="text-sm font-extrabold text-slate-900 group-hover:text-emerald-700 transition-colors">
+
+                      <h3 className="text-sm font-extrabold text-slate-900">
                         {skillName}
                       </h3>
-                    </Link>
+
+                      <div className="flex items-center gap-2 pt-1">
+                        <Link
+                          href={`/goals/${goalId}/modules/${item.module.id}`}
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-none bg-purple-50 text-[#6D28D9] hover:bg-purple-100 text-xs font-bold transition-all"
+                        >
+                          <span>Review Module</span>
+                          <IconArrowRight className="w-3.5 h-3.5" />
+                        </Link>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setActiveCert({
+                              type: "milestone",
+                              recipientName: userDisplayName,
+                              title: skillName,
+                              domainName: domainName,
+                              score: 95,
+                              skillsMastered: [skillName, "Coding Lab", "Proctored Exam"],
+                            });
+                          }}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-none bg-gradient-to-r from-amber-500 to-amber-600 text-white text-xs font-black shadow-xs hover:opacity-90 transition-all cursor-pointer"
+                        >
+                          <IconAward className="w-3.5 h-3.5" />
+                          <span>View Certificate</span>
+                        </button>
+                      </div>
+                    </div>
                   ) : (
-                    /* Locked Card (Sharper Edges) */
-                    <div className="bg-white/92 border border-slate-200 rounded-md p-4 shadow-sm backdrop-blur-xs opacity-90">
+                    /* Locked Card */
+                    <div className="bg-white/92 border border-slate-200 rounded-none p-4 shadow-sm backdrop-blur-xs opacity-90">
                       <div className="flex items-center justify-between mb-1">
                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                           {provider} · {duration}
                         </span>
                         <span className="text-[11px] font-bold text-slate-400 flex items-center gap-1">
-                          <IconLock className="h-3 w-3" />
+                          <IconLock className="w-3 h-3" />
                           <span>Locked</span>
                         </span>
                       </div>
@@ -530,8 +561,19 @@ export function JourneyMapView({
                     transform: "translate(-50%, -50%)",
                   }}
                 >
-                  <div className="relative flex flex-col items-center group cursor-pointer">
-                    {/* Dynamic Radiant Golden Breathing Aura */}
+                  <div
+                    onClick={() => {
+                      setActiveCert({
+                        type: "grand",
+                        recipientName: userDisplayName,
+                        title: goalTitle,
+                        domainName: domainName,
+                        score: 98,
+                        skillsMastered: courseList.map((m) => m.skill?.name || "Module Mastery"),
+                      });
+                    }}
+                    className="relative flex flex-col items-center group cursor-pointer"
+                  >
                     <div className="absolute -inset-8 rounded-full bg-gradient-to-tr from-amber-400 via-yellow-300 to-amber-500 blur-2xl opacity-75 animate-pulse" />
                     <div className="absolute -inset-4 rounded-full bg-amber-300/60 blur-xl animate-pulse" />
 
@@ -551,7 +593,7 @@ export function JourneyMapView({
                   </div>
                 </div>
 
-                {/* Mega Reward Card (Anchored to the right of chest - Sharper Edges) */}
+                {/* Grand Capstone & Certification Card */}
                 <div
                   className="absolute z-20"
                   style={{
@@ -561,13 +603,42 @@ export function JourneyMapView({
                     width: "480px",
                   }}
                 >
-                  <div className="bg-white/95 border-2 border-amber-300/80 rounded-md p-5 shadow-xl shadow-amber-500/15 backdrop-blur-md space-y-1.5 hover:shadow-2xl hover:border-amber-400 transition-all">
-                    <div className="flex items-center gap-1.5 text-xs font-black text-purple-700 uppercase tracking-wide">
-                      <span>Capstone & Certification</span>
+                  <div className="bg-white/98 border-2 border-amber-400 rounded-none p-5 shadow-xl shadow-amber-500/20 backdrop-blur-md space-y-3 hover:shadow-2xl transition-all">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5 text-xs font-black text-amber-700 uppercase tracking-wide">
+                        <IconAward className="w-4 h-4 text-amber-600" />
+                        <span>Grand Capstone &amp; Certification</span>
+                      </div>
+                      {allModulesCompleted && (
+                        <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-black uppercase">
+                          READY TO CLAIM
+                        </span>
+                      )}
                     </div>
+
                     <p className="text-xs text-slate-600 leading-snug">
-                      Complete all course modules to unlock your final Capstone Project and earn your Domain Mastery Certificate!
+                      Complete all course modules in this roadmap to unlock your official <strong className="text-slate-900">Grand Domain Mastery Certificate</strong> issued by QuestLearn AI Academic Board!
                     </p>
+
+                    <div className="pt-1">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setActiveCert({
+                            type: "grand",
+                            recipientName: userDisplayName,
+                            title: goalTitle,
+                            domainName: domainName,
+                            score: 98,
+                            skillsMastered: courseList.map((m) => m.skill?.name || "Module Mastery"),
+                          });
+                        }}
+                        className="inline-flex items-center justify-center gap-2 w-full py-2.5 bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 text-white text-xs font-black shadow-lg shadow-amber-500/30 hover:opacity-95 hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer rounded-none"
+                      >
+                        <IconAward className="w-4 h-4" />
+                        <span>{allModulesCompleted ? "Claim Grand Domain Certificate 🎓" : "View / Preview Grand Certificate 🎓"}</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </React.Fragment>
@@ -576,6 +647,15 @@ export function JourneyMapView({
 
         </div>
       </div>
+
+      {/* Dynamic Certificate Modal */}
+      {activeCert && (
+        <CertificateModal
+          isOpen={true}
+          onClose={() => setActiveCert(null)}
+          data={activeCert}
+        />
+      )}
     </div>
   );
 }

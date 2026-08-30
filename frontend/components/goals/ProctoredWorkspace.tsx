@@ -25,6 +25,7 @@ import {
   IconFileText,
 } from "@tabler/icons-react";
 import CubeLoader from "@/components/ui/cube-loader";
+import { CertificateModal } from "@/frontend/components/certificates/CertificateModal";
 
 type Question = { id: string; question: string; options: string[] };
 type Flag = { type: "tab_switch" | "blur" | "fullscreen_exit" | "identity_mismatch" | "no_face_detected"; at: number };
@@ -44,12 +45,13 @@ export function ProctoredWorkspace({
   goalId: string;
   moduleId: string;
   skillName: string;
-  alreadyTaken: boolean;
-  initialScore: number | null;
-  initialReport: string | null;
+  alreadyTaken?: boolean;
+  initialScore?: number | null;
+  initialReport?: string | null;
 }) {
   const router = useRouter();
   const [phase, setPhase] = useState<Phase>(alreadyTaken ? "done" : "intro");
+  const [showCert, setShowCert] = useState(false);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [attemptId, setAttemptId] = useState<string | null>(null);
   const [answers, setAnswers] = useState<Record<string, number>>({});
@@ -534,8 +536,17 @@ export function ProctoredWorkspace({
         <div className="flex flex-col items-center justify-center gap-3 pt-2">
           <button
             type="button"
+            onClick={() => setShowCert(true)}
+            className="w-full max-w-sm py-3.5 rounded-none bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 text-white text-xs sm:text-sm font-black shadow-lg shadow-amber-500/25 hover:opacity-95 cursor-pointer flex items-center justify-center gap-2"
+          >
+            <IconAward className="h-5 w-5" />
+            <span>View &amp; Download Milestone Certificate 📜</span>
+          </button>
+
+          <button
+            type="button"
             onClick={() => router.push(`/goals/${goalId}`)}
-            className="w-full max-w-sm py-3.5 rounded-none bg-gradient-to-r from-[#6366F1] to-[#7C3AED] text-white text-xs sm:text-sm font-bold shadow-md shadow-purple-500/25 hover:opacity-95 cursor-pointer flex items-center justify-center gap-2"
+            className="w-full max-w-sm py-3 rounded-none bg-gradient-to-r from-[#6366F1] to-[#7C3AED] text-white text-xs sm:text-sm font-bold shadow-md shadow-purple-500/25 hover:opacity-95 cursor-pointer flex items-center justify-center gap-2"
           >
             <span>Return to Roadmap</span>
             <IconArrowRight className="h-4 w-4" />
@@ -544,11 +555,24 @@ export function ProctoredWorkspace({
           <button
             type="button"
             onClick={() => router.push(`/goals/${goalId}`)}
-            className="w-full max-w-sm py-3 rounded-none border border-purple-200 bg-white text-[#7C3AED] text-xs sm:text-sm font-bold shadow-xs hover:bg-purple-50 cursor-pointer flex items-center justify-center gap-2"
+            className="w-full max-w-sm py-2.5 rounded-none border border-purple-200 bg-white text-[#7C3AED] text-xs font-bold shadow-xs hover:bg-purple-50 cursor-pointer flex items-center justify-center gap-2"
           >
             <span>Review Answers &amp; Explanations</span>
           </button>
         </div>
+
+        {/* Milestone Certificate Modal */}
+        <CertificateModal
+          isOpen={showCert}
+          onClose={() => setShowCert(false)}
+          data={{
+            type: "milestone",
+            recipientName: "Learner",
+            title: skillName,
+            score: score || 95,
+            skillsMastered: [skillName, "Interactive Coding Lab", "Webcam-Verified Proctored Test"],
+          }}
+        />
       </div>
     );
   }

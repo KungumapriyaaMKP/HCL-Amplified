@@ -18,6 +18,7 @@ import {
   IconBook,
 } from "@tabler/icons-react";
 import { SlideToUnlock } from "@/components/ui/reward-card";
+import { CertificateModal } from "@/frontend/components/certificates/CertificateModal";
 
 type Props = {
   goalId: string;
@@ -42,6 +43,7 @@ export function ModuleWorkspace(props: Props) {
   const [resourceMarked, setResourceMarked] = useState(props.hasResourceDone);
   const [codingMarked, setCodingMarked] = useState(false);
   const [practiceAttempted, setPracticeAttempted] = useState(props.hasPracticeAttempt);
+  const [showCert, setShowCert] = useState(false);
   const [feedbackSent, setFeedbackSent] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -850,8 +852,18 @@ export function ModuleWorkspace(props: Props) {
                     MASTERY RECORDED
                   </span>
                 </div>
-                <div className="text-3xl font-black text-emerald-600">
-                  {props.proctoredScore}/100
+                <div className="flex items-center justify-between">
+                  <div className="text-3xl font-black text-emerald-600">
+                    {props.proctoredScore}/100
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowCert(true)}
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 text-white text-xs font-black shadow-md shadow-amber-500/20 hover:opacity-95 transition-all cursor-pointer rounded-none"
+                  >
+                    <IconAward className="w-4 h-4" />
+                    <span>View Milestone Certificate 📜</span>
+                  </button>
                 </div>
               </div>
             ) : practiceAttempted ? (
@@ -922,14 +934,18 @@ export function ModuleWorkspace(props: Props) {
                   sliderText="Swipe to unlock Milestone Chest"
                   className="max-w-md border-purple-200 bg-purple-50/30 shadow-md"
                   unlockedContent={
-                    <div className="flex items-center justify-between p-4 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 text-white rounded-none shadow-xl">
+                    <div className="flex flex-col sm:flex-row items-center justify-between p-4 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 text-white rounded-none shadow-xl gap-3">
                       <div className="space-y-0.5">
                         <p className="text-sm font-black">Milestone Mastery Cleared! 🎁</p>
                         <p className="text-xs text-emerald-100">+250 Bonus XP & Milestone Trophy Credited</p>
                       </div>
-                      <div className="h-10 w-10 rounded-full bg-white text-emerald-600 flex items-center justify-center font-black text-base shadow-md">
-                        👑
-                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setShowCert(true)}
+                        className="px-3.5 py-1.5 bg-white text-emerald-800 text-xs font-black rounded-none shadow-md hover:bg-emerald-50 transition-all cursor-pointer shrink-0"
+                      >
+                        📜 Claim Certificate
+                      </button>
                     </div>
                   }
                 >
@@ -958,6 +974,19 @@ export function ModuleWorkspace(props: Props) {
         </div>
 
       </div>
+
+      {/* Milestone Certificate Modal */}
+      <CertificateModal
+        isOpen={showCert}
+        onClose={() => setShowCert(false)}
+        data={{
+          type: "milestone",
+          recipientName: "Learner",
+          title: props.skillName,
+          score: props.proctoredScore || 95,
+          skillsMastered: [props.skillName, "Hands-On Code Lab", "15-Question Proctored Exam"],
+        }}
+      />
     </div>
   );
 }
