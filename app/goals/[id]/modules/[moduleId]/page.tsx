@@ -40,9 +40,6 @@ export default async function ModulePage({ params }: { params: Promise<{ id: str
           proctoredScore={detail.proctoredAttempt?.score ?? null}
           proctoredReport={detail.proctoredAttempt?.reportText ?? null}
         />
-        
-        {/* Floating Cute Ghost Companion */}
-        <AssistantWidget goalId={id} moduleId={moduleId} />
       </div>
     </div>
   );

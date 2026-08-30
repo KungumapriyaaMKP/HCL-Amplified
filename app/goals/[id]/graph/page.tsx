@@ -85,9 +85,6 @@ export default async function SkillGraphPage({ params }: { params: Promise<{ id:
           />
         </main>
       </div>
-
-      {/* Floating Ghost Companion */}
-      <AssistantWidget goalId={id} />
     </div>
   );
 }

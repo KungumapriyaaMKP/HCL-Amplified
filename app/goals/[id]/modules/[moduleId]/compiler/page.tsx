@@ -39,7 +39,6 @@ export default async function CompilerPage({ params }: { params: Promise<{ id: s
           </div>
           <CompilerWorkspace moduleId={moduleId} skillName={detail.skill.name} language={detail.module.programmingLanguage} />
         </main>
-        <AssistantWidget goalId={id} moduleId={moduleId} />
       </div>
     </div>
   );
