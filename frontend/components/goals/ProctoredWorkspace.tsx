@@ -359,24 +359,40 @@ export function ProctoredWorkspace({
     setPhase("done");
   }
 
+  useEffect(() => {
+    if (phase === "done") {
+      try {
+        if (typeof document !== "undefined" && document.fullscreenElement) {
+          document.exitFullscreen().catch(() => {});
+        }
+      } catch {}
+    }
+  }, [phase]);
+
   if (phase === "done" && result) {
     return (
-      <Card className="p-8 text-center">
-        <div className="inline-flex h-24 w-24 items-center justify-center rounded-3xl bg-gradient-to-tr from-purple-700 via-fuchsia-600 to-cyan-500 shadow-[0_0_35px_rgba(168,85,247,0.6)] mb-4">
+      <div className="relative rounded-2xl border border-purple-100/90 bg-white p-8 sm:p-10 shadow-xl shadow-purple-500/5 text-slate-900 text-center space-y-5">
+        {/* Score Badge */}
+        <div className="inline-flex h-24 w-24 items-center justify-center rounded-2xl bg-gradient-to-tr from-purple-700 via-indigo-600 to-cyan-500 shadow-lg shadow-purple-500/25 mx-auto">
           <span className="text-3xl font-black text-white">{result.score}/100</span>
         </div>
         
-        <h2 className="text-2xl font-black text-white">Proctored Assessment Complete</h2>
+        <div>
+          <span className="text-[10px] font-black uppercase tracking-widest text-purple-600 block mb-1">
+            OFFICIAL EVALUATION RESULT
+          </span>
+          <h2 className="text-2xl font-black text-[#1E1B4B]">Proctored Assessment Complete</h2>
+        </div>
         
-        <div className="my-5 max-w-lg mx-auto rounded-2xl border border-purple-500/20 bg-[#070918]/90 p-4 text-xs font-medium text-slate-300 leading-relaxed text-left">
-          <span className="text-[10px] font-black uppercase tracking-widest text-cyan-400 block mb-1">
+        <div className="max-w-lg mx-auto rounded-xl border border-purple-100/90 bg-[#FAF9FF] p-5 text-xs font-medium text-slate-700 leading-relaxed text-left space-y-1.5 shadow-xs">
+          <span className="text-[10px] font-black uppercase tracking-widest text-[#7C3AED] block">
             EVALUATION REPORT & SKILL MASTERY
           </span>
-          {result.reportText}
+          <p>{result.reportText}</p>
         </div>
 
         {!!result.badgesAwarded?.length && (
-          <div className="mb-6 flex flex-wrap justify-center gap-2">
+          <div className="flex flex-wrap justify-center gap-2 pt-1">
             {result.badgesAwarded.map((b) => (
               <Badge key={b} tone="success" className="flex items-center gap-1 text-xs py-1 px-3">
                 <IconAward className="h-3.5 w-3.5" />
@@ -386,11 +402,17 @@ export function ProctoredWorkspace({
           </div>
         )}
 
-        <Button size="lg" onClick={() => router.push(`/goals/${goalId}`)}>
-          <span>Return to Roadmap</span>
-          <IconArrowRight className="h-4 w-4" />
-        </Button>
-      </Card>
+        <div className="pt-2">
+          <button
+            type="button"
+            onClick={() => router.push(`/goals/${goalId}`)}
+            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-gradient-to-r from-[#6366F1] to-[#7C3AED] text-white text-sm font-bold shadow-md shadow-purple-500/25 hover:opacity-95 cursor-pointer"
+          >
+            <span>Return to Roadmap</span>
+            <IconArrowRight className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
     );
   }
 
