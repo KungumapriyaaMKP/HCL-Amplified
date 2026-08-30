@@ -654,22 +654,25 @@ export function ModuleWorkspace(props: Props) {
                 </div>
               </div>
 
-              {/* Module Difficulty Calibration - Sleek Segmented Control */}
-              <div className="mt-6 pt-4 border-t border-purple-500/20 flex flex-wrap items-center justify-between gap-3">
+              {/* Module Difficulty Calibration - Interactive Tactile Button Segment */}
+              <div className="mt-6 pt-4 border-t border-purple-500/25 flex flex-wrap items-center justify-between gap-4">
                 <div className="space-y-0.5">
-                  <p className="text-[11px] font-semibold text-slate-300">
-                    Difficulty Calibration
+                  <p className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+                    <span>Difficulty Calibration</span>
+                    <span className="text-[10px] font-semibold text-purple-300 bg-purple-950/80 px-2 py-0.5 rounded-none border border-purple-500/40">
+                      AI Feedback
+                    </span>
                   </p>
-                  <p className="text-[10px] text-slate-400">
-                    Fine-tune AI recommendation pacing
+                  <p className="text-[11px] text-slate-400">
+                    Click to fine-tune AI recommendation pacing for future modules
                   </p>
                 </div>
                 
-                <div className="inline-flex items-center p-1 rounded-sm bg-[#090717]/90 border border-purple-500/30 shadow-inner gap-1">
+                <div className="flex items-center gap-2">
                   {[
-                    { id: "too_easy", label: "Easy", dot: "bg-emerald-400" },
-                    { id: "just_right", label: "Balanced", dot: "bg-sky-400" },
-                    { id: "too_hard", label: "Challenging", dot: "bg-amber-400" },
+                    { id: "too_easy", label: "Easy", dot: "bg-emerald-400", border: "border-emerald-500/40", activeBg: "bg-emerald-950/90 border-emerald-400 text-emerald-200 shadow-emerald-900/30" },
+                    { id: "just_right", label: "Balanced", dot: "bg-cyan-400", border: "border-cyan-500/40", activeBg: "bg-cyan-950/90 border-cyan-400 text-cyan-200 shadow-cyan-900/30" },
+                    { id: "too_hard", label: "Challenging", dot: "bg-amber-400", border: "border-amber-500/40", activeBg: "bg-amber-950/90 border-amber-400 text-amber-200 shadow-amber-900/30" },
                   ].map((item) => {
                     const isSelected = feedbackSent === item.id;
                     return (
@@ -681,14 +684,17 @@ export function ModuleWorkspace(props: Props) {
                           await postProgress({ type: "feedback", feedback: item.id });
                           setFeedbackSent(item.id);
                         }}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xs text-xs font-semibold transition-all cursor-pointer select-none ${
+                        className={`group relative inline-flex items-center gap-2 px-3.5 py-1.5 rounded-none text-xs font-bold transition-all cursor-pointer select-none shadow-sm ${
                           isSelected
-                            ? "bg-purple-600/40 text-white border border-purple-400/60 shadow-xs"
-                            : "text-slate-400 hover:text-slate-200 hover:bg-white/5 border border-transparent"
+                            ? `${item.activeBg} shadow-md ring-1 ring-white/30 scale-[1.02] border`
+                            : `bg-[#0D0A21] hover:bg-[#1A143A] text-slate-300 hover:text-white border ${item.border} hover:scale-105 active:scale-95`
                         }`}
                       >
-                        <span className={`w-1.5 h-1.5 rounded-full ${item.dot}`} />
+                        <span className={`w-2 h-2 rounded-full ${item.dot} ${isSelected ? "animate-pulse" : "group-hover:scale-125 transition-transform"}`} />
                         <span>{item.label}</span>
+                        {isSelected && (
+                          <IconCheck className="h-3.5 w-3.5 ml-0.5 stroke-[3]" />
+                        )}
                       </button>
                     );
                   })}
