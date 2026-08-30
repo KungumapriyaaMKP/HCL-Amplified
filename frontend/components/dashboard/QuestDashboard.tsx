@@ -99,37 +99,45 @@ export function QuestDashboard({
               </p>
             </div>
 
-            {/* Top Right: Progress Ring */}
-            <div className="shrink-0 -mt-2 -mr-1">
-              <div className="relative flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24">
+            {/* Top Right: High-Contrast Elevated Progress Pod */}
+            <div className="shrink-0 -mt-1 -mr-1">
+              <div className="relative flex items-center justify-center w-22 h-22 sm:w-26 sm:h-26 rounded-full bg-white/95 border-2 border-purple-200/90 shadow-md p-1.5 backdrop-blur-md">
                 <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                  <defs>
+                    <linearGradient id="dashboardProgressGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#A855F7" />
+                      <stop offset="100%" stopColor="#6D28D9" />
+                    </linearGradient>
+                  </defs>
+                  {/* Background Track with crisp contrast */}
                   <circle
                     cx="50"
                     cy="50"
-                    r="40"
+                    r="38"
                     fill="none"
-                    stroke="#EDE9FE"
-                    strokeWidth="10"
+                    stroke="#E2E8F0"
+                    strokeWidth="9"
                   />
+                  {/* Active Progress Arc */}
                   <circle
                     cx="50"
                     cy="50"
-                    r="40"
+                    r="38"
                     fill="none"
-                    stroke="#7C3AED"
-                    strokeWidth="10"
-                    strokeDasharray={251.2}
-                    strokeDashoffset={251.2 - (251.2 * progressPercent) / 100}
+                    stroke="url(#dashboardProgressGrad)"
+                    strokeWidth="9"
+                    strokeDasharray={238.76}
+                    strokeDashoffset={238.76 - (238.76 * Math.max(progressPercent, 0)) / 100}
                     strokeLinecap="round"
                     className="transition-all duration-700"
                   />
                 </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                  <span className="text-sm sm:text-base font-extrabold text-[#7C3AED] leading-none">
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center select-none">
+                  <span className="text-base sm:text-lg font-black text-slate-900 leading-none tracking-tight">
                     {progressPercent}%
                   </span>
-                  <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mt-0.5">
-                    {hasGoals ? "Complete" : "Ready"}
+                  <span className="text-[9px] font-extrabold text-[#6D28D9] uppercase tracking-wider mt-0.5">
+                    COMPLETE
                   </span>
                 </div>
               </div>
