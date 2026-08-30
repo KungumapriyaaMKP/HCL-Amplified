@@ -13,7 +13,10 @@ export async function GET() {
   return withErrorHandling(async () => {
     const user = await requireUser();
     const [profile] = await db.select().from(profiles).where(eq(profiles.userId, user.id));
-    return NextResponse.json({ descriptor: (profile?.faceDescriptor as number[] | null) ?? null });
+    return NextResponse.json({
+      descriptor: (profile?.faceDescriptor as number[] | null) ?? null,
+      photoDataUrl: (profile?.faceReferencePhoto as string | null) ?? null,
+    });
   });
 }
 

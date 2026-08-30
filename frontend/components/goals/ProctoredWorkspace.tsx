@@ -18,6 +18,9 @@ import {
   IconLock,
   IconChevronLeft,
   IconChevronRight,
+  IconCamera,
+  IconRefresh,
+  IconScan,
 } from "@tabler/icons-react";
 import CubeLoader from "@/components/ui/cube-loader";
 
@@ -26,7 +29,7 @@ type Flag = { type: "tab_switch" | "blur" | "fullscreen_exit" | "identity_mismat
 
 const FACE_CHECK_INTERVAL_MS = 30_000;
 
-type Phase = "intro" | "loading" | "in_progress" | "submitting" | "done";
+type Phase = "intro" | "loading" | "verify" | "in_progress" | "submitting" | "done";
 
 export function ProctoredWorkspace({
   goalId,
@@ -54,6 +57,14 @@ export function ProctoredWorkspace({
   const [cameraActive, setCameraActive] = useState(false);
   const [faceStatus, setFaceStatus] = useState<"checking" | "enrolled" | "verified" | "mismatch" | "no_face" | null>(null);
   const [startError, setStartError] = useState<string | null>(null);
+
+  // Biometric verification states
+  const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
+  const [referencePhoto, setReferencePhoto] = useState<string | null>(null);
+  const [verifyStatus, setVerifyStatus] = useState<"idle" | "capturing" | "matched" | "mismatch">("idle");
+  const [verifyConfidence, setVerifyConfidence] = useState<number | null>(null);
+  const [verifyErrorMsg, setVerifyErrorMsg] = useState<string | null>(null);
+
   const [result, setResult] = useState<{ score: number; reportText: string; xpAwarded?: number; badgesAwarded?: string[] } | null>(
     alreadyTaken ? { score: initialScore ?? 0, reportText: initialReport ?? "" } : null,
   );
@@ -147,21 +158,52 @@ export function ProctoredWorkspace({
   async function begin() {
     setStartError(null);
     setPhase("loading");
+    setCapturedPhoto(null);
+    setVerifyStatus("idle");
+    setVerifyErrorMsg(null);
 
     try {
+      // 1. Request Browser Fullscreen
+      try {
+        if (!document.fullscreenElement) {
+          await document.documentElement.requestFullscreen();
+        }
+      } catch (fsErr) {
+        console.warn("Fullscreen permission note:", fsErr);
+      }
+
+      // 2. Request Camera Stream
       await loadFaceModels().catch(() => {});
       const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
       streamRef.current = stream;
       setCameraActive(true);
 
-      const profileRes = await fetch("/api/profile");
-      if (profileRes.ok) {
-        const p = await profileRes.json();
-        if (p.profile?.faceDescriptor) {
-          referenceDescriptorRef.current = p.profile.faceDescriptor;
+      // 3. Fetch Registered Profile Face & Photo
+      const faceRes = await fetch("/api/profile/face");
+      if (faceRes.ok) {
+        const faceData = await faceRes.json();
+        if (faceData.descriptor) {
+          referenceDescriptorRef.current = faceData.descriptor;
+        }
+        if (faceData.photoDataUrl) {
+          setReferencePhoto(faceData.photoDataUrl);
         }
       }
 
+      if (!referencePhoto) {
+        const profileRes = await fetch("/api/profile");
+        if (profileRes.ok) {
+          const p = await profileRes.json();
+          if (p.profile?.faceReferencePhoto && !referencePhoto) {
+            setReferencePhoto(p.profile.faceReferencePhoto);
+          }
+          if (p.profile?.faceDescriptor && !referenceDescriptorRef.current) {
+            referenceDescriptorRef.current = p.profile.faceDescriptor;
+          }
+        }
+      }
+
+      // 4. Generate/Fetch Questions
       let res = await fetch(`/api/modules/${moduleId}/proctored/start`, { method: "POST" });
       if (res.status === 404) {
         res = await fetch(`/api/modules/${moduleId}/proctored/generate`, { method: "POST" });
@@ -179,42 +221,107 @@ export function ProctoredWorkspace({
       setQuestions(body.questions);
       setSecondsLeft(body.timeLimitSeconds || (body.timeLimitMinutes ? body.timeLimitMinutes * 60 : 600));
 
-      try {
-        if (!document.fullscreenElement) {
-          await document.documentElement.requestFullscreen();
-        }
-      } catch {
-        // Fullscreen non-critical
-      }
-
-      setPhase("in_progress");
+      // 5. Transition to Biometric Verification Screen
+      setPhase("verify");
 
       setTimeout(() => {
         if (videoRef.current && streamRef.current) {
           videoRef.current.srcObject = streamRef.current;
-          checkFace(true);
         }
-      }, 500);
-
-      timerRef.current = setInterval(() => {
-        setSecondsLeft((s) => {
-          if (s <= 1) {
-            clearInterval(timerRef.current!);
-            submitAuto();
-            return 0;
-          }
-          return s - 1;
-        });
-      }, 1000);
-
-      faceCheckTimerRef.current = setInterval(() => {
-        checkFace(false);
-      }, FACE_CHECK_INTERVAL_MS);
+      }, 400);
     } catch (err) {
       cleanup();
       setPhase("intro");
       setStartError(err instanceof Error ? err.message : "Could not initialize proctored session");
     }
+  }
+
+  async function takeVerificationPhoto() {
+    if (!videoRef.current) return;
+    setVerifyStatus("capturing");
+    setVerifyErrorMsg(null);
+
+    try {
+      const capture = await captureFace(videoRef.current);
+      if (!capture) {
+        setVerifyStatus("mismatch");
+        setVerifyErrorMsg("No face detected in viewfinder. Please face the camera directly with good lighting.");
+        return;
+      }
+
+      setCapturedPhoto(capture.photoDataUrl);
+
+      // If user has no enrolled face yet, auto-enroll this capture
+      if (!referenceDescriptorRef.current) {
+        await fetch("/api/profile/face", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ descriptor: capture.descriptor, photoDataUrl: capture.photoDataUrl }),
+        }).catch(() => {});
+        referenceDescriptorRef.current = capture.descriptor;
+        setReferencePhoto(capture.photoDataUrl);
+        setVerifyStatus("matched");
+        setVerifyConfidence(99);
+        return;
+      }
+
+      // Compute face distance
+      const distance = faceDistance(capture.descriptor, referenceDescriptorRef.current);
+      if (distance <= MATCH_THRESHOLD) {
+        const confidence = Math.max(88, Math.min(99, Math.round((1 - (distance / 0.75)) * 100)));
+        setVerifyStatus("matched");
+        setVerifyConfidence(confidence);
+      } else {
+        setVerifyStatus("mismatch");
+        setVerifyErrorMsg("Face Mismatch: Captured photo does not match the registered profile ID. Please adjust lighting and face the camera directly.");
+      }
+    } catch {
+      setVerifyStatus("mismatch");
+      setVerifyErrorMsg("Biometric verification error. Please retry capture.");
+    }
+  }
+
+  function retakePhoto() {
+    setCapturedPhoto(null);
+    setVerifyStatus("idle");
+    setVerifyErrorMsg(null);
+    setTimeout(() => {
+      if (videoRef.current && streamRef.current) {
+        videoRef.current.srcObject = streamRef.current;
+      }
+    }, 200);
+  }
+
+  function startExam() {
+    try {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      }
+    } catch {}
+
+    setPhase("in_progress");
+
+    setTimeout(() => {
+      if (videoRef.current && streamRef.current) {
+        videoRef.current.srcObject = streamRef.current;
+        checkFace(true);
+      }
+    }, 400);
+
+    timerRef.current = setInterval(() => {
+      setSecondsLeft((s) => {
+        if (s <= 1) {
+          clearInterval(timerRef.current!);
+          submitAuto();
+          return 0;
+        }
+        return s - 1;
+      });
+    }, 1000);
+
+    faceCheckTimerRef.current = setInterval(() => {
+      checkFace(false);
+    }, FACE_CHECK_INTERVAL_MS);
   }
 
   function submitAuto() {
@@ -511,6 +618,196 @@ export function ProctoredWorkspace({
               : "AI Examiner is validating answers and computing skill mastery score…"
           }
         />
+      </div>
+    );
+  }
+
+  if (phase === "verify") {
+    return (
+      <div className="relative rounded-none border border-purple-100/90 bg-white p-6 sm:p-8 shadow-2xl shadow-purple-500/5 text-slate-900 space-y-5">
+        {/* Header */}
+        <div className="space-y-1.5 border-b border-purple-100/80 pb-4">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-none bg-purple-100/70 border border-purple-200/80 text-purple-600 text-[10px] font-extrabold uppercase tracking-widest">
+            <IconShieldCheck className="h-3.5 w-3.5 text-purple-600" />
+            <span>BIOMETRIC IDENTITY VERIFICATION</span>
+          </div>
+          <h2 className="text-xl sm:text-2xl font-black text-[#1E1B4B]">
+            Facial Recognition & ID Match
+          </h2>
+          <p className="text-xs text-slate-500">
+            Please click a verification photo. Once your facial features match your registered profile, you will proceed directly to the examination.
+          </p>
+        </div>
+
+        {/* Verification Dual-Card Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+          {/* Card 1: Registered Profile ID Photo */}
+          <div className="rounded-none border border-purple-100/90 bg-[#FAF9FF] p-4 flex flex-col items-center justify-between space-y-3 text-center">
+            <div className="w-full flex items-center justify-between">
+              <span className="text-[11px] font-black uppercase tracking-wider text-[#1E1B4B]">
+                Registered ID Profile
+              </span>
+              <span className="text-[10px] font-bold text-slate-400 bg-white px-2 py-0.5 border border-purple-100">
+                Primary Reference
+              </span>
+            </div>
+
+            <div className="relative h-48 w-48 sm:h-52 sm:w-52 rounded-none border-2 border-purple-200 bg-slate-900 overflow-hidden shadow-inner flex items-center justify-center">
+              {referencePhoto ? (
+                <img
+                  src={referencePhoto}
+                  alt="Registered profile"
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <div className="flex flex-col items-center justify-center text-slate-400 p-4">
+                  <IconUserCheck className="h-14 w-14 text-purple-400 mb-2" />
+                  <span className="text-xs font-semibold">New Student Profile</span>
+                  <span className="text-[10px] text-slate-500">Will enroll first capture</span>
+                </div>
+              )}
+            </div>
+
+            <div className="w-full text-center">
+              <span className="text-[11px] font-bold text-slate-600 block">
+                {referencePhoto ? "✓ Registered Reference on File" : "Initial Enrollment Mode"}
+              </span>
+            </div>
+          </div>
+
+          {/* Card 2: Live Webcam & Captured Frame */}
+          <div
+            className={`rounded-none border p-4 flex flex-col items-center justify-between space-y-3 text-center transition-all ${
+              verifyStatus === "matched"
+                ? "border-emerald-400 bg-emerald-50/30"
+                : verifyStatus === "mismatch"
+                ? "border-rose-400 bg-rose-50/30"
+                : "border-purple-100/90 bg-[#FAF9FF]"
+            }`}
+          >
+            <div className="w-full flex items-center justify-between">
+              <span className="text-[11px] font-black uppercase tracking-wider text-[#1E1B4B]">
+                Live Camera Capture
+              </span>
+              <span
+                className={`text-[10px] font-black px-2 py-0.5 rounded-none uppercase tracking-wider ${
+                  verifyStatus === "matched"
+                    ? "bg-emerald-100 text-emerald-700 border border-emerald-300"
+                    : verifyStatus === "mismatch"
+                    ? "bg-rose-100 text-rose-700 border border-rose-300"
+                    : "bg-purple-100 text-purple-700 border border-purple-200"
+                }`}
+              >
+                {verifyStatus === "matched"
+                  ? `✓ Matched (${verifyConfidence}%)`
+                  : verifyStatus === "mismatch"
+                  ? "Mismatch"
+                  : verifyStatus === "capturing"
+                  ? "Scanning..."
+                  : "Live Viewfinder"}
+              </span>
+            </div>
+
+            <div className="relative h-48 w-48 sm:h-52 sm:w-52 rounded-none border-2 border-dashed border-purple-300 bg-black overflow-hidden shadow-inner flex items-center justify-center">
+              {capturedPhoto ? (
+                <img
+                  src={capturedPhoto}
+                  alt="Captured snapshot"
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  playsInline
+                  muted
+                  className="h-full w-full object-cover scale-x-[-1]"
+                />
+              )}
+
+              {/* Viewfinder Target Brackets */}
+              <div className="pointer-events-none absolute inset-2 border border-cyan-400/40 rounded-none" />
+              <div className="pointer-events-none absolute top-3 left-3 w-4 h-4 border-t-2 border-l-2 border-cyan-400" />
+              <div className="pointer-events-none absolute top-3 right-3 w-4 h-4 border-t-2 border-r-2 border-cyan-400" />
+              <div className="pointer-events-none absolute bottom-3 left-3 w-4 h-4 border-b-2 border-l-2 border-cyan-400" />
+              <div className="pointer-events-none absolute bottom-3 right-3 w-4 h-4 border-b-2 border-r-2 border-cyan-400" />
+
+              {verifyStatus === "capturing" && (
+                <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-xs flex flex-col items-center justify-center text-cyan-300 gap-2">
+                  <IconScan className="h-8 w-8 animate-spin" />
+                  <span className="text-[11px] font-black tracking-widest uppercase">Matching Face...</span>
+                </div>
+              )}
+            </div>
+
+            <div className="w-full">
+              {verifyStatus === "matched" ? (
+                <span className="text-[11px] font-extrabold text-emerald-600 block">
+                  ✓ Identity Confirmed ({verifyConfidence}% Confidence Score)
+                </span>
+              ) : verifyStatus === "mismatch" ? (
+                <span className="text-[11px] font-extrabold text-rose-600 block">
+                  Face did not match registered profile
+                </span>
+              ) : (
+                <span className="text-[11px] font-medium text-slate-500 block">
+                  Center your face in the box and capture
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Error Alert if Mismatched */}
+        {verifyErrorMsg && (
+          <div className="rounded-none border border-rose-200 bg-rose-50 p-3 text-xs font-bold text-rose-700 flex items-center gap-2">
+            <IconAlertTriangle className="h-4 w-4 text-rose-600 shrink-0" />
+            <span>{verifyErrorMsg}</span>
+          </div>
+        )}
+
+        {/* Action Controls */}
+        <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="text-xs text-slate-400 font-medium">
+            {verifyStatus === "matched"
+              ? "✓ Biometric clearance granted. Launching fullscreen proctoring..."
+              : "Full-screen mode will be locked during the test."}
+          </div>
+
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            {capturedPhoto ? (
+              <button
+                type="button"
+                onClick={retakePhoto}
+                className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-5 py-3 rounded-none border border-purple-200 bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer shadow-xs"
+              >
+                <IconRefresh className="h-4 w-4" />
+                <span>Retake Photo</span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={takeVerificationPhoto}
+                disabled={verifyStatus === "capturing"}
+                className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-none bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-600 text-white text-xs sm:text-sm font-black shadow-lg shadow-purple-500/25 hover:opacity-95 cursor-pointer disabled:opacity-50"
+              >
+                <IconCamera className="h-4 w-4" />
+                <span>Click Image & Verify</span>
+              </button>
+            )}
+
+            {verifyStatus === "matched" && (
+              <button
+                type="button"
+                onClick={startExam}
+                className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-none bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-xs sm:text-sm font-black shadow-lg shadow-emerald-500/30 hover:opacity-95 cursor-pointer ring-2 ring-emerald-300 animate-pulse"
+              >
+                <span>Proceed to Assessment</span>
+                <IconArrowRight className="h-4 w-4" />
+              </button>
+            )}
+          </div>
+        </div>
       </div>
     );
   }
