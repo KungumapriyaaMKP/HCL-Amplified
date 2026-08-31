@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import CubeLoader from "@/components/ui/cube-loader";
 import {
@@ -195,8 +196,33 @@ export function DedicatedPracticeWorkspace({
               <div className="absolute -bottom-16 -left-16 w-36 h-36 rounded-full border border-purple-200/50 pointer-events-none" />
               <div className="absolute -top-16 -right-16 w-36 h-36 rounded-full border border-purple-200/50 pointer-events-none" />
 
-              {/* Laurel Wreath & Circular Score Gauge HUD (Exact Match to Image 2) */}
-              <div className="relative flex items-center justify-center pt-2">
+              {/* Hero Section: 3D Mentor Avatar + Circular Score Gauge */}
+              <div className="flex flex-col md:flex-row items-center justify-center gap-6 sm:gap-10 pt-2">
+                {/* 3D AI Mentor Avatar with Speech Bubble */}
+                <div className="flex items-center gap-3">
+                  <div className="relative w-28 h-36 sm:w-32 sm:h-40 shrink-0 drop-shadow-md">
+                    <Image
+                      src="/images/mentor/mentor_wave.png"
+                      alt="AI Mentor"
+                      fill
+                      className="object-contain"
+                      priority
+                    />
+                  </div>
+                  <div className="relative hidden sm:block max-w-[200px] text-left p-3 rounded-sm bg-purple-50/90 border border-purple-200/80 text-xs font-semibold text-[#4C1D95] shadow-2xs">
+                    <p className="leading-snug">
+                      {result.score >= 70
+                        ? "Outstanding work! You've unlocked the proctored milestone assessment! 🎉"
+                        : "Great effort! Review the detailed explanations below to reinforce your understanding! 💡"}
+                    </p>
+                    {/* Speech bubble arrow pointer */}
+                    <div className="absolute top-1/2 -left-2 -translate-y-1/2 w-0 h-0 border-y-[6px] border-y-transparent border-r-[8px] border-r-purple-200" />
+                    <div className="absolute top-1/2 -left-1.5 -translate-y-1/2 w-0 h-0 border-y-[5px] border-y-transparent border-r-[7px] border-r-purple-50" />
+                  </div>
+                </div>
+
+                {/* Laurel Wreath & Circular Score Gauge HUD */}
+                <div className="relative flex items-center justify-center">
                 {(() => {
                   const angleDeg = -90 + (result.score / 100) * 360;
                   const angleRad = (angleDeg * Math.PI) / 180;
@@ -335,6 +361,7 @@ export function DedicatedPracticeWorkspace({
                     </svg>
                   );
                 })()}
+                </div>
               </div>
 
               {/* Assessment Completed Pill Label with Divider Lines */}

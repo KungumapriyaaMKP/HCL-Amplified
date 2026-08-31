@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import {
   IconListCheck,
   IconPlus,
@@ -37,6 +37,7 @@ import {
   IconBuildingSkyscraper,
   IconDeviceGamepad2,
   IconPalette,
+  IconChevronDown,
 } from "@tabler/icons-react";
 
 export const ALL_DOMAINS_LIST = [
@@ -112,7 +113,7 @@ const INITIAL_TASKS: TodoTask[] = [
     priority: "High",
     dueDate: "Today",
     xpReward: 30,
-    completed: true,
+    completed: false,
   },
   {
     id: "task-5",
@@ -122,7 +123,7 @@ const INITIAL_TASKS: TodoTask[] = [
     priority: "Low",
     dueDate: "26 May 2025",
     xpReward: 15,
-    completed: true,
+    completed: false,
   },
   {
     id: "task-6",
@@ -172,7 +173,7 @@ const INITIAL_TASKS: TodoTask[] = [
     priority: "Low",
     dueDate: "Today",
     xpReward: 10,
-    completed: true,
+    completed: false,
   },
 ];
 
@@ -193,6 +194,37 @@ export function TodoPageView() {
   const [newPriority, setNewPriority] = useState<TodoTask["priority"]>("Medium");
   const [newDueDate, setNewDueDate] = useState("Today");
   const [newXp, setNewXp] = useState(25);
+
+  // Custom Domain Dropdown State
+  const [isDomainOpen, setIsDomainOpen] = useState(false);
+  const [domainSearch, setDomainSearch] = useState("");
+  const domainDropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        domainDropdownRef.current &&
+        !domainDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDomainOpen(false);
+      }
+    }
+    if (isDomainOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [isDomainOpen]);
+
+  const filteredDomainsForCreate = useMemo(() => {
+    if (!domainSearch.trim()) return ALL_DOMAINS_LIST;
+    return ALL_DOMAINS_LIST.filter((d) =>
+      d.name.toLowerCase().includes(domainSearch.toLowerCase())
+    );
+  }, [domainSearch]);
+
+  const currentDomainObj = useMemo(() => {
+    return ALL_DOMAINS_LIST.find((d) => d.name === newCategory) || ALL_DOMAINS_LIST[0];
+  }, [newCategory]);
 
   const toggleTask = (id: string) => {
     setTasks((prev) =>
@@ -564,18 +596,84 @@ export function TodoPageView() {
 
               <div className="flex flex-wrap items-center justify-between gap-2.5 pt-1">
                 <div className="flex items-center gap-2 flex-wrap">
-                  {/* ALL DOMAINS DROPDOWN */}
-                  <select
-                    value={newCategory}
-                    onChange={(e) => setNewCategory(e.target.value)}
-                    className="px-2.5 py-1.5 rounded-none border border-slate-300 bg-white text-xs font-bold text-slate-900 focus:outline-none max-w-[220px]"
-                  >
-                    {ALL_DOMAINS_LIST.map((d) => (
-                      <option key={d.name} value={d.name}>
-                        {d.name}
-                      </option>
-                    ))}
-                  </select>
+                  {/* Custom Downward Domain Dropdown */}
+                  <div className="relative" ref={domainDropdownRef}>
+                    <button
+                      type="button"
+                      onClick={() => setIsDomainOpen(!isDomainOpen)}
+                      className="flex items-center gap-2 px-3 py-1.5 rounded-none border border-slate-300 bg-white text-xs font-bold text-slate-900 shadow-2xs hover:border-[#7C3AED] transition-colors cursor-pointer"
+                    >
+                      <span
+                        className="w-2 h-2 rounded-full shrink-0"
+                        style={{ backgroundColor: currentDomainObj.bg }}
+                      />
+                      <currentDomainObj.icon className="w-3.5 h-3.5 text-slate-600 shrink-0" />
+                      <span className="truncate max-w-[140px]">{currentDomainObj.name}</span>
+                      <IconChevronDown
+                        className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 shrink-0 ${
+                          isDomainOpen ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+
+                    {isDomainOpen && (
+                      <div className="absolute top-full left-0 mt-1 w-72 bg-white border border-slate-200 shadow-2xl z-50 p-2 space-y-1.5 animate-in fade-in zoom-in-95 duration-100">
+                        {/* Quick Search Input */}
+                        <div className="relative">
+                          <IconSearch className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                          <input
+                            type="text"
+                            value={domainSearch}
+                            onChange={(e) => setDomainSearch(e.target.value)}
+                            placeholder="Search domains..."
+                            className="w-full text-xs pl-8 pr-2.5 py-1.5 bg-slate-50 border border-slate-200 text-slate-800 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#7C3AED]"
+                            autoFocus
+                          />
+                        </div>
+
+                        {/* Scrollable list */}
+                        <div className="max-h-52 overflow-y-auto custom-scrollbar space-y-0.5 pr-0.5">
+                          {filteredDomainsForCreate.map((d) => {
+                            const DomainIcon = d.icon;
+                            const isSelected = newCategory === d.name;
+                            return (
+                              <button
+                                key={d.name}
+                                type="button"
+                                onClick={() => {
+                                  setNewCategory(d.name);
+                                  setIsDomainOpen(false);
+                                  setDomainSearch("");
+                                }}
+                                className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-none text-xs font-bold text-left transition-colors cursor-pointer ${
+                                  isSelected
+                                    ? "bg-purple-50 text-[#6D28D9]"
+                                    : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"
+                                }`}
+                              >
+                                <div className="flex items-center gap-2 min-w-0">
+                                  <span
+                                    className="w-2 h-2 rounded-full shrink-0"
+                                    style={{ backgroundColor: d.bg }}
+                                  />
+                                  <DomainIcon className="w-3.5 h-3.5 shrink-0 text-slate-500" />
+                                  <span className="truncate">{d.name}</span>
+                                </div>
+                                {isSelected && (
+                                  <IconCheck className="w-3.5 h-3.5 text-[#6D28D9] shrink-0 stroke-[3]" />
+                                )}
+                              </button>
+                            );
+                          })}
+                          {filteredDomainsForCreate.length === 0 && (
+                            <div className="py-3 text-center text-xs text-slate-400 font-medium">
+                              No domains found
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
 
                   <select
                     value={newPriority}

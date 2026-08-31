@@ -35,11 +35,11 @@ export default async function AchievementsPage() {
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();
 
-  let displayName = "yuvi";
-  let totalXp = 230;
-  let streakDays = 7;
-  let badgesEarned = 12;
-  let questsCompleted = 28;
+  let displayName = "Learner";
+  let totalXp = 0;
+  let streakDays = 0;
+  let badgesEarned = 0;
+  let questsCompleted = 0;
 
   if (data.user) {
     const [viewerProfileResult, xpRowResult, streakRowResult, badgeCountRowResult, completedModulesRowResult] = await Promise.all([
@@ -72,34 +72,35 @@ export default async function AchievementsPage() {
     }
 
     const [xpRow] = xpRowResult;
-    if (xpRow && Number(xpRow.total) > 0) {
-      totalXp = Number(xpRow.total);
+    if (xpRow) {
+      totalXp = Number(xpRow.total) || 0;
     }
 
     const [streakRow] = streakRowResult;
-    if (streakRow && streakRow.currentStreak > 0) {
-      streakDays = streakRow.currentStreak;
+    if (streakRow) {
+      streakDays = streakRow.currentStreak || 0;
     }
 
     const [badgeCountRow] = badgeCountRowResult;
-    if (badgeCountRow && Number(badgeCountRow.count) > 0) {
-      badgesEarned = Number(badgeCountRow.count);
+    if (badgeCountRow) {
+      badgesEarned = Number(badgeCountRow.count) || 0;
     }
 
     const [completedModulesRow] = completedModulesRowResult;
-    if (completedModulesRow && Number(completedModulesRow.count) > 0) {
-      questsCompleted = Number(completedModulesRow.count);
+    if (completedModulesRow) {
+      questsCompleted = Number(completedModulesRow.count) || 0;
     }
   }
 
+  // Calculate days completed based on streakDays (up to 7)
   const daysOfWeek = [
-    { label: "M", completed: true },
-    { label: "T", completed: true },
-    { label: "W", completed: true },
-    { label: "T", completed: true },
-    { label: "F", completed: true },
-    { label: "S", completed: true },
-    { label: "S", completed: false, isToday: true },
+    { label: "M", completed: streakDays >= 7 },
+    { label: "T", completed: streakDays >= 6 },
+    { label: "W", completed: streakDays >= 5 },
+    { label: "T", completed: streakDays >= 4 },
+    { label: "F", completed: streakDays >= 3 },
+    { label: "S", completed: streakDays >= 2 },
+    { label: "S", completed: streakDays >= 1, isToday: true },
   ];
 
   return (
@@ -257,65 +258,85 @@ export default async function AchievementsPage() {
                   {/* Badge 1: Explorer */}
                   <div className="flex flex-col items-center group cursor-pointer">
                     <div className="transition-transform group-hover:scale-105">
-                      <ExplorerShieldBadge className="w-14 h-16 drop-shadow-xs" />
+                      {questsCompleted >= 5 ? (
+                        <ExplorerShieldBadge className="w-14 h-16 drop-shadow-xs" />
+                      ) : (
+                        <LockedShieldBadge className="w-14 h-16 drop-shadow-2xs opacity-85" />
+                      )}
                     </div>
-                    <div className="mt-2 font-bold text-xs text-slate-900 leading-tight">
+                    <div className={`mt-2 font-bold text-xs leading-tight ${questsCompleted >= 5 ? "text-slate-900" : "text-slate-500"}`}>
                       Explorer
                     </div>
                     <div className="mt-0.5 text-[10px] sm:text-[11px] text-slate-400 font-medium">
-                      Complete 5 quests
+                      {questsCompleted >= 5 ? "Unlocked" : "Complete 5 quests"}
                     </div>
                   </div>
 
                   {/* Badge 2: Quick Learner */}
                   <div className="flex flex-col items-center group cursor-pointer">
                     <div className="transition-transform group-hover:scale-105">
-                      <QuickLearnerShieldBadge className="w-14 h-16 drop-shadow-xs" />
+                      {questsCompleted >= 10 ? (
+                        <QuickLearnerShieldBadge className="w-14 h-16 drop-shadow-xs" />
+                      ) : (
+                        <LockedShieldBadge className="w-14 h-16 drop-shadow-2xs opacity-85" />
+                      )}
                     </div>
-                    <div className="mt-2 font-bold text-xs text-slate-900 leading-tight">
+                    <div className={`mt-2 font-bold text-xs leading-tight ${questsCompleted >= 10 ? "text-slate-900" : "text-slate-500"}`}>
                       Quick Learner
                     </div>
                     <div className="mt-0.5 text-[10px] sm:text-[11px] text-slate-400 font-medium">
-                      Complete 10 quests
+                      {questsCompleted >= 10 ? "Unlocked" : "Complete 10 quests"}
                     </div>
                   </div>
 
                   {/* Badge 3: Consistent */}
                   <div className="flex flex-col items-center group cursor-pointer">
                     <div className="transition-transform group-hover:scale-105">
-                      <ConsistentShieldBadge className="w-14 h-16 drop-shadow-xs" />
+                      {streakDays >= 7 ? (
+                        <ConsistentShieldBadge className="w-14 h-16 drop-shadow-xs" />
+                      ) : (
+                        <LockedShieldBadge className="w-14 h-16 drop-shadow-2xs opacity-85" />
+                      )}
                     </div>
-                    <div className="mt-2 font-bold text-xs text-slate-900 leading-tight">
+                    <div className={`mt-2 font-bold text-xs leading-tight ${streakDays >= 7 ? "text-slate-900" : "text-slate-500"}`}>
                       Consistent
                     </div>
                     <div className="mt-0.5 text-[10px] sm:text-[11px] text-slate-400 font-medium">
-                      7 day streak
+                      {streakDays >= 7 ? "Unlocked" : "7 day streak"}
                     </div>
                   </div>
 
                   {/* Badge 4: Sharpshooter */}
                   <div className="flex flex-col items-center group cursor-pointer">
                     <div className="transition-transform group-hover:scale-105">
-                      <SharpshooterShieldBadge className="w-14 h-16 drop-shadow-xs" />
+                      {questsCompleted >= 1 ? (
+                        <SharpshooterShieldBadge className="w-14 h-16 drop-shadow-xs" />
+                      ) : (
+                        <LockedShieldBadge className="w-14 h-16 drop-shadow-2xs opacity-85" />
+                      )}
                     </div>
-                    <div className="mt-2 font-bold text-xs text-slate-900 leading-tight">
+                    <div className={`mt-2 font-bold text-xs leading-tight ${questsCompleted >= 1 ? "text-slate-900" : "text-slate-500"}`}>
                       Sharpshooter
                     </div>
                     <div className="mt-0.5 text-[10px] sm:text-[11px] text-slate-400 font-medium">
-                      Score 100% in a quest
+                      {questsCompleted >= 1 ? "Unlocked" : "Score 100% in a quest"}
                     </div>
                   </div>
 
                   {/* Badge 5: Knowledge Seeker (Locked) */}
                   <div className="flex flex-col items-center opacity-85 group cursor-pointer">
                     <div className="transition-transform group-hover:scale-105">
-                      <LockedShieldBadge className="w-14 h-16 drop-shadow-2xs" />
+                      {questsCompleted >= 25 ? (
+                        <ExplorerShieldBadge className="w-14 h-16 drop-shadow-xs" />
+                      ) : (
+                        <LockedShieldBadge className="w-14 h-16 drop-shadow-2xs" />
+                      )}
                     </div>
-                    <div className="mt-2 font-bold text-xs text-slate-600 leading-tight">
+                    <div className={`mt-2 font-bold text-xs leading-tight ${questsCompleted >= 25 ? "text-slate-900" : "text-slate-500"}`}>
                       Knowledge Seeker
                     </div>
                     <div className="mt-0.5 text-[10px] sm:text-[11px] text-slate-400 font-medium">
-                      Complete 25 quests
+                      {questsCompleted >= 25 ? "Unlocked" : "Complete 25 quests"}
                     </div>
                   </div>
                 </div>
@@ -323,7 +344,10 @@ export default async function AchievementsPage() {
 
               {/* Bottom active indicator bar */}
               <div className="mt-2 h-1 w-full bg-slate-100 rounded-full overflow-hidden">
-                <div className="h-full bg-[#7C3AED] rounded-full w-2/5" />
+                <div
+                  className="h-full bg-[#7C3AED] rounded-full transition-all"
+                  style={{ width: `${Math.min(100, Math.max(0, (badgesEarned / 5) * 100))}%` }}
+                />
               </div>
             </div>
 
@@ -427,10 +451,13 @@ export default async function AchievementsPage() {
 
                   <div className="w-full space-y-1 relative z-10">
                     <div className="text-[11px] font-black text-slate-800">
-                      28 <span className="text-slate-400 font-semibold">/ 50</span>
+                      {questsCompleted} <span className="text-slate-400 font-semibold">/ 50</span>
                     </div>
                     <div className="h-1.5 w-full bg-slate-200/80 rounded-full overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-[#7C3AED] to-[#9333EA] rounded-full w-[56%]" />
+                      <div
+                        className="h-full bg-gradient-to-r from-[#7C3AED] to-[#9333EA] rounded-full transition-all"
+                        style={{ width: `${Math.min(100, (questsCompleted / 50) * 100)}%` }}
+                      />
                     </div>
                   </div>
                 </div>
@@ -452,10 +479,13 @@ export default async function AchievementsPage() {
 
                   <div className="w-full space-y-1 relative z-10">
                     <div className="text-[11px] font-black text-slate-800">
-                      230 <span className="text-slate-400 font-semibold">/ 1000</span>
+                      {totalXp} <span className="text-slate-400 font-semibold">/ 1000</span>
                     </div>
                     <div className="h-1.5 w-full bg-slate-200/80 rounded-full overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-[#7C3AED] to-[#9333EA] rounded-full w-[23%]" />
+                      <div
+                        className="h-full bg-gradient-to-r from-[#7C3AED] to-[#9333EA] rounded-full transition-all"
+                        style={{ width: `${Math.min(100, (totalXp / 1000) * 100)}%` }}
+                      />
                     </div>
                   </div>
                 </div>
@@ -477,10 +507,13 @@ export default async function AchievementsPage() {
 
                   <div className="w-full space-y-1 relative z-10">
                     <div className="text-[11px] font-black text-slate-800">
-                      7 <span className="text-slate-400 font-semibold">/ 30</span>
+                      {streakDays} <span className="text-slate-400 font-semibold">/ 30</span>
                     </div>
                     <div className="h-1.5 w-full bg-slate-200/80 rounded-full overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-[#7C3AED] to-[#9333EA] rounded-full w-[23%]" />
+                      <div
+                        className="h-full bg-gradient-to-r from-[#7C3AED] to-[#9333EA] rounded-full transition-all"
+                        style={{ width: `${Math.min(100, (streakDays / 30) * 100)}%` }}
+                      />
                     </div>
                   </div>
                 </div>
@@ -503,85 +536,44 @@ export default async function AchievementsPage() {
                   </button>
                 </div>
 
-                {/* 3 Recent Rows */}
-                <div className="mt-4 space-y-3">
-                  
-                  {/* Item 1 */}
-                  <div className="flex items-center justify-between gap-3 p-2 rounded-xl hover:bg-slate-50 transition-colors">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-amber-50 via-amber-50/80 to-orange-50/40 border border-amber-200/70 text-amber-500 shadow-2xs">
-                        <IconFlame className="h-5 w-5 fill-amber-400/30 text-amber-500 stroke-[2.2]" />
+                {/* Dynamic or Clean Zero State */}
+                {totalXp > 0 || streakDays > 0 ? (
+                  <div className="mt-4 space-y-3">
+                    <div className="flex items-center justify-between gap-3 p-2 rounded-xl hover:bg-slate-50 transition-colors">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-amber-50 via-amber-50/80 to-orange-50/40 border border-amber-200/70 text-amber-500 shadow-2xs">
+                          <IconFlame className="h-5 w-5 fill-amber-400/30 text-amber-500 stroke-[2.2]" />
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold text-slate-900 leading-tight">
+                            Active Learner
+                          </div>
+                          <div className="text-[10px] font-medium text-slate-400">
+                            Earned XP in learning modules
+                          </div>
+                        </div>
                       </div>
-                      <div>
-                        <div className="text-xs font-bold text-slate-900 leading-tight">
-                          Consistent
+                      <div className="text-right shrink-0">
+                        <div className="text-xs font-extrabold text-slate-900 leading-tight">
+                          +{totalXp} XP
                         </div>
                         <div className="text-[10px] font-medium text-slate-400">
-                          Maintained a 7 day streak
+                          Active
                         </div>
-                      </div>
-                    </div>
-                    <div className="text-right shrink-0">
-                      <div className="text-xs font-extrabold text-slate-900 leading-tight">
-                        +30 XP
-                      </div>
-                      <div className="text-[10px] font-medium text-slate-400">
-                        2 days ago
                       </div>
                     </div>
                   </div>
-
-                  {/* Item 2 */}
-                  <div className="flex items-center justify-between gap-3 p-2 rounded-xl hover:bg-slate-50 transition-colors">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-50 via-emerald-50/80 to-teal-50/40 border border-emerald-200/70 text-emerald-600 shadow-2xs">
-                        <IconStar className="h-5 w-5 fill-emerald-400/30 text-emerald-600 stroke-[2.2]" />
-                      </div>
-                      <div>
-                        <div className="text-xs font-bold text-slate-900 leading-tight">
-                          Quick Learner
-                        </div>
-                        <div className="text-[10px] font-medium text-slate-400">
-                          Completed 10 quests
-                        </div>
-                      </div>
+                ) : (
+                  <div className="py-8 text-center space-y-2">
+                    <div className="flex h-12 w-12 mx-auto items-center justify-center rounded-2xl bg-purple-50 text-[#7C3AED] border border-purple-100">
+                      <IconAward className="h-6 w-6" />
                     </div>
-                    <div className="text-right shrink-0">
-                      <div className="text-xs font-extrabold text-slate-900 leading-tight">
-                        +20 XP
-                      </div>
-                      <div className="text-[10px] font-medium text-slate-400">
-                        5 days ago
-                      </div>
-                    </div>
+                    <div className="text-xs font-bold text-slate-800">No achievements unlocked yet</div>
+                    <p className="text-[11px] text-slate-400 max-w-xs mx-auto">
+                      Complete lessons, practice coding problems, and build daily streaks to unlock badges!
+                    </p>
                   </div>
-
-                  {/* Item 3 */}
-                  <div className="flex items-center justify-between gap-3 p-2 rounded-xl hover:bg-slate-50 transition-colors">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-purple-50 via-purple-50/80 to-indigo-50/40 border border-purple-200/70 text-purple-600 shadow-2xs">
-                        <IconCompass className="h-5 w-5 text-purple-600 stroke-[2.2]" />
-                      </div>
-                      <div>
-                        <div className="text-xs font-bold text-slate-900 leading-tight">
-                          Explorer
-                        </div>
-                        <div className="text-[10px] font-medium text-slate-400">
-                          Completed 5 quests
-                        </div>
-                      </div>
-                    </div>
-                    <div className="text-right shrink-0">
-                      <div className="text-xs font-extrabold text-slate-900 leading-tight">
-                        +10 XP
-                      </div>
-                      <div className="text-[10px] font-medium text-slate-400">
-                        1 week ago
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
+                )}
               </div>
 
             </div>

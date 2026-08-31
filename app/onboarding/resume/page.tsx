@@ -99,26 +99,6 @@ function ResumeOnboarding() {
                 <IconCheck className="h-8 w-8 stroke-[2.5] text-[#7C3AED] drop-shadow-[0_0_8px_rgba(124,58,237,0.6)]" />
               </div>
             </div>
-
-            {/* Floating Sparkle 1 (Top Right) */}
-            <div className="absolute -top-3 -right-3 text-amber-400 animate-bounce duration-700">
-              <IconSparkles className="h-5 w-5 fill-amber-400 filter drop-shadow-[0_0_6px_rgba(251,191,36,0.8)]" />
-            </div>
-
-            {/* Floating Sparkle 2 (Bottom Left) */}
-            <div className="absolute -bottom-2.5 -left-3 text-purple-400 animate-pulse duration-1000">
-              <IconSparkles className="h-4 w-4 fill-purple-400 filter drop-shadow-[0_0_6px_rgba(192,132,252,0.8)]" />
-            </div>
-
-            {/* Floating Sparkle 3 (Top Left Micro Star) */}
-            <div className="absolute -top-2 -left-2 text-pink-400 animate-pulse duration-500 font-bold select-none">
-              ✦
-            </div>
-
-            {/* Floating Sparkle 4 (Bottom Right Micro Star) */}
-            <div className="absolute -bottom-1.5 -right-2 text-indigo-400 animate-bounce duration-1000 font-bold select-none">
-              ✧
-            </div>
           </div>
 
           <h1 className="text-2xl font-black text-slate-900 tracking-tight">Experience Profile Calibrated</h1>

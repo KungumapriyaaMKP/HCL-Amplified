@@ -13,9 +13,9 @@ export default async function CompilerPage({ params }: { params: Promise<{ id: s
   const detail = await getModuleDetail(user.id, moduleId);
   if (!detail) redirect(`/goals/${id}`);
 
-  let displayName = "Yuvi";
-  let totalXp = 320;
-  let streakDays = 7;
+  let displayName = "Learner";
+  let totalXp = 0;
+  let streakDays = 0;
 
   try {
     const [profileResult, xpRowResult, streakRowResult] = await Promise.all([
@@ -28,16 +28,21 @@ export default async function CompilerPage({ params }: { params: Promise<{ id: s
     if (profile?.displayName) displayName = profile.displayName;
 
     const [xpRow] = xpRowResult;
-    if (xpRow && Number(xpRow.total) > 0) totalXp = Number(xpRow.total);
+    if (xpRow) totalXp = Number(xpRow.total) || 0;
 
     const [streakRow] = streakRowResult;
-    if (streakRow && streakRow.currentStreak > 0) streakDays = streakRow.currentStreak;
+    if (streakRow) streakDays = streakRow.currentStreak || 0;
   } catch (_err) {}
 
-  const language = detail.module.programmingLanguage || 
-    (detail.skill.name.toLowerCase().includes("python") ? "python" : 
-     detail.skill.name.toLowerCase().includes("type") ? "typescript" : 
-     detail.skill.name.toLowerCase().includes("sql") ? "python" : "javascript");
+  const language =
+    detail.module.programmingLanguage ||
+    (detail.skill.name.toLowerCase().includes("python")
+      ? "python"
+      : detail.skill.name.toLowerCase().includes("type")
+      ? "typescript"
+      : detail.skill.name.toLowerCase().includes("sql")
+      ? "python"
+      : "javascript");
 
   return (
     <div className="flex min-h-screen bg-[#F8F9FD] text-slate-900 font-sans">

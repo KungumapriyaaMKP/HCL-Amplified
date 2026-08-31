@@ -58,6 +58,55 @@ export function CertificateModal({ isOpen, onClose, data }: CertificateModalProp
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md overflow-y-auto print:p-0 print:bg-white print:static">
+      {/* Global Print Isolation Stylesheet */}
+      <style>{`
+        @media print {
+          @page {
+            size: landscape;
+            margin: 0;
+          }
+          html, body {
+            background-color: #ffffff !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            height: 100% !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          /* Hide all elements on the entire page */
+          body * {
+            visibility: hidden !important;
+          }
+          /* Make only the certificate container and all its children visible */
+          #certificate-print-portal,
+          #certificate-print-portal * {
+            visibility: visible !important;
+          }
+          #certificate-print-portal {
+            position: fixed !important;
+            left: 0 !important;
+            top: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            margin: 0 !important;
+            padding: 24px !important;
+            box-sizing: border-box !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            background: #ffffff !important;
+            z-index: 2147483647 !important;
+          }
+          .certificate-print-container {
+            width: 100% !important;
+            max-width: 960px !important;
+            margin: 0 auto !important;
+            box-shadow: none !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+          }
+        }
+      `}</style>
       
       {/* Container Card */}
       <div className="relative w-full max-w-5xl bg-white border-2 border-purple-500/40 shadow-2xl p-4 sm:p-6 space-y-4 my-auto print:border-none print:shadow-none print:p-0 print:m-0 rounded-none">

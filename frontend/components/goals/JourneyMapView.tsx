@@ -52,6 +52,8 @@ interface JourneyMapViewProps {
   domainName: string;
   modules: JourneyModuleItem[];
   userDisplayName?: string;
+  totalXp?: number;
+  gems?: number;
 }
 
 export function JourneyMapView({
@@ -59,7 +61,9 @@ export function JourneyMapView({
   goalTitle,
   domainName,
   modules,
-  userDisplayName = "Yuvi",
+  userDisplayName = "Learner",
+  totalXp = 0,
+  gems = 0,
 }: JourneyMapViewProps) {
   // Sort modules by order
   const sortedModules = [...modules].sort(
@@ -249,12 +253,12 @@ export function JourneyMapView({
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white/95 border border-amber-200/90 text-amber-800 text-xs font-black shadow-xs backdrop-blur-xs">
             <span className="text-sm">🪙</span>
-            <span>320</span>
+            <span>{totalXp}</span>
           </div>
 
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white/95 border border-purple-200/90 text-[#7C3AED] text-xs font-black shadow-xs backdrop-blur-xs">
             <span className="text-sm">💎</span>
-            <span>15</span>
+            <span>{gems}</span>
           </div>
 
           <Link
@@ -574,12 +578,12 @@ export function JourneyMapView({
                     }}
                     className="relative flex flex-col items-center group cursor-pointer"
                   >
-                    <div className="absolute -inset-8 rounded-full bg-gradient-to-tr from-amber-400 via-yellow-300 to-amber-500 blur-2xl opacity-75 animate-pulse" />
-                    <div className="absolute -inset-4 rounded-full bg-amber-300/60 blur-xl animate-pulse" />
+                    <div className="absolute -inset-14 rounded-full bg-gradient-to-tr from-amber-400 via-yellow-300 to-amber-500 blur-3xl opacity-80 animate-pulse" />
+                    <div className="absolute -inset-8 rounded-full bg-amber-300/70 blur-2xl animate-pulse" />
 
-                    {/* 3D Pedestal Base & Glowing Chest */}
+                    {/* 3D Pedestal Base & Grand Glowing Chest */}
                     <div className="relative flex flex-col items-center">
-                      <div className="relative h-28 w-28 sm:h-32 sm:w-32 animate-pulse drop-shadow-[0_0_25px_rgba(245,158,11,0.95)] group-hover:scale-110 group-hover:drop-shadow-[0_0_40px_rgba(234,179,8,1)] transition-all duration-300">
+                      <div className="relative h-44 w-44 sm:h-56 sm:w-56 animate-pulse drop-shadow-[0_0_35px_rgba(245,158,11,0.95)] group-hover:scale-110 group-hover:drop-shadow-[0_0_55px_rgba(234,179,8,1)] transition-all duration-300">
                         <Image
                           src="/images/journey/treasure_transparent.png"
                           alt="Golden Treasure Chest"
@@ -588,7 +592,7 @@ export function JourneyMapView({
                           className="object-contain"
                         />
                       </div>
-                      <div className="-mt-4 w-24 h-4 rounded-full bg-gradient-to-r from-purple-950 via-[#4C1D95] to-purple-950 border-2 border-amber-400/80 shadow-lg" />
+                      <div className="-mt-8 w-36 sm:w-44 h-5 sm:h-7 rounded-full bg-gradient-to-r from-purple-950 via-[#4C1D95] to-purple-950 border-[3px] border-amber-400 shadow-xl" />
                     </div>
                   </div>
                 </div>
@@ -597,7 +601,7 @@ export function JourneyMapView({
                 <div
                   className="absolute z-20"
                   style={{
-                    left: `${chestCoords.x + 65}px`,
+                    left: `${chestCoords.x + 95}px`,
                     top: `${chestCoords.y}px`,
                     transform: "translateY(-50%)",
                     width: "480px",
