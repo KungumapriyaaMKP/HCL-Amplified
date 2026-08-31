@@ -60,6 +60,29 @@ async function initPyodide(): Promise<PyodideInterface> {
   return window.__pyodideLoadingPromise;
 }
 
+function cleanPyodideTraceback(rawError: string): string {
+  if (!rawError) return "";
+  const lines = rawError.split("\n");
+  const filtered: string[] = [];
+
+  for (const line of lines) {
+    if (
+      line.includes("_pyodide") ||
+      line.includes("CodeRunner") ||
+      line.includes("eval_code_async") ||
+      line.includes("coroutine = eval(")
+    ) {
+      continue;
+    }
+    // Replace <exec> with main.py for clean presentation
+    const cleaned = line.replace(/File "<exec>"/g, 'File "main.py"');
+    filtered.push(cleaned);
+  }
+
+  const result = filtered.join("\n").trim();
+  return result || rawError;
+}
+
 export async function runPythonInBrowser(
   code: string,
   stdin = ""
@@ -84,30 +107,31 @@ export async function runPythonInBrowser(
     // Auto-load common packages (numpy, math, etc.) if imported
     await pyodide.loadPackagesFromImports(code);
 
-    // Provide simulated sys.stdin if stdin is passed
-    const wrapper = `
+    // Format stdin with trailing newline so readline / input() behaves as terminal input
+    const formattedStdin = stdin ? (stdin.endsWith("\n") ? stdin : stdin + "\n") : "";
+
+    // Reset sys.stdin cleanly before executing user code
+    const setupScript = `
 import sys
 import io
-
-_stdin_data = ${JSON.stringify(stdin)}
-if _stdin_data:
-    sys.stdin = io.StringIO(_stdin_data)
-
-${code}
+sys.stdin = io.StringIO(${JSON.stringify(formattedStdin)})
 `;
+    await pyodide.runPythonAsync(setupScript);
 
-    await pyodide.runPythonAsync(wrapper);
+    // Run user code directly so line numbers match user editor line numbers
+    await pyodide.runPythonAsync(code);
 
     return {
       stdout: stdoutBuffer,
-      stderr: stderrBuffer,
+      stderr: cleanPyodideTraceback(stderrBuffer),
     };
   } catch (err) {
-    const errMsg = err instanceof Error ? err.message : String(err);
+    const rawMsg = err instanceof Error ? err.message : String(err);
+    const cleaned = cleanPyodideTraceback(rawMsg);
     return {
       stdout: "",
-      stderr: errMsg,
-      compileError: errMsg,
+      stderr: cleaned,
+      compileError: cleaned,
     };
   }
 }

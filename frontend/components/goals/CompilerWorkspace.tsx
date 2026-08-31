@@ -20,9 +20,9 @@ import { emitNudge } from "@/lib/mentorBus";
 import { runPythonInBrowser } from "@/lib/pyodideRunner";
 
 const STARTERS: Record<string, string> = {
-  python: `# Write your solution below\nprint("Hello, QuestLearn!")\n`,
-  javascript: `// Write your solution below\nconsole.log("Hello, QuestLearn!");\n`,
-  typescript: `// Write your solution below\nconst message: string = "Hello, QuestLearn!";\nconsole.log(message);\n`,
+  python: `# Write your solution below\n# Tip: Use input() to read lines, or map(int, input().split()) for space-separated numbers\n`,
+  javascript: `// Write your solution below\n// Tip: Use require("fs").readFileSync(0, "utf-8").trim() to read stdin\n`,
+  typescript: `// Write your solution below\n`,
 };
 
 type TestCase = { input: string; expectedOutput: string };
@@ -623,7 +623,10 @@ export function CompilerWorkspace({
                       <div className="text-[11px] text-slate-500">Input: <span className="font-bold text-slate-800">{r.input || "(none)"}</span></div>
                       <div className="text-[11px] text-slate-500">Expected: <span className="font-bold text-emerald-700">{r.expected}</span></div>
                       {!r.passed && (
-                        <div className="text-[11px] text-rose-600">Actual: <span className="font-bold">{r.actual}</span></div>
+                        <div className="text-[11px] text-rose-600">
+                          <span>Actual: </span>
+                          <span className="font-bold whitespace-pre-wrap break-words">{r.actual || "(no output)"}</span>
+                        </div>
                       )}
                     </div>
                   ))}
