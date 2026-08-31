@@ -1,0 +1,13 @@
+# Vercel Ignore Rules
+# Ignore non-frontend folders and documentation so Vercel build remains lightweight and fast
+
+backend/
+docs/
+scripts/
+*.docx
+*.log
+audit_test_results.json
+.claude/
+AGENTS.md
+CHANGE_LOG.md
+CLAUDE.md
