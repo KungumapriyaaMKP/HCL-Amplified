@@ -37,6 +37,7 @@ type Props = {
   proctoredAlreadyTaken: boolean;
   proctoredScore: number | null;
   proctoredReport: string | null;
+  userDisplayName?: string;
 };
 
 export function ModuleWorkspace(props: Props) {
@@ -981,7 +982,7 @@ export function ModuleWorkspace(props: Props) {
         onClose={() => setShowCert(false)}
         data={{
           type: "milestone",
-          recipientName: "Learner",
+          recipientName: props.userDisplayName || "Learner",
           title: props.skillName,
           score: props.proctoredScore || 95,
           skillsMastered: [props.skillName, "Hands-On Code Lab", "15-Question Proctored Exam"],

@@ -41,6 +41,7 @@ export function ProctoredWorkspace({
   alreadyTaken,
   initialScore,
   initialReport,
+  userDisplayName,
 }: {
   goalId: string;
   moduleId: string;
@@ -48,6 +49,7 @@ export function ProctoredWorkspace({
   alreadyTaken?: boolean;
   initialScore?: number | null;
   initialReport?: string | null;
+  userDisplayName?: string;
 }) {
   const router = useRouter();
   const [phase, setPhase] = useState<Phase>(alreadyTaken ? "done" : "intro");
@@ -567,7 +569,7 @@ export function ProctoredWorkspace({
           onClose={() => setShowCert(false)}
           data={{
             type: "milestone",
-            recipientName: "Learner",
+            recipientName: userDisplayName || "Learner",
             title: skillName,
             score: score || 95,
             skillsMastered: [skillName, "Interactive Coding Lab", "Webcam-Verified Proctored Test"],

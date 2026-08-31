@@ -1,8 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { CertificateView, CertificateData } from "./CertificateView";
-import { IconPrinter, IconShare, IconX, IconCheck, IconAward } from "@tabler/icons-react";
+import { exportCertificateToPdf } from "@/frontend/lib/certificatePdf";
+import {
+  IconPrinter,
+  IconDownload,
+  IconShare,
+  IconX,
+  IconCheck,
+  IconAward,
+  IconLoader2,
+} from "@tabler/icons-react";
 
 interface CertificateModalProps {
   isOpen: boolean;
@@ -12,8 +21,30 @@ interface CertificateModalProps {
 
 export function CertificateModal({ isOpen, onClose, data }: CertificateModalProps) {
   const [copied, setCopied] = useState(false);
+  const [downloading, setDownloading] = useState(false);
+  const [downloadSuccess, setDownloadSuccess] = useState(false);
+  const certRef = useRef<HTMLDivElement>(null);
 
   if (!isOpen) return null;
+
+  async function handleDownloadPDF() {
+    if (!certRef.current || downloading) return;
+    setDownloading(true);
+    setDownloadSuccess(false);
+
+    try {
+      const title = data.type === "grand" ? `Grand_${data.title}` : `Milestone_${data.title}`;
+      const success = await exportCertificateToPdf(certRef.current, title, data.recipientName);
+      if (success) {
+        setDownloadSuccess(true);
+        setTimeout(() => setDownloadSuccess(false), 3000);
+      }
+    } catch (err) {
+      console.error("Error during PDF download:", err);
+    } finally {
+      setDownloading(false);
+    }
+  }
 
   function handlePrint() {
     window.print();
@@ -26,57 +57,89 @@ export function CertificateModal({ isOpen, onClose, data }: CertificateModalProp
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-md overflow-y-auto print:p-0 print:bg-white print:static">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md overflow-y-auto print:p-0 print:bg-white print:static">
       
-      {/* Container Card with Sharp Borders */}
-      <div className="relative w-full max-w-5xl bg-white border-2 border-purple-500/40 shadow-2xl p-4 sm:p-8 space-y-6 my-auto print:border-none print:shadow-none print:p-0 rounded-none">
+      {/* Container Card */}
+      <div className="relative w-full max-w-5xl bg-white border-2 border-purple-500/40 shadow-2xl p-4 sm:p-6 space-y-4 my-auto print:border-none print:shadow-none print:p-0 print:m-0 rounded-none">
         
         {/* Top Controls Bar (Hidden during print) */}
-        <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-200 print:hidden">
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-200 print-hide print:hidden">
           <div className="flex items-center gap-2 text-slate-900">
-            <IconAward className="w-6 h-6 text-[#7C3AED]" />
-            <h2 className="text-base sm:text-lg font-black tracking-tight">
+            <IconAward className="w-5 h-5 sm:w-6 sm:h-6 text-[#7C3AED]" />
+            <h2 className="text-sm sm:text-base font-black tracking-tight">
               {data.type === "grand" ? "Grand Domain Mastery Certificate" : "Milestone Mastery Certificate"}
             </h2>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center flex-wrap gap-2 sm:gap-2.5">
+            {/* Direct High-Res PDF Download Button */}
+            <button
+              type="button"
+              onClick={handleDownloadPDF}
+              disabled={downloading}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-[#6D28D9] to-[#7C3AED] text-white text-xs font-bold shadow-md shadow-purple-500/20 hover:opacity-95 disabled:opacity-75 cursor-pointer rounded-none transition-all"
+            >
+              {downloading ? (
+                <>
+                  <IconLoader2 className="w-4 h-4 animate-spin text-purple-200" />
+                  <span>Generating PDF...</span>
+                </>
+              ) : downloadSuccess ? (
+                <>
+                  <IconCheck className="w-4 h-4 text-emerald-300" />
+                  <span>Downloaded! ✓</span>
+                </>
+              ) : (
+                <>
+                  <IconDownload className="w-4 h-4" />
+                  <span>Download PDF</span>
+                </>
+              )}
+            </button>
+
+            {/* Print Button */}
             <button
               type="button"
               onClick={handlePrint}
-              className="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-[#6D28D9] to-[#7C3AED] text-white text-xs font-bold shadow-md shadow-purple-500/20 hover:opacity-95 cursor-pointer rounded-none"
+              className="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-100 border border-slate-300 text-slate-700 text-xs font-bold hover:bg-slate-200 cursor-pointer rounded-none transition-all"
+              title="Open browser print dialog for single-page landscape print"
             >
-              <IconPrinter className="w-4 h-4" />
-              <span>Print / Download PDF</span>
+              <IconPrinter className="w-4 h-4 text-slate-600" />
+              <span className="hidden xs:inline sm:inline">Print</span>
             </button>
 
+            {/* Share Button */}
             <button
               type="button"
               onClick={handleShare}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 border border-slate-300 text-slate-700 text-xs font-bold hover:bg-slate-200 cursor-pointer rounded-none"
+              className="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-100 border border-slate-300 text-slate-700 text-xs font-bold hover:bg-slate-200 cursor-pointer rounded-none transition-all"
             >
-              {copied ? <IconCheck className="w-4 h-4 text-emerald-600" /> : <IconShare className="w-4 h-4" />}
+              {copied ? <IconCheck className="w-4 h-4 text-emerald-600" /> : <IconShare className="w-4 h-4 text-slate-600" />}
               <span>{copied ? "Copied Link!" : "Share"}</span>
             </button>
 
+            {/* Close Button */}
             <button
               type="button"
               onClick={onClose}
               className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer rounded-none"
+              aria-label="Close certificate preview"
             >
               <IconX className="w-5 h-5" />
             </button>
           </div>
         </div>
 
-        {/* The Authentic Certificate Canvas */}
-        <div className="overflow-x-auto py-2">
-          <CertificateView data={data} />
+        {/* The Authentic Certificate Canvas & Print Portal */}
+        <div className="overflow-x-auto py-1">
+          <div id="certificate-print-portal" className="w-full flex items-center justify-center">
+            <CertificateView ref={certRef} data={data} />
+          </div>
         </div>
 
         {/* Bottom Helper Notice */}
-        <div className="text-center text-[11px] text-slate-400 font-sans print:hidden">
-          🔒 Cryptographically verifiable credential issued by QuestLearn AI Academic Board. Click &apos;Print / Download PDF&apos; to save a high-res certified copy.
+        <div className="text-center text-[11px] text-slate-400 font-sans print-hide print:hidden">
+          🔒 Cryptographically verifiable credential issued by QuestLearn AI Academic Board. Click &apos;Download PDF&apos; for certified high-res document.
         </div>
 
       </div>
