@@ -227,6 +227,7 @@ export function CommunityHubView({ domains }: { domains: CommunityDomainItem[] }
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            aria-label="Search guilds by skill, topic or framework"
             placeholder="Search guilds by skill, topic or framework (e.g. React, PyTorch, Docker)..."
             className="w-full rounded-xs border border-slate-200 bg-slate-50/70 py-2.5 pl-10 pr-4 text-xs text-slate-800 placeholder-slate-400 focus:border-[#7C3AED] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#7C3AED] transition-all"
           />

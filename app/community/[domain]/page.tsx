@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { requireUserOrRedirect } from "@/lib/auth";
 import { isValidDomain } from "@/lib/community";
@@ -11,6 +12,16 @@ import { WebDev3DHeaderIllustration } from "@/frontend/components/community/WebD
 import { IconArrowLeft } from "@tabler/icons-react";
 import Image from "next/image";
 import Link from "next/link";
+
+export async function generateMetadata({ params }: { params: Promise<{ domain: string }> }): Promise<Metadata> {
+  const { domain } = await params;
+  const domainMeta = DOMAINS.find((d) => d.id === domain);
+  const name = domainMeta?.name || "Guild";
+  return {
+    title: `${name} Guild`,
+    description: `Connect, ask technical questions, and share knowledge with other learners in the ${name} domain guild.`,
+  };
+}
 
 export default async function CommunityDomainPage({ params }: { params: Promise<{ domain: string }> }) {
   const { domain } = await params;

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { requireUserOrRedirect } from "@/lib/auth";
 import { getGoalDetail } from "@/lib/goalData";
@@ -7,6 +8,14 @@ import { eq } from "drizzle-orm";
 import { AppSidebar } from "@/frontend/components/layout/AppSidebar";
 import { JourneyMapView } from "@/frontend/components/goals/JourneyMapView";
 import { DOMAINS } from "@/data/domains";
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  return {
+    title: `Learning Path Roadmap`,
+    description: "Follow your AI-generated adaptive learning milestones, interactive practice labs, and proctored calibrations.",
+  };
+}
 
 export default async function GoalPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

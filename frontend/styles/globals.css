@@ -264,18 +264,21 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 0 6px rgba(168, 85, 247, 0.55), 0 0 12px rgba(124, 58, 237, 0.2) !important;
 }
 
-/* Dynamic Biometric Face Laser Scanning Keyframes */
+/* Dynamic Biometric Face Laser Scanning Keyframes (GPU Hardware Accelerated) */
 @keyframes biometric-laser-sweep {
   0% {
     top: 8%;
+    transform: translateY(0);
     opacity: 0.95;
   }
   50% {
-    top: 85%;
+    top: 8%;
+    transform: translateY(220px);
     opacity: 0.95;
   }
   100% {
     top: 8%;
+    transform: translateY(0);
     opacity: 0.95;
   }
 }

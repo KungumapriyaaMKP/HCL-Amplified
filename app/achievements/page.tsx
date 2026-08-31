@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { db } from "@/lib/db";
 import { profiles, xpLedger, streaks, userBadges, pathModules, goals } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
@@ -24,6 +25,11 @@ import {
   IconStar,
   IconCompass,
 } from "@tabler/icons-react";
+
+export const metadata: Metadata = {
+  title: "Achievements & Badges",
+  description: "Unlock engineering mastery badges, track streak milestones, and view trophy progression on QuestLearn.",
+};
 
 export default async function AchievementsPage() {
   const supabase = await createClient();

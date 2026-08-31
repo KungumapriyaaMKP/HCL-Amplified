@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { db } from "@/lib/db";
 import { profiles, xpLedger } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
@@ -5,6 +6,11 @@ import { createClient } from "@/lib/supabase/server";
 import { AppSidebar } from "@/frontend/components/layout/AppSidebar";
 import { ResourcesLibraryView } from "@/frontend/components/resources/ResourcesLibraryView";
 import { levelForXp, levelTitle } from "@/lib/gamification";
+
+export const metadata: Metadata = {
+  title: "Resource Library",
+  description: "Curated engineering cheat sheets, interactive documentation, official specifications, and video guides.",
+};
 
 export default async function ResourcesPage() {
   const supabase = await createClient();

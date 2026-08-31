@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import { requireUser } from "@/lib/auth";
 import { getDashboardData, type DashboardData } from "@/lib/dashboardData";
 import { AppSidebar } from "@/frontend/components/layout/AppSidebar";
 import { ProfileDashboardView } from "@/frontend/components/profile/ProfileDashboardView";
+
+export const metadata: Metadata = {
+  title: "Profile & Credentials",
+  description: "View verified certifications, skill mastery distribution, biometric credential status, and learning analytics.",
+};
 
 export default async function ProfilePage() {
   let userEmail = "yuvi@gmail.com";

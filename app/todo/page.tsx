@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { db } from "@/lib/db";
 import { profiles, xpLedger } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
@@ -5,6 +6,11 @@ import { createClient } from "@/lib/supabase/server";
 import { AppSidebar } from "@/frontend/components/layout/AppSidebar";
 import { TodoPageView } from "@/frontend/components/todo/TodoPageView";
 import { levelForXp, levelTitle } from "@/lib/gamification";
+
+export const metadata: Metadata = {
+  title: "Tasks & Study Queue",
+  description: "Track your active learning milestones, practice exercises, and upcoming proctored assessments.",
+};
 
 export default async function TodoPage() {
   const supabase = await createClient();

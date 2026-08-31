@@ -90,7 +90,7 @@ export function AppHeader({
                 <IconUser className="h-4 w-4 text-slate-500" />
                 <span>Profile Settings</span>
               </Link>
-              <form action="/api/auth/signout" method="POST">
+              <form action="/api/auth/logout" method="POST">
                 <button
                   type="submit"
                   className="flex w-full items-center gap-2.5 rounded-sm px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 transition-colors"

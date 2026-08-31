@@ -1,8 +1,14 @@
+import type { Metadata } from "next";
 import { requireUser } from "@/lib/auth";
 import { getDashboardData } from "@/lib/dashboardData";
 import { AppSidebar } from "@/frontend/components/layout/AppSidebar";
 import { AppTopNav } from "@/frontend/components/layout/AppTopNav";
 import { QuestDashboard } from "@/frontend/components/dashboard/QuestDashboard";
+
+export const metadata: Metadata = {
+  title: "Dashboard",
+  description: "View your personalized learning pathways, daily progress, and active skill mastery goals.",
+};
 
 export default async function DashboardPage() {
   let displayName = "Yuvi";

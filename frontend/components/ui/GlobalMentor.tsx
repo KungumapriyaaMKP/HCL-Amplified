@@ -262,6 +262,7 @@ export function GlobalMentor() {
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
+        aria-label="Chat with AI Mentor"
         className="group relative flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-110 active:scale-95 focus:outline-hidden"
         title="Chat with AI Mentor"
       >

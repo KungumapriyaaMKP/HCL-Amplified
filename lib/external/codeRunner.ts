@@ -41,14 +41,14 @@ export async function runCode(language: string, code: string, stdin = ""): Promi
   const runner = RUNNERS[language];
   if (!runner) throw new Error(`Unsupported language for the practice compiler: ${language}`);
 
-  const dir = await mkdtemp(path.join(tmpdir(), "pathwise-run-"));
-  const filePath = path.join(dir, runner.file);
+  const dir = await mkdtemp(path.join(/*turbopackIgnore: true*/ tmpdir(), "pathwise-run-"));
+  const filePath = path.join(/*turbopackIgnore: true*/ dir, runner.file);
 
   try {
     await writeFile(filePath, code, "utf-8");
 
     return await new Promise<RunResult>((resolve) => {
-      const child = spawn(runner.command, runner.args(filePath), { cwd: dir });
+      const child = spawn(/*turbopackIgnore: true*/ runner.command, runner.args(filePath), { cwd: dir });
       let stdout = "";
       let stderr = "";
       let timedOut = false;

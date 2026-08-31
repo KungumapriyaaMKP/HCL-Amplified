@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { requireUser } from "@/lib/auth";
 import { getCommunityOverview } from "@/lib/community";
 import { db } from "@/lib/db";
@@ -5,8 +6,12 @@ import { profiles } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { AppSidebar } from "@/frontend/components/layout/AppSidebar";
 import { CommunityHubView } from "@/frontend/components/community/CommunityHubView";
-
 import { DOMAINS } from "@/data/domains";
+
+export const metadata: Metadata = {
+  title: "Guild Communities",
+  description: "Join domain-specific engineering guilds, participate in technical discussions, and share solutions.",
+};
 
 export default async function CommunityLandingPage() {
   let displayName = "Yuvi";

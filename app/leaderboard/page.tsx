@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { db } from "@/lib/db";
 import { profiles, xpLedger } from "@/db/schema";
 import { eq, desc, sql } from "drizzle-orm";
@@ -6,6 +7,11 @@ import { createClient } from "@/lib/supabase/server";
 import { AppSidebar } from "@/frontend/components/layout/AppSidebar";
 import { IconTrophy, IconBolt, IconFlame } from "@tabler/icons-react";
 import { GoldRankMedal, SilverRankMedal, BronzeRankMedal } from "@/frontend/components/dashboard/Illustrations";
+
+export const metadata: Metadata = {
+  title: "Leaderboard",
+  description: "Global learner rankings, XP leaders, streak champions, and competitive milestones on QuestLearn.",
+};
 
 export default async function LeaderboardPage() {
   const supabase = await createClient();

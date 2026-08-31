@@ -94,6 +94,7 @@ export function Nav({ displayName = "yuvi" }: { displayName?: string }) {
           <div className="flex items-center gap-2 pl-2">
             <Link
               href="/profile"
+              aria-label={`View ${displayName}'s profile`}
               className="flex items-center gap-2 text-left hover:opacity-90 transition-opacity"
             >
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#2563EB] text-xs font-bold text-white shadow-xs">

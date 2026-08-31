@@ -4,6 +4,9 @@ import { withErrorHandling, jsonError } from "@/lib/apiHelpers";
 import { runCode } from "@/lib/external/codeRunner";
 import { awardBadgeIfNew } from "@/lib/gamification";
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   return withErrorHandling(async () => {
     const user = await requireUser();

@@ -1,9 +1,15 @@
+import type { Metadata } from "next";
 import { requireUserOrRedirect } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { profiles } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { AppSidebar } from "@/frontend/components/layout/AppSidebar";
 import { ReviewSession } from "@/frontend/components/review/ReviewSession";
+
+export const metadata: Metadata = {
+  title: "Adaptive Spaced Review",
+  description: "Personalized spaced repetition review session powered by IRT decay modeling to keep your skills sharp.",
+};
 
 export default async function ReviewPage() {
   const user = await requireUserOrRedirect("/review");

@@ -38,23 +38,27 @@ export const SlideToUnlock = ({
     setDragConstraint(Math.max(0, sliderWidth - handleWidth));
   }, []);
 
+  const triggerUnlock = () => {
+    setUnlocked(true);
+    try {
+      confetti({
+        particleCount: 100,
+        spread: 85,
+        origin: { y: 0.6 },
+        colors: ['#8B5CF6', '#A855F7', '#06B6D4', '#10B981', '#F59E0B', '#3B82F6'],
+        scalar: 1.15,
+        ticks: 220,
+      });
+    } catch {
+      // Safe fallback
+    }
+    onUnlock?.();
+  };
+
   // When the drag ends, check if it's past the threshold
   const onDragEnd = (_event: any, info: any) => {
     if (dragConstraint > 0 && info.offset.x > dragConstraint * 0.75) {
-      setUnlocked(true);
-      try {
-        confetti({
-          particleCount: 100,
-          spread: 85,
-          origin: { y: 0.6 },
-          colors: ['#8B5CF6', '#A855F7', '#06B6D4', '#10B981', '#F59E0B', '#3B82F6'],
-          scalar: 1.15,
-          ticks: 220,
-        });
-      } catch {
-        // Safe fallback
-      }
-      onUnlock?.();
+      triggerUnlock();
     } else {
       // Snap back to the start
       x.set(0);
@@ -86,12 +90,21 @@ export const SlideToUnlock = ({
             >
               <motion.div
                 ref={handleRef}
+                tabIndex={0}
+                role="button"
+                aria-label={sliderText}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " " || e.key === "ArrowRight") {
+                    e.preventDefault();
+                    triggerUnlock();
+                  }
+                }}
                 drag="x"
                 dragConstraints={{ left: 0, right: dragConstraint }}
                 dragElastic={0.08}
                 style={{ x }}
                 onDragEnd={onDragEnd}
-                className="absolute left-1 top-1 bottom-1 z-10 flex h-12 w-12 cursor-grab items-center justify-center rounded-none bg-gradient-to-r from-[#6366F1] to-[#7C3AED] text-white shadow-md active:cursor-grabbing hover:opacity-95"
+                className="absolute left-1 top-1 bottom-1 z-10 flex h-12 w-12 cursor-grab items-center justify-center rounded-none bg-gradient-to-r from-[#6366F1] to-[#7C3AED] text-white shadow-md active:cursor-grabbing hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#7C3AED]"
               >
                 <ChevronRightIcon className="h-5 w-5 stroke-[2.5]" />
               </motion.div>
