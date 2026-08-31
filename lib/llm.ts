@@ -21,9 +21,9 @@ export async function chatComplete(
   if (groqKey) {
     const candidateModels = Array.from(
       new Set([
-        process.env.GROQ_MODEL || "qwen/qwen3.8-27b",
-        "qwen/qwen3.8-27b",
+        process.env.GROQ_MODEL || "openai/gpt-oss-120b",
         "openai/gpt-oss-120b",
+        "qwen/qwen3.8-27b",
         "openai/gpt-oss-20b",
         "qwen/qwen3.6-27b",
       ])
