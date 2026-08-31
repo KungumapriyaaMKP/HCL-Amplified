@@ -4,7 +4,7 @@ import { withErrorHandling, jsonError } from "@/lib/apiHelpers";
 import { db } from "@/lib/db";
 import { goals, diagnosticAttempts } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
-import { chatJson } from "@/lib/llm";
+import { chatJson, generateFallbackJson } from "@/lib/llm";
 import { questionGenerationMessages } from "@/lib/prompts";
 import { DOMAINS } from "@/data/domains";
 import { SKILLS } from "@/data/skills";
@@ -31,17 +31,46 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
 
     const domainName = DOMAINS.find((d) => d.id === goal.domain)?.name ?? goal.domain;
     const count = Math.max(4, Math.min(8, covered.length + 2));
-    const result = await chatJson<QuestionSet>(
-      questionGenerationMessages({ purpose: "diagnostic", domain: domainName, skills: covered, count }),
-      { temperature: 0.4, maxTokens: 2500 },
-    );
+    let questions: { id: string; skillId: string; question: string; options: string[]; correctIndex: number; explanation: string }[] = [];
+
+    try {
+      const result = await chatJson<QuestionSet>(
+        questionGenerationMessages({ purpose: "diagnostic", domain: domainName, skills: covered, count }),
+        { temperature: 0.4, maxTokens: 2500 },
+      );
+
+      if (Array.isArray(result)) {
+        questions = result;
+      } else if (Array.isArray(result?.questions)) {
+        questions = result.questions;
+      }
+    } catch (_err) {
+      // Fallback below
+    }
+
+    if (!questions || questions.length === 0) {
+      const fallbackResult = generateFallbackJson<QuestionSet>([
+        { role: "system", content: `diagnostic questions for ${domainName}` },
+      ]);
+      questions = Array.isArray(fallbackResult?.questions) ? fallbackResult.questions : [];
+    }
+
+    // Sanitize questions
+    const sanitizedQuestions = questions.map((q, idx) => ({
+      id: q.id || `diag_${idx + 1}`,
+      skillId: q.skillId || covered[idx % Math.max(1, covered.length)]?.id || "general",
+      question: q.question || `Diagnostic evaluation question for ${domainName}`,
+      options: Array.isArray(q.options) && q.options.length >= 2 ? q.options : ["Option A", "Option B", "Option C", "Option D"],
+      correctIndex: typeof q.correctIndex === "number" && q.correctIndex >= 0 ? q.correctIndex : 0,
+      explanation: q.explanation || `Core concept in ${domainName}.`,
+    }));
 
     const [attempt] = await db
       .insert(diagnosticAttempts)
-      .values({ userId: user.id, goalId: id, questions: result.questions })
+      .values({ userId: user.id, goalId: id, questions: sanitizedQuestions })
       .returning();
 
-    const questionsForClient = result.questions.map(({ id: qid, skillId, question, options }) => ({ id: qid, skillId, question, options }));
+    const questionsForClient = sanitizedQuestions.map(({ id: qid, skillId, question, options }) => ({ id: qid, skillId, question, options }));
     return NextResponse.json({ attemptId: attempt.id, questions: questionsForClient });
   });
 }

@@ -137,34 +137,10 @@ function extractJsonBlock(text: string): string {
   return candidate.slice(first, last + 1).trim();
 }
 
-function generateFallbackJson<T>(messages: ChatMessage[]): T {
+export function generateFallbackJson<T>(messages: ChatMessage[]): T {
   const combined = messages.map((m) => m.content).join(" ").toLowerCase();
 
-  // 1. Coding Exercises & Test Cases
-  if (combined.includes("exercise") || combined.includes("testcases") || combined.includes("test cases")) {
-    return {
-      exercises: [
-        {
-          title: "Sum of Two Numbers",
-          prompt: "Read two integers from a single line of input, separated by a space.\nPrint their sum as a single integer, with no extra text.",
-          testCases: [
-            { input: "4 7", expectedOutput: "11" },
-            { input: "100 250", expectedOutput: "350" }
-          ]
-        },
-        {
-          title: "Even or Odd",
-          prompt: "Read a single integer from input. Print 'Even' if the number is divisible by 2, or 'Odd' otherwise.",
-          testCases: [
-            { input: "8", expectedOutput: "Even" },
-            { input: "13", expectedOutput: "Odd" }
-          ]
-        }
-      ]
-    } as T;
-  }
-
-  // 2. Proctored Assessment: Exactly 15 questions
+  // 1. Proctored Assessment: Exactly 15 questions
   if (combined.includes("proctored")) {
     return {
       questions: [
@@ -427,7 +403,31 @@ function generateFallbackJson<T>(messages: ChatMessage[]): T {
     } as T;
   }
 
-  // 4. Conversational Intake & Roadmap Setup
+  // 4. Coding Exercises & Compiler Test Cases
+  if (combined.includes("exercise") || combined.includes("testcases") || combined.includes("test cases") || combined.includes("compiler")) {
+    return {
+      exercises: [
+        {
+          title: "Sum of Two Numbers",
+          prompt: "Read two integers from a single line of input, separated by a space.\nPrint their sum as a single integer, with no extra text.",
+          testCases: [
+            { input: "4 7", expectedOutput: "11" },
+            { input: "100 250", expectedOutput: "350" }
+          ]
+        },
+        {
+          title: "Even or Odd",
+          prompt: "Read a single integer from input. Print 'Even' if the number is divisible by 2, or 'Odd' otherwise.",
+          testCases: [
+            { input: "8", expectedOutput: "Even" },
+            { input: "13", expectedOutput: "Odd" }
+          ]
+        }
+      ]
+    } as T;
+  }
+
+  // 5. Conversational Intake & Roadmap Setup
   if (combined.includes("intake") || combined.includes("goal")) {
     return {
       reply: "Great! I have customized your learning pathway and structured your roadmap step-by-step. Let's start with your first module!",
@@ -439,7 +439,7 @@ function generateFallbackJson<T>(messages: ChatMessage[]): T {
     } as T;
   }
 
-  // 5. Socratic Hints & Feedback
+  // 6. Socratic Hints & Feedback
   if (combined.includes("socratic") || combined.includes("feedback") || combined.includes("hint")) {
     return {
       feedback: "Review the question carefully. Focus on standard principles and syntax structure.",
@@ -449,6 +449,30 @@ function generateFallbackJson<T>(messages: ChatMessage[]): T {
   }
 
   return {} as T;
+}
+
+function normalizeJsonOutput<T>(parsed: any, messages: ChatMessage[]): T {
+  if (Array.isArray(parsed)) {
+    const combined = messages.map((m) => m.content).join(" ").toLowerCase();
+    if (combined.includes("exercise") || combined.includes("compiler")) {
+      return { exercises: parsed } as T;
+    }
+    return { questions: parsed } as T;
+  }
+  if (parsed && typeof parsed === "object") {
+    // If questions was placed under alternate keys
+    if (!parsed.questions) {
+      if (Array.isArray(parsed.items)) parsed.questions = parsed.items;
+      else if (Array.isArray(parsed.quiz)) parsed.questions = parsed.quiz;
+      else if (Array.isArray(parsed.data)) parsed.questions = parsed.data;
+    }
+    // If exercises was placed under alternate keys
+    if (!parsed.exercises) {
+      if (Array.isArray(parsed.problems)) parsed.exercises = parsed.problems;
+      else if (Array.isArray(parsed.challenges)) parsed.exercises = parsed.challenges;
+    }
+  }
+  return parsed as T;
 }
 
 /**
@@ -473,7 +497,16 @@ export async function chatJson<T = unknown>(
     const raw = await chatComplete(jsonMessages, opts);
     const parsed = JSON.parse(extractJsonBlock(raw));
     if (parsed && typeof parsed === "object") {
-      return parsed as T;
+      const normalized = normalizeJsonOutput<T>(parsed, messages);
+      // Validate that normalized is not empty if expecting questions or exercises
+      const combined = messages.map((m) => m.content).join(" ").toLowerCase();
+      if (
+        (combined.includes("proctored") || combined.includes("diagnostic") || combined.includes("practice") || combined.includes("questions")) &&
+        !(normalized as any)?.questions
+      ) {
+        return generateFallbackJson<T>(messages);
+      }
+      return normalized;
     }
   } catch (_err) {
     try {
@@ -490,7 +523,15 @@ export async function chatJson<T = unknown>(
       );
       const parsedRepair = JSON.parse(extractJsonBlock(repair));
       if (parsedRepair && typeof parsedRepair === "object") {
-        return parsedRepair as T;
+        const normalized = normalizeJsonOutput<T>(parsedRepair, messages);
+        const combined = messages.map((m) => m.content).join(" ").toLowerCase();
+        if (
+          (combined.includes("proctored") || combined.includes("diagnostic") || combined.includes("practice") || combined.includes("questions")) &&
+          !(normalized as any)?.questions
+        ) {
+          return generateFallbackJson<T>(messages);
+        }
+        return normalized;
       }
     } catch (_repairErr) {}
   }

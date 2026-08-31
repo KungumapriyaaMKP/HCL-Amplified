@@ -5,7 +5,7 @@ import { db } from "@/lib/db";
 import { practiceAttempts, progressEvents } from "@/db/schema";
 import { eq, and, sql } from "drizzle-orm";
 import { getModuleForUser } from "@/lib/moduleAccess";
-import { chatJson } from "@/lib/llm";
+import { chatJson, generateFallbackJson } from "@/lib/llm";
 import { questionGenerationMessages } from "@/lib/prompts";
 import { DOMAINS } from "@/data/domains";
 
@@ -35,22 +35,51 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
       .where(and(eq(practiceAttempts.userId, user.id), eq(practiceAttempts.moduleId, id)));
 
     const domainName = DOMAINS.find((d) => d.id === row.goal.domain)?.name ?? row.goal.domain;
-    const result = await chatJson<QuestionSet>(
-      questionGenerationMessages({
-        purpose: "practice",
-        domain: domainName,
-        skills: [{ id: row.skill.id, name: row.skill.name, description: row.skill.description }],
-        count: 10,
-      }),
-      { temperature: 0.7, maxTokens: 3500 },
-    );
+    let questions: { id: string; skillId: string; question: string; options: string[]; correctIndex: number; explanation: string }[] = [];
+
+    try {
+      const result = await chatJson<QuestionSet>(
+        questionGenerationMessages({
+          purpose: "practice",
+          domain: domainName,
+          skills: [{ id: row.skill.id, name: row.skill.name, description: row.skill.description }],
+          count: 10,
+        }),
+        { temperature: 0.7, maxTokens: 3500 },
+      );
+
+      if (Array.isArray(result)) {
+        questions = result;
+      } else if (Array.isArray(result?.questions)) {
+        questions = result.questions;
+      }
+    } catch (_err) {
+      // Fallback below
+    }
+
+    if (!questions || questions.length === 0) {
+      const fallbackResult = generateFallbackJson<QuestionSet>([
+        { role: "system", content: `practice questions for ${row.skill.name} (${row.skill.id}) in ${domainName}` },
+      ]);
+      questions = Array.isArray(fallbackResult?.questions) ? fallbackResult.questions : [];
+    }
+
+    // Sanitize questions
+    const sanitizedQuestions = questions.map((q, idx) => ({
+      id: q.id || `pract_${idx + 1}`,
+      skillId: q.skillId || row.skill.id,
+      question: q.question || `Practice question for ${row.skill.name}`,
+      options: Array.isArray(q.options) && q.options.length >= 2 ? q.options : ["True", "False", "Partially True", "None of the above"],
+      correctIndex: typeof q.correctIndex === "number" && q.correctIndex >= 0 ? q.correctIndex : 0,
+      explanation: q.explanation || `Core concept for ${row.skill.name}.`,
+    }));
 
     const [attempt] = await db
       .insert(practiceAttempts)
-      .values({ userId: user.id, moduleId: id, questions: result.questions, attemptNo: Number(count) + 1 })
+      .values({ userId: user.id, moduleId: id, questions: sanitizedQuestions, attemptNo: Number(count) + 1 })
       .returning();
 
-    const questionsForClient = result.questions.map(({ id: qid, question, options }) => ({ id: qid, question, options }));
+    const questionsForClient = sanitizedQuestions.map(({ id: qid, question, options }) => ({ id: qid, question, options }));
     return NextResponse.json({ attemptId: attempt.id, attemptNo: attempt.attemptNo, questions: questionsForClient });
   });
 }
